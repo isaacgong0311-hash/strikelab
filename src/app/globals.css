@@ -1,0 +1,81 @@
+@import "tailwindcss";
+
+:root {
+  --bg:     #06101e;
+  --bg2:    #0b1a2e;
+  --card:   #0d1f38;
+  --border: #1a3352;
+  --accent: #3b82f6;
+  --accent2:#06b6d4;
+  --green:  #22c55e;
+  --text:   #dde6f0;
+  --muted:  #5a7a99;
+
+  --font-sans:  var(--font-sans, system-ui, sans-serif);
+  --font-serif: var(--font-serif, Georgia, serif);
+  --font-mono:  var(--font-mono, "Courier New", monospace);
+}
+
+/* ── Base ─────────────────────────────────────────────────────────────────── */
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Serif headings — the LaTeX look */
+h1, h2, h3 {
+  font-family: var(--font-serif);
+  letter-spacing: -0.01em;
+}
+
+/* Monospace for code, formulas, Greek labels */
+code, pre, .mono {
+  font-family: var(--font-mono);
+}
+
+/* ── Lesson rich text ─────────────────────────────────────────────────────── */
+.lesson-content h2 {
+  font-family: var(--font-serif);
+  font-size: 1.25rem;
+  font-weight: 600;
+  font-style: italic;
+  color: #93c5fd;
+  margin-top: 2rem;
+  margin-bottom: 0.5rem;
+}
+.lesson-content p {
+  color: #cbd5e1;
+  line-height: 1.8;
+  margin-bottom: 0.85rem;
+  font-size: 0.97rem;
+}
+.lesson-content ul {
+  list-style: disc inside;
+  color: #cbd5e1;
+  margin-bottom: 0.85rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  font-size: 0.97rem;
+}
+.lesson-content blockquote {
+  border-left: 3px solid #3b82f6;
+  padding: 0.75rem 1rem;
+  margin: 1.25rem 0;
+  background: rgba(59,130,246,0.07);
+  border-radius: 0 6px 6px 0;
+  color: #e2e8f0;
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  line-height: 1.9;
+}
+.lesson-content strong { color: #fff; font-weight: 600; }
+.lesson-content em { color: #93c5fd; font-style: italic; }
+.lesson-content sup { font-size: 0.7em; vertical-align: super; }
+
+/* ── Scrollbar ────────────────────────────────────────────────────────────── */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: var(--bg2); }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }

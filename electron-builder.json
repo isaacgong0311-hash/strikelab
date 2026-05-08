@@ -1,0 +1,33 @@
+{
+  "appId": "com.strikelab.app",
+  "productName": "StrikeLab",
+  "copyright": "Copyright © 2026 StrikeLab",
+  "directories": {
+    "output": "dist",
+    "buildResources": "build-resources"
+  },
+  "files": [
+    "electron/**/*",
+    "!node_modules"
+  ],
+  "extraResources": [
+    {
+      "from": ".next-standalone",
+      "to": "app",
+      "filter": ["**/*"]
+    }
+  ],
+  "win": {
+    "target": [
+      { "target": "nsis", "arch": ["x64"] }
+    ],
+    "icon": "build-resources/icon.ico"
+  },
+  "nsis": {
+    "oneClick": false,
+    "allowToChangeInstallationDirectory": true,
+    "createDesktopShortcut": true,
+    "createStartMenuShortcut": true,
+    "shortcutName": "StrikeLab"
+  }
+}
