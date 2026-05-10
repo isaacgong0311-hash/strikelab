@@ -3,6 +3,7 @@ import { useState } from "react";
 import Link from "next/link";
 import type { Lesson } from "@/lib/lessons";
 import dynamic from "next/dynamic";
+import { useProgress } from "@/lib/useProgress";
 
 const MiniEditor = dynamic(() => import("@/components/MiniEditor"), { ssr: false });
 
@@ -16,6 +17,7 @@ export default function LessonClient({ lesson, prev, next }: Props) {
   const [code, setCode] = useState(lesson.exercise.starterCode);
   const [output, setOutput] = useState("");
   const [status, setStatus] = useState<"idle" | "running" | "pass" | "fail">("idle");
+  const { markComplete } = useProgress();
 
   async function runCode() {
     setStatus("running");
@@ -28,6 +30,7 @@ export default function LessonClient({ lesson, prev, next }: Props) {
       pyodide.runPython(lesson.exercise.testFn);
       setOutput("✓ All tests passed!");
       setStatus("pass");
+      markComplete(lesson.id);
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : String(err);
       setOutput(msg);

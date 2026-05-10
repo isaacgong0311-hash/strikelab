@@ -339,3 +339,49 @@ print("Tests passed!")
 export function getLessonById(id: string): Lesson | undefined {
   return LESSONS.find((l) => l.id === id);
 }
+
+export interface ComingSoonLesson {
+  id: string;
+  title: string;
+  subtitle: string;
+  duration: string;
+  symbol: string;
+}
+
+export const COMING_SOON: ComingSoonLesson[] = [
+  {
+    id: "6",
+    title: "Gamma: Curvature of the Curve",
+    subtitle: "How delta changes as the stock moves",
+    duration: "~12 min",
+    symbol: "Γ",
+  },
+  {
+    id: "7",
+    title: "Vega: Volatility Sensitivity",
+    subtitle: "How options respond to changes in implied vol",
+    duration: "~10 min",
+    symbol: "ν",
+  },
+  {
+    id: "8",
+    title: "Implied Volatility",
+    subtitle: "What the market thinks about uncertainty",
+    duration: "~15 min",
+    symbol: "σ",
+  },
+  {
+    id: "9",
+    title: "Option Strategies",
+    subtitle: "Spreads, straddles, and how to use the Greeks",
+    duration: "~20 min",
+    symbol: "⊕",
+  },
+  {
+    id: "10",
+    title: "Binomial Trees",
+    subtitle: "The discrete-time approach to option pricing",
+    duration: "~15 min",
+    symbol: "∑",
+  },
+];

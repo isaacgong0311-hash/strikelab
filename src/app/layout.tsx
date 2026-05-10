@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, EB_Garamond, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import Nav from "@/components/Nav";
+import Footer from "@/components/Footer";
 
 const geist = Geist({ variable: "--font-sans", subsets: ["latin"] });
 
@@ -36,6 +37,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       >
         <Nav />
         <main className="flex-1">{children}</main>
+        <Footer />
       </body>
     </html>
   );
