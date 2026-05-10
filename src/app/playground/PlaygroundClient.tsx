@@ -7,17 +7,21 @@ const MiniEditor = dynamic(() => import("@/components/MiniEditor"), { ssr: false
 
 const STARTER_CODE = `import math
 
-# ── Helpers ──────────────────────────────────────────────────────────────────
+# ── Helpers (already implemented — do not modify) ─────────────────────────────
 def _norm_cdf(x):
+    """Standard normal CDF: N(x)"""
     return 0.5 * math.erfc(-x / math.sqrt(2))
 
 def _norm_pdf(x):
+    """Standard normal PDF: n(x) = exp(-x²/2) / sqrt(2π)"""
     return math.exp(-0.5 * x**2) / math.sqrt(2 * math.pi)
 
 def _d1(S, K, T, r, sigma):
+    """d1 = [ln(S/K) + (r + σ²/2)·T] / (σ·√T)"""
     return (math.log(S / K) + (r + 0.5 * sigma**2) * T) / (sigma * math.sqrt(T))
 
 def _d2(S, K, T, r, sigma):
+    """d2 = d1 - σ·√T"""
     return _d1(S, K, T, r, sigma) - sigma * math.sqrt(T)
 
 # ── Black-Scholes price (already implemented) ─────────────────────────────────
@@ -31,36 +35,60 @@ def black_scholes_put(S, K, T, r, sigma):
     d2 = _d2(S, K, T, r, sigma)
     return K * math.exp(-r * T) * _norm_cdf(-d2) - S * _norm_cdf(-d1)
 
-# ── EXERCISE: implement these four Greeks ─────────────────────────────────────
+# ── YOUR JOB: implement the four Greeks below ─────────────────────────────────
+# Use _d1(), _d2(), _norm_cdf(), _norm_pdf() — they are already defined above.
+# Click "▶ Run" to test. Charts appear on the right once a function works.
 
 def compute_delta(S, K, T, r, sigma, option_type="call"):
     """
-    call delta = N(d1)
-    put  delta = N(d1) - 1
+    Δ = sensitivity of option price to a $1 move in S.
+
+    Step 1: d1 = _d1(S, K, T, r, sigma)
+    Step 2: Δ_call = N(d1)        →  _norm_cdf(d1)
+            Δ_put  = N(d1) - 1
+
+    Range: call ∈ [0, 1]   put ∈ [-1, 0]
     """
     # YOUR CODE HERE
     raise NotImplementedError
 
 def compute_gamma(S, K, T, r, sigma):
     """
-    gamma = n(d1) / (S * sigma * sqrt(T))
-    Same for calls and puts.
+    Γ = rate of change of delta (same for calls and puts).
+
+    Step 1: d1 = _d1(S, K, T, r, sigma)
+    Step 2: Γ = n(d1) / (S * sigma * sqrt(T))
+              = _norm_pdf(d1) / (S * sigma * math.sqrt(T))
+
+    Note: use _norm_pdf (PDF), not _norm_cdf (CDF).
     """
     # YOUR CODE HERE
     raise NotImplementedError
 
 def compute_theta(S, K, T, r, sigma, option_type="call"):
     """
-    theta_call = (-S*n(d1)*sigma/(2*sqrt(T)) - r*K*exp(-rT)*N(d2)) / 365
-    theta_put  = (-S*n(d1)*sigma/(2*sqrt(T)) + r*K*exp(-rT)*N(-d2)) / 365
+    Θ = daily time decay (almost always negative).
+
+    Step 1: d1 = _d1(...)   d2 = _d2(...)
+    Step 2: term1 = -S * _norm_pdf(d1) * sigma / (2 * math.sqrt(T))
+    Step 3 (call): Θ = (term1 - r * K * exp(-rT) * N(d2))  / 365
+            (put):  Θ = (term1 + r * K * exp(-rT) * N(-d2)) / 365
+
+    Divide by 365 to convert from annualised to daily.
     """
+    if T <= 0:
+        return 0.0
     # YOUR CODE HERE
     raise NotImplementedError
 
 def compute_vega(S, K, T, r, sigma):
     """
-    vega = S * n(d1) * sqrt(T) / 100
-    Same for calls and puts.
+    ν = $ change in option price per 1% move in implied vol (same for calls/puts).
+
+    Step 1: d1 = _d1(S, K, T, r, sigma)
+    Step 2: ν = S * _norm_pdf(d1) * math.sqrt(T) / 100
+
+    Divide by 100 so result is per percentage-point (not per unit).
     """
     # YOUR CODE HERE
     raise NotImplementedError
@@ -69,18 +97,49 @@ def compute_vega(S, K, T, r, sigma):
 const SERIES_COLORS = ["#3b82f6", "#22c55e", "#f59e0b", "#a855f7"];
 
 type GreekName = "delta" | "gamma" | "theta" | "vega";
-const GREEKS: { key: GreekName; label: string; fn: string }[] = [
-  { key: "delta", label: "Δ Delta", fn: "compute_delta(S, K, T, r, sigma, 'call')" },
-  { key: "gamma", label: "Γ Gamma", fn: "compute_gamma(S, K, T, r, sigma)" },
-  { key: "theta", label: "Θ Theta", fn: "compute_theta(S, K, T, r, sigma, 'call')" },
-  { key: "vega",  label: "ν Vega",  fn: "compute_vega(S, K, T, r, sigma)" },
+const GREEKS: { key: GreekName; label: string; fn: string; formula: string; hint: string }[] = [
+  {
+    key: "delta",
+    label: "Δ Delta",
+    fn: "compute_delta(S, K, T, r, sigma, 'call')",
+    formula: "N(d₁)",
+    hint: "d1 = _d1(S,K,T,r,sigma) → return _norm_cdf(d1) for call, _norm_cdf(d1)-1 for put",
+  },
+  {
+    key: "gamma",
+    label: "Γ Gamma",
+    fn: "compute_gamma(S, K, T, r, sigma)",
+    formula: "n(d₁) / (S·σ·√T)",
+    hint: "d1 = _d1(...) → return _norm_pdf(d1) / (S * sigma * math.sqrt(T))",
+  },
+  {
+    key: "theta",
+    label: "Θ Theta",
+    fn: "compute_theta(S, K, T, r, sigma, 'call')",
+    formula: "(−S·n(d₁)·σ/(2√T) ∓ r·K·e⁻ʳᵀ·N(±d₂)) / 365",
+    hint: "term1 = -S*_norm_pdf(d1)*sigma/(2*sqrt(T)), then subtract r·K·e⁻ʳᵀ·N(d2) for call (add for put), divide by 365",
+  },
+  {
+    key: "vega",
+    label: "ν Vega",
+    fn: "compute_vega(S, K, T, r, sigma)",
+    formula: "S·n(d₁)·√T / 100",
+    hint: "d1 = _d1(...) → return S * _norm_pdf(d1) * math.sqrt(T) / 100",
+  },
+];
+
+const HELPERS = [
+  { name: "_d1(S,K,T,r,σ)", desc: "[ln(S/K) + (r+σ²/2)T] / (σ√T)" },
+  { name: "_d2(S,K,T,r,σ)", desc: "d1 − σ√T" },
+  { name: "_norm_cdf(x)", desc: "N(x) — standard normal CDF" },
+  { name: "_norm_pdf(x)", desc: "n(x) — standard normal PDF" },
 ];
 
 interface ChartPoint { strike: number; value: number }
 
 export default function PlaygroundClient() {
   const [code, setCode] = useState(STARTER_CODE);
-  const [output, setOutput] = useState("Implement the four Greek functions, then click ▶ Run.");
+  const [output, setOutput] = useState("");
   const [status, setStatus] = useState<"idle" | "running" | "pass" | "fail">("idle");
   const [chartData, setChartData] = useState<Record<GreekName, ChartPoint[]>>({
     delta: [], gamma: [], theta: [], vega: [],
@@ -93,6 +152,7 @@ export default function PlaygroundClient() {
   const [r, setR] = useState(0.05);
   const [sigma, setSigma] = useState(0.20);
   const [pyodideReady, setPyodideReady] = useState(false);
+  const [refOpen, setRefOpen] = useState(false);
 
   useEffect(() => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -120,7 +180,7 @@ export default function PlaygroundClient() {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const pyodide = await (window as any).__pyodideReady;
 
-      // Step 1: run user code to define functions — surface syntax errors immediately
+      // Step 1: run user code — surface syntax errors immediately
       try {
         pyodide.runPython(code);
       } catch (err: unknown) {
@@ -130,7 +190,7 @@ export default function PlaygroundClient() {
         return;
       }
 
-      // Step 2: sweep K 50→150, call each Greek function per strike
+      // Step 2: sweep K 50→150, compute each Greek per strike
       const strikes = Array.from({ length: 41 }, (_, i) => 50 + i * 2.5);
       const newChartData: Record<GreekName, ChartPoint[]> = {
         delta: [], gamma: [], theta: [], vega: [],
@@ -156,9 +216,7 @@ export default function PlaygroundClient() {
           } catch (e: unknown) {
             if (!firstErr[greek.key]) {
               const raw = e instanceof Error ? e.message : String(e);
-              // Grab the last non-empty line (the actual exception type/message)
-              const lastLine = raw.split("\n").filter(Boolean).at(-1) ?? raw;
-              firstErr[greek.key] = lastLine;
+              firstErr[greek.key] = raw.split("\n").filter(Boolean).at(-1) ?? raw;
             }
             newChartData[greek.key].push({ strike: Math.round(K * 10) / 10, value: NaN });
           }
@@ -169,18 +227,14 @@ export default function PlaygroundClient() {
       setChartErrors(firstErr);
 
       // Step 3: summarise result
-      const implemented = GREEKS.filter(g =>
-        newChartData[g.key].some(p => !isNaN(p.value))
-      );
-      const missing = GREEKS.filter(g =>
-        newChartData[g.key].every(p => isNaN(p.value))
-      );
+      const implemented = GREEKS.filter(g => newChartData[g.key].some(p => !isNaN(p.value)));
+      const missing = GREEKS.filter(g => newChartData[g.key].every(p => isNaN(p.value)));
 
       if (missing.length === GREEKS.length) {
         const isStub = Object.values(firstErr).some(e => e?.includes("NotImplementedError"));
         setOutput(
           isStub
-            ? "Nothing implemented yet — replace the `raise NotImplementedError` lines above."
+            ? "Nothing implemented yet — replace the `raise NotImplementedError` lines above.\nHint: open the Formula Reference below for step-by-step guidance."
             : (firstErr.delta ?? "Unknown error in Greek functions.")
         );
         setStatus("fail");
@@ -191,7 +245,7 @@ export default function PlaygroundClient() {
         );
         setStatus("pass");
       } else {
-        setOutput("✓ All four Greeks implemented. Try moving the sliders!");
+        setOutput("✓ All four Greeks implemented! Try dragging the sliders to reshape the curves.");
         setStatus("pass");
       }
     } catch (err: unknown) {
@@ -208,11 +262,15 @@ export default function PlaygroundClient() {
     <div className="flex h-[calc(100vh-57px)] overflow-hidden">
       {/* Left: editor */}
       <div className="flex flex-col w-1/2 border-r" style={{ borderColor: "var(--border)" }}>
+
+        {/* Toolbar */}
         <div
           className="flex items-center justify-between px-4 py-3 border-b flex-shrink-0"
           style={{ borderColor: "var(--border)", background: "var(--bg2)" }}
         >
-          <span className="font-semibold text-sm text-white" style={{ fontFamily: "var(--font-mono)" }}>pricing_engine.py</span>
+          <span className="font-semibold text-sm text-white" style={{ fontFamily: "var(--font-mono)" }}>
+            pricing_engine.py
+          </span>
           <div className="flex items-center gap-3">
             <span
               className="text-xs px-2 py-0.5 rounded"
@@ -235,11 +293,12 @@ export default function PlaygroundClient() {
           </div>
         </div>
 
+        {/* Editor */}
         <div className="flex-1 overflow-auto">
           <MiniEditor value={code} onChange={setCode} />
         </div>
 
-        {/* Params */}
+        {/* Sliders */}
         <div
           className="flex-shrink-0 border-t px-4 py-3 grid grid-cols-4 gap-3"
           style={{ borderColor: "var(--border)", background: "var(--bg2)" }}
@@ -265,15 +324,69 @@ export default function PlaygroundClient() {
 
         {/* Output */}
         <pre
-          className="flex-shrink-0 px-4 py-3 text-xs font-mono whitespace-pre-wrap border-t max-h-28 overflow-auto"
+          className="flex-shrink-0 px-4 py-3 text-xs font-mono whitespace-pre-wrap border-t"
           style={{
             borderColor,
             color: status === "pass" ? "#86efac" : status === "fail" ? "#fca5a5" : "#94a3b8",
             background: "var(--bg)",
+            maxHeight: "5rem",
+            overflowY: "auto",
           }}
         >
-          {output}
+          {output || "Implement the four functions above, then click ▶ Run."}
         </pre>
+
+        {/* Formula Reference (collapsible) */}
+        <div className="flex-shrink-0 border-t" style={{ borderColor: "var(--border)" }}>
+          <button
+            onClick={() => setRefOpen((o) => !o)}
+            className="w-full flex items-center justify-between px-4 py-2.5 text-xs transition-colors hover:text-white"
+            style={{ color: "var(--muted)", background: "var(--bg2)", fontFamily: "var(--font-mono)" }}
+          >
+            <span>📐 Formula Reference</span>
+            <span>{refOpen ? "▲ hide" : "▼ show"}</span>
+          </button>
+
+          {refOpen && (
+            <div
+              className="px-4 py-3 overflow-auto"
+              style={{ background: "var(--bg)", maxHeight: "260px" }}
+            >
+              {/* Helper functions */}
+              <div className="mb-4">
+                <div className="text-xs uppercase tracking-widest mb-2 opacity-40" style={{ fontFamily: "var(--font-mono)", color: "#93c5fd" }}>
+                  Available helpers
+                </div>
+                <div className="flex flex-col gap-1">
+                  {HELPERS.map((h) => (
+                    <div key={h.name} className="flex gap-3 text-xs" style={{ fontFamily: "var(--font-mono)" }}>
+                      <span style={{ color: "#7dd3fc", flexShrink: 0 }}>{h.name}</span>
+                      <span style={{ color: "#64748b" }}>{h.desc}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Greek formulas */}
+              <div className="text-xs uppercase tracking-widest mb-2 opacity-40" style={{ fontFamily: "var(--font-mono)", color: "#93c5fd" }}>
+                Formulas
+              </div>
+              <div className="flex flex-col gap-3">
+                {GREEKS.map((g, i) => (
+                  <div key={g.key} className="rounded-lg p-3 border" style={{ borderColor: "var(--border)", background: "var(--card)" }}>
+                    <div className="flex items-baseline gap-2 mb-1">
+                      <span className="text-sm font-bold" style={{ color: SERIES_COLORS[i], fontFamily: "var(--font-mono)" }}>{g.label}</span>
+                      <span className="text-xs" style={{ color: "#94a3b8", fontFamily: "var(--font-mono)" }}>= {g.formula}</span>
+                    </div>
+                    <div className="text-xs leading-relaxed" style={{ color: "#64748b", fontFamily: "var(--font-mono)" }}>
+                      → {g.hint}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
       </div>
 
       {/* Right: charts */}
@@ -284,8 +397,13 @@ export default function PlaygroundClient() {
             className="rounded-xl border p-4 flex flex-col"
             style={{ borderColor: "var(--border)", background: "var(--card)" }}
           >
-            <div className="text-sm font-semibold mb-3" style={{ color: SERIES_COLORS[i], fontFamily: "var(--font-mono)" }}>
-              {greek.label}
+            <div className="flex items-baseline justify-between mb-3">
+              <span className="text-sm font-semibold" style={{ color: SERIES_COLORS[i], fontFamily: "var(--font-mono)" }}>
+                {greek.label}
+              </span>
+              <span className="text-xs opacity-50" style={{ color: "var(--muted)", fontFamily: "var(--font-mono)" }}>
+                vs strike K
+              </span>
             </div>
             <div className="flex-1 min-h-0">
               <GreekChart

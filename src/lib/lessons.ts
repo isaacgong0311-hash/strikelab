@@ -334,6 +334,148 @@ print("Tests passed!")
 `,
     },
   },
+  {
+    id: "6",
+    title: "Gamma: Rate of Change of Delta",
+    subtitle: "Why delta hedging requires constant rebalancing",
+    duration: "12 min",
+    content: `
+<h2>The Second Derivative</h2>
+<p>Gamma (Γ) is the rate of change of delta. It tells you how much delta shifts for a $1 move in the stock price. In calculus terms, gamma is the <strong>second derivative</strong> of the option price with respect to S.</p>
+<ul>
+  <li>If a call has Δ = 0.50 and Γ = 0.06, then after a $1 rise in stock the new delta is approximately 0.56.</li>
+  <li>Gamma is always <strong>positive</strong> for long options (both calls and puts).</li>
+  <li>Gamma is highest for <strong>at-the-money options near expiration</strong> — delta is most unstable there.</li>
+</ul>
+
+<h2>The Formula</h2>
+<blockquote>
+  <strong>Γ = n(d₁) / (S · σ · √T)</strong>
+</blockquote>
+<p>where n(d₁) is the <em>standard normal PDF</em> — not the CDF used for delta. Crucially, this formula is <strong>identical for calls and puts</strong>.</p>
+
+<h2>Gamma and Delta Hedging</h2>
+<p>Delta hedging neutralises your directional exposure — but only for an instant. As the stock moves, delta changes, and a market maker must constantly rebalance their hedge. The cost of that rebalancing is proportional to gamma.</p>
+<p>High gamma = delta changes quickly = you trade more = higher hedging cost. This is why options near expiry are expensive for market makers to hedge.</p>
+
+<h2>The Gamma–Theta Tradeoff</h2>
+<p>Gamma and theta are inseparable. Long gamma means you benefit from large moves in either direction. But you pay for that benefit through time decay (negative theta). Short gamma means you collect theta premium — but you're exposed to big moves. Understanding this tradeoff is core to options market-making.</p>
+    `,
+    exercise: {
+      prompt: "Implement `compute_gamma(S, K, T, r, sigma)` using the Black-Scholes formula.",
+      starterCode: `import math
+
+def _norm_pdf(x):
+    """Standard normal PDF: n(x) = exp(-x²/2) / sqrt(2π)"""
+    return math.exp(-0.5 * x**2) / math.sqrt(2 * math.pi)
+
+def compute_gamma(S, K, T, r, sigma):
+    """
+    Gamma = n(d1) / (S * sigma * sqrt(T))
+    Same for calls and puts.
+
+    d1 = (ln(S/K) + (r + sigma^2/2)*T) / (sigma*sqrt(T))
+    n(d1) is the PDF — use _norm_pdf(d1), NOT the CDF.
+    """
+    # YOUR CODE HERE
+    pass
+`,
+      solution: `import math
+
+def _norm_pdf(x):
+    return math.exp(-0.5 * x**2) / math.sqrt(2 * math.pi)
+
+def compute_gamma(S, K, T, r, sigma):
+    d1 = (math.log(S / K) + (r + 0.5 * sigma**2) * T) / (sigma * math.sqrt(T))
+    return _norm_pdf(d1) / (S * sigma * math.sqrt(T))
+`,
+      testFn: `
+# ATM gamma should be positive
+g = compute_gamma(100, 100, 1.0, 0.05, 0.20)
+assert g > 0, f"Gamma must be positive: {g}"
+# Deep ITM gamma should be small (delta already near 1, not changing fast)
+g_itm = compute_gamma(200, 100, 1.0, 0.05, 0.20)
+g_atm = compute_gamma(100, 100, 1.0, 0.05, 0.20)
+assert g_itm < g_atm, "ATM gamma should exceed deep-ITM gamma"
+# Gamma increases as expiry approaches (for ATM options)
+g_1y = compute_gamma(100, 100, 1.0, 0.05, 0.20)
+g_1m = compute_gamma(100, 100, 1/12, 0.05, 0.20)
+assert g_1m > g_1y, "Gamma should increase as expiry approaches (ATM)"
+print("Tests passed!")
+`,
+    },
+  },
+  {
+    id: "7",
+    title: "Vega: Volatility Sensitivity",
+    subtitle: "How option prices respond to changes in implied vol",
+    duration: "10 min",
+    content: `
+<h2>The Volatility Greek</h2>
+<p>Vega (ν) measures how much an option price changes for a 1 percentage-point change in implied volatility. Despite the Greek letter notation, "vega" is not actually a Greek letter — traders invented the term. It is sometimes written as κ (kappa) in academic papers.</p>
+<ul>
+  <li>Vega is always <strong>positive</strong> for long options — higher volatility means more chance of a big move, benefiting the option buyer.</li>
+  <li>An ATM call with ν = 0.25 gains $0.25 in value for every 1% rise in implied vol.</li>
+  <li>Vega is largest for <strong>at-the-money options with long time to expiry</strong>.</li>
+</ul>
+
+<h2>The Formula</h2>
+<blockquote>
+  <strong>ν = S · n(d₁) · √T / 100</strong>
+</blockquote>
+<p>The division by 100 converts the result to per-percentage-point. The formula is <strong>identical for calls and puts</strong>.</p>
+
+<h2>Implied Volatility</h2>
+<p>Black-Scholes assumes constant volatility. In practice, traders do the opposite: they observe the market price of an option and solve backwards for the σ that makes Black-Scholes match it. That σ is called <strong>implied volatility (IV)</strong>.</p>
+<p>IV is the market's consensus estimate of future uncertainty. When IV spikes (like before earnings announcements), option prices jump even if the stock hasn't moved — pure vega exposure.</p>
+
+<h2>The Volatility Smile</h2>
+<p>If Black-Scholes were literally true, all options on the same stock and expiry would have the same IV. In practice they don't. OTM puts typically trade at higher IV than ATM options — a phenomenon called the <strong>volatility skew</strong>. This reflects the market's demand for crash protection. Understanding vega is the first step toward understanding the volatility surface, which is how professional options traders actually think about pricing.</p>
+    `,
+    exercise: {
+      prompt: "Implement `compute_vega(S, K, T, r, sigma)` returning vega per 1% vol move.",
+      starterCode: `import math
+
+def _norm_pdf(x):
+    """Standard normal PDF: n(x) = exp(-x²/2) / sqrt(2π)"""
+    return math.exp(-0.5 * x**2) / math.sqrt(2 * math.pi)
+
+def compute_vega(S, K, T, r, sigma):
+    """
+    Vega = S * n(d1) * sqrt(T) / 100
+    Same for calls and puts.
+    Divide by 100 so result is per 1 percentage-point move in vol.
+
+    d1 = (ln(S/K) + (r + sigma^2/2)*T) / (sigma*sqrt(T))
+    """
+    # YOUR CODE HERE
+    pass
+`,
+      solution: `import math
+
+def _norm_pdf(x):
+    return math.exp(-0.5 * x**2) / math.sqrt(2 * math.pi)
+
+def compute_vega(S, K, T, r, sigma):
+    d1 = (math.log(S / K) + (r + 0.5 * sigma**2) * T) / (sigma * math.sqrt(T))
+    return S * _norm_pdf(d1) * math.sqrt(T) / 100
+`,
+      testFn: `
+# ATM vega should be positive
+v = compute_vega(100, 100, 1.0, 0.05, 0.20)
+assert v > 0, f"Vega must be positive: {v}"
+# Longer expiry = more vega (more time for vol to matter)
+v_1y = compute_vega(100, 100, 1.0, 0.05, 0.20)
+v_1m = compute_vega(100, 100, 1/12, 0.05, 0.20)
+assert v_1y > v_1m, "Longer expiry should have more vega"
+# Deep ITM/OTM have less vega than ATM
+v_atm = compute_vega(100, 100, 1.0, 0.05, 0.20)
+v_otm = compute_vega(100, 140, 1.0, 0.05, 0.20)
+assert v_atm > v_otm, "ATM should have more vega than deep OTM"
+print("Tests passed!")
+`,
+    },
+  },
 ];
 
 export function getLessonById(id: string): Lesson | undefined {
@@ -349,20 +491,6 @@ export interface ComingSoonLesson {
 }
 
 export const COMING_SOON: ComingSoonLesson[] = [
-  {
-    id: "6",
-    title: "Gamma: Curvature of the Curve",
-    subtitle: "How delta changes as the stock moves",
-    duration: "~12 min",
-    symbol: "Γ",
-  },
-  {
-    id: "7",
-    title: "Vega: Volatility Sensitivity",
-    subtitle: "How options respond to changes in implied vol",
-    duration: "~10 min",
-    symbol: "ν",
-  },
   {
     id: "8",
     title: "Implied Volatility",
