@@ -1,7 +1,7 @@
 "use client";
 import {
   LineChart, Line, XAxis, YAxis, Tooltip,
-  ResponsiveContainer, ReferenceLine,
+  ResponsiveContainer, ReferenceLine, CartesianGrid,
 } from "recharts";
 
 interface Props {
@@ -11,12 +11,21 @@ interface Props {
 }
 
 export default function GreekChart({ data, color, errorMsg }: Props) {
-  // No data yet — first load
   if (!data.length) {
     return (
-      <div className="flex items-center justify-center h-full text-sm text-center px-4"
-        style={{ color: "#475569" }}>
-        Implement this function, then click ▶ Run
+      <div className="flex flex-col items-center justify-center h-full gap-2 px-4">
+        <span
+          className="text-2xl opacity-20"
+          style={{ color, fontFamily: "var(--font-mono)" }}
+        >
+          —
+        </span>
+        <span
+          className="text-[11px] text-center leading-relaxed"
+          style={{ color: "#334155", fontFamily: "var(--font-mono)" }}
+        >
+          Implement this function,<br />then click ▶ Run
+        </span>
       </div>
     );
   }
@@ -26,14 +35,17 @@ export default function GreekChart({ data, color, errorMsg }: Props) {
   if (allNaN) {
     const isStub = errorMsg?.includes("NotImplementedError");
     return (
-      <div className="flex flex-col items-center justify-center h-full text-sm text-center px-4 gap-1">
-        <span style={{ color: isStub ? "#94a3b8" : "#ef4444" }}>
+      <div className="flex flex-col items-center justify-center h-full gap-1.5 px-4">
+        <span
+          className="text-[11px] text-center leading-relaxed"
+          style={{ color: isStub ? "#334155" : "#ef4444", fontFamily: "var(--font-mono)" }}
+        >
           {isStub
-            ? "Replace raise NotImplementedError with your code"
+            ? "Replace raise NotImplementedError\nwith your code"
             : (errorMsg ?? "Function raised an error")}
         </span>
         {!isStub && errorMsg && (
-          <span className="text-xs font-mono" style={{ color: "#64748b" }}>
+          <span className="text-[10px] font-mono text-center" style={{ color: "#64748b" }}>
             {errorMsg}
           </span>
         )}
@@ -45,32 +57,47 @@ export default function GreekChart({ data, color, errorMsg }: Props) {
 
   return (
     <ResponsiveContainer width="100%" height="100%">
-      <LineChart data={validData} margin={{ top: 4, right: 8, bottom: 16, left: 0 }}>
+      <LineChart data={validData} margin={{ top: 6, right: 10, bottom: 18, left: 0 }}>
+        <CartesianGrid
+          strokeDasharray="3 3"
+          stroke="rgba(255,255,255,0.03)"
+          vertical={false}
+        />
         <XAxis
           dataKey="strike"
-          tick={{ fill: "#64748b", fontSize: 10 }}
-          axisLine={{ stroke: "#1e3a5f" }}
+          tick={{ fill: "#334155", fontSize: 9 }}
+          axisLine={false}
           tickLine={false}
-          label={{ value: "Strike (K)", position: "insideBottom", offset: -8, fill: "#64748b", fontSize: 10 }}
+          label={{
+            value: "Strike (K)",
+            position: "insideBottom",
+            offset: -10,
+            fill: "#334155",
+            fontSize: 9,
+            fontFamily: "var(--font-mono)",
+          }}
         />
         <YAxis
-          tick={{ fill: "#64748b", fontSize: 10 }}
-          axisLine={{ stroke: "#1e3a5f" }}
+          tick={{ fill: "#334155", fontSize: 9 }}
+          axisLine={false}
           tickLine={false}
-          width={42}
+          width={38}
         />
         <Tooltip
           contentStyle={{
-            background: "#0f2040",
-            border: "1px solid #1e3a5f",
+            background: "#0d1117",
+            border: `1px solid ${color}40`,
             borderRadius: 8,
-            fontSize: 12,
+            fontSize: 11,
             color: "#e2e8f0",
+            fontFamily: "monospace",
+            padding: "6px 10px",
           }}
+          cursor={{ stroke: color, strokeWidth: 1, strokeDasharray: "3 3", strokeOpacity: 0.4 }}
           formatter={(v) => [typeof v === "number" ? v.toFixed(4) : v, "value"]}
           labelFormatter={(l) => `K = ${l}`}
         />
-        <ReferenceLine y={0} stroke="#1e3a5f" strokeDasharray="3 3" />
+        <ReferenceLine y={0} stroke="rgba(255,255,255,0.06)" strokeDasharray="4 4" />
         <Line
           type="monotone"
           dataKey="value"
@@ -78,6 +105,7 @@ export default function GreekChart({ data, color, errorMsg }: Props) {
           strokeWidth={2}
           dot={false}
           isAnimationActive={false}
+          style={{ filter: `drop-shadow(0 0 4px ${color}60)` }}
         />
       </LineChart>
     </ResponsiveContainer>

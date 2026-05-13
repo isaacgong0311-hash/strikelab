@@ -1,104 +1,144 @@
 import Link from "next/link";
 
+const NAV_GROUPS = [
+  {
+    title: "Product",
+    links: [
+      { href: "/lessons",     label: "Lessons" },
+      { href: "/playground",  label: "Playground" },
+      { href: "/dashboard",   label: "Dashboard" },
+    ],
+  },
+  {
+    title: "Company",
+    links: [
+      { href: "/about",   label: "About" },
+      { href: "/pricing", label: "Pricing" },
+      { href: "/roadmap", label: "Roadmap" },
+      { href: "/faq",     label: "FAQ" },
+    ],
+  },
+  {
+    title: "Open Source",
+    links: [
+      { href: "https://github.com/isaacgong0311-hash/strikelab",                external: true,  label: "GitHub" },
+      { href: "https://github.com/isaacgong0311-hash/strikelab/discussions",   external: true,  label: "Discussions" },
+      { href: "https://github.com/isaacgong0311-hash/strikelab/blob/main/LICENSE", external: true, label: "MIT License" },
+      { href: "mailto:hello@strikelab.app",                                    external: true,  label: "Email" },
+    ],
+  },
+];
+
 export default function Footer() {
   return (
-    <footer className="border-t" style={{ borderColor: "var(--border)", background: "var(--bg2)" }}>
-      <div className="max-w-5xl mx-auto px-6 py-10 grid grid-cols-1 md:grid-cols-4 gap-8">
+    <footer className="border-t" style={{ borderColor: "var(--border)", background: "var(--bg)" }}>
+      <div className="max-w-6xl mx-auto px-6 py-14 grid grid-cols-2 md:grid-cols-5 gap-8">
+
         {/* Brand */}
-        <div className="md:col-span-2">
-          <div className="flex items-center gap-1.5 mb-3">
-            <span style={{ fontFamily: "var(--font-mono)", color: "var(--accent2)", fontSize: "1.1rem" }}>σ</span>
-            <span style={{ fontFamily: "var(--font-serif)", fontStyle: "italic", color: "#e2e8f0" }}>Strike</span>
-            <span style={{ fontFamily: "var(--font-serif)", color: "var(--accent)", fontStyle: "italic" }}>Lab</span>
+        <div className="col-span-2">
+          <div className="flex items-center gap-2.5 mb-4">
+            <span
+              className="grid place-items-center"
+              style={{
+                width: 24,
+                height: 24,
+                border: "1.5px solid var(--fg)",
+                fontFamily: "var(--font-mono)",
+                fontSize: 11,
+                fontWeight: 500,
+                color: "var(--fg)",
+              }}
+            >
+              SL
+            </span>
+            <span style={{ fontFamily: "var(--font-serif)", fontStyle: "italic", color: "var(--fg)", fontSize: "1.1rem" }}>
+              Strike<span style={{ fontStyle: "normal", fontWeight: 600 }}>Lab</span>
+            </span>
           </div>
-          <p className="text-xs leading-relaxed mb-4" style={{ color: "var(--muted)" }}>
-            Learn options pricing before college — no installs, no gatekeepers, just code.
-            A free, browser-based quant finance curriculum for high schoolers aged 13–18.
+          <p className="text-xs leading-relaxed mb-5 max-w-xs" style={{ color: "var(--fg-mute)" }}>
+            A browser-based quant finance curriculum for high schoolers.
+            Free forever for students. Built by a freshman AIME qualifier.
           </p>
-          <div className="flex gap-3 flex-wrap">
+          <div className="flex gap-2 flex-wrap mb-5">
             {["Free forever", "Open source", "No install"].map((tag) => (
               <span
                 key={tag}
-                className="text-xs px-2 py-0.5 rounded border"
+                className="text-[10px] px-2 py-0.5 rounded-full"
                 style={{
-                  borderColor: "var(--border)",
-                  color: "var(--muted)",
+                  border: "1px solid var(--border-hi)",
+                  color: "var(--fg-mute)",
                   fontFamily: "var(--font-mono)",
-                  background: "rgba(59,130,246,0.06)",
+                  letterSpacing: "0.04em",
+                  textTransform: "uppercase",
                 }}
               >
                 {tag}
               </span>
             ))}
           </div>
-        </div>
 
-        {/* Platform */}
-        <div>
           <div
-            className="text-xs uppercase tracking-widest mb-4 opacity-50"
-            style={{ fontFamily: "var(--font-mono)", color: "#93c5fd" }}
+            className="inline-flex items-center gap-2 text-[10px] px-2.5 py-1 rounded-full"
+            style={{
+              border: "1px solid var(--border-hi)",
+              color: "var(--fg)",
+              fontFamily: "var(--font-mono)",
+              letterSpacing: "0.06em",
+              textTransform: "uppercase",
+            }}
           >
-            Platform
-          </div>
-          <div className="flex flex-col gap-2.5">
-            {[
-              { href: "/", label: "Home" },
-              { href: "/lessons", label: "Lessons" },
-              { href: "/playground", label: "Playground" },
-            ].map((l) => (
-              <Link
-                key={l.href}
-                href={l.href}
-                className="text-sm transition-colors hover:text-white"
-                style={{ color: "var(--muted)" }}
-              >
-                {l.label}
-              </Link>
-            ))}
+            MIT License · Open Source
           </div>
         </div>
 
-        {/* Project */}
-        <div>
-          <div
-            className="text-xs uppercase tracking-widest mb-4 opacity-50"
-            style={{ fontFamily: "var(--font-mono)", color: "#93c5fd" }}
-          >
-            Project
-          </div>
-          <div className="flex flex-col gap-2.5">
-            <a
-              href="https://github.com/isaacgong0311-hash/strikelab"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-sm transition-colors hover:text-white"
-              style={{ color: "var(--muted)" }}
+        {/* Nav groups */}
+        {NAV_GROUPS.map((group) => (
+          <div key={group.title}>
+            <div
+              className="text-[10px] uppercase tracking-widest mb-4"
+              style={{ fontFamily: "var(--font-mono)", color: "var(--fg-mute)", letterSpacing: "0.18em" }}
             >
-              GitHub ↗
-            </a>
-            <a
-              href="https://strikelab-olive.vercel.app"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-sm transition-colors hover:text-white"
-              style={{ color: "var(--muted)" }}
-            >
-              Live Site ↗
-            </a>
+              {group.title}
+            </div>
+            <div className="flex flex-col gap-2.5">
+              {group.links.map((l) =>
+                "external" in l && l.external ? (
+                  <a
+                    key={l.href}
+                    href={l.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="v2-foot-link text-xs"
+                  >
+                    {l.label} ↗
+                  </a>
+                ) : (
+                  <Link
+                    key={l.href}
+                    href={l.href}
+                    className="v2-foot-link text-xs"
+                  >
+                    {l.label}
+                  </Link>
+                )
+              )}
+            </div>
           </div>
-        </div>
+        ))}
       </div>
 
       <div
-        className="border-t px-6 py-4 flex flex-wrap items-center justify-between gap-2"
+        className="border-t px-6 py-5 max-w-6xl mx-auto flex flex-wrap items-center justify-between gap-3"
         style={{ borderColor: "var(--border)" }}
       >
-        <span className="text-xs" style={{ color: "var(--muted)", fontFamily: "var(--font-mono)" }}>
-          © 2025 StrikeLab · Built for Creator Colosseum
+        <span
+          className="text-[11px]"
+          style={{ color: "var(--fg-faint)", fontFamily: "var(--font-mono)", letterSpacing: "0.06em", textTransform: "uppercase" }}
+        >
+          © 2026 StrikeLab · Built for Creator Colosseum · MIT
         </span>
-        <span className="text-xs" style={{ color: "var(--muted)" }}>
-          "Quant finance shouldn't require the right zip code."
+        <span className="text-[11px]" style={{ color: "var(--fg-mute)", fontFamily: "var(--font-serif)", fontStyle: "italic" }}>
+          &ldquo;Quant finance shouldn&rsquo;t require the right zip code.&rdquo;
         </span>
       </div>
     </footer>

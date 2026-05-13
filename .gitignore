@@ -41,3 +41,20 @@ yarn-error.log*
 next-env.d.ts
 
 .vercel
+
+# claude code
+CLAUDE.md
+AGENTS.md
+
+# pitch / submission artifacts
+make_deck.js
+StrikeLab_Pitch.pptx
+pitch-script.md
+pitch-script.html
+pitch-script.pdf
+submission.html
+submission.pdf
+thumbnail.html
+thumbnail.png
+devpost.tex
+qa_slides/

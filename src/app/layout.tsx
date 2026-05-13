@@ -3,6 +3,7 @@ import { Geist, EB_Garamond, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import Nav from "@/components/Nav";
 import Footer from "@/components/Footer";
+import V2Animator from "@/components/V2Animator";
 
 const geist = Geist({ variable: "--font-sans", subsets: ["latin"] });
 
@@ -35,8 +36,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         className="min-h-screen flex flex-col"
         style={{ background: "var(--bg)", color: "var(--text)", fontFamily: "var(--font-sans)" }}
       >
+        {/* Global v2 background — same on every page */}
+        <div id="v2-bg-grid" className="v2-bg-grid" />
+        <div className="v2-bg-vignette" />
+
+        <V2Animator />
         <Nav />
-        <main className="flex-1">{children}</main>
+        <main className="flex-1 relative" style={{ zIndex: 1 }}>{children}</main>
         <Footer />
       </body>
     </html>
