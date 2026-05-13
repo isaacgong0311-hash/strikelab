@@ -135,7 +135,7 @@ export default function Footer() {
           className="text-[11px]"
           style={{ color: "var(--fg-faint)", fontFamily: "var(--font-mono)", letterSpacing: "0.06em", textTransform: "uppercase" }}
         >
-          © 2026 StrikeLab · Built for Creator Colosseum · MIT
+          © 2026 StrikeLab · Free & Open Source · MIT License
         </span>
         <span className="text-[11px]" style={{ color: "var(--fg-mute)", fontFamily: "var(--font-serif)", fontStyle: "italic" }}>
           &ldquo;Quant finance shouldn&rsquo;t require the right zip code.&rdquo;

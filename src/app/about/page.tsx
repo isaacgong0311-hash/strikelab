@@ -11,7 +11,7 @@ const TIMELINE = [
   { date: "Dec 2025", event: "First lesson written. Pyodide playground prototype.", state: "done" },
   { date: "Jan 2026", event: "Lessons 1–5 published. Soft launch on AoPS forums.", state: "done" },
   { date: "Feb 2026", event: "Lessons 6 (Gamma) and 7 (Vega) added. Greek visualizer ships.", state: "done" },
-  { date: "Mar 2026", event: "Submitted to Creator Colosseum.", state: "done" },
+  { date: "Mar 2026", event: "Public launch. Shared on AoPS and math competition forums.", state: "done" },
   { date: "May 2026", event: "Lessons 8–10: Implied Vol, Option Strategies, Binomial Trees. 10-lesson curriculum complete.", state: "current" },
   { date: "Q3 2026", event: "Paper-trading sandbox + weekly cohort challenges.", state: "next" },
   { date: "Q4 2026", event: "School dashboard, certificates, Discord integration.", state: "planned" },
@@ -36,8 +36,8 @@ const VALUES = [
 ];
 
 const PRESS = [
-  "Featured at Creator Colosseum 2025",
-  "AoPS forum submission (March 2026)",
+  "AoPS forum launch thread (March 2026)",
+  "10-lesson curriculum shipped (May 2026)",
 ];
 
 export default function AboutPage() {

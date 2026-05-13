@@ -164,7 +164,7 @@ export default function Home() {
             <div>
               <div className="v2-badge">
                 <span className="dot" />
-                <span>Creator Colosseum 2025 · 10 Lessons Live</span>
+                <span>10 Lessons Live · Free & Open Source</span>
               </div>
               <h1 className="v2-headline">
                 <span className="it">Quant finance,</span><br />
