@@ -1,6 +1,7 @@
 "use client";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useProgress } from "@/lib/useProgress";
 
 const PRIMARY = [
   { href: "/dashboard",   label: "Dashboard" },
@@ -17,10 +18,11 @@ const SECONDARY = [
 export default function Nav() {
   const path = usePathname();
   const isActive = (href: string) => path === href || path.startsWith(href + "/");
+  const { xp, streak, hydrated } = useProgress();
 
   return (
     <>
-      {/* ─── Announcement bar (monochrome) ──────────────────────────────────── */}
+      {/* ─── Announcement bar ──────────────────────────────────────────────── */}
       <div
         className="text-center text-[11px] py-1.5 border-b relative overflow-hidden"
         style={{
@@ -31,10 +33,6 @@ export default function Nav() {
           letterSpacing: "0.04em",
         }}
       >
-        <span
-          className="inline-block w-1.5 h-1.5 rounded-full mr-2 align-middle"
-          style={{ background: "var(--check)", boxShadow: "0 0 8px rgba(74,222,128,0.45)" }}
-        />
         New —{" "}
         <span style={{ color: "var(--fg)", fontWeight: 600 }}>Implied Vol, Strategies &amp; Binomial Trees just shipped</span>{" "}
         ·{" "}
@@ -97,12 +95,14 @@ export default function Nav() {
                   )}
                   <Link
                     href={l.href}
-                    className="text-[11px] px-3 py-1.5 rounded-md transition-all uppercase"
+                    className="text-[11px] px-3 py-1.5 transition-colors uppercase"
                     style={{
                       color: active ? "var(--fg)" : "var(--fg-mute)",
-                      fontWeight: active ? 600 : 400,
+                      fontWeight: active ? 500 : 400,
                       fontFamily: "var(--font-mono)",
                       letterSpacing: "0.06em",
+                      borderBottom: active ? "1px solid var(--fg)" : "1px solid transparent",
+                      paddingBottom: "6px",
                     }}
                   >
                     {l.label}
@@ -113,8 +113,34 @@ export default function Nav() {
           </div>
         </div>
 
-        {/* Right: utility + CTA */}
-        <div className="flex items-center gap-3">
+        {/* Right: streak + XP + utility + CTA */}
+        <div className="flex items-center gap-2">
+
+          {/* Streak indicator — always visible once hydrated */}
+          {hydrated && (
+            <Link
+              href="/dashboard"
+              className={`hidden sm:flex sl-nav-streak${streak > 0 ? " active" : ""}`}
+              title={streak > 0 ? `${streak}-day streak!` : "No streak yet"}
+            >
+              <span>{streak > 0 ? "🔥" : "○"}</span>
+              <span>{streak}</span>
+            </Link>
+          )}
+
+          {/* XP indicator */}
+          {hydrated && xp > 0 && (
+            <Link
+              href="/dashboard"
+              className="hidden sm:flex sl-nav-xp"
+              title={`${xp} XP total`}
+            >
+              <span style={{ color: "#fbbf24" }}>✦</span>
+              <span>{xp} XP</span>
+            </Link>
+          )}
+
+          {/* GitHub */}
           <a
             href="https://github.com/isaacgong0311-hash/strikelab"
             target="_blank"

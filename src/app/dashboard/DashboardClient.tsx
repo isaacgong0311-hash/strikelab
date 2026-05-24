@@ -1,12 +1,202 @@
 "use client";
 import Link from "next/link";
 import { LESSONS } from "@/lib/lessons";
-import { useProgress } from "@/lib/useProgress";
+import { useProgress, getLevel, getXpToNextLevel, XP_LEVELS } from "@/lib/useProgress";
 
-const STREAK_DAYS = [0, 0, 0, 0, 0, 0, 0]; // fills in as user completes exercises
+// ─── Achievement badges ───────────────────────────────────────────────────────
+
+const ACHIEVEMENTS = [
+  {
+    id: "first",
+    icon: "🎯",
+    name: "First Strike",
+    desc: "Complete your first lesson",
+    unlocked: (ids: Set<string>) => ids.size >= 1,
+  },
+  {
+    id: "parity",
+    icon: "⚖️",
+    name: "Parity Pro",
+    desc: "Master Put-Call Parity",
+    unlocked: (ids: Set<string>) => ids.has("2"),
+  },
+  {
+    id: "bsm",
+    icon: "∂",
+    name: "BSM Builder",
+    desc: "Implement Black-Scholes",
+    unlocked: (ids: Set<string>) => ids.has("3"),
+  },
+  {
+    id: "greeks",
+    icon: "Δ",
+    name: "Greek Scholar",
+    desc: "Complete all 4 Greek lessons",
+    unlocked: (ids: Set<string>) => ["4","5","6","7"].every((id) => ids.has(id)),
+  },
+  {
+    id: "iv",
+    icon: "σ",
+    name: "Vol Wizard",
+    desc: "Solve for implied vol",
+    unlocked: (ids: Set<string>) => ids.has("8"),
+  },
+  {
+    id: "strategy",
+    icon: "🦅",
+    name: "Strategist",
+    desc: "Learn option strategies",
+    unlocked: (ids: Set<string>) => ids.has("9"),
+  },
+];
+
+// ─── XP Level ring display ────────────────────────────────────────────────────
+
+function LevelBadge({ xp }: { xp: number }) {
+  const level = getLevel(xp);
+  const { progress, needed } = getXpToNextLevel(xp);
+  const levelNum = XP_LEVELS.findIndex((l) => l.label === level.label) + 1;
+
+  return (
+    <div
+      className="p-5 rounded-xl border"
+      style={{ borderColor: "var(--border2)", background: "var(--card)" }}
+    >
+      <div className="flex items-center justify-between mb-3">
+        <h2
+          className="text-sm font-semibold text-white"
+          style={{ fontFamily: "var(--font-serif)", fontStyle: "italic" }}
+        >
+          Level & XP
+        </h2>
+        <span
+          className="text-xs px-2 py-0.5 rounded-full"
+          style={{
+            background: `${level.color}18`,
+            border: `1px solid ${level.color}40`,
+            color: level.color,
+            fontFamily: "var(--font-mono)",
+          }}
+        >
+          Lv.{levelNum}
+        </span>
+      </div>
+
+      {/* Level name */}
+      <div
+        className="text-2xl font-bold mb-1"
+        style={{ fontFamily: "var(--font-serif)", fontStyle: "italic", color: level.color }}
+      >
+        {level.label}
+      </div>
+
+      {/* XP count */}
+      <div
+        className="text-xs mb-3"
+        style={{ color: "var(--muted)", fontFamily: "var(--font-mono)" }}
+      >
+        {xp.toLocaleString()} XP total
+      </div>
+
+      {/* Progress bar to next level */}
+      <div className="sl-xp-bar-track mb-2">
+        <div
+          className="sl-xp-bar-fill"
+          style={{ width: `${progress}%`, background: level.color }}
+        />
+      </div>
+
+      <div
+        className="text-[10px] flex justify-between"
+        style={{ color: "var(--fg-faint)", fontFamily: "var(--font-mono)" }}
+      >
+        <span>{progress}% to next level</span>
+        {needed > 0 && <span>{needed} XP needed</span>}
+      </div>
+    </div>
+  );
+}
+
+// ─── Real streak chart ────────────────────────────────────────────────────────
+
+const DAY_LABELS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+
+function StreakChart({ weekActivity, streak }: { weekActivity: number[]; streak: number }) {
+  const max = Math.max(...weekActivity, 1);
+  // Align weekActivity[0] to the actual day of week
+  const today = new Date().getDay(); // 0=Sun…6=Sat
+  const mondayOffset = (today + 6) % 7; // how many days ago was Monday
+
+  return (
+    <div
+      className="p-5 rounded-xl border"
+      style={{ borderColor: "var(--border2)", background: "var(--card)" }}
+    >
+      <div className="flex items-center justify-between mb-3">
+        <h2
+          className="text-sm font-semibold text-white"
+          style={{ fontFamily: "var(--font-serif)", fontStyle: "italic" }}
+        >
+          Last 7 days
+        </h2>
+        <span
+          className="text-xs"
+          style={{
+            color: streak > 0 ? "#fb923c" : "var(--muted)",
+            fontFamily: "var(--font-mono)",
+          }}
+        >
+          {streak > 0 ? `🔥 ${streak}-day streak` : "Start your streak"}
+        </span>
+      </div>
+
+      <div className="flex items-end justify-between gap-2 h-24 mb-3">
+        {weekActivity.map((v, i) => {
+          const isToday = i === mondayOffset;
+          const hasActivity = v > 0;
+          return (
+            <div key={i} className="flex-1 flex flex-col items-center gap-1.5">
+              <div className="flex-1 w-full flex items-end">
+                <div
+                  className="w-full rounded-t transition-all duration-500"
+                  title={`${v} lesson${v !== 1 ? "s" : ""}`}
+                  style={{
+                    height: `${Math.max((v / max) * 100, v > 0 ? 12 : 0)}%`,
+                    minHeight: v > 0 ? "6px" : "0",
+                    background: hasActivity
+                      ? isToday ? "#fb923c" : "#22c55e"
+                      : "var(--border2)",
+                  }}
+                />
+              </div>
+              <span
+                className="text-[9px]"
+                style={{
+                  color: isToday ? "var(--fg)" : "var(--muted)",
+                  fontFamily: "var(--font-mono)",
+                  fontWeight: isToday ? 600 : 400,
+                }}
+              >
+                {DAY_LABELS[i].charAt(0)}
+              </span>
+            </div>
+          );
+        })}
+      </div>
+
+      <div className="text-xs" style={{ color: "var(--muted2)" }}>
+        {weekActivity.some((v) => v > 0)
+          ? "Green bars = lessons completed. Complete one today to keep your streak."
+          : "Complete lessons to build your streak."}
+      </div>
+    </div>
+  );
+}
+
+// ─── Main dashboard ───────────────────────────────────────────────────────────
 
 export default function DashboardClient() {
-  const { completed, hydrated } = useProgress();
+  const { completed, hydrated, xp, streak, weekActivity } = useProgress();
   const completedCount = hydrated ? LESSONS.filter((l) => completed.has(l.id)).length : 0;
   const nextLesson = hydrated
     ? LESSONS.find((l) => !completed.has(l.id)) ?? LESSONS[0]
@@ -14,13 +204,31 @@ export default function DashboardClient() {
   const pct = (completedCount / LESSONS.length) * 100;
 
   const STATS = [
-    { v: `${completedCount}`,                          l: "Lessons complete", color: "#22c55e" },
-    { v: `${completedCount > 0 ? completedCount : 0}`, l: "Day streak",       color: "#fbbf24" },
-    { v: `${completedCount}`,                          l: "Exercises passed", color: "#ffffff" },
-    { v: completedCount > 0 ? "100%" : "—",           l: "Test accuracy",    color: "#a3a3a3" },
+    {
+      v: completedCount.toString(),
+      l: "Lessons complete",
+      sub: `of ${LESSONS.length}`,
+      color: completedCount > 0 ? "#22c55e" : undefined,
+    },
+    {
+      v: streak > 0 ? `${streak}` : "0",
+      l: "Day streak",
+      sub: streak > 0 ? "🔥 keep it up" : "start today",
+      color: streak > 0 ? "#fb923c" : undefined,
+    },
+    {
+      v: xp.toLocaleString(),
+      l: "Total XP",
+      sub: getLevel(xp).label,
+      color: getLevel(xp).color,
+    },
+    {
+      v: completedCount > 0 ? "100%" : "—",
+      l: "Exercise accuracy",
+      sub: "tests passed",
+      color: completedCount > 0 ? "#22c55e" : undefined,
+    },
   ];
-
-  const max = Math.max(...STREAK_DAYS, 1);
 
   return (
     <div className="max-w-5xl mx-auto px-6 py-12">
@@ -40,18 +248,21 @@ export default function DashboardClient() {
             Welcome back, Isaac
           </h1>
           <p className="text-sm" style={{ color: "var(--muted2)" }}>
-            {completedCount}/{LESSONS.length} lessons complete · keep going
+            {completedCount}/{LESSONS.length} lessons complete
+            {xp > 0 && ` · ${xp.toLocaleString()} XP`}
+            {streak > 0 && ` · 🔥 ${streak}-day streak`}
           </p>
         </div>
         <Link
           href={`/lesson/${nextLesson.id}`}
-          className="px-7 py-3.5 rounded-xl text-base font-bold text-white transition-opacity hover:opacity-90 shadow-lg"
+          className="px-5 py-2.5 text-sm font-medium transition-opacity hover:opacity-80"
           style={{
-            background: "linear-gradient(135deg, #ffffff, #cccccc)",
-            boxShadow: "0 8px 24px -8px rgba(255,255,255,0.5)",
+            background: "var(--fg)",
+            color: "#000000",
+            fontFamily: "var(--font-mono)",
           }}
         >
-          Resume → {nextLesson.title}
+          {completedCount === 0 ? "Start Lesson 01" : `Resume → ${nextLesson.title}`}
         </Link>
       </div>
 
@@ -64,8 +275,11 @@ export default function DashboardClient() {
             style={{ borderColor: "var(--border2)", background: "var(--card)" }}
           >
             <div
-              className="text-3xl font-bold leading-none mb-1.5"
-              style={{ fontFamily: "var(--font-mono)", color: s.color }}
+              className="text-3xl font-bold leading-none mb-1"
+              style={{
+                fontFamily: "var(--font-mono)",
+                color: s.color ?? "var(--fg)",
+              }}
             >
               {s.v}
             </div>
@@ -75,15 +289,26 @@ export default function DashboardClient() {
             >
               {s.l}
             </div>
+            {s.sub && (
+              <div className="text-[10px] mt-0.5" style={{ color: "var(--fg-faint)", fontFamily: "var(--font-mono)" }}>
+                {s.sub}
+              </div>
+            )}
           </div>
         ))}
       </div>
 
-      {/* Progress + Streak chart */}
+      {/* XP + Streak row */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-6">
-        {/* Progress card */}
+        <LevelBadge xp={xp} />
+        <StreakChart weekActivity={weekActivity} streak={streak} />
+      </div>
+
+      {/* Progress + Next lesson row */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mb-6">
+        {/* Curriculum progress */}
         <div
-          className="p-5 rounded-xl border"
+          className="md:col-span-2 p-5 rounded-xl border"
           style={{ borderColor: "var(--border2)", background: "var(--card)" }}
         >
           <div className="flex items-center justify-between mb-3">
@@ -105,16 +330,14 @@ export default function DashboardClient() {
             style={{ background: "var(--border2)" }}
           >
             <div
-              className="h-full rounded-full transition-all duration-500"
-              style={{
-                width: `${pct}%`,
-                background: "linear-gradient(90deg, #ffffff, #a3a3a3)",
-              }}
+              className="h-full rounded-full transition-all duration-700"
+              style={{ width: `${pct}%`, background: "#22c55e" }}
             />
           </div>
           <div className="flex flex-col gap-1.5">
-            {LESSONS.slice(0, 5).map((l, i) => {
+            {LESSONS.map((l, i) => {
               const done = hydrated && completed.has(l.id);
+              const isCurrent = hydrated && !done && LESSONS.findIndex((x) => !completed.has(x.id)) === i;
               return (
                 <Link
                   key={l.id}
@@ -122,123 +345,41 @@ export default function DashboardClient() {
                   className="flex items-center gap-2 text-xs py-1 transition-opacity hover:opacity-75"
                 >
                   <span
-                    className="w-4 h-4 rounded-full flex items-center justify-center text-[10px] flex-shrink-0"
+                    className="w-5 h-5 rounded-full flex items-center justify-center text-[10px] flex-shrink-0 font-medium"
                     style={{
-                      background: done ? "rgba(34,197,94,0.15)" : "rgba(100,116,139,0.15)",
-                      color: done ? "#4ade80" : "var(--muted)",
+                      background: done
+                        ? "rgba(34,197,94,0.15)"
+                        : isCurrent
+                          ? "rgba(255,255,255,0.12)"
+                          : "rgba(100,116,139,0.10)",
+                      color: done ? "#4ade80" : isCurrent ? "var(--fg)" : "var(--muted)",
                       fontFamily: "var(--font-mono)",
+                      border: isCurrent ? "1px solid rgba(255,255,255,0.2)" : "1px solid transparent",
                     }}
                   >
                     {done ? "✓" : i + 1}
                   </span>
-                  <span style={{ color: done ? "var(--muted2)" : "#cbd5e1" }}>
+                  <span style={{ color: done ? "var(--muted2)" : isCurrent ? "#e2e8f0" : "#64748b" }}>
                     {l.title}
                   </span>
+                  {done && (
+                    <span
+                      className="ml-auto text-[9px]"
+                      style={{ color: "#fbbf24", fontFamily: "var(--font-mono)" }}
+                    >
+                      +100 XP
+                    </span>
+                  )}
                 </Link>
               );
             })}
           </div>
         </div>
 
-        {/* Streak chart */}
-        <div
-          className="p-5 rounded-xl border"
-          style={{ borderColor: "var(--border2)", background: "var(--card)" }}
-        >
-          <div className="flex items-center justify-between mb-3">
-            <h2
-              className="text-sm font-semibold text-white"
-              style={{ fontFamily: "var(--font-serif)", fontStyle: "italic" }}
-            >
-              Last 7 days
-            </h2>
-            <span
-              className="text-xs"
-              style={{ color: "#fbbf24", fontFamily: "var(--font-mono)" }}
-            >
-              {completedCount > 0 ? `🔥 ${completedCount}-lesson streak` : "Start your streak"}
-            </span>
-          </div>
-          <div className="flex items-end justify-between gap-2 h-24 mb-3">
-            {STREAK_DAYS.map((v, i) => (
-              <div key={i} className="flex-1 flex flex-col items-center gap-1.5">
-                <div className="flex-1 w-full flex items-end">
-                  <div
-                    className="w-full rounded-t"
-                    style={{
-                      height: `${(v / max) * 100}%`,
-                      background:
-                        i === STREAK_DAYS.length - 1
-                          ? "linear-gradient(180deg, #a3a3a3, #ffffff)"
-                          : "linear-gradient(180deg, rgba(255,255,255,0.5), rgba(255,255,255,0.15))",
-                    }}
-                  />
-                </div>
-                <span
-                  className="text-[9px]"
-                  style={{ color: "var(--muted)", fontFamily: "var(--font-mono)" }}
-                >
-                  {["M", "T", "W", "T", "F", "S", "S"][i]}
-                </span>
-              </div>
-            ))}
-          </div>
-          <div className="text-xs" style={{ color: "var(--muted2)" }}>
-            Complete lessons to build your streak.
-          </div>
-        </div>
-      </div>
-
-      {/* Activity + Next lesson */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mb-6">
-        {/* Activity */}
-        <div
-          className="md:col-span-2 p-5 rounded-xl border"
-          style={{ borderColor: "var(--border2)", background: "var(--card)" }}
-        >
-          <h2
-            className="text-sm font-semibold text-white mb-3"
-            style={{ fontFamily: "var(--font-serif)", fontStyle: "italic" }}
-          >
-            Recent activity
-          </h2>
-          <div className="flex flex-col">
-            {LESSONS.filter((l) => hydrated && completed.has(l.id)).length === 0 ? (
-              <p className="text-xs py-4 text-center" style={{ color: "var(--muted)" }}>
-                No activity yet — complete your first lesson to see it here.
-              </p>
-            ) : (
-              LESSONS.filter((l) => hydrated && completed.has(l.id)).slice().reverse().map((l) => (
-                <div
-                  key={l.id}
-                  className="flex items-start gap-3 py-2 border-b last:border-0"
-                  style={{ borderColor: "var(--border)" }}
-                >
-                  <span
-                    className="w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0 text-xs"
-                    style={{ background: "rgba(34,197,94,0.15)", color: "#22c55e", fontFamily: "var(--font-mono)" }}
-                  >
-                    ✓
-                  </span>
-                  <div className="flex-1 min-w-0">
-                    <div className="text-xs text-white">Completed {l.title}</div>
-                    <div className="text-[10px] mt-0.5" style={{ color: "var(--muted)", fontFamily: "var(--font-mono)" }}>
-                      This session
-                    </div>
-                  </div>
-                </div>
-              ))
-            )}
-          </div>
-        </div>
-
         {/* Up next */}
         <div
           className="p-5 rounded-xl border flex flex-col"
-          style={{
-            borderColor: "rgba(255,255,255,0.3)",
-            background: "rgba(255,255,255,0.04)",
-          }}
+          style={{ borderColor: "var(--border2)", background: "var(--card)" }}
         >
           <div
             className="text-[10px] tracking-widest uppercase mb-3"
@@ -252,105 +393,94 @@ export default function DashboardClient() {
           >
             {nextLesson.title}
           </h3>
-          <p className="text-xs mb-4 flex-1" style={{ color: "var(--muted2)" }}>
+          <p className="text-xs mb-3 flex-1" style={{ color: "var(--muted2)" }}>
             {nextLesson.subtitle}
           </p>
-          <div className="flex items-center gap-2 mb-4 text-[11px]" style={{ color: "var(--muted)", fontFamily: "var(--font-mono)" }}>
+          <div className="flex items-center gap-2 mb-1 text-[11px]" style={{ color: "var(--muted)", fontFamily: "var(--font-mono)" }}>
             <span>{nextLesson.duration}</span>
             <span>·</span>
             <span>1 exercise</span>
           </div>
+          <div className="flex items-center gap-1 mb-4 text-[11px]" style={{ color: "#fbbf24", fontFamily: "var(--font-mono)" }}>
+            <span>+100 XP on completion</span>
+          </div>
           <Link
             href={`/lesson/${nextLesson.id}`}
-            className="block text-center px-4 py-3 rounded-lg text-sm font-bold text-white transition-opacity hover:opacity-90"
-            style={{ background: "linear-gradient(135deg, #a3a3a3, #ffffff)" }}
+            className="block text-center px-4 py-2.5 text-sm font-medium transition-opacity hover:opacity-80"
+            style={{ background: "var(--fg)", color: "#000000", fontFamily: "var(--font-mono)" }}
           >
-            Continue →
+            {completedCount === 0 ? "Start" : "Continue"} →
           </Link>
         </div>
       </div>
 
-      {/* Quick actions */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mb-6">
-        <Link
-          href="/lessons"
-          className="p-5 rounded-xl border transition-all hover:border-white/40 flex items-center gap-4 group"
-          style={{ borderColor: "var(--border2)", background: "var(--card)" }}
+      {/* Achievement badges */}
+      <div
+        className="p-5 rounded-xl border mb-6"
+        style={{ borderColor: "var(--border2)", background: "var(--card)" }}
+      >
+        <h2
+          className="text-sm font-semibold text-white mb-4"
+          style={{ fontFamily: "var(--font-serif)", fontStyle: "italic" }}
         >
-          <div
-            className="w-12 h-12 rounded-lg flex items-center justify-center text-2xl flex-shrink-0"
-            style={{
-              background: "linear-gradient(135deg, rgba(255,255,255,0.18), rgba(255,255,255,0.10))",
-              color: "var(--accent2)",
-              fontFamily: "var(--font-mono)",
-            }}
-          >
-            ∂
-          </div>
-          <div className="flex-1 min-w-0">
-            <div className="text-base font-semibold text-white group-hover:text-white transition-colors" style={{ fontFamily: "var(--font-serif)", fontStyle: "italic" }}>
-              All lessons
-            </div>
-            <div className="text-xs mt-0.5" style={{ color: "var(--muted2)" }}>
-              Browse the full curriculum
-            </div>
-          </div>
-          <span className="text-xl flex-shrink-0" style={{ color: "var(--muted)" }}>›</span>
-        </Link>
-
-        <Link
-          href="/playground"
-          className="p-5 rounded-xl border transition-all hover:border-white/40 flex items-center gap-4 group"
-          style={{ borderColor: "var(--border2)", background: "var(--card)" }}
-        >
-          <div
-            className="w-12 h-12 rounded-lg flex items-center justify-center text-2xl flex-shrink-0"
-            style={{
-              background: "linear-gradient(135deg, rgba(255,255,255,0.18), rgba(255,255,255,0.10))",
-              color: "#a78bfa",
-              fontFamily: "var(--font-mono)",
-            }}
-          >
-            ⚡
-          </div>
-          <div className="flex-1 min-w-0">
-            <div className="text-base font-semibold text-white group-hover:text-white transition-colors" style={{ fontFamily: "var(--font-serif)", fontStyle: "italic" }}>
-              Playground
-            </div>
-            <div className="text-xs mt-0.5" style={{ color: "var(--muted2)" }}>
-              Full Greek sandbox with live charts
-            </div>
-          </div>
-          <span className="text-xl flex-shrink-0" style={{ color: "var(--muted)" }}>›</span>
-        </Link>
-
-        <Link
-          href="/roadmap"
-          className="p-5 rounded-xl border transition-all hover:border-white/40 flex items-center gap-4 group"
-          style={{ borderColor: "var(--border2)", background: "var(--card)" }}
-        >
-          <div
-            className="w-12 h-12 rounded-lg flex items-center justify-center text-2xl flex-shrink-0"
-            style={{
-              background: "linear-gradient(135deg, rgba(34,197,94,0.18), rgba(255,255,255,0.10))",
-              color: "#22c55e",
-              fontFamily: "var(--font-mono)",
-            }}
-          >
-            ◈
-          </div>
-          <div className="flex-1 min-w-0">
-            <div className="text-base font-semibold text-white group-hover:text-white transition-colors" style={{ fontFamily: "var(--font-serif)", fontStyle: "italic" }}>
-              Roadmap
-            </div>
-            <div className="text-xs mt-0.5" style={{ color: "var(--muted2)" }}>
-              What&rsquo;s shipping next
-            </div>
-          </div>
-          <span className="text-xl flex-shrink-0" style={{ color: "var(--muted)" }}>›</span>
-        </Link>
+          Achievements
+        </h2>
+        <div className="grid grid-cols-3 md:grid-cols-6 gap-3">
+          {ACHIEVEMENTS.map((a) => {
+            const isUnlocked = hydrated && a.unlocked(completed);
+            return (
+              <div
+                key={a.id}
+                className={`sl-badge${isUnlocked ? " unlocked" : ""}`}
+                title={a.desc}
+              >
+                <div className="sl-badge-icon">{a.icon}</div>
+                <div className="sl-badge-name">{a.name}</div>
+                {!isUnlocked && (
+                  <div className="text-[9px] mt-0.5" style={{ color: "var(--fg-faint)", fontFamily: "var(--font-mono)" }}>
+                    locked
+                  </div>
+                )}
+              </div>
+            );
+          })}
+        </div>
       </div>
 
+      {/* Quick actions */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+        {[
+          { href: "/lessons", icon: "∂", title: "All lessons", sub: "Browse the full curriculum" },
+          { href: "/playground", icon: "▶", title: "Playground", sub: "Full Greek sandbox with live charts" },
+          { href: "/roadmap", icon: "◈", title: "Roadmap", sub: "What's shipping next" },
+        ].map((item) => (
+          <Link
+            key={item.href}
+            href={item.href}
+            className="p-5 rounded-xl border transition-all hover:border-white/40 flex items-center gap-4 group"
+            style={{ borderColor: "var(--border2)", background: "var(--card)" }}
+          >
+            <div
+              className="w-10 h-10 rounded border flex items-center justify-center text-lg flex-shrink-0"
+              style={{ borderColor: "var(--border2)", background: "var(--bg2)", color: "var(--fg-mute)", fontFamily: "var(--font-mono)" }}
+            >
+              {item.icon}
+            </div>
+            <div className="flex-1 min-w-0">
+              <div
+                className="text-base font-semibold text-white"
+                style={{ fontFamily: "var(--font-serif)", fontStyle: "italic" }}
+              >
+                {item.title}
+              </div>
+              <div className="text-xs mt-0.5" style={{ color: "var(--muted2)" }}>
+                {item.sub}
+              </div>
+            </div>
+            <span className="text-xl flex-shrink-0" style={{ color: "var(--muted)" }}>›</span>
+          </Link>
+        ))}
+      </div>
     </div>
   );
 }
