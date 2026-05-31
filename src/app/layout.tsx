@@ -4,6 +4,7 @@ import "./globals.css";
 import Nav from "@/components/Nav";
 import Footer from "@/components/Footer";
 import V2Animator from "@/components/V2Animator";
+import { Analytics } from "@vercel/analytics/next";
 
 const geist = Geist({ variable: "--font-sans", subsets: ["latin"] });
 
@@ -44,6 +45,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <Nav />
         <main className="flex-1 relative" style={{ zIndex: 1 }}>{children}</main>
         <Footer />
+        <Analytics />
       </body>
     </html>
   );
