@@ -1,10 +1,8 @@
 import { NextResponse } from "next/server";
-import type { NextRequest } from "next/server";
-
 // Clerk middleware is disabled until NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY and
 // CLERK_SECRET_KEY are set as environment variables in the Vercel project.
 // Once added, swap this file back to the clerkMiddleware version.
-export function middleware(_req: NextRequest) {
+export function middleware() {
   return NextResponse.next();
 }
 

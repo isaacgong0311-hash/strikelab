@@ -87,44 +87,49 @@ export function useProgress() {
   const [hydrated, setHydrated] = useState(false);
 
   useEffect(() => {
-    try {
-      const raw = localStorage.getItem(PROGRESS_KEY);
-      if (raw) {
-        const parsed = JSON.parse(raw) as ProgressState;
-        // Migrate old v1 data if present
-        const oldRaw = localStorage.getItem("strikelab_completed_v1");
-        if (oldRaw && parsed.completed.length === 0) {
-          try {
-            const oldIds = JSON.parse(oldRaw) as string[];
-            parsed.completed = oldIds;
-            parsed.xp = oldIds.length * 100;
-          } catch {
-            // ignore
+    const hydrateProgress = () => {
+      try {
+        const raw = localStorage.getItem(PROGRESS_KEY);
+        if (raw) {
+          const parsed = JSON.parse(raw) as ProgressState;
+          // Migrate old v1 data if present
+          const oldRaw = localStorage.getItem("strikelab_completed_v1");
+          if (oldRaw && parsed.completed.length === 0) {
+            try {
+              const oldIds = JSON.parse(oldRaw) as string[];
+              parsed.completed = oldIds;
+              parsed.xp = oldIds.length * 100;
+            } catch {
+              // ignore
+            }
+          }
+          setState(parsed);
+        } else {
+          // Migrate from v1 if exists
+          const oldRaw = localStorage.getItem("strikelab_completed_v1");
+          if (oldRaw) {
+            try {
+              const oldIds = JSON.parse(oldRaw) as string[];
+              const migrated: ProgressState = {
+                ...DEFAULT_STATE,
+                completed: oldIds,
+                xp: oldIds.length * 100,
+              };
+              setState(migrated);
+              localStorage.setItem(PROGRESS_KEY, JSON.stringify(migrated));
+            } catch {
+              // ignore
+            }
           }
         }
-        setState(parsed);
-      } else {
-        // Migrate from v1 if exists
-        const oldRaw = localStorage.getItem("strikelab_completed_v1");
-        if (oldRaw) {
-          try {
-            const oldIds = JSON.parse(oldRaw) as string[];
-            const migrated: ProgressState = {
-              ...DEFAULT_STATE,
-              completed: oldIds,
-              xp: oldIds.length * 100,
-            };
-            setState(migrated);
-            localStorage.setItem(PROGRESS_KEY, JSON.stringify(migrated));
-          } catch {
-            // ignore
-          }
-        }
+      } catch {
+        // ignore
       }
-    } catch {
-      // ignore
-    }
-    setHydrated(true);
+      setHydrated(true);
+    };
+
+    const timeout = window.setTimeout(hydrateProgress, 0);
+    return () => window.clearTimeout(timeout);
   }, []);
 
   /**

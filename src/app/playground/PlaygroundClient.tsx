@@ -323,7 +323,9 @@ export default function PlaygroundClient() {
   }, [code, S, T, r, sigma]);
 
   // Keep ref in sync so the keydown listener can call the latest version
-  runRef.current = runAndPlot;
+  useEffect(() => {
+    runRef.current = runAndPlot;
+  }, [runAndPlot]);
 
   // Ctrl+Enter / Cmd+Enter global shortcut
   useEffect(() => {

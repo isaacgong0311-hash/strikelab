@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import Link from "next/link";
 import type { Lesson } from "@/lib/lessons";
 import { QUIZZES, type QuizQuestion } from "@/lib/quizzes";
@@ -192,7 +192,7 @@ export default function LessonClient({ lesson, prev, next }: Props) {
   const quizQuestions = QUIZZES[lesson.id] ?? [];
   const alreadyDone = hydrated && completed.has(lesson.id);
 
-  async function runCode() {
+  const runCode = useCallback(async () => {
     setStatus("running");
     setOutput("Running tests…");
 
@@ -214,9 +214,11 @@ export default function LessonClient({ lesson, prev, next }: Props) {
       setOutput(msg);
       setStatus("fail");
     }
-  }
+  }, [code, lesson.exercise.testFn, lesson.id, markComplete]);
 
-  runRef.current = runCode;
+  useEffect(() => {
+    runRef.current = runCode;
+  }, [runCode]);
 
   // Ctrl+Enter / Cmd+Enter shortcut
   useEffect(() => {
