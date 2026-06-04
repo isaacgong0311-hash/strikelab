@@ -1,9 +1,14 @@
 "use client";
 import Link from "next/link";
-import { LESSONS, COMING_SOON } from "@/lib/lessons";
+import { TRACKS } from "@/lib/curriculum";
 import { useProgress } from "@/lib/useProgress";
 
 const LESSON_TAGS: Record<string, string[]> = {
+  "fund-1": ["stocks", "ownership", "dividends", "market cap"],
+  "fund-2": ["order book", "bid-ask", "liquidity", "circuit breakers"],
+  "fund-3": ["diversification", "correlation", "asset allocation", "index funds"],
+  "fund-4": ["P/E ratio", "DCF", "valuation", "intrinsic value"],
+  "fund-5": ["Sharpe ratio", "volatility", "beta", "efficient frontier"],
   "1": ["calls & puts", "CBOE 1973", "intrinsic value", "moneyness"],
   "2": ["put-call parity", "no-arbitrage", "synthetic positions", "box spread"],
   "3": ["Black-Scholes 1973", "GBM", "risk-neutral pricing", "log-normal"],
@@ -15,13 +20,12 @@ const LESSON_TAGS: Record<string, string[]> = {
 
 export default function LessonsClient() {
   const { completed, hydrated } = useProgress();
-  const completedCount = LESSONS.filter((l) => completed.has(l.id)).length;
 
   return (
-    <div className="max-w-3xl mx-auto px-6 py-12">
+    <div className="max-w-6xl mx-auto px-6 py-16">
 
       {/* ── Header ──────────────────────────────────────────────────────── */}
-      <div className="mb-8">
+      <div className="mb-14">
         <div
           className="text-[10px] tracking-widest uppercase mb-2 opacity-50"
           style={{ fontFamily: "var(--font-mono)", color: "#888888" }}
@@ -29,143 +33,159 @@ export default function LessonsClient() {
           Curriculum
         </div>
         <h1
-          className="text-3xl font-semibold text-white mb-1.5"
+          className="text-4xl font-semibold text-white mb-3 leading-tight"
           style={{ fontFamily: "var(--font-serif)", fontStyle: "italic" }}
         >
-          Options Pricing Track
+          Choose your path
         </h1>
-        <p className="text-sm mb-4" style={{ color: "var(--muted2)" }}>
-          Seven in-depth lessons covering options theory, the Greeks, and quantitative intuition —
-          from Thales of Miletus to the Black-Scholes PDE. Each ends with a Python exercise that runs
-          in your browser. No setup required.
+        <p className="text-base leading-relaxed max-w-2xl" style={{ color: "var(--muted2)" }}>
+          Start with <strong>Investing Fundamentals</strong> to master stocks, markets, and diversification. 
+          Then dive into <strong>Options Pricing</strong> for advanced derivatives and quant trading intuition.
         </p>
-
-        {/* Progress bar + stats */}
-        <div className="flex items-center gap-4">
-          {hydrated && (
-            <>
-              <div
-                className="flex-1 h-1.5 rounded-full overflow-hidden"
-                style={{ background: "var(--border2)" }}
-              >
-                <div
-                  className="h-full rounded-full transition-all duration-500"
-                  style={{
-                    width: `${(completedCount / LESSONS.length) * 100}%`,
-                    background: "linear-gradient(90deg, #ffffff, #a3a3a3)",
-                  }}
-                />
-              </div>
-              <span
-                className="text-xs flex-shrink-0 tabular-nums"
-                style={{ color: "var(--muted2)", fontFamily: "var(--font-mono)" }}
-              >
-                {completedCount} / {LESSONS.length} complete
-              </span>
-            </>
-          )}
-          {!hydrated && (
-            <div
-              className="flex-1 h-1.5 rounded-full"
-              style={{ background: "var(--border2)" }}
-            />
-          )}
-        </div>
       </div>
 
-      {/* ── Active lessons ──────────────────────────────────────────────── */}
-      <div className="flex flex-col gap-2 mb-8">
-        {LESSONS.map((lesson, i) => {
-          const done = hydrated && completed.has(lesson.id);
-          const tags = LESSON_TAGS[lesson.id] ?? [];
+      {/* ── Tracks ──────────────────────────────────────────────────────── */}
+      <div className="space-y-16">
+        {TRACKS.map((track) => {
+          const trackLessons = track.lessons;
+          const completedCount = trackLessons.filter((l) => completed.has(l.id)).length;
+
           return (
-            <Link
-              key={lesson.id}
-              href={`/lesson/${lesson.id}`}
-              className="group flex items-start gap-4 p-4 rounded-xl border transition-all hover:border-white/30"
-              style={{
-                borderColor: done ? "rgba(34,197,94,0.25)" : "var(--border2)",
-                background: "var(--card)",
-              }}
-            >
-              {/* Number / check bubble */}
-              <div
-                className="flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold mt-0.5"
-                style={{
-                  background: done
-                    ? "rgba(34,197,94,0.12)"
-                    : "rgba(255,255,255,0.10)",
-                  color: done ? "#4ade80" : "var(--accent)",
-                  fontFamily: "var(--font-mono)",
-                }}
-              >
-                {done ? "✓" : String(i + 1).padStart(2, "0")}
+            <div key={track.id}>
+              {/* Track header */}
+              <div className="mb-6 pb-4 border-b" style={{ borderColor: "var(--border)" }}>
+                <div className="flex items-center gap-3 mb-2">
+                  <span className="text-3xl">{track.icon}</span>
+                  <div>
+                    <h2 className="text-2xl font-semibold text-white">{track.name}</h2>
+                    <p className="text-sm mt-1" style={{ color: "var(--muted2)" }}>
+                      {track.description}
+                    </p>
+                  </div>
+                </div>
+
+                {/* Track progress */}
+                {hydrated && (
+                  <div className="flex items-center gap-3 mt-4">
+                    <div
+                      className="flex-1 h-1 rounded-full overflow-hidden"
+                      style={{ background: "var(--border2)", maxWidth: "200px" }}
+                    >
+                      <div
+                        className="h-full rounded-full transition-all duration-500"
+                        style={{
+                          width: `${(completedCount / trackLessons.length) * 100}%`,
+                          background: `linear-gradient(90deg, ${track.color}dd, ${track.color}aa)`,
+                        }}
+                      />
+                    </div>
+                    <span
+                      className="text-xs flex-shrink-0 tabular-nums"
+                      style={{ color: "var(--muted2)", fontFamily: "var(--font-mono)" }}
+                    >
+                      {completedCount} / {trackLessons.length} complete
+                    </span>
+                  </div>
+                )}
               </div>
 
-              <div className="flex-1 min-w-0">
-                {/* Title row */}
-                <div className="flex items-center gap-2 mb-0.5 flex-wrap">
-                  <span
-                    className="font-semibold text-white group-hover:text-white transition-colors"
-                    style={{ fontFamily: "var(--font-serif)", fontStyle: "italic" }}
-                  >
-                    {lesson.title}
-                  </span>
-                  {done && (
-                    <span
-                      className="text-[10px] px-1.5 py-0.5 rounded"
+              {/* Lessons grid */}
+              <div className="flex flex-col gap-2">
+                {trackLessons.map((lesson, i) => {
+                  const done = hydrated && completed.has(lesson.id);
+                  const tags = LESSON_TAGS[lesson.id] ?? [];
+                  return (
+                    <Link
+                      key={lesson.id}
+                      href={`/lesson/${lesson.id}`}
+                      className="group flex items-start gap-4 p-4 rounded-xl border transition-all hover:border-white/30"
                       style={{
-                        background: "rgba(34,197,94,0.10)",
-                        color: "#4ade80",
-                        fontFamily: "var(--font-mono)",
+                        borderColor: done ? "rgba(34,197,94,0.25)" : "var(--border2)",
+                        background: "var(--card)",
                       }}
                     >
-                      done
-                    </span>
-                  )}
-                </div>
+                      {/* Number / check bubble */}
+                      <div
+                        className="flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold mt-0.5"
+                        style={{
+                          background: done
+                            ? "rgba(34,197,94,0.12)"
+                            : `${track.color}15`,
+                          color: done ? "#4ade80" : track.color,
+                          fontFamily: "var(--font-mono)",
+                        }}
+                      >
+                        {done ? "✓" : String(i + 1).padStart(2, "0")}
+                      </div>
 
-                {/* Subtitle */}
-                <div className="text-xs mb-1.5" style={{ color: "var(--muted2)" }}>
-                  {lesson.subtitle}
-                </div>
+                      <div className="flex-1 min-w-0">
+                        {/* Title row */}
+                        <div className="flex items-center gap-2 mb-0.5 flex-wrap">
+                          <span
+                            className="font-semibold text-white group-hover:text-white transition-colors"
+                            style={{ fontFamily: "var(--font-serif)", fontStyle: "italic" }}
+                          >
+                            {lesson.title}
+                          </span>
+                          {done && (
+                            <span
+                              className="text-[10px] px-1.5 py-0.5 rounded"
+                              style={{
+                                background: "rgba(34,197,94,0.10)",
+                                color: "#4ade80",
+                                fontFamily: "var(--font-mono)",
+                              }}
+                            >
+                              done
+                            </span>
+                          )}
+                        </div>
 
-                {/* Topic tags */}
-                <div className="flex flex-wrap gap-1.5">
-                  {tags.map((tag) => (
-                    <span
-                      key={tag}
-                      className="text-[10px] px-2 py-0.5 rounded border"
-                      style={{
-                        borderColor: "var(--border2)",
-                        color: "var(--muted2)",
-                        background: "rgba(255,255,255,0.05)",
-                        fontFamily: "var(--font-mono)",
-                      }}
-                    >
-                      {tag}
-                    </span>
-                  ))}
-                </div>
+                        {/* Subtitle */}
+                        <div className="text-xs mb-1.5" style={{ color: "var(--muted2)" }}>
+                          {lesson.subtitle}
+                        </div>
+
+                        {/* Topic tags */}
+                        <div className="flex flex-wrap gap-1.5">
+                          {tags.map((tag) => (
+                            <span
+                              key={tag}
+                              className="text-[10px] px-2 py-0.5 rounded border"
+                              style={{
+                                borderColor: "var(--border2)",
+                                color: "var(--muted2)",
+                                background: "rgba(255,255,255,0.05)",
+                                fontFamily: "var(--font-mono)",
+                              }}
+                            >
+                              {tag}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+
+                      <div className="flex items-center gap-2 flex-shrink-0 mt-0.5">
+                        <span
+                          className="text-[11px] tabular-nums"
+                          style={{ color: "var(--muted)", fontFamily: "var(--font-mono)" }}
+                        >
+                          {lesson.duration}
+                        </span>
+                        <span style={{ color: "var(--muted)", fontSize: "0.8rem" }}>›</span>
+                      </div>
+                    </Link>
+                  );
+                })}
               </div>
-
-              <div className="flex items-center gap-2 flex-shrink-0 mt-0.5">
-                <span
-                  className="text-[11px] tabular-nums"
-                  style={{ color: "var(--muted)", fontFamily: "var(--font-mono)" }}
-                >
-                  {lesson.duration}
-                </span>
-                <span style={{ color: "var(--muted)", fontSize: "0.8rem" }}>›</span>
-              </div>
-            </Link>
+            </div>
           );
         })}
       </div>
 
       {/* ── Playground callout ──────────────────────────────────────────── */}
       <div
-        className="mb-8 px-4 py-3 rounded-xl border text-sm flex items-start gap-3"
+        className="mt-16 px-4 py-3 rounded-xl border text-sm flex items-start gap-3"
         style={{
           borderColor: "rgba(255,255,255,0.2)",
           background: "rgba(255,255,255,0.04)",
@@ -174,7 +194,7 @@ export default function LessonsClient() {
       >
         <span className="text-base flex-shrink-0 leading-none mt-0.5">⚡</span>
         <span>
-          After the lessons, head to the{" "}
+          After completing the <strong>Options Pricing</strong> track, head to the{" "}
           <Link
             href="/playground"
             className="underline underline-offset-2 hover:text-white transition-colors font-semibold"
@@ -183,71 +203,6 @@ export default function LessonsClient() {
           </Link>{" "}
           to implement all five Greeks in the full pricing engine and watch the curves update live.
         </span>
-      </div>
-
-      {/* ── Coming soon ─────────────────────────────────────────────────── */}
-      <div>
-        <div className="flex items-center gap-3 mb-3">
-          <div
-            className="text-[10px] tracking-widest uppercase opacity-40"
-            style={{ fontFamily: "var(--font-mono)", color: "#888888" }}
-          >
-            Coming soon
-          </div>
-          <div className="flex-1 h-px" style={{ background: "var(--border)" }} />
-        </div>
-
-        <div className="flex flex-col gap-1.5">
-          {COMING_SOON.map((lesson) => (
-            <div
-              key={lesson.id}
-              className="flex items-center gap-4 px-4 py-3 rounded-xl border opacity-45 cursor-not-allowed select-none"
-              style={{ borderColor: "var(--border)", background: "var(--card)" }}
-            >
-              <div
-                className="flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold"
-                style={{
-                  background: "rgba(100,116,139,0.10)",
-                  color: "#64748b",
-                  fontFamily: "var(--font-mono)",
-                }}
-              >
-                {lesson.symbol}
-              </div>
-
-              <div className="flex-1 min-w-0">
-                <div
-                  className="text-sm font-semibold text-white"
-                  style={{ fontFamily: "var(--font-serif)", fontStyle: "italic" }}
-                >
-                  {lesson.title}
-                </div>
-                <div className="text-xs mt-0.5" style={{ color: "var(--muted)" }}>
-                  {lesson.subtitle}
-                </div>
-              </div>
-
-              <div className="flex items-center gap-2 flex-shrink-0">
-                <span
-                  className="text-[10px] px-2 py-0.5 rounded border"
-                  style={{
-                    borderColor: "var(--border)",
-                    color: "#475569",
-                    fontFamily: "var(--font-mono)",
-                  }}
-                >
-                  soon
-                </span>
-                <span
-                  className="text-[11px] tabular-nums"
-                  style={{ color: "#475569", fontFamily: "var(--font-mono)" }}
-                >
-                  {lesson.duration}
-                </span>
-              </div>
-            </div>
-          ))}
-        </div>
       </div>
     </div>
   );
