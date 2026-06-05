@@ -2487,6 +2487,7 @@ h1, h2, h3, h4 {
   position: absolute; inset: 0;
   display: flex; flex-direction: column;
   align-items: center; justify-content: center;
+  pointer-events: none;
 }
 .db-ring-pct {
   font-family: var(--font-display), Georgia, serif;

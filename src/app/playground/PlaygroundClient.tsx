@@ -304,7 +304,9 @@ export default function PlaygroundClient() {
                 <span>{pyodideReady ? "Python 3.11" : "Loading Python…"}</span>
               </div>
               <button onClick={runAndPlot} disabled={status === "running" || !pyodideReady} className="pg-run-btn">
-                {status === "running" ? (
+                {!pyodideReady ? (
+                  <><span className="pg-spin">◌</span> Loading Python…</>
+                ) : status === "running" ? (
                   <><span className="pg-spin">◌</span> Running…</>
                 ) : (
                   <><span>▶</span> Run <kbd className="pg-kbd">⌘↵</kbd></>
