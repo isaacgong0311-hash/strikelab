@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 
 export const metadata: Metadata = {
   title: "About — StrikeLab",
@@ -44,7 +45,7 @@ export default function AboutPage() {
     <div className="max-w-4xl mx-auto px-6 py-14">
 
       {/* Hero */}
-      <div className="mb-14">
+      <div className="v2-page-head mb-14" data-v2-head style={{ padding: 0, border: 0 }}>
         <div
           className="text-[10px] tracking-widest uppercase mb-2 opacity-50"
           style={{ fontFamily: "var(--font-mono)", color: "#888888" }}
@@ -52,15 +53,12 @@ export default function AboutPage() {
           About
         </div>
         <h1
-          className="text-4xl font-semibold text-white mb-5 leading-tight"
-          style={{ fontFamily: "var(--font-serif)", fontStyle: "italic" }}
+          className="text-4xl font-semibold text-[#16201c] mb-5 leading-tight"
+          style={{ fontFamily: "var(--font-display)", color: "var(--ink)" }}
         >
           Built by a high schooler<br />
           for{" "}
-          <span
-            className="not-italic font-bold bg-clip-text text-transparent"
-            style={{ backgroundImage: "linear-gradient(135deg, #cccccc, #a3a3a3)" }}
-          >
+          <span className="not-italic font-bold text-[#16201c]">
             high schoolers.
           </span>
         </h1>
@@ -73,7 +71,7 @@ export default function AboutPage() {
 
       {/* Founder card */}
       <div
-        className="mb-14 rounded-2xl border p-6 grid grid-cols-1 md:grid-cols-[1fr_2fr] gap-6"
+        className="v2-rise mb-14 rounded-2xl border p-6 grid grid-cols-1 md:grid-cols-[1fr_2fr] gap-6"
         style={{ borderColor: "var(--border2)", background: "var(--card)" }}
       >
         {/* Photo placeholder */}
@@ -84,7 +82,7 @@ export default function AboutPage() {
             borderColor: "var(--border2)",
             fontFamily: "var(--font-serif)",
             fontStyle: "italic",
-            color: "var(--accent2)",
+            color: "var(--grass)",
           }}
         >
           IG
@@ -97,8 +95,8 @@ export default function AboutPage() {
             Founder
           </div>
           <h2
-            className="text-2xl font-semibold text-white mb-1"
-            style={{ fontFamily: "var(--font-serif)", fontStyle: "italic" }}
+            className="text-2xl font-semibold text-[#16201c] mb-1"
+            style={{ fontFamily: "var(--font-display)", color: "var(--ink)" }}
           >
             Isaac Gong
           </h2>
@@ -120,7 +118,7 @@ export default function AboutPage() {
       </div>
 
       {/* Mission */}
-      <div className="mb-14">
+      <div className="v2-rise mb-14">
         <div
           className="text-[10px] tracking-widest uppercase mb-2 opacity-50"
           style={{ fontFamily: "var(--font-mono)", color: "#888888" }}
@@ -128,8 +126,8 @@ export default function AboutPage() {
           Mission
         </div>
         <h2
-          className="text-2xl font-semibold text-white mb-3"
-          style={{ fontFamily: "var(--font-serif)", fontStyle: "italic" }}
+          className="text-2xl font-semibold text-[#16201c] mb-3"
+          style={{ fontFamily: "var(--font-display)", color: "var(--ink)" }}
         >
           Quant finance shouldn&rsquo;t require the right zip code.
         </h2>
@@ -150,26 +148,26 @@ export default function AboutPage() {
           Principles
         </div>
         <h2
-          className="text-xl font-semibold text-white mb-5"
-          style={{ fontFamily: "var(--font-serif)", fontStyle: "italic" }}
+          className="text-xl font-semibold text-[#16201c] mb-5"
+          style={{ fontFamily: "var(--font-display)", color: "var(--ink)" }}
         >
           How we build
         </h2>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4" data-v2-stagger>
           {VALUES.map((v) => (
             <div
               key={v.title}
-              className="p-5 rounded-xl border"
+              className="v2-rise p-5 rounded-xl border transition-colors hover:border-white/20"
               style={{ borderColor: "var(--border2)", background: "var(--card)" }}
             >
               <div
                 className="text-2xl mb-3 leading-none"
-                style={{ fontFamily: "var(--font-mono)", color: "var(--accent2)" }}
+                style={{ fontFamily: "var(--font-mono)", color: "var(--grass)" }}
               >
                 {v.icon}
               </div>
               <h3
-                className="font-semibold text-white mb-2"
+                className="font-semibold text-[#16201c] mb-2"
                 style={{ fontFamily: "var(--font-serif)" }}
               >
                 {v.title}
@@ -191,12 +189,12 @@ export default function AboutPage() {
           Timeline
         </div>
         <h2
-          className="text-xl font-semibold text-white mb-5"
-          style={{ fontFamily: "var(--font-serif)", fontStyle: "italic" }}
+          className="text-xl font-semibold text-[#16201c] mb-5"
+          style={{ fontFamily: "var(--font-display)", color: "var(--ink)" }}
         >
           What we&rsquo;ve shipped (and what&rsquo;s next)
         </h2>
-        <div className="flex flex-col gap-0 relative">
+        <div className="flex flex-col gap-0 relative" data-v2-stagger>
           <div
             className="absolute left-[14px] top-2 bottom-2 w-px"
             style={{ background: "var(--border2)" }}
@@ -205,10 +203,10 @@ export default function AboutPage() {
             const color =
               t.state === "done"     ? "#22c55e" :
               t.state === "current"  ? "#a3a3a3" :
-              t.state === "next"     ? "#ffffff" :
+              t.state === "next"     ? "#2f6df0" :
                                        "#475569";
             return (
-              <div key={t.date} className="flex items-start gap-4 py-2.5">
+              <div key={t.date} className="v2-rise flex items-start gap-4 py-2.5">
                 <div
                   className="flex-shrink-0 w-7 h-7 rounded-full flex items-center justify-center text-xs relative z-10"
                   style={{
@@ -227,7 +225,7 @@ export default function AboutPage() {
                   >
                     {t.date}
                   </div>
-                  <div className="text-sm" style={{ color: "#cbd5e1" }}>
+                  <div className="text-sm" style={{ color: "var(--ink-2)" }}>
                     {t.event}
                   </div>
                 </div>
@@ -238,7 +236,7 @@ export default function AboutPage() {
       </div>
 
       {/* Press */}
-      <div className="mb-14">
+      <div className="v2-rise mb-14">
         <div
           className="text-[10px] tracking-widest uppercase mb-3 opacity-50"
           style={{ fontFamily: "var(--font-mono)", color: "#888888" }}
@@ -265,12 +263,12 @@ export default function AboutPage() {
 
       {/* Contact */}
       <div
-        className="rounded-2xl border p-6 text-center"
+        className="v2-rise rounded-2xl border p-6 text-center"
         style={{ borderColor: "var(--border2)", background: "var(--bg2)" }}
       >
         <h2
-          className="text-xl font-semibold text-white mb-2"
-          style={{ fontFamily: "var(--font-serif)", fontStyle: "italic" }}
+          className="text-xl font-semibold text-[#16201c] mb-2"
+          style={{ fontFamily: "var(--font-display)", color: "var(--ink)" }}
         >
           Want to talk?
         </h2>
@@ -280,8 +278,8 @@ export default function AboutPage() {
         <div className="flex gap-3 justify-center flex-wrap">
           <a
             href="mailto:hello@strikelab.app"
-            className="px-5 py-2 rounded-lg text-sm font-semibold text-white transition-opacity hover:opacity-90"
-            style={{ background: "linear-gradient(135deg, #ffffff, #cccccc)" }}
+            className="px-5 py-2 rounded-lg text-sm font-medium border transition-colors hover:border-white/40"
+            style={{ borderColor: "var(--border2)", color: "var(--fg)", background: "var(--card)" }}
           >
             hello@strikelab.app
           </a>

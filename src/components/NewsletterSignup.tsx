@@ -48,8 +48,7 @@ export default function NewsletterSignup() {
       className="rounded-2xl border p-6 md:p-8"
       style={{
         borderColor: "var(--border2)",
-        background:
-          "linear-gradient(135deg, rgba(255,255,255,0.06) 0%, rgba(255,255,255,0.04) 100%)",
+        background: "var(--card)",
       }}
     >
       <div className="grid grid-cols-1 md:grid-cols-[1.2fr_1fr] gap-6 items-center">
@@ -61,8 +60,8 @@ export default function NewsletterSignup() {
             Newsletter
           </div>
           <h3
-            className="text-xl font-semibold text-white mb-2"
-            style={{ fontFamily: "var(--font-serif)", fontStyle: "italic" }}
+            className="text-xl font-semibold mb-2"
+            style={{ fontFamily: "var(--font-display)", color: "var(--ink)" }}
           >
             One short email per month.
           </h3>
@@ -95,8 +94,8 @@ export default function NewsletterSignup() {
                 className="flex-1 px-4 py-2.5 rounded-lg border text-sm transition-colors focus:outline-none focus:border-white/60"
                 style={{
                   borderColor: "var(--border2)",
-                  background: "var(--card)",
-                  color: "#fff",
+                  background: "var(--paper-3)",
+                  color: "var(--ink)",
                   fontFamily: "var(--font-sans)",
                 }}
               />
@@ -104,7 +103,7 @@ export default function NewsletterSignup() {
                 type="submit"
                 disabled={state === "submitting"}
                 className="px-5 py-2.5 rounded-lg text-sm font-semibold text-white transition-opacity hover:opacity-90 disabled:opacity-50"
-                style={{ background: "linear-gradient(135deg, #ffffff, #cccccc)" }}
+                style={{ background: "var(--grass)", color: "#ffffff", borderRadius: "12px", boxShadow: "0 3px 0 var(--grass-d)" }}
               >
                 {state === "submitting" ? "Subscribing…" : "Subscribe →"}
               </button>

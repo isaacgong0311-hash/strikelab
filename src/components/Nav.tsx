@@ -3,13 +3,14 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useProgress } from "@/lib/useProgress";
 
-const PRIMARY = [
+const PRIMARY: { href: string; label: string; pro?: boolean }[] = [
   { href: "/dashboard",   label: "Dashboard" },
   { href: "/lessons",     label: "Lessons" },
   { href: "/playground",  label: "Playground" },
+  { href: "/challenges",  label: "Challenges", pro: true },
 ];
 
-const SECONDARY = [
+const SECONDARY: { href: string; label: string }[] = [
   { href: "/pricing",  label: "Pricing" },
   { href: "/about",    label: "About" },
   { href: "/roadmap",  label: "Roadmap" },
@@ -18,6 +19,7 @@ const SECONDARY = [
 export default function Nav() {
   const path = usePathname();
   const isActive = (href: string) => path === href || path.startsWith(href + "/");
+  const isHome = path === "/";
   const { xp, streak, hydrated } = useProgress();
 
   return (
@@ -26,7 +28,7 @@ export default function Nav() {
       <div
         className="text-center text-[11px] py-1.5 border-b relative overflow-hidden"
         style={{
-          background: "rgba(255,255,255,0.02)",
+          background: "var(--bg2)",
           borderColor: "var(--border)",
           color: "var(--fg-mute)",
           fontFamily: "var(--font-mono)",
@@ -50,7 +52,7 @@ export default function Nav() {
         className="flex items-center justify-between px-6 border-b sticky top-0 z-50"
         style={{
           borderColor: "var(--border)",
-          background: "rgba(0,0,0,0.7)",
+          background: "var(--nav-bg)",
           backdropFilter: "blur(14px)",
           WebkitBackdropFilter: "blur(14px)",
           minHeight: "64px",
@@ -78,14 +80,14 @@ export default function Nav() {
               SL
             </span>
             <span
-              style={{ fontFamily: "var(--font-serif)", fontStyle: "italic", color: "var(--fg)" }}
+              style={{ fontFamily: "var(--font-display)", fontStyle: "italic", color: "var(--fg)", fontWeight: 600 }}
             >
               Strike<span style={{ fontStyle: "normal", fontWeight: 600 }}>Lab</span>
             </span>
           </Link>
 
           <div className="hidden md:flex items-center gap-1 h-full">
-            {[...PRIMARY, ...SECONDARY].map((l, i) => {
+            {([...PRIMARY, ...SECONDARY] as { href: string; label: string; pro?: boolean }[]).map((l, i) => {
               const active = isActive(l.href);
               const isFirstSecondary = i === PRIMARY.length;
               return (
@@ -95,7 +97,7 @@ export default function Nav() {
                   )}
                   <Link
                     href={l.href}
-                    className="text-[11px] px-3 py-1.5 transition-colors uppercase"
+                    className="text-[11px] px-3 py-1.5 transition-colors uppercase inline-flex items-center gap-1.5"
                     style={{
                       color: active ? "var(--fg)" : "var(--fg-mute)",
                       fontWeight: active ? 500 : 400,
@@ -106,6 +108,13 @@ export default function Nav() {
                     }}
                   >
                     {l.label}
+                    {"pro" in l && l.pro && (
+                      <span style={{
+                        fontSize: 8, letterSpacing: "0.06em", padding: "1px 5px",
+                        borderRadius: 999, background: "var(--amber-tint)",
+                        color: "var(--amber)", fontWeight: 700, textTransform: "uppercase",
+                      }}>PRO</span>
+                    )}
                   </Link>
                 </span>
               );
@@ -128,17 +137,22 @@ export default function Nav() {
             </Link>
           )}
 
-          {/* XP indicator */}
-          {hydrated && xp > 0 && (
+          {/* XP indicator — always visible (Duolingo app feel) */}
+          {hydrated && (
             <Link
               href="/dashboard"
               className="hidden sm:flex sl-nav-xp"
               title={`${xp} XP total`}
             >
-              <span style={{ color: "#fbbf24" }}>✦</span>
+              <span style={{ color: "#e8a317" }}>✦</span>
               <span>{xp} XP</span>
             </Link>
           )}
+
+          {/* Profile avatar */}
+          <Link href="/dashboard" className="sl-nav-avatar" title="Your profile">
+            I
+          </Link>
 
           {/* GitHub */}
           <a
@@ -170,10 +184,16 @@ export default function Nav() {
             Sign in
           </Link>
 
-          <Link href="/sign-up" className="v2-btn sm">
-            <span className="v2-label">Start free</span>
-            <span className="v2-arr">→</span>
-          </Link>
+          {isHome ? (
+            <Link href="/sign-up" className="sk-nav-cta">
+              Start free <span>→</span>
+            </Link>
+          ) : (
+            <Link href="/sign-up" className="v2-btn sm">
+              <span className="v2-label">Start free</span>
+              <span className="v2-arr">→</span>
+            </Link>
+          )}
         </div>
       </nav>
     </>

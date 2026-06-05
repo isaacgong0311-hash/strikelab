@@ -10,7 +10,7 @@ const ROADMAP = [
   {
     quarter: "Q2 2026",
     label: "Shipping now",
-    color: "#a3a3a3",
+    color: "#16a34a",
     items: [
       { title: "Lessons 8–10 shipped ✓", state: "in-progress", desc: "Implied Volatility (Newton-Raphson IV solver), Option Strategies (spreads, straddles, iron condor), and Binomial Trees (CRR, American options) all live." },
       { title: "Mobile-responsive layout", state: "in-progress", desc: "All lessons + playground fully usable on phone." },
@@ -21,7 +21,7 @@ const ROADMAP = [
   {
     quarter: "Q3 2026",
     label: "Next up",
-    color: "#ffffff",
+    color: "#2f6df0",
     items: [
       { title: "Paper-trading sandbox", state: "planned", desc: "Real (delayed) option chains via Polygon.io free tier." },
       { title: "Weekly coding challenges", state: "planned", desc: "Time-boxed problems scored on correctness + elegance — quant interview prep, gamified." },
@@ -32,7 +32,7 @@ const ROADMAP = [
   {
     quarter: "Q4 2026",
     label: "Later this year",
-    color: "#a78bfa",
+    color: "#848484",
     items: [
       { title: "Certificates of completion", state: "planned", desc: "Shareable on LinkedIn. Verifiable on-chain (optional)." },
       { title: "Teacher dashboard (School plan)", state: "planned", desc: "Class progress, assignment grading, curriculum alignment." },
@@ -43,7 +43,7 @@ const ROADMAP = [
   {
     quarter: "2027",
     label: "Long term",
-    color: "#fbbf24",
+    color: "#646464",
     items: [
       { title: "Live equity sandbox", state: "exploring", desc: "Multi-asset support — futures, FX, fixed income basics." },
       { title: "Quant interview prep track", state: "exploring", desc: "Brain teasers, probability puzzles, market-making intuition drills." },
@@ -54,9 +54,9 @@ const ROADMAP = [
 ];
 
 const STATE_STYLES = {
-  "in-progress": { label: "In progress", color: "#a3a3a3" },
-  "planned":     { label: "Planned",     color: "#475569" },
-  "exploring":   { label: "Exploring",   color: "#7c3aed" },
+  "in-progress": { label: "In progress", color: "#16a34a" },
+  "planned":     { label: "Planned",     color: "#646464" },
+  "exploring":   { label: "Exploring",   color: "#848484" },
 };
 
 export default function RoadmapPage() {
@@ -67,13 +67,13 @@ export default function RoadmapPage() {
       <div className="mb-10">
         <div
           className="text-[10px] tracking-widest uppercase mb-2 opacity-50"
-          style={{ fontFamily: "var(--font-mono)", color: "#888888" }}
+          style={{ fontFamily: "var(--font-mono)", color: "var(--ink-3)" }}
         >
           Roadmap
         </div>
         <h1
-          className="text-4xl font-semibold text-white mb-3 leading-tight"
-          style={{ fontFamily: "var(--font-serif)", fontStyle: "italic" }}
+          className="text-4xl font-semibold mb-3 leading-tight"
+          style={{ fontFamily: "var(--font-display)", color: "var(--ink)" }}
         >
           What we&rsquo;re building next
         </h1>
@@ -100,7 +100,7 @@ export default function RoadmapPage() {
           <div key={k} className="flex items-center gap-1.5">
             <span
               className="w-2 h-2 rounded-full"
-              style={{ background: v.color, boxShadow: `0 0 6px ${v.color}` }}
+              style={{ background: v.color }}
             />
             <span
               className="text-xs"
@@ -146,8 +146,8 @@ export default function RoadmapPage() {
                   >
                     <div className="flex items-start justify-between gap-3 mb-1.5">
                       <h3
-                        className="text-sm font-semibold text-white"
-                        style={{ fontFamily: "var(--font-serif)", fontStyle: "italic" }}
+                        className="text-sm font-semibold"
+                        style={{ fontFamily: "var(--font-display)", color: "var(--ink)" }}
                       >
                         {item.title}
                       </h3>
@@ -180,7 +180,7 @@ export default function RoadmapPage() {
       >
         <h2
           className="text-lg font-semibold text-white mb-2"
-          style={{ fontFamily: "var(--font-serif)", fontStyle: "italic" }}
+          style={{ fontFamily: "var(--font-display)", color: "var(--ink)" }}
         >
           Have a feature request?
         </h2>
@@ -192,8 +192,8 @@ export default function RoadmapPage() {
             href="https://github.com/isaacgong0311-hash/strikelab/issues/new"
             target="_blank"
             rel="noopener noreferrer"
-            className="px-5 py-2 rounded-lg text-sm font-semibold text-white transition-opacity hover:opacity-90"
-            style={{ background: "linear-gradient(135deg, #ffffff, #cccccc)" }}
+            className="px-5 py-2 text-sm font-medium transition-opacity hover:opacity-80"
+            style={{ background: "var(--grass)", color: "#ffffff", borderRadius: "12px", boxShadow: "0 3px 0 var(--grass-d)", fontFamily: "var(--font-mono)" }}
           >
             Request feature →
           </a>

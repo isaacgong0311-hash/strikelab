@@ -85,15 +85,15 @@ export default function GreekChart({ data, color, errorMsg }: Props) {
         />
         <Tooltip
           contentStyle={{
-            background: "#0d1117",
-            border: `1px solid ${color}40`,
-            borderRadius: 8,
+            background: "#191919",
+            border: "1px solid #282828",
+            borderRadius: 4,
             fontSize: 11,
-            color: "#e2e8f0",
+            color: "#ebebeb",
             fontFamily: "monospace",
             padding: "6px 10px",
           }}
-          cursor={{ stroke: color, strokeWidth: 1, strokeDasharray: "3 3", strokeOpacity: 0.4 }}
+          cursor={{ stroke: "rgba(255,255,255,0.15)", strokeWidth: 1, strokeDasharray: "3 3" }}
           formatter={(v) => [typeof v === "number" ? v.toFixed(4) : v, "value"]}
           labelFormatter={(l) => `K = ${l}`}
         />
@@ -105,7 +105,7 @@ export default function GreekChart({ data, color, errorMsg }: Props) {
           strokeWidth={2}
           dot={false}
           isAnimationActive={false}
-          style={{ filter: `drop-shadow(0 0 4px ${color}60)` }}
+          style={{  }}
         />
       </LineChart>
     </ResponsiveContainer>

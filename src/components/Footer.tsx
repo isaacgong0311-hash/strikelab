@@ -51,7 +51,7 @@ export default function Footer() {
             >
               SL
             </span>
-            <span style={{ fontFamily: "var(--font-serif)", fontStyle: "italic", color: "var(--fg)", fontSize: "1.1rem" }}>
+            <span style={{ fontFamily: "var(--font-display)", fontStyle: "italic", color: "var(--fg)", fontSize: "1.15rem", fontWeight: 600 }}>
               Strike<span style={{ fontStyle: "normal", fontWeight: 600 }}>Lab</span>
             </span>
           </div>

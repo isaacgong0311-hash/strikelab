@@ -1,11 +1,12 @@
-import type { Metadata } from "next";
-import { Geist, EB_Garamond, JetBrains_Mono } from "next/font/google";
+import type { Metadata, Viewport } from "next";
+import { Inter, EB_Garamond, JetBrains_Mono, Fraunces, Hanken_Grotesk } from "next/font/google";
 import "./globals.css";
 import Nav from "@/components/Nav";
 import Footer from "@/components/Footer";
 import V2Animator from "@/components/V2Animator";
+import { Analytics } from "@vercel/analytics/react";
 
-const geist = Geist({ variable: "--font-sans", subsets: ["latin"] });
+const inter = Inter({ variable: "--font-sans", subsets: ["latin"] });
 
 const garamond = EB_Garamond({
   variable: "--font-serif",
@@ -20,17 +21,43 @@ const jetbrains = JetBrains_Mono({
   weight: ["300", "400", "500", "600", "700"],
 });
 
+// Landing-page identity: warm display serif + friendly UI sans
+const fraunces = Fraunces({
+  variable: "--font-display",
+  subsets: ["latin"],
+  style: ["normal", "italic"],
+});
+
+const hanken = Hanken_Grotesk({
+  variable: "--font-ui",
+  subsets: ["latin"],
+});
+
 export const metadata: Metadata = {
   title: "StrikeLab — Options Pricing for High Schoolers",
   description:
     "Learn Black-Scholes, the Greeks, and options pricing by building a real pricing engine in your browser.",
+  applicationName: "StrikeLab",
+  manifest: "/manifest.webmanifest",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "default",
+    title: "StrikeLab",
+  },
+};
+
+export const viewport: Viewport = {
+  themeColor: "#16a34a",
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html
       lang="en"
-      className={`${geist.variable} ${garamond.variable} ${jetbrains.variable} h-full`}
+      className={`${inter.variable} ${garamond.variable} ${jetbrains.variable} ${fraunces.variable} ${hanken.variable} h-full`}
     >
       <body
         className="min-h-screen flex flex-col"
@@ -44,6 +71,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <Nav />
         <main className="flex-1 relative" style={{ zIndex: 1 }}>{children}</main>
         <Footer />
+        <Analytics />
       </body>
     </html>
   );

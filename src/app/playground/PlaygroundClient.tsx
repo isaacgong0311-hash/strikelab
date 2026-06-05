@@ -157,7 +157,7 @@ def compute_vega(S, K, T, r, sigma):
     return S * _norm_pdf(d1) * math.sqrt(T) / 100
 `;
 
-const SERIES_COLORS = ["#22c55e", "#60a5fa", "#f59e0b", "#a855f7"];
+const SERIES_COLORS = ["#2f6df0", "#16a34a", "#c9870c", "#7c4dd4"];
 
 type GreekName = "delta" | "gamma" | "theta" | "vega";
 const GREEKS: { key: GreekName; label: string; sym: string; fn: string; formula: string; hint: string }[] = [
@@ -323,9 +323,7 @@ export default function PlaygroundClient() {
   }, [code, S, T, r, sigma]);
 
   // Keep ref in sync so the keydown listener can call the latest version
-  useEffect(() => {
-    runRef.current = runAndPlot;
-  }, [runAndPlot]);
+  runRef.current = runAndPlot;
 
   // Ctrl+Enter / Cmd+Enter global shortcut
   useEffect(() => {
@@ -346,7 +344,10 @@ export default function PlaygroundClient() {
     <div className="flex h-[calc(100vh-57px)] overflow-hidden" style={{ background: "var(--bg)" }}>
 
       {/* ── LEFT PANEL ── */}
-      <div className="flex flex-col w-[52%] border-r" style={{ borderColor: "var(--border)" }}>
+      <div
+        className="flex flex-col w-[52%] border-r"
+        style={{ borderColor: "var(--border)", animation: "pg-slide-left 0.4s cubic-bezier(.2,.7,.3,1) both" }}
+      >
 
         {/* IDE Toolbar */}
         <div
@@ -360,15 +361,14 @@ export default function PlaygroundClient() {
           {/* File tab */}
           <div className="flex items-center gap-3">
             <div
-              className="flex items-center gap-2 px-3 py-1.5 rounded-t-md border-b-2 text-xs"
+              className="flex items-center gap-2 px-3 py-1.5 border-b text-xs"
               style={{
-                borderBottomColor: "#22c55e",
-                color: "#e2e8f0",
+                borderBottomColor: "var(--grass)",
+                color: "var(--ink)",
                 fontFamily: "var(--font-mono)",
-                background: "rgba(34,197,94,0.06)",
+                background: "transparent",
               }}
             >
-              <span style={{ color: "#4ade80", fontSize: 10 }}>●</span>
               pricing_engine.py
             </div>
 
@@ -378,7 +378,7 @@ export default function PlaygroundClient() {
                 className="text-[10px] px-2 py-0.5 rounded-full"
                 style={{
                   background: implemented === total ? "rgba(34,197,94,0.15)" : "rgba(251,191,36,0.12)",
-                  color: implemented === total ? "#4ade80" : "#fbbf24",
+                  color: implemented === total ? "var(--grass)" : "#fbbf24",
                   fontFamily: "var(--font-mono)",
                   border: `1px solid ${implemented === total ? "rgba(34,197,94,0.3)" : "rgba(251,191,36,0.3)"}`,
                 }}
@@ -391,20 +391,15 @@ export default function PlaygroundClient() {
           <div className="flex items-center gap-2">
             {/* Python status pill */}
             <div
-              className="flex items-center gap-1.5 text-[10px] px-2 py-1 rounded-full"
+              className="flex items-center gap-1.5 text-[10px] px-2 py-1"
               style={{
-                background: pyodideReady ? "rgba(34,197,94,0.1)" : "rgba(100,116,139,0.15)",
-                border: `1px solid ${pyodideReady ? "rgba(34,197,94,0.3)" : "rgba(100,116,139,0.2)"}`,
-                color: pyodideReady ? "#4ade80" : "#64748b",
+                color: pyodideReady ? "var(--ink-2)" : "var(--ink-3)",
                 fontFamily: "var(--font-mono)",
               }}
             >
               <span
                 className="w-1.5 h-1.5 rounded-full"
-                style={{
-                  background: pyodideReady ? "#22c55e" : "#64748b",
-                  boxShadow: pyodideReady ? "0 0 6px #22c55e" : "none",
-                }}
+                style={{ background: pyodideReady ? "var(--check)" : "var(--muted)" }}
               />
               {pyodideReady ? "Python ready" : "Loading…"}
             </div>
@@ -413,17 +408,14 @@ export default function PlaygroundClient() {
             <button
               onClick={runAndPlot}
               disabled={status === "running" || !pyodideReady}
-              className="flex items-center gap-2 px-4 py-1.5 rounded-md text-sm font-bold transition-all disabled:opacity-40"
+              className="flex items-center gap-2 px-4 py-1.5 text-sm font-medium transition-all disabled:opacity-30"
               style={{
-                background: status === "running"
-                  ? "rgba(34,197,94,0.15)"
-                  : "linear-gradient(135deg, #16a34a, #22c55e)",
-                color: status === "running" ? "#4ade80" : "#000",
+                background: "var(--grass)",
+                color: "#ffffff",
                 fontFamily: "var(--font-mono)",
-                boxShadow: status === "running" || !pyodideReady
-                  ? "none"
-                  : "0 0 12px rgba(34,197,94,0.4), 0 2px 8px rgba(34,197,94,0.2)",
-                border: "1px solid rgba(34,197,94,0.5)",
+                border: "1px solid transparent",
+                borderRadius: "10px",
+                boxShadow: "0 3px 0 var(--grass-d)",
                 letterSpacing: "0.04em",
               }}
             >
@@ -476,13 +468,13 @@ export default function PlaygroundClient() {
                 <div className="flex items-baseline justify-between mb-1">
                   <span
                     className="text-xs font-bold"
-                    style={{ color: "#e2e8f0", fontFamily: "var(--font-mono)" }}
+                    style={{ color: "var(--ink)", fontFamily: "var(--font-mono)" }}
                   >
                     {label}
                   </span>
                   <span
                     className="text-xs tabular-nums"
-                    style={{ color: "#22c55e", fontFamily: "var(--font-mono)" }}
+                    style={{ color: "var(--fg)", fontFamily: "var(--font-mono)" }}
                   >
                     {fmt(val)}
                   </span>
@@ -491,9 +483,9 @@ export default function PlaygroundClient() {
                   type="range" min={min} max={max} step={step} value={val}
                   onChange={(e) => set(Number(e.target.value))}
                   className="w-full h-1 rounded-full appearance-none cursor-pointer"
-                  style={{ accentColor: "#22c55e" }}
+                  style={{ accentColor: "var(--fg)" }}
                 />
-                <div className="text-[9px] mt-0.5 opacity-40" style={{ color: "#94a3b8", fontFamily: "var(--font-mono)" }}>
+                <div className="text-[9px] mt-0.5 opacity-40" style={{ color: "var(--ink-3)", fontFamily: "var(--font-mono)" }}>
                   {desc}
                 </div>
               </div>
@@ -518,7 +510,7 @@ export default function PlaygroundClient() {
                   ? "rgba(239,68,68,0.05)"
                   : "var(--bg2)",
               fontFamily: "var(--font-mono)",
-              color: status === "pass" ? "#4ade80" : status === "fail" ? "#fca5a5" : "#64748b",
+              color: status === "pass" ? "var(--grass)" : status === "fail" ? "#dc2626" : "#64748b",
             }}
           >
             <span>{status === "pass" ? "✓" : status === "fail" ? "✗" : "○"}</span>
@@ -529,7 +521,7 @@ export default function PlaygroundClient() {
           <pre
             className="px-4 py-3 text-xs font-mono whitespace-pre-wrap"
             style={{
-              color: status === "pass" ? "#4ade80" : status === "fail" ? "#fca5a5" : "#64748b",
+              color: status === "pass" ? "var(--grass)" : status === "fail" ? "#dc2626" : "#64748b",
               background: "var(--bg)",
               maxHeight: "4.5rem",
               overflowY: "auto",
@@ -548,7 +540,7 @@ export default function PlaygroundClient() {
             style={{ color: "var(--muted)", background: "var(--bg2)", fontFamily: "var(--font-mono)" }}
           >
             <span className="flex items-center gap-2">
-              <span style={{ color: "#60a5fa" }}>∂</span>
+              <span style={{ color: "var(--fg-mute)" }}>∂</span>
               Formula Reference
             </span>
             <span style={{ opacity: 0.5 }}>{refOpen ? "▲" : "▼"}</span>
@@ -566,8 +558,8 @@ export default function PlaygroundClient() {
                 <div className="flex flex-col gap-1.5">
                   {HELPERS.map((h) => (
                     <div key={h.name} className="flex gap-3 text-xs" style={{ fontFamily: "var(--font-mono)" }}>
-                      <span style={{ color: "#7dd3fc", flexShrink: 0 }}>{h.name}</span>
-                      <span style={{ color: "#475569" }}>{h.desc}</span>
+                      <span style={{ color: "#2f6df0", flexShrink: 0 }}>{h.name}</span>
+                      <span style={{ color: "var(--ink-2)" }}>{h.desc}</span>
                     </div>
                   ))}
                 </div>
@@ -587,11 +579,11 @@ export default function PlaygroundClient() {
                       <span className="text-sm font-bold" style={{ color: SERIES_COLORS[i], fontFamily: "var(--font-mono)" }}>
                         {g.sym} {g.label}
                       </span>
-                      <span className="text-xs" style={{ color: "#64748b", fontFamily: "var(--font-mono)" }}>
+                      <span className="text-xs" style={{ color: "var(--ink-3)", fontFamily: "var(--font-mono)" }}>
                         = {g.formula}
                       </span>
                     </div>
-                    <div className="text-[11px] leading-relaxed" style={{ color: "#475569", fontFamily: "var(--font-mono)" }}>
+                    <div className="text-[11px] leading-relaxed" style={{ color: "var(--ink-2)", fontFamily: "var(--font-mono)" }}>
                       → {g.hint}
                     </div>
                   </div>
@@ -603,25 +595,28 @@ export default function PlaygroundClient() {
       </div>
 
       {/* ── RIGHT PANEL — charts ── */}
-      <div className="flex-1 overflow-auto p-4 grid grid-cols-2 grid-rows-2 gap-3" style={{ background: "var(--bg)" }}>
+      <div
+        className="flex-1 overflow-auto p-4 grid grid-cols-2 grid-rows-2 gap-3"
+        style={{ background: "var(--bg)", animation: "pg-slide-right 0.45s cubic-bezier(.2,.7,.3,1) 0.08s both" }}
+      >
         {GREEKS.map((greek, i) => {
           const hasData = chartData[greek.key].some(p => !isNaN(p.value));
           return (
             <div
               key={greek.key}
-              className="rounded-xl border flex flex-col overflow-hidden"
+              className="border flex flex-col overflow-hidden"
               style={{
-                borderColor: hasData ? `${SERIES_COLORS[i]}40` : "var(--border)",
-                background: hasData ? `${SERIES_COLORS[i]}06` : "var(--card)",
-                transition: "border-color 0.3s",
+                borderColor: "var(--border)",
+                background: "var(--card)",
+                animation: `pg-card-in 0.45s cubic-bezier(.2,.7,.3,1) ${0.12 + i * 0.07}s both`,
               }}
             >
               {/* Card header */}
               <div
                 className="flex items-center justify-between px-4 py-2.5 border-b flex-shrink-0"
                 style={{
-                  borderColor: hasData ? `${SERIES_COLORS[i]}30` : "var(--border)",
-                  background: hasData ? `${SERIES_COLORS[i]}0a` : "var(--bg2)",
+                  borderColor: "var(--border)",
+                  background: "var(--bg2)",
                 }}
               >
                 <div className="flex items-center gap-2">
@@ -632,12 +627,12 @@ export default function PlaygroundClient() {
                     {greek.sym}
                   </span>
                   <div>
-                    <span className="text-xs font-semibold" style={{ color: "#e2e8f0", fontFamily: "var(--font-mono)" }}>
+                    <span className="text-xs font-semibold" style={{ color: "var(--ink)", fontFamily: "var(--font-mono)" }}>
                       {greek.label}
                     </span>
                     <span
                       className="text-[10px] ml-2 opacity-60"
-                      style={{ color: "#94a3b8", fontFamily: "var(--font-mono)" }}
+                      style={{ color: "var(--ink-3)", fontFamily: "var(--font-mono)" }}
                     >
                       = {greek.formula}
                     </span>
