@@ -129,30 +129,29 @@ interface ChartPoint { strike: number; value: number }
 
 // ── Slider ──────────────────────────────────────────────────────────────────
 function ParamSlider({
-  label, symbol, desc, val, set, min, max, step, fmt,
-  color,
+  label, symbol, desc, val, set, min, max, step, fmt, color,
 }: {
   label: string; symbol: string; desc: string;
   val: number; set: (v: number) => void;
   min: number; max: number; step: number;
   fmt: (v: number) => string; color: string;
 }) {
-  const pct = ((val - min) / (max - min)) * 100;
   return (
     <div className="pg-param">
-      <div className="pg-param-header">
+      {/* Symbol (top-left) + current value (top-right) */}
+      <div className="pg-param-top">
         <span className="pg-param-sym" style={{ color }}>{symbol}</span>
-        <span className="pg-param-label">{label}</span>
         <span className="pg-param-val" style={{ color }}>{fmt(val)}</span>
       </div>
-      <div className="pg-slider-wrap">
-        <input
-          type="range" min={min} max={max} step={step} value={val}
-          onChange={e => set(Number(e.target.value))}
-          className="pg-slider"
-          style={{ "--pct": `${pct}%`, "--clr": color } as React.CSSProperties}
-        />
-      </div>
+      {/* Full name underneath */}
+      <div className="pg-param-name">{label}</div>
+      {/* Slider — accent-color is reliable cross-browser for thumb + track */}
+      <input
+        type="range" min={min} max={max} step={step} value={val}
+        onChange={e => set(Number(e.target.value))}
+        className="pg-slider"
+        style={{ accentColor: color }}
+      />
       <div className="pg-param-desc">{desc}</div>
     </div>
   );
