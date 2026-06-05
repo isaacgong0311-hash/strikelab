@@ -5,6 +5,7 @@ import type { Lesson } from "@/lib/lessons";
 import { QUIZZES, type QuizQuestion } from "@/lib/quizzes";
 import dynamic from "next/dynamic";
 import { useProgress } from "@/lib/useProgress";
+import { trackLessonStart, trackTestsPassed, trackLessonComplete, trackQuizAnswer } from "@/lib/analytics";
 
 const MiniEditor = dynamic(() => import("@/components/MiniEditor"), { ssr: false });
 
@@ -12,6 +13,9 @@ interface Props {
   lesson: Lesson;
   prev: Lesson | null;
   next: Lesson | null;
+  trackTitle: string;
+  positionInTrack: number;
+  trackLength: number;
 }
 
 // ─── Tiny helpers ────────────────────────────────────────────────────────────
@@ -24,7 +28,7 @@ interface QuizState {
 
 // ─── Quiz component ───────────────────────────────────────────────────────────
 
-function QuizSection({ questions }: { questions: QuizQuestion[] }) {
+function QuizSection({ questions, lessonId }: { questions: QuizQuestion[]; lessonId: string }) {
   const [state, setState] = useState<QuizState>({
     answered: questions.map(() => null),
   });
@@ -36,6 +40,8 @@ function QuizSection({ questions }: { questions: QuizQuestion[] }) {
 
   function choose(qIdx: number, optIdx: number) {
     if (state.answered[qIdx] !== null) return; // already answered
+    const correct = optIdx === questions[qIdx].correct;
+    trackQuizAnswer(lessonId, correct);
     setState((prev) => {
       const next = [...prev.answered];
       next[qIdx] = optIdx;
@@ -181,13 +187,19 @@ function CelebrationOverlay({
 
 // ─── Main lesson component ────────────────────────────────────────────────────
 
-export default function LessonClient({ lesson, prev, next }: Props) {
+export default function LessonClient({ lesson, prev, next, trackTitle, positionInTrack, trackLength }: Props) {
   const [code, setCode] = useState(lesson.exercise.starterCode);
   const [output, setOutput] = useState("");
   const [status, setStatus] = useState<"idle" | "running" | "pass" | "fail">("idle");
   const [showCelebration, setShowCelebration] = useState(false);
   const { markComplete, completed, streak, hydrated } = useProgress();
   const runRef = useRef<(() => void) | null>(null);
+
+  // Track lesson start
+  useEffect(() => {
+    trackLessonStart(lesson.id);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const quizQuestions = QUIZZES[lesson.id] ?? [];
   const alreadyDone = hydrated && completed.has(lesson.id);
@@ -203,10 +215,12 @@ export default function LessonClient({ lesson, prev, next }: Props) {
       pyodide.runPython(lesson.exercise.testFn);
       setOutput("✓ All tests passed!");
       setStatus("pass");
+      trackTestsPassed(lesson.id);
 
       // Award XP + show celebration only for first-time completions
       const isNew = markComplete(lesson.id);
       if (isNew) {
+        trackLessonComplete(lesson.id);
         setTimeout(() => setShowCelebration(true), 400);
       }
     } catch (err: unknown) {
@@ -252,11 +266,11 @@ export default function LessonClient({ lesson, prev, next }: Props) {
       <div className="max-w-3xl mx-auto px-6 py-10">
         {/* Breadcrumb */}
         <div className="v2-rise in flex items-center gap-2 text-sm mb-5" style={{ color: "var(--muted)" }}>
-          <Link href="/lessons" className="hover:text-white transition-colors">
+          <Link href="/lessons" className="transition-opacity hover:opacity-70" style={{ color: "var(--ink-2)" }}>
             Lessons
           </Link>
           <span>/</span>
-          <span className="text-white">{lesson.title}</span>
+          <span style={{ color: "var(--ink)" }}>{lesson.title}</span>
         </div>
 
         {/* Header */}
@@ -268,7 +282,7 @@ export default function LessonClient({ lesson, prev, next }: Props) {
               style={{
                 background: "rgba(34,197,94,0.1)",
                 border: "1px solid rgba(34,197,94,0.2)",
-                color: "#4ade80",
+                color: "var(--grass)",
                 fontFamily: "var(--font-mono)",
                 letterSpacing: "0.08em",
               }}
@@ -280,13 +294,13 @@ export default function LessonClient({ lesson, prev, next }: Props) {
 
           <div
             className="text-xs tracking-widest uppercase mb-2 opacity-50"
-            style={{ fontFamily: "var(--font-mono)", color: "#888888" }}
+            style={{ fontFamily: "var(--font-mono)", color: "var(--ink-3)" }}
           >
-            Lesson {lesson.id} of 10
+            {trackTitle} · Lesson {positionInTrack} of {trackLength}
           </div>
           <h1
-            className="text-3xl font-semibold text-white mb-1"
-            style={{ fontFamily: "var(--font-serif)", fontStyle: "italic" }}
+            className="text-3xl font-semibold mb-1"
+            style={{ fontFamily: "var(--font-display)", color: "var(--ink)" }}
           >
             {lesson.title}
           </h1>
@@ -305,7 +319,7 @@ export default function LessonClient({ lesson, prev, next }: Props) {
         {/* Knowledge check quiz */}
         {quizQuestions.length > 0 && (
           <div className="v2-rise" style={{ transitionDelay: "120ms" }}>
-            <QuizSection questions={quizQuestions} />
+            <QuizSection questions={quizQuestions} lessonId={lesson.id} />
           </div>
         )}
 
@@ -325,8 +339,8 @@ export default function LessonClient({ lesson, prev, next }: Props) {
           >
             <div className="flex items-center gap-3">
               <span
-                className="text-sm font-medium text-white"
-                style={{ fontFamily: "var(--font-serif)", fontStyle: "italic" }}
+                className="text-sm font-semibold"
+                style={{ fontFamily: "var(--font-display)", color: "var(--ink)" }}
               >
                 Coding Exercise
               </span>
@@ -375,10 +389,12 @@ export default function LessonClient({ lesson, prev, next }: Props) {
               disabled={status === "running"}
               className="flex items-center gap-2 px-4 py-1.5 text-sm font-medium transition-all disabled:opacity-30"
               style={{
-                background: "var(--fg)",
-                color: "#000000",
+                background: "var(--grass)",
+                color: "#ffffff",
                 fontFamily: "var(--font-mono)",
                 border: "1px solid transparent",
+                borderRadius: "10px",
+                boxShadow: "0 3px 0 var(--grass-d)",
                 letterSpacing: "0.03em",
               }}
             >
@@ -393,8 +409,8 @@ export default function LessonClient({ lesson, prev, next }: Props) {
                   <kbd
                     className="text-[9px] px-1.5 py-0.5 ml-1"
                     style={{
-                      background: "rgba(0,0,0,0.15)",
-                      color: "rgba(0,0,0,0.55)",
+                      background: "rgba(255,255,255,0.25)",
+                      color: "rgba(255,255,255,0.9)",
                       fontFamily: "var(--font-mono)",
                     }}
                   >
@@ -410,7 +426,7 @@ export default function LessonClient({ lesson, prev, next }: Props) {
               </span>
             )}
             {status === "fail" && (
-              <span className="text-xs" style={{ color: "#f87171", fontFamily: "var(--font-mono)" }}>
+              <span className="text-xs" style={{ color: "#dc2626", fontFamily: "var(--font-mono)" }}>
                 Fix the error and try again
               </span>
             )}
@@ -423,7 +439,7 @@ export default function LessonClient({ lesson, prev, next }: Props) {
                 className="flex items-center gap-2 px-5 py-2 border-b text-[10px] uppercase tracking-widest"
                 style={{
                   borderColor: "var(--border)",
-                  color: status === "pass" ? "var(--check)" : "#f87171",
+                  color: status === "pass" ? "var(--check)" : "#dc2626",
                   fontFamily: "var(--font-mono)",
                   background: "var(--bg2)",
                 }}
@@ -434,7 +450,7 @@ export default function LessonClient({ lesson, prev, next }: Props) {
               <pre
                 className="px-5 py-4 text-xs font-mono whitespace-pre-wrap overflow-auto"
                 style={{
-                  color: status === "pass" ? "var(--check)" : "#f87171",
+                  color: status === "pass" ? "var(--check)" : "#dc2626",
                   background: "var(--bg)",
                   maxHeight: "12rem",
                 }}
@@ -453,8 +469,8 @@ export default function LessonClient({ lesson, prev, next }: Props) {
           {prev ? (
             <Link
               href={`/lesson/${prev.id}`}
-              className="text-sm px-4 py-2 rounded-lg border transition-colors hover:border-white"
-              style={{ borderColor: "var(--border)", color: "var(--muted)" }}
+              className="text-sm px-4 py-2 rounded-lg border transition-opacity hover:opacity-70"
+              style={{ borderColor: "var(--border)", color: "var(--ink-2)" }}
             >
               ← {prev.title}
             </Link>
@@ -465,7 +481,7 @@ export default function LessonClient({ lesson, prev, next }: Props) {
             <Link
               href={`/lesson/${next.id}`}
               className="text-sm px-4 py-2 font-medium transition-colors hover:opacity-80"
-              style={{ background: "var(--fg)", color: "#000000", fontFamily: "var(--font-mono)" }}
+              style={{ background: "var(--grass)", color: "#ffffff", fontFamily: "var(--font-mono)", borderRadius: "10px", boxShadow: "0 3px 0 var(--grass-d)" }}
             >
               {next.title} →
             </Link>
@@ -473,7 +489,7 @@ export default function LessonClient({ lesson, prev, next }: Props) {
             <Link
               href="/playground"
               className="text-sm px-4 py-2 font-medium transition-colors hover:opacity-80"
-              style={{ background: "var(--fg)", color: "#000000", fontFamily: "var(--font-mono)" }}
+              style={{ background: "var(--grass)", color: "#ffffff", fontFamily: "var(--font-mono)", borderRadius: "10px", boxShadow: "0 3px 0 var(--grass-d)" }}
             >
               Open Playground →
             </Link>

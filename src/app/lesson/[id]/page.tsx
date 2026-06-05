@@ -1,25 +1,30 @@
-import { LESSONS, getLessonById } from "@/lib/lessons";
+import { getAllLessons, getLessonContext } from "@/lib/tracks";
 import { notFound } from "next/navigation";
 import LessonClient from "./LessonClient";
 
 export async function generateStaticParams() {
-  return LESSONS.map((l) => ({ id: l.id }));
+  return getAllLessons().map((l) => ({ id: l.id }));
 }
 
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  const lesson = getLessonById(id);
-  return { title: lesson ? `${lesson.title} — StrikeLab` : "Lesson — StrikeLab" };
+  const ctx = getLessonContext(id);
+  return { title: ctx ? `${ctx.lesson.title} — StrikeLab` : "Lesson — StrikeLab" };
 }
 
 export default async function LessonPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  const lesson = getLessonById(id);
-  if (!lesson) notFound();
+  const ctx = getLessonContext(id);
+  if (!ctx) notFound();
 
-  const currentIndex = LESSONS.findIndex((l) => l.id === id);
-  const prev = LESSONS[currentIndex - 1] ?? null;
-  const next = LESSONS[currentIndex + 1] ?? null;
-
-  return <LessonClient lesson={lesson} prev={prev} next={next} />;
+  return (
+    <LessonClient
+      lesson={ctx.lesson}
+      prev={ctx.prev}
+      next={ctx.next}
+      trackTitle={ctx.track.title}
+      positionInTrack={ctx.positionInTrack}
+      trackLength={ctx.trackLength}
+    />
+  );
 }
