@@ -230,8 +230,7 @@ export default function ChallengesClient() {
           </div>
 
           {/* Editor */}
-          <div className="ch-editor-wrap" style={{ position: "relative" }}>
-            {!isPro && <ProGate />}
+          <div className="ch-editor-wrap">
             <div className="ch-editor-card" style={{ borderColor: outBorder }}>
               {/* Editor header */}
               <div className="ch-editor-header">
@@ -251,18 +250,31 @@ export default function ChallengesClient() {
 
               {/* Run bar */}
               <div className="ch-run-bar">
-                <div className="ch-run-left">
-                  <button onClick={runCode} disabled={status==="running"} className="ch-run-btn">
-                    {status==="running"
-                      ? <><span className="ch-spin">◌</span> Running…</>
-                      : <>▶ Run Tests <kbd className="ch-kbd">⌘↵</kbd></>}
-                  </button>
-                  {attempts >= 3 && !showHint && status !== "pass" && (
-                    <button onClick={() => setShowHint(true)} className="ch-hint-btn">
-                      Show hint
+                {isPro ? (
+                  <div className="ch-run-left">
+                    <button onClick={runCode} disabled={status==="running"} className="ch-run-btn">
+                      {status==="running"
+                        ? <><span className="ch-spin">◌</span> Running…</>
+                        : <>▶ Run Tests <kbd className="ch-kbd">⌘↵</kbd></>}
                     </button>
-                  )}
-                </div>
+                    {attempts >= 3 && !showHint && status !== "pass" && (
+                      <button onClick={() => setShowHint(true)} className="ch-hint-btn">
+                        Show hint
+                      </button>
+                    )}
+                  </div>
+                ) : (
+                  <a
+                    href={process.env.NEXT_PUBLIC_STRIPE_PRO_LINK ?? "/sign-up"}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    onClick={() => trackUpgradeClick("challenges_run_btn")}
+                    className="ch-run-btn"
+                    style={{ textDecoration: "none" }}
+                  >
+                    Unlock with Pro → Start free trial
+                  </a>
+                )}
                 {attempts > 0 && (
                   <span className="ch-attempts">{attempts} attempt{attempts > 1 ? "s" : ""}</span>
                 )}
