@@ -7,18 +7,18 @@ import { useProgress, getLevel, getXpToNextLevel, XP_LEVELS } from "@/lib/usePro
 const DAY_LABELS = ["M", "T", "W", "T", "F", "S", "S"];
 
 const ACHIEVEMENTS = [
-  { id: "first",    icon: "🎯", name: "First Strike",   desc: "Complete your first lesson",          unlocked: (ids: Set<string>) => ids.size >= 1 },
-  { id: "parity",   icon: "⚖️", name: "Parity Pro",     desc: "Master Put-Call Parity",              unlocked: (ids: Set<string>) => ids.has("2") },
+  { id: "first",    icon: "⊗",  name: "First Strike",   desc: "Complete your first lesson",          unlocked: (ids: Set<string>) => ids.size >= 1 },
+  { id: "parity",   icon: "≡",  name: "Parity Pro",     desc: "Master Put-Call Parity",              unlocked: (ids: Set<string>) => ids.has("2") },
   { id: "bsm",      icon: "∂",  name: "BSM Builder",    desc: "Implement Black-Scholes",             unlocked: (ids: Set<string>) => ids.has("3") },
   { id: "greeks",   icon: "Δ",  name: "Greek Scholar",  desc: "Complete all four Greek lessons",     unlocked: (ids: Set<string>) => ["4","5","6","7"].every(id => ids.has(id)) },
   { id: "iv",       icon: "σ",  name: "Vol Wizard",     desc: "Solve for implied volatility",        unlocked: (ids: Set<string>) => ids.has("8") },
-  { id: "strategy", icon: "🦅", name: "Strategist",     desc: "Learn option strategies",             unlocked: (ids: Set<string>) => ids.has("9") },
-  { id: "investor", icon: "📈", name: "Investor",       desc: "Start the Investing track",           unlocked: (ids: Set<string>) => ids.has("inv-1") },
-  { id: "portfolio",icon: "💼", name: "Portfolio Mgr",  desc: "Finish all 6 Investing lessons",      unlocked: (ids: Set<string>) => ["inv-1","inv-2","inv-3","inv-4","inv-5","inv-6"].every(id => ids.has(id)) },
+  { id: "strategy", icon: "∑",  name: "Strategist",     desc: "Learn option strategies",             unlocked: (ids: Set<string>) => ids.has("9") },
+  { id: "investor", icon: "↗",  name: "Investor",       desc: "Start the Investing track",           unlocked: (ids: Set<string>) => ids.has("inv-1") },
+  { id: "portfolio",icon: "⊞",  name: "Portfolio Mgr",  desc: "Finish all 6 Investing lessons",      unlocked: (ids: Set<string>) => ["inv-1","inv-2","inv-3","inv-4","inv-5","inv-6"].every(id => ids.has(id)) },
   { id: "capm",     icon: "β",  name: "Quant Initiate", desc: "Understand CAPM and Beta",            unlocked: (ids: Set<string>) => ids.has("q1") },
-  { id: "factor",   icon: "⚙️", name: "Factor King",    desc: "Master factor investing",             unlocked: (ids: Set<string>) => ids.has("q2") },
-  { id: "backtest", icon: "📊", name: "Backtester",     desc: "Build your first backtest",           unlocked: (ids: Set<string>) => ids.has("q3") },
-  { id: "allstar",  icon: "🏆", name: "All-Star",       desc: "Complete all 21 lessons",             unlocked: (ids: Set<string>) => ids.size >= 21 },
+  { id: "factor",   icon: "λ",  name: "Factor King",    desc: "Master factor investing",             unlocked: (ids: Set<string>) => ids.has("q2") },
+  { id: "backtest", icon: "⟲",  name: "Backtester",     desc: "Build your first backtest",           unlocked: (ids: Set<string>) => ids.has("q3") },
+  { id: "allstar",  icon: "✶",  name: "All-Star",       desc: "Complete all 21 lessons",             unlocked: (ids: Set<string>) => ids.size >= 21 },
 ];
 
 // ── SVG circular progress ring ──────────────────────────────
@@ -109,22 +109,22 @@ export default function DashboardClient() {
       {/* ── METRIC TILES ─────────────────────────────────── */}
       <div className="db-metrics">
         <div className="db-metric">
-          <div className="db-metric-icon" style={{ background: "var(--grass-tint)", color: "var(--grass)" }}>📚</div>
+          <div className="db-metric-icon" style={{ background: "var(--grass-tint)", color: "var(--grass)" }}>✓</div>
           <div className="db-metric-v" style={{ color: "var(--grass)" }}>{completedCount}</div>
           <div className="db-metric-l">Lessons done</div>
         </div>
         <div className="db-metric">
-          <div className="db-metric-icon" style={{ background: "var(--coral-tint)", color: "var(--coral)" }}>🔥</div>
+          <div className="db-metric-icon" style={{ background: "var(--coral-tint)", color: "var(--coral)" }}>△</div>
           <div className="db-metric-v" style={{ color: "var(--coral)" }}>{hydrated ? streak : 0}</div>
           <div className="db-metric-l">Day streak</div>
         </div>
         <div className="db-metric">
-          <div className="db-metric-icon" style={{ background: "rgba(251,191,36,0.12)", color: "var(--amber)" }}>✦</div>
+          <div className="db-metric-icon" style={{ background: "rgba(251,191,36,0.12)", color: "var(--amber)" }}>◆</div>
           <div className="db-metric-v" style={{ color: "var(--amber)" }}>{hydrated ? xp.toLocaleString() : "0"}</div>
           <div className="db-metric-l">Total XP</div>
         </div>
         <div className="db-metric">
-          <div className="db-metric-icon" style={{ background: `${level.color}18`, color: level.color }}>⚡</div>
+          <div className="db-metric-icon" style={{ background: `${level.color}18`, color: level.color }}>◉</div>
           <div className="db-metric-v" style={{ color: level.color, fontSize: 20 }}>{level.label}</div>
           <div className="db-metric-l">Level {levelNum}</div>
         </div>
@@ -320,9 +320,9 @@ export default function DashboardClient() {
         {/* Quick actions */}
         <div className="db-actions">
           {[
-            { href: "/lessons",    glyph: "∫", title: "Learning path",    sub: "Duolingo-style path view",  ic: "var(--grass)",   bg: "var(--grass-tint)" },
-            { href: "/playground", glyph: "ƒ", title: "Playground",       sub: "Live Black-Scholes sandbox", ic: "var(--sky)",     bg: "var(--sky-tint)" },
-            { href: "/roadmap",    glyph: "◈", title: "Roadmap",          sub: "What's shipping next",       ic: "var(--coral)",   bg: "var(--coral-tint)" },
+            { href: "/lessons",    glyph: "≡", title: "Learning path",    sub: "Duolingo-style path view",  ic: "var(--grass)",   bg: "var(--grass-tint)" },
+            { href: "/playground", glyph: "∂", title: "Playground",       sub: "Live Black-Scholes sandbox", ic: "var(--sky)",     bg: "var(--sky-tint)" },
+            { href: "/roadmap",    glyph: "→", title: "Roadmap",          sub: "What's shipping next",       ic: "var(--coral)",   bg: "var(--coral-tint)" },
           ].map(q => (
             <Link key={q.href} href={q.href} className="db-action">
               <span className="db-action-icon" style={{ background: q.bg, color: q.ic }}>{q.glyph}</span>

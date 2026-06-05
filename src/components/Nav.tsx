@@ -16,6 +16,58 @@ const SECONDARY: { href: string; label: string }[] = [
   { href: "/roadmap",  label: "Roadmap" },
 ];
 
+// ── Call-option payoff logo mark ─────────────────────────────
+function LogoMark({ size = 26 }: { size?: number }) {
+  return (
+    <svg
+      width={size} height={size}
+      viewBox="0 0 26 26"
+      fill="none"
+      aria-hidden="true"
+      style={{ flexShrink: 0 }}
+    >
+      {/* Rounded square border */}
+      <rect x="1" y="1" width="24" height="24" rx="6.5"
+        stroke="currentColor" strokeWidth="1.8" />
+      {/* Call option payoff: flat line → kink → diagonal up */}
+      <polyline
+        points="4,19 12,19 22,7"
+        stroke="currentColor" strokeWidth="2.2"
+        strokeLinecap="round" strokeLinejoin="round"
+      />
+      {/* Strike-price tick mark at kink */}
+      <line x1="12" y1="17" x2="12" y2="21"
+        stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+    </svg>
+  );
+}
+
+// ── Small inline SVG icons (no emojis) ───────────────────────
+function FlameIcon() {
+  return (
+    <svg width="11" height="13" viewBox="0 0 11 13" fill="none" aria-hidden="true">
+      <path d="M5.5 12C3.015 12 1 10.015 1 7.5c0-1.85 1.1-3.45 2.7-4.2-.1.6-.05 1.25.2 1.85C4.4 3.75 5.35 2.5 6.5 1.5c0 1 .35 2 1 2.75C8.3 5.2 9 6.3 9 7.5 9 10.015 7.985 12 5.5 12z"
+        fill="currentColor" opacity="0.85"/>
+    </svg>
+  );
+}
+
+function DiamondIcon() {
+  return (
+    <svg width="10" height="10" viewBox="0 0 10 10" fill="none" aria-hidden="true">
+      <path d="M5 1L9 5L5 9L1 5L5 1Z" fill="currentColor"/>
+    </svg>
+  );
+}
+
+function GitHubIcon() {
+  return (
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+      <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z" />
+    </svg>
+  );
+}
+
 export default function Nav() {
   const path = usePathname();
   const isActive = (href: string) => path === href || path.startsWith(href + "/");
@@ -25,95 +77,41 @@ export default function Nav() {
   return (
     <>
       {/* ─── Announcement bar ──────────────────────────────────────────────── */}
-      <div
-        className="text-center text-[11px] py-1.5 border-b relative overflow-hidden"
-        style={{
-          background: "var(--bg2)",
-          borderColor: "var(--border)",
-          color: "var(--fg-mute)",
-          fontFamily: "var(--font-mono)",
-          letterSpacing: "0.04em",
-        }}
-      >
-        New —{" "}
-        <span style={{ color: "var(--fg)", fontWeight: 600 }}>Implied Vol, Strategies &amp; Binomial Trees just shipped</span>{" "}
-        ·{" "}
-        <Link
-          href="/roadmap"
-          className="underline underline-offset-2 transition-colors"
-          style={{ color: "var(--fg)" }}
-        >
+      <div className="nav-announce">
+        New &mdash;{" "}
+        <span className="nav-announce-bold">Investing Fundamentals &amp; Quant Investing just shipped</span>{" "}
+        &middot;{" "}
+        <Link href="/roadmap" className="nav-announce-link">
           What&rsquo;s next →
         </Link>
       </div>
 
       {/* ─── Main nav ──────────────────────────────────────────────────────── */}
-      <nav
-        className="flex items-center justify-between px-6 border-b sticky top-0 z-50"
-        style={{
-          borderColor: "var(--border)",
-          background: "var(--nav-bg)",
-          backdropFilter: "blur(14px)",
-          WebkitBackdropFilter: "blur(14px)",
-          minHeight: "64px",
-        }}
-      >
+      <nav className="nav-bar">
+
         {/* Left: logo + primary links */}
-        <div className="flex items-center gap-8">
-          <Link
-            href="/"
-            className="flex items-center gap-2.5 tracking-tight group"
-            style={{ fontSize: "1.05rem" }}
-          >
-            <span
-              className="grid place-items-center transition-colors"
-              style={{
-                width: 24,
-                height: 24,
-                border: "1.5px solid var(--fg)",
-                fontFamily: "var(--font-mono)",
-                fontSize: 11,
-                fontWeight: 500,
-                color: "var(--fg)",
-              }}
-            >
-              SL
-            </span>
-            <span
-              style={{ fontFamily: "var(--font-display)", fontStyle: "italic", color: "var(--fg)", fontWeight: 600 }}
-            >
-              Strike<span style={{ fontStyle: "normal", fontWeight: 600 }}>Lab</span>
+        <div className="nav-left">
+          <Link href="/" className="nav-logo" aria-label="StrikeLab home">
+            <LogoMark />
+            <span className="nav-wordmark">
+              Strike<span className="nav-wordmark-lab">Lab</span>
             </span>
           </Link>
 
-          <div className="hidden md:flex items-center gap-1 h-full">
+          <div className="nav-links">
             {([...PRIMARY, ...SECONDARY] as { href: string; label: string; pro?: boolean }[]).map((l, i) => {
               const active = isActive(l.href);
               const isFirstSecondary = i === PRIMARY.length;
               return (
-                <span key={l.href} className="flex items-center">
-                  {isFirstSecondary && (
-                    <div className="h-4 w-px mx-2" style={{ background: "var(--border-hi)" }} />
-                  )}
+                <span key={l.href} className="nav-link-wrap">
+                  {isFirstSecondary && <div className="nav-divider" />}
                   <Link
                     href={l.href}
-                    className="text-[11px] px-3 py-1.5 transition-colors uppercase inline-flex items-center gap-1.5"
-                    style={{
-                      color: active ? "var(--fg)" : "var(--fg-mute)",
-                      fontWeight: active ? 500 : 400,
-                      fontFamily: "var(--font-mono)",
-                      letterSpacing: "0.06em",
-                      borderBottom: active ? "1px solid var(--fg)" : "1px solid transparent",
-                      paddingBottom: "6px",
-                    }}
+                    className={`nav-link${active ? " active" : ""}`}
                   >
                     {l.label}
                     {"pro" in l && l.pro && (
-                      <span style={{
-                        fontSize: 8, letterSpacing: "0.06em", padding: "1px 5px",
-                        borderRadius: 999, background: "var(--amber-tint)",
-                        color: "var(--amber)", fontWeight: 700, textTransform: "uppercase",
-                      }}>PRO</span>
+                      <span className="nav-pro-badge">PRO</span>
                     )}
                   </Link>
                 </span>
@@ -122,36 +120,39 @@ export default function Nav() {
           </div>
         </div>
 
-        {/* Right: streak + XP + utility + CTA */}
-        <div className="flex items-center gap-2">
+        {/* Right: stats + utility + CTA */}
+        <div className="nav-right">
 
-          {/* Streak indicator — always visible once hydrated */}
+          {/* Streak */}
           {hydrated && (
             <Link
               href="/dashboard"
-              className={`hidden sm:flex sl-nav-streak${streak > 0 ? " active" : ""}`}
-              title={streak > 0 ? `${streak}-day streak!` : "No streak yet"}
+              className={`nav-stat-pill${streak > 0 ? " streak-active" : ""}`}
+              title={streak > 0 ? `${streak}-day streak` : "No streak yet"}
             >
-              <span>{streak > 0 ? "🔥" : "○"}</span>
+              <FlameIcon />
               <span>{streak}</span>
             </Link>
           )}
 
-          {/* XP indicator — always visible (Duolingo app feel) */}
+          {/* XP */}
           {hydrated && (
             <Link
               href="/dashboard"
-              className="hidden sm:flex sl-nav-xp"
+              className="nav-stat-pill xp"
               title={`${xp} XP total`}
             >
-              <span style={{ color: "#e8a317" }}>✦</span>
+              <DiamondIcon />
               <span>{xp} XP</span>
             </Link>
           )}
 
           {/* Profile avatar */}
-          <Link href="/dashboard" className="sl-nav-avatar" title="Your profile">
-            I
+          <Link href="/dashboard" className="nav-avatar" title="Dashboard">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+              <circle cx="7" cy="5" r="3" stroke="currentColor" strokeWidth="1.5"/>
+              <path d="M1.5 13c0-2.76 2.462-5 5.5-5s5.5 2.24 5.5 5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+            </svg>
           </Link>
 
           {/* GitHub */}
@@ -159,41 +160,17 @@ export default function Nav() {
             href="https://github.com/isaacgong0311-hash/strikelab"
             target="_blank"
             rel="noopener noreferrer"
-            className="hidden md:flex items-center gap-1.5 text-xs px-2.5 py-1.5 rounded transition-all"
-            style={{
-              border: "1px solid var(--border-hi)",
-              color: "var(--fg-mute)",
-              fontFamily: "var(--font-mono)",
-            }}
+            className="nav-ghost-btn"
           >
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z" />
-            </svg>
+            <GitHubIcon />
             <span>GitHub</span>
           </a>
 
-          <Link
-            href="/sign-in"
-            className="hidden sm:inline-block text-[11px] px-2 py-1.5 uppercase transition-colors"
-            style={{
-              color: "var(--fg-mute)",
-              fontFamily: "var(--font-mono)",
-              letterSpacing: "0.06em",
-            }}
-          >
-            Sign in
-          </Link>
+          <Link href="/sign-in" className="nav-signin">Sign in</Link>
 
-          {isHome ? (
-            <Link href="/sign-up" className="sk-nav-cta">
-              Start free <span>→</span>
-            </Link>
-          ) : (
-            <Link href="/sign-up" className="v2-btn sm">
-              <span className="v2-label">Start free</span>
-              <span className="v2-arr">→</span>
-            </Link>
-          )}
+          <Link href="/sign-up" className="nav-cta">
+            Start free <span aria-hidden="true">→</span>
+          </Link>
         </div>
       </nav>
     </>

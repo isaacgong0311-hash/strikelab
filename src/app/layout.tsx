@@ -1,36 +1,30 @@
 import type { Metadata, Viewport } from "next";
-import { Inter, EB_Garamond, JetBrains_Mono, Fraunces, Hanken_Grotesk } from "next/font/google";
+import { Syne, Space_Grotesk, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import Nav from "@/components/Nav";
 import Footer from "@/components/Footer";
 import V2Animator from "@/components/V2Animator";
 import { Analytics } from "@vercel/analytics/react";
 
-const inter = Inter({ variable: "--font-sans", subsets: ["latin"] });
-
-const garamond = EB_Garamond({
-  variable: "--font-serif",
+// Syne — bold geometric display, very distinctive for headings & hero text
+const syne = Syne({
+  variable: "--font-display",
   subsets: ["latin"],
-  style: ["normal", "italic"],
   weight: ["400", "500", "600", "700", "800"],
 });
 
-const jetbrains = JetBrains_Mono({
-  variable: "--font-mono",
+// Space Grotesk — slightly quirky tech grotesque, stands out from generic sans
+const spaceGrotesk = Space_Grotesk({
+  variable: "--font-ui",
   subsets: ["latin"],
   weight: ["300", "400", "500", "600", "700"],
 });
 
-// Landing-page identity: warm display serif + friendly UI sans
-const fraunces = Fraunces({
-  variable: "--font-display",
+// JetBrains Mono — best-in-class coding mono for the Python exercises
+const jetbrains = JetBrains_Mono({
+  variable: "--font-mono",
   subsets: ["latin"],
-  style: ["normal", "italic"],
-});
-
-const hanken = Hanken_Grotesk({
-  variable: "--font-ui",
-  subsets: ["latin"],
+  weight: ["300", "400", "500", "600", "700"],
 });
 
 export const metadata: Metadata = {
@@ -57,11 +51,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html
       lang="en"
-      className={`${inter.variable} ${garamond.variable} ${jetbrains.variable} ${fraunces.variable} ${hanken.variable} h-full`}
+      className={`${syne.variable} ${spaceGrotesk.variable} ${jetbrains.variable} h-full`}
     >
       <body
         className="min-h-screen flex flex-col"
-        style={{ background: "var(--bg)", color: "var(--text)", fontFamily: "var(--font-sans)" }}
+        style={{ background: "var(--bg)", color: "var(--text)", fontFamily: "var(--font-ui), system-ui, sans-serif" }}
       >
         {/* Global v2 background — same on every page */}
         <div id="v2-bg-grid" className="v2-bg-grid" />
