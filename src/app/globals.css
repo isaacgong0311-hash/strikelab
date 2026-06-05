@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@import "./pg-ch.css";
 
 :root {
   /* ── Light "friendly quant" theme (site-wide) ── */
