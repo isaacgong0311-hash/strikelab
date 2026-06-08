@@ -116,7 +116,7 @@ const DIFFICULTY_STYLES: Record<string, { bg: string; color: string }> = {
 export default function ChallengesClient() {
   const challenge = getCurrentChallenge();
   const nextDate = getNextChallengeDate();
-  const countdown = useCountdown(nextDate);
+  const countdown = useCountdown(nextDate.getTime());
   usePyodide();
 
   const [code, setCode] = useState(challenge.starterCode);
