@@ -8,18 +8,21 @@ import { trackUpgradeClick } from "@/lib/analytics";
 const MiniEditor = dynamic(() => import("@/components/MiniEditor"), { ssr: false });
 
 // ── Countdown ────────────────────────────────────────────────────────────────
-function useCountdown(target: Date) {
+// Use the numeric timestamp (stable primitive) as the dependency, NOT the Date
+// object (which is a new reference on every render and would cause an infinite
+// re-render loop: new Date → effect re-runs → setState → re-render → repeat).
+function useCountdown(targetMs: number) {
   const [timeLeft, setTimeLeft] = useState({ h: 0, m: 0, s: 0, done: false });
   useEffect(() => {
     function tick() {
-      const diff = target.getTime() - Date.now();
+      const diff = targetMs - Date.now();
       if (diff <= 0) { setTimeLeft({ h: 0, m: 0, s: 0, done: true }); return; }
       setTimeLeft({ h: Math.floor(diff / 3600000), m: Math.floor((diff % 3600000) / 60000), s: Math.floor((diff % 60000) / 1000), done: false });
     }
     tick();
     const id = setInterval(tick, 1000);
     return () => clearInterval(id);
-  }, [target]);
+  }, [targetMs]); // stable number — only re-runs if the target timestamp changes
   return timeLeft;
 }
 

@@ -7,6 +7,188 @@ import dynamic from "next/dynamic";
 import { useProgress } from "@/lib/useProgress";
 import { trackLessonStart, trackTestsPassed, trackLessonComplete, trackQuizAnswer } from "@/lib/analytics";
 
+// ─── AI Hint panel ────────────────────────────────────────────────────────────
+function AiHintPanel({
+  lessonId,
+  code,
+  error,
+  onClose,
+}: {
+  lessonId: string;
+  code: string;
+  error: string;
+  onClose: () => void;
+}) {
+  const [hint, setHint] = useState("");
+  const [loading, setLoading] = useState(true);
+  const [question, setQuestion] = useState("");
+  const [asked, setAsked] = useState(false);
+
+  const fetchHint = useCallback(async (q?: string) => {
+    setLoading(true);
+    setHint("");
+    try {
+      const res = await fetch("/api/ai/hint", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ lessonId, code, error: error || undefined, question: q }),
+      });
+      if (!res.body) { setLoading(false); return; }
+      const reader = res.body.getReader();
+      const decoder = new TextDecoder();
+      setLoading(false);
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        setHint((prev) => prev + decoder.decode(value));
+      }
+    } catch {
+      setLoading(false);
+      setHint("Couldn't reach the AI tutor right now. Check your connection and try again.");
+    }
+  }, [lessonId, code, error]);
+
+  // Auto-fetch on mount
+  useEffect(() => { fetchHint(); }, [fetchHint]);
+
+  const handleAsk = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!question.trim()) return;
+    setAsked(true);
+    fetchHint(question);
+  };
+
+  // Simple markdown renderer (bold, code, newlines)
+  const renderHint = (text: string) => {
+    const lines = text.split("\n");
+    return lines.map((line, i) => {
+      // Code block lines
+      if (line.startsWith("```") || line.startsWith("    ")) {
+        return <span key={i} style={{ display: "block", fontFamily: "var(--font-mono)", fontSize: 12, color: "var(--check)", background: "rgba(74,222,128,0.06)", padding: "2px 8px", borderRadius: 4, margin: "2px 0" }}>{line.replace(/^```\w*/, "").replace(/^```/, "") || " "}</span>;
+      }
+      // Bold
+      const parts = line.split(/(\*\*[^*]+\*\*)/g);
+      return (
+        <span key={i} style={{ display: "block", lineHeight: 1.7 }}>
+          {parts.map((p, j) =>
+            p.startsWith("**") && p.endsWith("**")
+              ? <strong key={j} style={{ color: "var(--ink)", fontWeight: 700 }}>{p.slice(2, -2)}</strong>
+              : p
+          )}
+        </span>
+      );
+    });
+  };
+
+  return (
+    <div
+      style={{
+        border: "1px solid var(--border-hi)",
+        borderRadius: 0,
+        background: "#040a06",
+        overflow: "hidden",
+        marginTop: -1,
+      }}
+    >
+      {/* Header */}
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          padding: "10px 18px",
+          borderBottom: "1px solid rgba(255,255,255,0.06)",
+          background: "#050c07",
+        }}
+      >
+        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+          <span style={{ fontFamily: "var(--font-mono)", fontSize: 10, letterSpacing: "0.18em", textTransform: "uppercase", color: "var(--check)" }}>
+            ∂ AI Tutor
+          </span>
+          {loading && (
+            <span style={{ fontFamily: "var(--font-mono)", fontSize: 10, color: "rgba(34,197,94,0.5)", animation: "v2pageIn 1s ease infinite alternate" }}>
+              thinking…
+            </span>
+          )}
+        </div>
+        <button
+          onClick={onClose}
+          style={{ fontFamily: "var(--font-mono)", fontSize: 12, color: "var(--fg-faint)", background: "none", border: "none", cursor: "pointer", padding: "2px 6px", letterSpacing: "0.04em" }}
+        >
+          ✕ close
+        </button>
+      </div>
+
+      {/* Hint content */}
+      <div
+        style={{
+          padding: "18px 20px",
+          fontFamily: "var(--font-mono)",
+          fontSize: 13,
+          lineHeight: 1.7,
+          color: "rgba(255,255,255,0.72)",
+          minHeight: 80,
+          maxHeight: 320,
+          overflowY: "auto",
+        }}
+      >
+        {loading && !hint ? (
+          <span style={{ color: "rgba(34,197,94,0.45)" }}>▊</span>
+        ) : (
+          <>
+            {renderHint(hint)}
+            {loading && <span style={{ color: "rgba(34,197,94,0.6)" }}>▊</span>}
+          </>
+        )}
+      </div>
+
+      {/* Follow-up question form */}
+      {!loading && hint && !asked && (
+        <form
+          onSubmit={handleAsk}
+          style={{
+            display: "flex",
+            borderTop: "1px solid rgba(255,255,255,0.06)",
+          }}
+        >
+          <input
+            type="text"
+            placeholder="Ask a follow-up question…"
+            value={question}
+            onChange={(e) => setQuestion(e.target.value)}
+            style={{
+              flex: 1,
+              background: "transparent",
+              border: "none",
+              outline: "none",
+              padding: "10px 16px",
+              fontFamily: "var(--font-mono)",
+              fontSize: 12,
+              color: "rgba(255,255,255,0.8)",
+            }}
+          />
+          <button
+            type="submit"
+            style={{
+              padding: "10px 16px",
+              fontFamily: "var(--font-mono)",
+              fontSize: 11,
+              letterSpacing: "0.08em",
+              color: "var(--check)",
+              background: "none",
+              border: "none",
+              borderLeft: "1px solid rgba(255,255,255,0.06)",
+              cursor: "pointer",
+            }}
+          >
+            ask →
+          </button>
+        </form>
+      )}
+    </div>
+  );
+}
+
 const MiniEditor = dynamic(() => import("@/components/MiniEditor"), { ssr: false });
 
 interface Props {
@@ -192,6 +374,7 @@ export default function LessonClient({ lesson, prev, next, trackTitle, positionI
   const [output, setOutput] = useState("");
   const [status, setStatus] = useState<"idle" | "running" | "pass" | "fail">("idle");
   const [showCelebration, setShowCelebration] = useState(false);
+  const [showHint, setShowHint] = useState(false);
   const { markComplete, completed, streak, hydrated } = useProgress();
   const runRef = useRef<(() => void) | null>(null);
 
@@ -384,48 +567,67 @@ export default function LessonClient({ lesson, prev, next, trackTitle, positionI
             className="px-5 py-3 flex items-center justify-between border-t gap-3"
             style={{ borderColor: "var(--border)", background: "var(--bg2)" }}
           >
-            <button
-              onClick={runCode}
-              disabled={status === "running"}
-              className="flex items-center gap-2 px-4 py-1.5 text-sm font-medium transition-all disabled:opacity-30"
-              style={{
-                background: "var(--grass)",
-                color: "#ffffff",
-                fontFamily: "var(--font-mono)",
-                border: "1px solid transparent",
-                borderRadius: "10px",
-                boxShadow: "0 3px 0 var(--grass-d)",
-                letterSpacing: "0.03em",
-              }}
-            >
-              {status === "running" ? (
-                <>
-                  <span className="animate-spin inline-block" style={{ fontSize: 12 }}>◌</span>
-                  Running…
-                </>
-              ) : (
-                <>
-                  ▶ Run Tests
-                  <kbd
-                    className="text-[9px] px-1.5 py-0.5 ml-1"
-                    style={{
-                      background: "rgba(255,255,255,0.25)",
-                      color: "rgba(255,255,255,0.9)",
-                      fontFamily: "var(--font-mono)",
-                    }}
-                  >
-                    ⌘↵
-                  </kbd>
-                </>
-              )}
-            </button>
+            <div className="flex items-center gap-2">
+              <button
+                onClick={runCode}
+                disabled={status === "running"}
+                className="flex items-center gap-2 px-4 py-1.5 text-sm font-medium transition-all disabled:opacity-30"
+                style={{
+                  background: "var(--grass)",
+                  color: "#ffffff",
+                  fontFamily: "var(--font-mono)",
+                  border: "1px solid transparent",
+                  borderRadius: "10px",
+                  boxShadow: "0 3px 0 var(--grass-d)",
+                  letterSpacing: "0.03em",
+                }}
+              >
+                {status === "running" ? (
+                  <>
+                    <span className="animate-spin inline-block" style={{ fontSize: 12 }}>◌</span>
+                    Running…
+                  </>
+                ) : (
+                  <>
+                    ▶ Run Tests
+                    <kbd
+                      className="text-[9px] px-1.5 py-0.5 ml-1"
+                      style={{
+                        background: "rgba(255,255,255,0.25)",
+                        color: "rgba(255,255,255,0.9)",
+                        fontFamily: "var(--font-mono)",
+                      }}
+                    >
+                      ⌘↵
+                    </kbd>
+                  </>
+                )}
+              </button>
 
-            {status === "idle" && (
+              {/* AI Hint button — shows after first attempt or always */}
+              <button
+                onClick={() => setShowHint((v) => !v)}
+                className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium transition-all"
+                style={{
+                  background: showHint ? "rgba(34,197,94,0.12)" : "var(--card)",
+                  color: showHint ? "var(--check)" : "var(--fg-mute)",
+                  fontFamily: "var(--font-mono)",
+                  border: `1px solid ${showHint ? "rgba(34,197,94,0.3)" : "var(--border-hi)"}`,
+                  borderRadius: "10px",
+                  letterSpacing: "0.04em",
+                  cursor: "pointer",
+                }}
+              >
+                ∂ {showHint ? "Hide hint" : "Get a hint"}
+              </button>
+            </div>
+
+            {status === "idle" && !showHint && (
               <span className="text-xs" style={{ color: "var(--muted)", fontFamily: "var(--font-mono)" }}>
                 Write your solution, then run
               </span>
             )}
-            {status === "fail" && (
+            {status === "fail" && !showHint && (
               <span className="text-xs" style={{ color: "#dc2626", fontFamily: "var(--font-mono)" }}>
                 Fix the error and try again
               </span>
@@ -458,6 +660,16 @@ export default function LessonClient({ lesson, prev, next, trackTitle, positionI
                 {output}
               </pre>
             </div>
+          )}
+
+          {/* AI Hint panel */}
+          {showHint && (
+            <AiHintPanel
+              lessonId={lesson.id}
+              code={code}
+              error={status === "fail" ? output : ""}
+              onClose={() => setShowHint(false)}
+            />
           )}
         </div>
 

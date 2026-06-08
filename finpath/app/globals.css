@@ -1,0 +1,49 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ═══════════════════════════════════════════════════════════
+   FINPATH DESIGN SYSTEM
+   Adapted from StrikeLab v2 — parchment × terminal × green
+   ═══════════════════════════════════════════════════════════ */
+
+/* ─── Tokens ─────────────────────────────────────────────── */
+:root {
+  /* Backgrounds */
+  --bg:         #f7f5ef;   /* warm parchment */
+  --bg-card:    #faf9f5;   /* slightly lighter card */
+  --bg-input:   #f0ede4;   /* input field fill */
+  --bg-term:    #080808;   /* terminal / code panel */
+  --bg-term-hd: #0d1109;   /* terminal header */
+
+  /* Accent */
+  --grass:      #16a34a;
+  --grass-d:    #12833c;
+  --grass-l:    #22c55e;
+  --grass-bg:   #f0fdf4;
+
+  /* Text */
+  --ink:        #16201c;
+  --ink-2:      #3d4f45;
+  --ink-3:      #7a8c82;
+  --ink-inv:    #e8f5e2;
+  --term-dim:   #6b7a62;
+  --term-green: #4ade80;
+
+  /* Borders */
+  --border:     #d9d5c9;
+  --border-act: #16a34a;
+
+  /* Radius */
+  --r-sm:  4px;
+  --r-md:  8px;
+  --r-lg:  12px;
+  --r-xl:  16px;
+
+  /* Shadow */
+  --shadow-btn: 0 4px 0 var(--grass-d);
+  --shadow-card: 0 1px 3px rgba(22, 32, 28, 0.06), 0 4px 16px rgba(22, 32, 28, 0.04);
+  --shadow-card-hover: 0 4px 24px rgba(22, 32, 28, 0.10);
+
+  /* Typography */
+  --font-serif: 'Syne', sy
