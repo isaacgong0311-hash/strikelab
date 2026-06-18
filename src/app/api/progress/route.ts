@@ -1,112 +1,45 @@
 /**
- * /api/progress — server-side progress sync
+ * /api/progress — server-side progress sync, backed by Supabase.
  *
- * Stores lesson progress, XP, and streak so they survive across devices
- * and browsers. Currently uses an in-memory Map for zero-config dev.
- *
- * To productionise, swap the `store` Map for:
- *   - Vercel KV: `import { kv } from "@vercel/kv"`
- *   - Supabase:  `import { createClient } from "@supabase/supabase-js"`
- *   - Planetscale / Neon / any Postgres driver
- *
- * The API shape stays the same regardless of backing store.
+ * Auth comes from the Supabase session cookie (refreshed by middleware), and
+ * Row Level Security ensures users can only read/write their own row. The hook
+ * (useProgress) talks to Supabase directly; this route exists for server-side
+ * or non-browser callers and mirrors the same merge semantics.
  */
-
 import { NextRequest, NextResponse } from "next/server";
+import { getSupabaseServer } from "@/lib/supabase/server";
+import {
+  fetchRemoteProgress,
+  upsertRemoteProgress,
+  mergeProgress,
+  EMPTY_PROGRESS,
+  type ProgressPayload,
+} from "@/lib/progress/sync";
 
-// ─── Types ────────────────────────────────────────────────────────────────────
-export interface ProgressPayload {
-  completed: string[];       // lesson IDs
-  xp: number;
-  streak: number;
-  lastActivityDate: string | null;
-  activityByDate: Record<string, number>; // "YYYY-MM-DD" → count
-}
-
-// ─── In-memory store (replace with real DB in production) ────────────────────
-// Key: userId (Clerk uid, or anonymous session id)
-const store = new Map<string, ProgressPayload & { updatedAt: number }>();
-
-// ─── Helpers ──────────────────────────────────────────────────────────────────
-function getUserId(req: NextRequest): string | null {
-  // If Clerk is active, read the session claim injected by middleware
-  // (Clerk sets x-clerk-user-id via middleware when auth is configured)
-  const clerkId = req.headers.get("x-clerk-user-id");
-  if (clerkId) return clerkId;
-
-  // Fallback: anonymous session token in cookie or header
-  const anonToken = req.headers.get("x-sl-anon-token")
-    ?? req.cookies.get("sl_anon_token")?.value;
-  return anonToken ?? null;
-}
-
-function mergeProgress(
-  stored: ProgressPayload,
-  incoming: ProgressPayload,
-): ProgressPayload {
-  // Union of completed lessons (never lose completions)
-  const completedSet = new Set([...stored.completed, ...incoming.completed]);
-
-  // Take whichever has higher XP (guards against overwrites)
-  const xp = Math.max(stored.xp, incoming.xp);
-
-  // Take the more recent streak/activity
-  const useIncoming =
-    !stored.lastActivityDate ||
-    (incoming.lastActivityDate ?? "") >= stored.lastActivityDate;
-
-  const streak = useIncoming ? incoming.streak : stored.streak;
-  const lastActivityDate = useIncoming
-    ? incoming.lastActivityDate
-    : stored.lastActivityDate;
-
-  // Merge activity maps — take the max per day
-  const merged: Record<string, number> = { ...stored.activityByDate };
-  for (const [date, count] of Object.entries(incoming.activityByDate)) {
-    merged[date] = Math.max(merged[date] ?? 0, count);
-  }
-
-  return {
-    completed: Array.from(completedSet),
-    xp,
-    streak,
-    lastActivityDate,
-    activityByDate: merged,
-  };
+async function requireUser() {
+  const supabase = await getSupabaseServer();
+  if (!supabase) return { error: "Supabase not configured", status: 503 as const };
+  const { data, error } = await supabase.auth.getUser();
+  if (error || !data.user) return { error: "Not authenticated", status: 401 as const };
+  return { supabase, userId: data.user.id };
 }
 
 // ─── GET /api/progress ────────────────────────────────────────────────────────
-export async function GET(req: NextRequest) {
-  const userId = getUserId(req);
-
-  if (!userId) {
-    return NextResponse.json(
-      { error: "No user ID — sign in or provide x-sl-anon-token header" },
-      { status: 401 },
-    );
+export async function GET() {
+  const auth = await requireUser();
+  if ("error" in auth) {
+    return NextResponse.json({ error: auth.error }, { status: auth.status });
   }
 
-  const saved = store.get(userId);
-  if (!saved) {
-    return NextResponse.json(
-      { data: null, message: "No saved progress for this user" },
-      { status: 200 },
-    );
-  }
-
-  const { updatedAt, ...payload } = saved;
-  return NextResponse.json({ data: payload, updatedAt });
+  const data = await fetchRemoteProgress(auth.supabase, auth.userId);
+  return NextResponse.json({ data });
 }
 
 // ─── POST /api/progress ───────────────────────────────────────────────────────
 export async function POST(req: NextRequest) {
-  const userId = getUserId(req);
-
-  if (!userId) {
-    return NextResponse.json(
-      { error: "No user ID — sign in or provide x-sl-anon-token header" },
-      { status: 401 },
-    );
+  const auth = await requireUser();
+  if ("error" in auth) {
+    return NextResponse.json({ error: auth.error }, { status: auth.status });
   }
 
   let incoming: ProgressPayload;
@@ -116,30 +49,26 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Invalid JSON body" }, { status: 400 });
   }
 
-  // Validate required shape
-  if (
-    !Array.isArray(incoming.completed) ||
-    typeof incoming.xp !== "number"
-  ) {
-    return NextResponse.json({ error: "Missing required fields: completed, xp" }, { status: 400 });
+  if (!Array.isArray(incoming.completed) || typeof incoming.xp !== "number") {
+    return NextResponse.json(
+      { error: "Missing required fields: completed, xp" },
+      { status: 400 }
+    );
   }
 
-  const existing = store.get(userId);
-  const merged = existing
-    ? mergeProgress(existing, incoming)
-    : incoming;
-
-  store.set(userId, { ...merged, updatedAt: Date.now() });
+  const existing = await fetchRemoteProgress(auth.supabase, auth.userId);
+  const merged = existing ? mergeProgress(existing, incoming) : incoming;
+  await upsertRemoteProgress(auth.supabase, auth.userId, merged);
 
   return NextResponse.json({ ok: true, data: merged });
 }
 
-// ─── DELETE /api/progress (reset — useful for testing) ───────────────────────
-export async function DELETE(req: NextRequest) {
-  const userId = getUserId(req);
-  if (!userId) {
-    return NextResponse.json({ error: "No user ID" }, { status: 401 });
+// ─── DELETE /api/progress (reset) ────────────────────────────────────────────
+export async function DELETE() {
+  const auth = await requireUser();
+  if ("error" in auth) {
+    return NextResponse.json({ error: auth.error }, { status: auth.status });
   }
-  store.delete(userId);
+  await upsertRemoteProgress(auth.supabase, auth.userId, EMPTY_PROGRESS);
   return NextResponse.json({ ok: true, message: "Progress reset" });
 }

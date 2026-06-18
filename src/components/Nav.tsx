@@ -1,7 +1,8 @@
 "use client";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useProgress } from "@/lib/useProgress";
+import { useAuth } from "@/lib/auth/AuthProvider";
 
 const PRIMARY: { href: string; label: string; pro?: boolean }[] = [
   { href: "/dashboard",   label: "Dashboard" },
@@ -70,9 +71,17 @@ function GitHubIcon() {
 
 export default function Nav() {
   const path = usePathname();
+  const router = useRouter();
   const isActive = (href: string) => path === href || path.startsWith(href + "/");
   const isHome = path === "/";
   const { xp, streak, hydrated } = useProgress();
+  const { user, displayName, signOut } = useAuth();
+
+  async function handleSignOut() {
+    await signOut();
+    router.push("/");
+    router.refresh();
+  }
 
   return (
     <>
@@ -166,11 +175,25 @@ export default function Nav() {
             <span>GitHub</span>
           </a>
 
-          <Link href="/sign-in" className="nav-signin">Sign in</Link>
-
-          <Link href="/sign-up" className="nav-cta">
-            Start free <span aria-hidden="true">→</span>
-          </Link>
+          {user ? (
+            <>
+              {displayName && (
+                <Link href="/dashboard" className="nav-signin" title={user.email ?? undefined}>
+                  {displayName}
+                </Link>
+              )}
+              <button type="button" onClick={handleSignOut} className="nav-cta">
+                Sign out
+              </button>
+            </>
+          ) : (
+            <>
+              <Link href="/sign-in" className="nav-signin">Sign in</Link>
+              <Link href="/sign-up" className="nav-cta">
+                Start free <span aria-hidden="true">→</span>
+              </Link>
+            </>
+          )}
         </div>
       </nav>
     </>

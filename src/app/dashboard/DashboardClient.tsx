@@ -3,6 +3,7 @@ import Link from "next/link";
 import { useState, useEffect } from "react";
 import { TRACKS, getAllLessons } from "@/lib/tracks";
 import { useProgress, getLevel, getXpToNextLevel, XP_LEVELS } from "@/lib/useProgress";
+import { useAuth } from "@/lib/auth/AuthProvider";
 
 const DAY_LABELS = ["M", "T", "W", "T", "F", "S", "S"];
 
@@ -71,13 +72,19 @@ export default function DashboardClient() {
 
   const unlockedAch = hydrated ? ACHIEVEMENTS.filter(a => a.unlocked(completed)).length : 0;
 
+  const { displayName } = useAuth();
   const [firstName, setFirstName] = useState("there");
   useEffect(() => {
+    // Prefer the authenticated profile name; fall back to legacy localStorage.
+    if (displayName) {
+      setFirstName(displayName.split(" ")[0]);
+      return;
+    }
     try {
       const u = JSON.parse(localStorage.getItem("sl_user") || "null");
       if (u?.name) setFirstName(String(u.name).split(" ")[0]);
     } catch {}
-  }, []);
+  }, [displayName]);
 
   const [activeTrackIdx, setActiveTrackIdx] = useState(0);
 

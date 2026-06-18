@@ -1,14 +1,19 @@
-import { NextResponse } from "next/server";
-// Clerk middleware is disabled until NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY and
-// CLERK_SECRET_KEY are set as environment variables in the Vercel project.
-// Once added, swap this file back to the clerkMiddleware version.
-export function middleware() {
-  return NextResponse.next();
+import { type NextRequest } from "next/server";
+import { updateSession } from "@/lib/supabase/middleware";
+
+// Refreshes the Supabase auth session cookie on every request.
+// No-op (just passes through) when Supabase env vars aren't set.
+export async function middleware(request: NextRequest) {
+  return updateSession(request);
 }
 
 export const config = {
   matcher: [
-    "/((?!_next|[^?]*\\.(?:html?|css|js(?!on)|jpe?g|webp|png|gif|svg|ttf|woff2?|ico|csv|docx?|xlsx?|zip|webmanifest)).*)",
-    "/(api|trpc)(.*)",
+    /*
+     * Match all request paths except static assets and files:
+     * - _next/static, _next/image
+     * - common static file extensions
+     */
+    "/((?!_next/static|_next/image|favicon.ico|.*\\.(?:html?|css|js(?!on)|jpe?g|webp|png|gif|svg|ttf|woff2?|ico|csv|docx?|xlsx?|zip|webmanifest)$).*)",
   ],
 };

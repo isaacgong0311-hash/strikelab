@@ -1,15 +1,17 @@
 "use client";
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
+import { useAuth } from "@/lib/auth/AuthProvider";
+import { getSupabaseBrowser } from "@/lib/supabase/client";
+import {
+  fetchRemoteProgress,
+  upsertRemoteProgress,
+  mergeProgress,
+  type ProgressPayload,
+} from "@/lib/progress/sync";
 
 const PROGRESS_KEY = "strikelab_progress_v2";
 
-interface ProgressState {
-  completed: string[];
-  xp: number;
-  streak: number;
-  lastActivityDate: string | null;
-  activityByDate: Record<string, number>; // "YYYY-MM-DD" -> lessons completed that day
-}
+type ProgressState = ProgressPayload;
 
 const DEFAULT_STATE: ProgressState = {
   completed: [],
@@ -54,6 +56,30 @@ function resolveStreak(state: ProgressState): number {
   return 0; // streak expired
 }
 
+function readLocal(): ProgressState | null {
+  try {
+    const raw = localStorage.getItem(PROGRESS_KEY);
+    if (raw) return JSON.parse(raw) as ProgressState;
+    // Migrate from v1 if present
+    const oldRaw = localStorage.getItem("strikelab_completed_v1");
+    if (oldRaw) {
+      const oldIds = JSON.parse(oldRaw) as string[];
+      return { ...DEFAULT_STATE, completed: oldIds, xp: oldIds.length * 100 };
+    }
+  } catch {
+    // ignore
+  }
+  return null;
+}
+
+function writeLocal(state: ProgressState) {
+  try {
+    localStorage.setItem(PROGRESS_KEY, JSON.stringify(state));
+  } catch {
+    // ignore
+  }
+}
+
 // XP thresholds and level names
 export const XP_LEVELS = [
   { min: 0,    max: 99,   label: "Novice",          color: "#848484" },
@@ -83,54 +109,47 @@ export function getXpToNextLevel(xp: number): { progress: number; needed: number
 }
 
 export function useProgress() {
+  const { user } = useAuth();
   const [state, setState] = useState<ProgressState>(DEFAULT_STATE);
   const [hydrated, setHydrated] = useState(false);
+  const userIdRef = useRef<string | null>(null);
 
+  // 1. Hydrate from localStorage immediately (works logged-out / offline).
   useEffect(() => {
-    const hydrateProgress = () => {
-      try {
-        const raw = localStorage.getItem(PROGRESS_KEY);
-        if (raw) {
-          const parsed = JSON.parse(raw) as ProgressState;
-          // Migrate old v1 data if present
-          const oldRaw = localStorage.getItem("strikelab_completed_v1");
-          if (oldRaw && parsed.completed.length === 0) {
-            try {
-              const oldIds = JSON.parse(oldRaw) as string[];
-              parsed.completed = oldIds;
-              parsed.xp = oldIds.length * 100;
-            } catch {
-              // ignore
-            }
-          }
-          setState(parsed);
-        } else {
-          // Migrate from v1 if exists
-          const oldRaw = localStorage.getItem("strikelab_completed_v1");
-          if (oldRaw) {
-            try {
-              const oldIds = JSON.parse(oldRaw) as string[];
-              const migrated: ProgressState = {
-                ...DEFAULT_STATE,
-                completed: oldIds,
-                xp: oldIds.length * 100,
-              };
-              setState(migrated);
-              localStorage.setItem(PROGRESS_KEY, JSON.stringify(migrated));
-            } catch {
-              // ignore
-            }
-          }
-        }
-      } catch {
-        // ignore
+    const timeout = window.setTimeout(() => {
+      const local = readLocal();
+      if (local) {
+        setState(local);
+        writeLocal(local);
       }
       setHydrated(true);
-    };
-
-    const timeout = window.setTimeout(hydrateProgress, 0);
+    }, 0);
     return () => window.clearTimeout(timeout);
   }, []);
+
+  // 2. When a user signs in, reconcile local <-> cloud and keep userId ref.
+  useEffect(() => {
+    userIdRef.current = user?.id ?? null;
+    const supabase = getSupabaseBrowser();
+    if (!user || !supabase) return;
+
+    let active = true;
+    (async () => {
+      const remote = await fetchRemoteProgress(supabase, user.id);
+      const local = readLocal() ?? DEFAULT_STATE;
+      const merged = remote ? mergeProgress(remote, local) : local;
+      if (!active) return;
+      setState(merged);
+      writeLocal(merged);
+      setHydrated(true);
+      // Push the reconciled state up so local completions migrate to the cloud.
+      await upsertRemoteProgress(supabase, user.id, merged);
+    })();
+
+    return () => {
+      active = false;
+    };
+  }, [user]);
 
   /**
    * Mark a lesson complete. Returns true if this was a NEW completion
@@ -168,11 +187,15 @@ export function useProgress() {
         activityByDate: newActivity,
       };
 
-      try {
-        localStorage.setItem(PROGRESS_KEY, JSON.stringify(next));
-      } catch {
-        // ignore
+      writeLocal(next);
+
+      // Persist to the cloud if signed in (fire-and-forget).
+      const supabase = getSupabaseBrowser();
+      const uid = userIdRef.current;
+      if (supabase && uid) {
+        void upsertRemoteProgress(supabase, uid, next);
       }
+
       return next;
     });
 

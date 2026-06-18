@@ -6,6 +6,7 @@ import Footer from "@/components/Footer";
 import V2Animator from "@/components/V2Animator";
 import { Analytics } from "@vercel/analytics/react";
 import { SITE_URL, SITE_NAME, SITE_DESCRIPTION } from "@/lib/site";
+import { AuthProvider } from "@/lib/auth/AuthProvider";
 
 // Syne — bold geometric display, very distinctive for headings & hero text
 const syne = Syne({
@@ -139,10 +140,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <div id="v2-bg-grid" className="v2-bg-grid" />
         <div className="v2-bg-vignette" />
 
-        <V2Animator />
-        <Nav />
-        <main className="flex-1 relative" style={{ zIndex: 1 }}>{children}</main>
-        <Footer />
+        <AuthProvider>
+          <V2Animator />
+          <Nav />
+          <main className="flex-1 relative" style={{ zIndex: 1 }}>{children}</main>
+          <Footer />
+        </AuthProvider>
         <Analytics />
       </body>
     </html>

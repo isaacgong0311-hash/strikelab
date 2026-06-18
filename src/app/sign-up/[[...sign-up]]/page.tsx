@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { getSupabaseBrowser } from "@/lib/supabase/client";
 
 export default function SignUpPage() {
   const router = useRouter();
@@ -9,12 +10,77 @@ export default function SignUpPage() {
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [checkEmail, setCheckEmail] = useState(false);
 
-  function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+    setError(null);
     setLoading(true);
-    try { localStorage.setItem("sl_user", JSON.stringify({ name, email })); } catch {}
-    setTimeout(() => router.push("/dashboard"), 400);
+
+    const supabase = getSupabaseBrowser();
+
+    // Fallback when Supabase isn't configured yet — keep the old local behavior.
+    if (!supabase) {
+      try { localStorage.setItem("sl_user", JSON.stringify({ name, email })); } catch {}
+      router.push("/dashboard");
+      return;
+    }
+
+    const { data, error } = await supabase.auth.signUp({
+      email,
+      password,
+      options: {
+        data: { display_name: name, full_name: name },
+        emailRedirectTo: `${window.location.origin}/auth/callback?next=/dashboard`,
+      },
+    });
+
+    if (error) {
+      setError(error.message);
+      setLoading(false);
+      return;
+    }
+
+    // If email confirmation is on, there's no session yet.
+    if (data.session) {
+      router.push("/dashboard");
+      router.refresh();
+    } else {
+      setCheckEmail(true);
+      setLoading(false);
+    }
+  }
+
+  async function handleGoogle() {
+    const supabase = getSupabaseBrowser();
+    if (!supabase) return;
+    setError(null);
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: "google",
+      options: { redirectTo: `${window.location.origin}/auth/callback?next=/dashboard` },
+    });
+    if (error) setError(error.message);
+  }
+
+  const oauthEnabled = Boolean(getSupabaseBrowser());
+
+  if (checkEmail) {
+    return (
+      <div className="auth">
+        <div className="auth-card">
+          <div className="auth-brand"><span className="auth-logo">∫</span></div>
+          <h1 className="auth-title">Check your email</h1>
+          <p className="auth-sub">
+            We sent a confirmation link to <strong>{email}</strong>. Click it to
+            activate your account, then sign in.
+          </p>
+          <p className="auth-alt">
+            <Link href="/sign-in">Back to sign in</Link>
+          </p>
+        </div>
+      </div>
+    );
   }
 
   return (
@@ -23,6 +89,8 @@ export default function SignUpPage() {
         <div className="auth-brand"><span className="auth-logo">∫</span></div>
         <h1 className="auth-title">Start learning free</h1>
         <p className="auth-sub">All 10 lessons, the Python playground, and the Greek visualizer — free forever.</p>
+
+        {error && <p className="auth-error" style={{ color: "var(--coral, #ef4444)", fontSize: 13, marginBottom: 10 }}>{error}</p>}
 
         <form onSubmit={handleSubmit} className="auth-form">
           <label className="auth-label">
@@ -63,6 +131,12 @@ export default function SignUpPage() {
             {loading ? "Creating account…" : <>Create free account <span className="v2-arr">→</span></>}
           </button>
         </form>
+
+        {oauthEnabled && (
+          <button type="button" onClick={handleGoogle} className="v2-btn ghost" style={{ width: "100%", marginTop: 10 }}>
+            Continue with Google
+          </button>
+        )}
 
         <p className="auth-alt">
           Already have an account? <Link href="/sign-in">Sign in</Link>
