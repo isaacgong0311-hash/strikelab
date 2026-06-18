@@ -53,6 +53,9 @@ export const metadata: Metadata = {
   ],
   authors: [{ name: "Isaac Gong" }],
   creator: "Isaac Gong",
+  verification: {
+    google: "dxWqdFnQfkMopeBF2ZXbCzTOfY3A5gxR6oGKyciJ-JM",
+  },
   manifest: "/manifest.webmanifest",
   alternates: {
     canonical: "/",
