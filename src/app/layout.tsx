@@ -5,6 +5,7 @@ import Nav from "@/components/Nav";
 import Footer from "@/components/Footer";
 import V2Animator from "@/components/V2Animator";
 import { Analytics } from "@vercel/analytics/react";
+import { SITE_URL, SITE_NAME, SITE_DESCRIPTION } from "@/lib/site";
 
 // Syne — bold geometric display, very distinctive for headings & hero text
 const syne = Syne({
@@ -28,11 +29,57 @@ const jetbrains = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "StrikeLab — Options Pricing for High Schoolers",
-  description:
-    "Learn Black-Scholes, the Greeks, and options pricing by building a real pricing engine in your browser.",
-  applicationName: "StrikeLab",
+  metadataBase: new URL(SITE_URL),
+  title: {
+    default: "StrikeLab — Learn Options Pricing & Quant Finance",
+    template: "%s — StrikeLab",
+  },
+  description: SITE_DESCRIPTION,
+  applicationName: SITE_NAME,
+  keywords: [
+    "options pricing",
+    "Black-Scholes",
+    "the Greeks",
+    "quant finance for high schoolers",
+    "learn options trading",
+    "options pricing engine",
+    "implied volatility",
+    "quantitative finance course",
+    "Python finance",
+    "delta gamma theta vega",
+    "binomial tree options",
+    "CAPM",
+    "free quant finance course",
+  ],
+  authors: [{ name: "Isaac Gong" }],
+  creator: "Isaac Gong",
   manifest: "/manifest.webmanifest",
+  alternates: {
+    canonical: "/",
+  },
+  openGraph: {
+    type: "website",
+    siteName: SITE_NAME,
+    title: "StrikeLab — Learn Options Pricing & Quant Finance",
+    description: SITE_DESCRIPTION,
+    url: SITE_URL,
+    locale: "en_US",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "StrikeLab — Learn Options Pricing & Quant Finance",
+    description: SITE_DESCRIPTION,
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
+  },
   appleWebApp: {
     capable: true,
     statusBarStyle: "default",
@@ -47,6 +94,30 @@ export const viewport: Viewport = {
   viewportFit: "cover",
 };
 
+const STRUCTURED_DATA = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": ["Organization", "EducationalOrganization"],
+      "@id": `${SITE_URL}/#organization`,
+      name: SITE_NAME,
+      url: SITE_URL,
+      description: SITE_DESCRIPTION,
+      founder: { "@type": "Person", name: "Isaac Gong" },
+      sameAs: ["https://github.com/isaacgong0311-hash/strikelab"],
+    },
+    {
+      "@type": "WebSite",
+      "@id": `${SITE_URL}/#website`,
+      url: SITE_URL,
+      name: SITE_NAME,
+      description: SITE_DESCRIPTION,
+      publisher: { "@id": `${SITE_URL}/#organization` },
+      inLanguage: "en-US",
+    },
+  ],
+};
+
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html
@@ -57,6 +128,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         className="min-h-screen flex flex-col"
         style={{ background: "var(--bg)", color: "var(--text)", fontFamily: "var(--font-ui), system-ui, sans-serif" }}
       >
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(STRUCTURED_DATA) }}
+        />
         {/* Global v2 background — same on every page */}
         <div id="v2-bg-grid" className="v2-bg-grid" />
         <div className="v2-bg-vignette" />
