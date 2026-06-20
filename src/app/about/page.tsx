@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 export const metadata: Metadata = {
-  title: "About — StrikeLab",
+  title: "About",
   description: "Why a high school freshman and AIME qualifier built a quant finance platform for high schoolers.",
 };
 

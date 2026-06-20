@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 export const metadata: Metadata = {
-  title: "Roadmap — StrikeLab",
+  title: "Roadmap",
   description: "What's shipping next on StrikeLab.",
 };
 

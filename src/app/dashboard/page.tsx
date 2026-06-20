@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import DashboardClient from "./DashboardClient";
 
 export const metadata: Metadata = {
-  title: "Dashboard — StrikeLab",
+  title: "Dashboard",
   description: "Your progress, streak, and cohort rank at a glance.",
 };
 

@@ -3,7 +3,7 @@ import FAQClient from "./FAQClient";
 import { FAQ_GROUPS } from "@/lib/faq";
 
 export const metadata: Metadata = {
-  title: "FAQ — StrikeLab",
+  title: "FAQ",
   description: "Common questions about StrikeLab — pricing, curriculum, technical setup.",
   alternates: { canonical: "/faq" },
 };

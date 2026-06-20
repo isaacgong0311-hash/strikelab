@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import ChallengesClient from "./ChallengesClient";
 
 export const metadata: Metadata = {
-  title: "Weekly Challenge — StrikeLab Pro",
+  title: "Weekly Quant Challenges",
   description: "A new options pricing coding challenge every week. Implement the algorithm, pass the tests, earn XP.",
 };
 

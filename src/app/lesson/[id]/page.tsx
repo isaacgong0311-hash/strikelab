@@ -11,7 +11,7 @@ export async function generateStaticParams() {
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
   const { id } = await params;
   const ctx = getLessonContext(id);
-  if (!ctx) return { title: "Lesson — StrikeLab" };
+  if (!ctx) return { title: "Lesson" };
 
   const title = `${ctx.lesson.title} — StrikeLab`;
   const description = `${ctx.lesson.subtitle}. Lesson ${ctx.positionInTrack} of ${ctx.trackLength} in the ${ctx.track.title} track on StrikeLab — learn it by writing Python in your browser.`;
