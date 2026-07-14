@@ -227,7 +227,9 @@ export default function PlaygroundClient() {
     } catch (err: unknown) { setOutput(err instanceof Error ? err.message : String(err)); setStatus("fail"); }
   }, [code, S, T, r, sigma]);
 
-  runRef.current = runAndPlot;
+  useEffect(() => {
+    runRef.current = runAndPlot;
+  }, [runAndPlot]);
   useEffect(() => {
     const handler = (e: KeyboardEvent) => { if ((e.ctrlKey || e.metaKey) && e.key === "Enter") { e.preventDefault(); runRef.current?.(); } };
     window.addEventListener("keydown", handler);

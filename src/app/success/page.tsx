@@ -1,17 +1,16 @@
 "use client";
 import { Suspense, useEffect, useState } from "react";
-import { useSearchParams, useRouter } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 
 function SuccessContent() {
   const searchParams = useSearchParams();
-  const router = useRouter();
   const sessionId = searchParams.get("session_id");
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(!!sessionId);
   const [error, setError] = useState("");
 
   useEffect(() => {
-    if (!sessionId) { setLoading(false); return; }
+    if (!sessionId) return;
 
     // Ask Stripe for the customer ID so we can store it locally
     fetch(`/api/stripe/status?sessionId=${sessionId}`)
@@ -87,8 +86,8 @@ function SuccessContent() {
             }}>
               {[
                 "Weekly coding challenges with a live leaderboard",
-                "All Pro lessons (IV, strategies, binomial trees)",
                 "Paper trading sandbox with real market data",
+                "Real-time market data via Polygon.io",
                 "Certificate of completion",
               ].map((item) => (
                 <li key={item} style={{ display: "flex", gap: 10, fontSize: 14, color: "var(--ink-2)" }}>

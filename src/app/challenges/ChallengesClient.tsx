@@ -1,9 +1,10 @@
 "use client";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import dynamic from "next/dynamic";
 import Link from "next/link";
 import { getCurrentChallenge, getNextChallengeDate } from "@/lib/challenges";
 import { trackUpgradeClick } from "@/lib/analytics";
+import { startCheckout, useSubscription } from "@/lib/useSubscription";
 
 const MiniEditor = dynamic(() => import("@/components/MiniEditor"), { ssr: false });
 
@@ -46,45 +47,6 @@ function usePyodide() {
   }, []);
 }
 
-// ── Lock SVG icon ─────────────────────────────────────────────────────────────
-function LockIcon({ size = 40 }: { size?: number }) {
-  return (
-    <svg width={size} height={size} viewBox="0 0 40 40" fill="none" aria-hidden="true">
-      <rect x="8" y="18" width="24" height="18" rx="5" stroke="currentColor" strokeWidth="2"/>
-      <path d="M13 18v-5a7 7 0 0 1 14 0v5" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
-      <circle cx="20" cy="27" r="2.5" fill="currentColor"/>
-      <line x1="20" y1="29" x2="20" y2="33" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
-    </svg>
-  );
-}
-
-// ── Pro gate overlay ──────────────────────────────────────────────────────────
-function ProGate() {
-  return (
-    <div className="ch-gate">
-      <div className="ch-gate-card">
-        <div className="ch-gate-icon">
-          <LockIcon size={36} />
-        </div>
-        <h2 className="ch-gate-title">Pro feature</h2>
-        <p className="ch-gate-desc">
-          Weekly coding challenges, live leaderboards, XP bonuses, and a certificate of completion are all on the Pro plan.
-        </p>
-        <a
-          href={process.env.NEXT_PUBLIC_STRIPE_PRO_LINK ?? "/sign-up"}
-          target="_blank"
-          rel="noopener noreferrer"
-          onClick={() => trackUpgradeClick("challenges_gate")}
-          className="ch-gate-btn"
-        >
-          Start 7-Day Free Trial →
-        </a>
-        <Link href="/pricing" className="ch-gate-link">See all Pro features</Link>
-      </div>
-    </div>
-  );
-}
-
 // ── Rank badge ────────────────────────────────────────────────────────────────
 const RANK_STYLES: Record<number, { bg: string; color: string; label: string }> = {
   1: { bg: "rgba(212,175,55,0.18)", color: "#c9a227", label: "01" },
@@ -124,13 +86,14 @@ export default function ChallengesClient() {
   const [status, setStatus] = useState<"idle" | "running" | "pass" | "fail">("idle");
   const [attempts, setAttempts] = useState(0);
   const [showHint, setShowHint] = useState(false);
-  const isPro = false;
+  const { isPro } = useSubscription();
+  const [checkoutLoading, setCheckoutLoading] = useState(false);
 
   const runRef = useRef<(() => void) | null>(null);
   const outBorder = status==="pass" ? "rgba(34,197,94,0.45)" : status==="fail" ? "rgba(239,68,68,0.35)" : "var(--border)";
   const diff = DIFFICULTY_STYLES[challenge.difficulty] ?? DIFFICULTY_STYLES.medium;
 
-  async function runCode() {
+  const runCode = useCallback(async function runCode() {
     setStatus("running"); setOutput("Running tests…"); setAttempts(n => n + 1);
     try {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -143,8 +106,10 @@ export default function ChallengesClient() {
       setOutput(err instanceof Error ? err.message : String(err));
       setStatus("fail");
     }
-  }
-  runRef.current = runCode;
+  }, [challenge.testCode, code]);
+  useEffect(() => {
+    runRef.current = runCode;
+  }, [runCode]);
 
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
@@ -153,6 +118,18 @@ export default function ChallengesClient() {
     window.addEventListener("keydown", handler);
     return () => window.removeEventListener("keydown", handler);
   }, []);
+
+  async function handleUpgrade(source: string) {
+    trackUpgradeClick(source);
+    setCheckoutLoading(true);
+    try {
+      await startCheckout("pro");
+    } catch (err: unknown) {
+      setCheckoutLoading(false);
+      setOutput(err instanceof Error ? err.message : "Could not start checkout.");
+      setStatus("fail");
+    }
+  }
 
   return (
     <div className="ch-root">
@@ -267,16 +244,14 @@ export default function ChallengesClient() {
                     )}
                   </div>
                 ) : (
-                  <a
-                    href={process.env.NEXT_PUBLIC_STRIPE_PRO_LINK ?? "/sign-up"}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    onClick={() => trackUpgradeClick("challenges_run_btn")}
+                  <button
+                    type="button"
+                    onClick={() => handleUpgrade("challenges_run_btn")}
+                    disabled={checkoutLoading}
                     className="ch-run-btn"
-                    style={{ textDecoration: "none" }}
                   >
-                    Unlock with Pro → Start free trial
-                  </a>
+                    {checkoutLoading ? "Redirecting…" : "Unlock with Pro → Start free trial"}
+                  </button>
                 )}
                 {attempts > 0 && (
                   <span className="ch-attempts">{attempts} attempt{attempts > 1 ? "s" : ""}</span>
@@ -342,14 +317,14 @@ export default function ChallengesClient() {
             </div>
             {!isPro && (
               <div className="ch-panel-footer">
-                <a
-                  href={process.env.NEXT_PUBLIC_STRIPE_PRO_LINK ?? "/sign-up"}
-                  target="_blank" rel="noopener noreferrer"
-                  onClick={() => trackUpgradeClick("challenges_leaderboard")}
+                <button
+                  type="button"
+                  onClick={() => handleUpgrade("challenges_leaderboard")}
+                  disabled={checkoutLoading}
                   className="ch-upgrade-link"
                 >
-                  Upgrade to compete →
-                </a>
+                  {checkoutLoading ? "Redirecting…" : "Upgrade to compete →"}
+                </button>
               </div>
             )}
           </div>

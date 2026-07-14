@@ -2,6 +2,9 @@
 import { useState } from "react";
 import Link from "next/link";
 import { startCheckout } from "@/lib/useSubscription";
+import { TRACKS } from "@/lib/tracks";
+
+const TOTAL_LESSONS = TRACKS.reduce((s, t) => s + t.lessons.length, 0);
 
 const TIERS = [
   {
@@ -15,7 +18,7 @@ const TIERS = [
     popular: false,
     accent: "#16201c",
     features: [
-      "All 10 lessons",
+      `All ${TOTAL_LESSONS} lessons`,
       "Browser-based Python playground (Pyodide)",
       "Live Greek visualizer (Δ, Γ, Θ, ν, ρ)",
       "Formula reference panel",
@@ -38,7 +41,6 @@ const TIERS = [
       "Everything in Student",
       "Weekly coding challenges + achievements",
       "Paper trading sandbox with live option chains",
-      "Advanced lessons (IV, strategies, binomial trees)",
       "Real-time market data via Polygon.io",
       "Weekly office hours with the founder",
       "Certificate of completion",
@@ -72,11 +74,11 @@ const TIERS = [
 const FAQ = [
   {
     q: "Is the free tier really free forever?",
-    a: "Yes. All 10 lessons, the Python playground, and the Greek visualizer stay free forever. We don't gate the educational core — the value-add tiers fund the platform.",
+    a: `Yes. All ${TOTAL_LESSONS} lessons, the Python playground, and the Greek visualizer stay free forever. We don't gate the educational core — the value-add tiers fund the platform.`,
   },
   {
     q: "What does the 7-day free trial include?",
-    a: "Full access to all Pro features — challenges, advanced lessons, and the paper trading sandbox. No charge until the trial ends. Cancel anytime from the billing portal.",
+    a: "Full access to all Pro features — weekly challenges, the paper trading sandbox, and real-time market data. No charge until the trial ends. Cancel anytime from the billing portal.",
   },
   {
     q: "What ages is StrikeLab for?",

@@ -9,30 +9,30 @@ export const metadata: Metadata = {
 const ROADMAP = [
   {
     quarter: "Q2 2026",
-    label: "Shipping now",
+    label: "Shipped",
     color: "#16a34a",
     items: [
-      { title: "Lessons 8–10 shipped ✓", state: "in-progress", desc: "Implied Volatility (Newton-Raphson IV solver), Option Strategies (spreads, straddles, iron condor), and Binomial Trees (CRR, American options) all live." },
+      { title: "Lessons 8–10 shipped ✓", state: "done", desc: "Implied Volatility (Newton-Raphson IV solver), Option Strategies (spreads, straddles, iron condor), and Binomial Trees (CRR, American options) all live." },
+      { title: "Weekly coding challenges ✓", state: "done", desc: "Time-boxed problems scored on correctness + elegance — quant interview prep, gamified. Live on the Challenges page." },
       { title: "Mobile-responsive layout", state: "in-progress", desc: "All lessons + playground fully usable on phone." },
-      { title: "Rho lesson", state: "planned", desc: "The interest-rate Greek. How rate changes move long-dated options." },
-      { title: "Interactive payoff diagrams", state: "planned", desc: "Drag-to-build strategy payoff charts directly in the lesson UI." },
     ],
   },
   {
     quarter: "Q3 2026",
-    label: "Next up",
-    color: "#2f6df0",
+    label: "Shipping now",
+    color: "#16a34a",
     items: [
-      { title: "Paper-trading sandbox", state: "planned", desc: "Real (delayed) option chains via Polygon.io free tier." },
-      { title: "Weekly coding challenges", state: "planned", desc: "Time-boxed problems scored on correctness + elegance — quant interview prep, gamified." },
+      { title: "Paper-trading sandbox", state: "in-progress", desc: "Real (delayed) option chains via Polygon.io free tier." },
+      { title: "Rho lesson", state: "planned", desc: "The interest-rate Greek. How rate changes move long-dated options." },
       { title: "Achievement system", state: "planned", desc: "Badges for completing tracks, perfect Greek scores, streak milestones." },
+      { title: "Interactive payoff diagrams", state: "planned", desc: "Drag-to-build strategy payoff charts directly in the lesson UI." },
       { title: "Binomial tree visualizer", state: "planned", desc: "Interactive lattice diagram — click any node to inspect the early-exercise decision." },
     ],
   },
   {
     quarter: "Q4 2026",
-    label: "Later this year",
-    color: "#848484",
+    label: "Next up",
+    color: "#2f6df0",
     items: [
       { title: "Certificates of completion", state: "planned", desc: "Shareable on LinkedIn. Verifiable on-chain (optional)." },
       { title: "Teacher dashboard (School plan)", state: "planned", desc: "Class progress, assignment grading, curriculum alignment." },
@@ -54,7 +54,8 @@ const ROADMAP = [
 ];
 
 const STATE_STYLES = {
-  "in-progress": { label: "In progress", color: "#16a34a" },
+  "done":        { label: "Shipped",     color: "#16a34a" },
+  "in-progress": { label: "In progress", color: "#2f6df0" },
   "planned":     { label: "Planned",     color: "#646464" },
   "exploring":   { label: "Exploring",   color: "#848484" },
 };

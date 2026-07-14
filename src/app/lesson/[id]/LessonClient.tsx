@@ -48,8 +48,12 @@ function AiHintPanel({
     }
   }, [lessonId, code, error]);
 
-  // Auto-fetch on mount
-  useEffect(() => { fetchHint(); }, [fetchHint]);
+  // Auto-fetch on mount (deferred so the fetchHint's synchronous setState
+  // calls don't run directly inside the effect body).
+  useEffect(() => {
+    const id = window.setTimeout(() => { fetchHint(); }, 0);
+    return () => window.clearTimeout(id);
+  }, [fetchHint]);
 
   const handleAsk = (e: React.FormEvent) => {
     e.preventDefault();

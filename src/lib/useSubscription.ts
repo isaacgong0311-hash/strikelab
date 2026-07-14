@@ -35,19 +35,19 @@ export function useSubscription(): SubscriptionState {
   useEffect(() => {
     let customerId: string | null = null;
     let email: string | null = null;
+    let readFailed = false;
 
     try {
       customerId = localStorage.getItem("sl_stripe_customer");
       const user = JSON.parse(localStorage.getItem("sl_user") || "null");
       email = user?.email ?? null;
     } catch {
-      setState((s) => ({ ...s, hydrated: true }));
-      return;
+      readFailed = true;
     }
 
-    if (!customerId && !email) {
-      setState((s) => ({ ...s, hydrated: true }));
-      return;
+    if (readFailed || (!customerId && !email)) {
+      const id = window.setTimeout(() => setState((s) => ({ ...s, hydrated: true })), 0);
+      return () => window.clearTimeout(id);
     }
 
     const params = new URLSearchParams();

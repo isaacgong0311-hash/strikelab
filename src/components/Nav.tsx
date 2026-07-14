@@ -1,6 +1,7 @@
 "use client";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 import { useProgress } from "@/lib/useProgress";
 import { useAuth } from "@/lib/auth/AuthProvider";
 
@@ -61,6 +62,22 @@ function DiamondIcon() {
   );
 }
 
+function MenuIcon({ open }: { open: boolean }) {
+  return (
+    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+      {open ? (
+        <path d="M5 5L15 15M15 5L5 15" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+      ) : (
+        <>
+          <line x1="3" y1="5.5" x2="17" y2="5.5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+          <line x1="3" y1="10" x2="17" y2="10" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+          <line x1="3" y1="14.5" x2="17" y2="14.5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+        </>
+      )}
+    </svg>
+  );
+}
+
 function GitHubIcon() {
   return (
     <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
@@ -73,15 +90,34 @@ export default function Nav() {
   const path = usePathname();
   const router = useRouter();
   const isActive = (href: string) => path === href || path.startsWith(href + "/");
-  const isHome = path === "/";
   const { xp, streak, hydrated } = useProgress();
   const { user, displayName, signOut } = useAuth();
+  const [menuOpen, setMenuOpen] = useState(false);
+
+  // Close the mobile menu whenever the route changes (adjust state during
+  // render rather than in an effect — see https://react.dev/learn/you-might-not-need-an-effect).
+  const [lastPath, setLastPath] = useState(path);
+  if (path !== lastPath) {
+    setLastPath(path);
+    setMenuOpen(false);
+  }
+
+  // Lock body scroll while the mobile menu is open.
+  useEffect(() => {
+    if (!menuOpen) return;
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => { document.body.style.overflow = prev; };
+  }, [menuOpen]);
 
   async function handleSignOut() {
+    setMenuOpen(false);
     await signOut();
     router.push("/");
     router.refresh();
   }
+
+  const allLinks = [...PRIMARY, ...SECONDARY] as { href: string; label: string; pro?: boolean }[];
 
   return (
     <>
@@ -108,7 +144,7 @@ export default function Nav() {
           </Link>
 
           <div className="nav-links">
-            {([...PRIMARY, ...SECONDARY] as { href: string; label: string; pro?: boolean }[]).map((l, i) => {
+            {allLinks.map((l, i) => {
               const active = isActive(l.href);
               const isFirstSecondary = i === PRIMARY.length;
               return (
@@ -194,8 +230,77 @@ export default function Nav() {
               </Link>
             </>
           )}
+
+          {/* Mobile menu toggle — only visible below the nav-links breakpoint */}
+          <button
+            type="button"
+            className="nav-hamburger"
+            aria-label={menuOpen ? "Close menu" : "Open menu"}
+            aria-expanded={menuOpen}
+            onClick={() => setMenuOpen((v) => !v)}
+          >
+            <MenuIcon open={menuOpen} />
+          </button>
         </div>
       </nav>
+
+      {/* ─── Mobile menu panel ─────────────────────────────────────────────── */}
+      {menuOpen && (
+        <div className="nav-mobile-overlay" onClick={() => setMenuOpen(false)}>
+          <div className="nav-mobile-panel" onClick={(e) => e.stopPropagation()}>
+            <div className="nav-mobile-links">
+              {allLinks.map((l) => (
+                <Link
+                  key={l.href}
+                  href={l.href}
+                  className={`nav-mobile-link${isActive(l.href) ? " active" : ""}`}
+                >
+                  {l.label}
+                  {"pro" in l && l.pro && <span className="nav-pro-badge">PRO</span>}
+                </Link>
+              ))}
+            </div>
+            <div className="nav-mobile-divider" />
+            {hydrated && (
+              <div className="nav-mobile-stats">
+                <span className={`nav-stat-pill${streak > 0 ? " streak-active" : ""}`} style={{ display: "flex" }}>
+                  <FlameIcon /><span>{streak} day streak</span>
+                </span>
+                <span className="nav-stat-pill xp" style={{ display: "flex" }}>
+                  <DiamondIcon /><span>{xp} XP</span>
+                </span>
+              </div>
+            )}
+            <a
+              href="https://github.com/isaacgong0311-hash/strikelab"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="nav-mobile-link"
+            >
+              <GitHubIcon /> <span style={{ marginLeft: 6 }}>GitHub</span>
+            </a>
+            {user ? (
+              <>
+                {displayName && (
+                  <Link href="/dashboard" className="nav-mobile-link" title={user.email ?? undefined}>
+                    {displayName}
+                  </Link>
+                )}
+                <button type="button" onClick={handleSignOut} className="nav-cta" style={{ marginTop: 8, justifyContent: "center" }}>
+                  Sign out
+                </button>
+              </>
+            ) : (
+              <>
+                <Link href="/sign-in" className="nav-mobile-link">Sign in</Link>
+                <Link href="/sign-up" className="nav-cta" style={{ marginTop: 8, justifyContent: "center" }}>
+                  Start free <span aria-hidden="true">→</span>
+                </Link>
+              </>
+            )}
+          </div>
+        </div>
+      )}
     </>
   );
 }
