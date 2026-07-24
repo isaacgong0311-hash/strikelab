@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import { trackNewsletterSignup } from "@/lib/analytics";
 
 // Web3Forms: free email forwarding, no backend needed.
 // Sign up at web3forms.com → get an access key → set NEXT_PUBLIC_WEB3FORMS_KEY in .env.local
@@ -29,6 +30,7 @@ export default function NewsletterSignup() {
         });
         const data = await res.json();
         if (data.success) {
+          trackNewsletterSignup();
           setState("done");
         } else {
           setState("error");

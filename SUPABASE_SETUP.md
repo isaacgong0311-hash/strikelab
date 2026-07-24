@@ -23,6 +23,9 @@ breaks in production while the keys are missing.
 2. Paste the entire contents of [`supabase/migrations/0001_init.sql`](supabase/migrations/0001_init.sql).
 3. Click **Run**. This creates the `profiles` and `progress` tables, Row Level
    Security policies, and a trigger that auto-creates a profile on signup.
+4. Run [`supabase/migrations/0002_subscriptions.sql`](supabase/migrations/0002_subscriptions.sql)
+   the same way. This adds `subscriptions` (Stripe entitlement state, written
+   only by the webhook) and `hint_usage` (daily AI-hint quota).
 
 ## 3. Grab your API keys
 
@@ -32,7 +35,13 @@ In the dashboard: **Settings → API**. Copy:
 - **anon / public key** → `NEXT_PUBLIC_SUPABASE_ANON_KEY`
 
 > The anon key is safe to expose in the browser — Row Level Security is what
-> protects the data. You do **not** need the service-role key for this setup.
+> protects the data.
+
+You'll also need the **service-role key** (same page) → `SUPABASE_SERVICE_ROLE_KEY`.
+This one bypasses Row Level Security, so it's server-only — it's used
+exclusively by the Stripe webhook (`src/app/api/stripe/webhook/route.ts`) to
+write subscription status, since that request has no user session to
+authenticate as. Never expose it in client code or a `NEXT_PUBLIC_*` var.
 
 ## 4. Add the keys locally
 
@@ -41,14 +50,16 @@ Edit `.env.local` (already created, git-ignored):
 ```bash
 NEXT_PUBLIC_SUPABASE_URL=https://YOUR-PROJECT.supabase.co
 NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJhbGciOi...your-anon-key
+SUPABASE_SERVICE_ROLE_KEY=eyJhbGciOi...your-service-role-key
 ```
 
 Then `npm run dev` — you can now sign up, sign in, and your progress syncs.
 
 ## 5. Add the keys to Vercel (for production)
 
-In your Vercel project: **Settings → Environment Variables**. Add the same two
-variables for the **Production** (and Preview) environments, then redeploy.
+In your Vercel project: **Settings → Environment Variables**. Add the same
+three variables for the **Production** (and Preview) environments, then
+redeploy.
 
 > Heads up: don't paste keys through `vercel env add` via a piped value on
 > PowerShell — it can corrupt them with a BOM. Use the Vercel dashboard UI, or
@@ -82,14 +93,16 @@ If you don't set this up, just use email/password — everything else works.
 
 | Piece | File |
 |-------|------|
-| Browser/server/middleware clients | `src/lib/supabase/` |
+| Browser/server/proxy/admin clients | `src/lib/supabase/` |
+| Shared "who's the signed-in user" helper | `src/lib/supabase/requireUser.ts` |
 | Auth context (`useAuth`) | `src/lib/auth/AuthProvider.tsx` |
-| Session refresh | `src/middleware.ts` |
+| Session refresh | `src/proxy.ts` |
 | OAuth/email callback | `src/app/auth/callback/route.ts` |
 | Sign in / sign up | `src/app/sign-in`, `src/app/sign-up` |
 | Progress sync (local ⇄ cloud) | `src/lib/useProgress.ts`, `src/lib/progress/sync.ts` |
 | Progress API (server) | `src/app/api/progress/route.ts` |
-| Schema + RLS + trigger | `supabase/migrations/0001_init.sql` |
+| Subscription state (Stripe ⇄ Supabase) | `src/app/api/stripe/webhook/route.ts`, `subscriptions` table |
+| Schema + RLS + trigger | `supabase/migrations/0001_init.sql`, `0002_subscriptions.sql` |
 
 Progress made while logged out is preserved and **merged up** to your account
 on first sign-in — no completions are lost.

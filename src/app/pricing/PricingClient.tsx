@@ -40,11 +40,11 @@ const TIERS = [
     features: [
       "Everything in Student",
       "Weekly coding challenges + achievements",
-      "Paper trading sandbox with live option chains",
-      "Real-time market data via Polygon.io",
       "Weekly office hours with the founder",
       "Certificate of completion",
       "Priority email support",
+      "Paper trading sandbox — coming soon",
+      "Real-time market data via Polygon.io — coming soon",
     ],
   },
   {
@@ -78,7 +78,7 @@ const FAQ = [
   },
   {
     q: "What does the 7-day free trial include?",
-    a: "Full access to all Pro features — weekly challenges, the paper trading sandbox, and real-time market data. No charge until the trial ends. Cancel anytime from the billing portal.",
+    a: "Full access to everything currently live in Pro — weekly coding challenges, achievements, and the certificate of completion. No charge until the trial ends. Cancel anytime from the billing portal.",
   },
   {
     q: "What ages is StrikeLab for?",

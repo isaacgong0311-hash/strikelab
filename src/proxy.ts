@@ -3,7 +3,7 @@ import { updateSession } from "@/lib/supabase/middleware";
 
 // Refreshes the Supabase auth session cookie on every request.
 // No-op (just passes through) when Supabase env vars aren't set.
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   return updateSession(request);
 }
 

@@ -12,22 +12,30 @@ function SuccessContent() {
   useEffect(() => {
     if (!sessionId) return;
 
-    // Ask Stripe for the customer ID so we can store it locally
-    fetch(`/api/stripe/status?sessionId=${sessionId}`)
-      .then((r) => r.json())
-      .then((data) => {
-        if (data.customerId) {
-          try { localStorage.setItem("sl_stripe_customer", data.customerId); } catch {}
+    // The webhook persists subscription state asynchronously — poll status
+    // briefly so this page reflects Pro as soon as it lands.
+    let attempts = 0;
+    let cancelled = false;
+
+    async function poll() {
+      while (!cancelled && attempts < 5) {
+        attempts++;
+        try {
+          const res = await fetch("/api/stripe/status");
+          const data = await res.json();
+          if (data.isPro) return;
+        } catch {
+          // keep trying
         }
-        if (data.email) {
-          try {
-            const user = JSON.parse(localStorage.getItem("sl_user") || "{}");
-            localStorage.setItem("sl_user", JSON.stringify({ ...user, email: data.email }));
-          } catch {}
-        }
-      })
+        await new Promise((r) => setTimeout(r, 1000));
+      }
+    }
+
+    poll()
       .catch(() => setError("Could not verify subscription — contact hello@strikelab.app"))
-      .finally(() => setLoading(false));
+      .finally(() => { if (!cancelled) setLoading(false); });
+
+    return () => { cancelled = true; };
   }, [sessionId]);
 
   return (
@@ -86,9 +94,8 @@ function SuccessContent() {
             }}>
               {[
                 "Weekly coding challenges with a live leaderboard",
-                "Paper trading sandbox with real market data",
-                "Real-time market data via Polygon.io",
                 "Certificate of completion",
+                "Priority email support",
               ].map((item) => (
                 <li key={item} style={{ display: "flex", gap: 10, fontSize: 14, color: "var(--ink-2)" }}>
                   <span style={{ color: "var(--grass)", fontWeight: 700, flexShrink: 0 }}>✓</span>

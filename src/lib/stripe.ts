@@ -4,7 +4,19 @@
  */
 import Stripe from "stripe";
 
+// NEXT_PHASE is "phase-production-build" during `next build`, when env vars
+// that only exist at runtime (e.g. Vercel's Production env target) may not
+// be available yet — only fail fast once we're actually serving traffic.
+const isProductionRuntime =
+  (process.env.VERCEL_ENV === "production" || process.env.NODE_ENV === "production") &&
+  process.env.NEXT_PHASE !== "phase-production-build";
+
 if (!process.env.STRIPE_SECRET_KEY) {
+  if (isProductionRuntime) {
+    throw new Error(
+      "STRIPE_SECRET_KEY is not set in production. Refusing to start with a placeholder key.",
+    );
+  }
   console.warn("⚠️  STRIPE_SECRET_KEY is not set. Stripe calls will fail.");
 }
 
