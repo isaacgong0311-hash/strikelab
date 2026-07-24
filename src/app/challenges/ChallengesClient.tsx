@@ -86,7 +86,7 @@ export default function ChallengesClient() {
   const [status, setStatus] = useState<"idle" | "running" | "pass" | "fail">("idle");
   const [attempts, setAttempts] = useState(0);
   const [showHint, setShowHint] = useState(false);
-  const { isPro } = useSubscription();
+  const { isPro, hydrated: subHydrated } = useSubscription();
   const [checkoutLoading, setCheckoutLoading] = useState(false);
 
   const runRef = useRef<(() => void) | null>(null);
@@ -230,7 +230,11 @@ export default function ChallengesClient() {
 
               {/* Run bar */}
               <div className="ch-run-bar">
-                {isPro ? (
+                {!subHydrated ? (
+                  <button disabled className="ch-run-btn" style={{ opacity: 0.5 }}>
+                    ▶ Run Tests
+                  </button>
+                ) : isPro ? (
                   <div className="ch-run-left">
                     <button onClick={runCode} disabled={status==="running"} className="ch-run-btn">
                       {status==="running"
@@ -318,7 +322,7 @@ export default function ChallengesClient() {
                 );
               })}
             </div>
-            {!isPro && (
+            {subHydrated && !isPro && (
               <div className="ch-panel-footer">
                 <button
                   type="button"
@@ -336,7 +340,7 @@ export default function ChallengesClient() {
           <div className="ch-panel">
             <div className="ch-panel-header">
               <span className="ch-panel-title">Challenge Archive</span>
-              {!isPro && <span className="ch-pro-tag">Pro</span>}
+              {subHydrated && !isPro && <span className="ch-pro-tag">Pro</span>}
             </div>
             <div className="ch-archive">
               {ARCHIVE.map(item => (
@@ -351,7 +355,7 @@ export default function ChallengesClient() {
                 </div>
               ))}
             </div>
-            {!isPro && (
+            {subHydrated && !isPro && (
               <p className="ch-archive-note">Pro members access all past challenges.</p>
             )}
           </div>
@@ -373,7 +377,7 @@ export default function ChallengesClient() {
                 <div className="ch-stat-l">Bonus XP</div>
               </div>
             </div>
-            {!isPro && (
+            {subHydrated && !isPro && (
               <Link href="/pricing" className="ch-panel-cta">Unlock with Pro →</Link>
             )}
           </div>

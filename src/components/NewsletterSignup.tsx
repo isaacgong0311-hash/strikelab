@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
 import { trackNewsletterSignup } from "@/lib/analytics";
+import Eyebrow from "@/components/Eyebrow";
 
 // Web3Forms: free email forwarding, no backend needed.
 // Sign up at web3forms.com → get an access key → set NEXT_PUBLIC_WEB3FORMS_KEY in .env.local
@@ -55,12 +56,7 @@ export default function NewsletterSignup() {
     >
       <div className="grid grid-cols-1 md:grid-cols-[1.2fr_1fr] gap-6 items-center">
         <div>
-          <div
-            className="text-[10px] tracking-widest uppercase mb-2 opacity-50"
-            style={{ fontFamily: "var(--font-mono)", color: "#888888" }}
-          >
-            Newsletter
-          </div>
+          <Eyebrow>Newsletter</Eyebrow>
           <h3
             className="text-xl font-semibold mb-2"
             style={{ fontFamily: "var(--font-display)", color: "var(--ink)" }}
@@ -90,6 +86,7 @@ export default function NewsletterSignup() {
               <input
                 type="email"
                 required
+                aria-label="Email address"
                 placeholder="you@school.edu"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}

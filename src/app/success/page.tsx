@@ -17,22 +17,32 @@ function SuccessContent() {
     let attempts = 0;
     let cancelled = false;
 
-    async function poll() {
+    async function poll(): Promise<boolean> {
       while (!cancelled && attempts < 5) {
         attempts++;
         try {
           const res = await fetch("/api/stripe/status");
           const data = await res.json();
-          if (data.isPro) return;
+          if (data.isPro) return true;
         } catch {
           // keep trying
         }
         await new Promise((r) => setTimeout(r, 1000));
       }
+      return false;
     }
 
     poll()
-      .catch(() => setError("Could not verify subscription — contact hello@strikelab.app"))
+      .then((confirmed) => {
+        if (!confirmed && !cancelled) {
+          setError(
+            "Your payment went through, but we couldn't confirm your subscription yet. Give it a minute and refresh — contact hello@strikelab.app if it still doesn't show up.",
+          );
+        }
+      })
+      .catch(() => {
+        if (!cancelled) setError("Could not verify subscription — contact hello@strikelab.app");
+      })
       .finally(() => { if (!cancelled) setLoading(false); });
 
     return () => { cancelled = true; };
@@ -51,12 +61,25 @@ function SuccessContent() {
       }}>
         {loading ? (
           <>
-            <div style={{ fontSize: 48, marginBottom: 16 }}>⏳</div>
+            <div style={{
+              width: 80, height: 80, borderRadius: "50%",
+              background: "var(--bg2)", display: "flex",
+              alignItems: "center", justifyContent: "center",
+              fontSize: 32, color: "var(--ink-2)",
+              margin: "0 auto 24px",
+            }} className="ch-spin">◌</div>
             <p style={{ color: "var(--ink-2)" }}>Confirming your subscription…</p>
           </>
         ) : error ? (
           <>
-            <div style={{ fontSize: 48, marginBottom: 16 }}>⚠️</div>
+            <div style={{
+              width: 80, height: 80, borderRadius: "50%",
+              background: "var(--coral)", display: "flex",
+              alignItems: "center", justifyContent: "center",
+              fontSize: 36, fontWeight: 700, color: "#fff",
+              boxShadow: "0 6px 0 #bf4830",
+              margin: "0 auto 24px",
+            }}>!</div>
             <h1 style={{ fontFamily: "var(--font-display)", fontSize: 26, color: "var(--ink)", marginBottom: 10 }}>
               Something went wrong
             </h1>

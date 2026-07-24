@@ -299,6 +299,7 @@ export default function Home() {
                     <input
                       type="email"
                       placeholder="you@school.edu"
+                      aria-label="Email address"
                       required
                       value={subEmail}
                       onChange={(e) => setSubEmail(e.target.value)}

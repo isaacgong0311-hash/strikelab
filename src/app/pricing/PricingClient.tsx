@@ -3,6 +3,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { startCheckout } from "@/lib/useSubscription";
 import { TRACKS } from "@/lib/tracks";
+import Eyebrow from "@/components/Eyebrow";
 
 const TOTAL_LESSONS = TRACKS.reduce((s, t) => s + t.lessons.length, 0);
 
@@ -109,10 +110,7 @@ export default function PricingClient() {
     <div className="max-w-6xl mx-auto px-6 py-14">
       {/* Header */}
       <div className="text-center mb-12">
-        <div className="text-[10px] tracking-widest uppercase mb-2 opacity-50"
-          style={{ fontFamily: "var(--font-mono)", color: "var(--ink-3)" }}>
-          Pricing
-        </div>
+        <Eyebrow>Pricing</Eyebrow>
         <h1 className="text-4xl font-semibold mb-3"
           style={{ fontFamily: "var(--font-display)", color: "var(--ink)" }}>
           Free forever for students.

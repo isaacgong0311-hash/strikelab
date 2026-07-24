@@ -6,6 +6,7 @@ import { QUIZZES, type QuizQuestion } from "@/lib/quizzes";
 import dynamic from "next/dynamic";
 import { useProgress } from "@/lib/useProgress";
 import { trackLessonStart, trackTestsPassed, trackLessonComplete, trackQuizAnswer } from "@/lib/analytics";
+import Eyebrow from "@/components/Eyebrow";
 
 // ─── AI Hint panel ────────────────────────────────────────────────────────────
 function AiHintPanel({
@@ -158,6 +159,7 @@ function AiHintPanel({
           <input
             type="text"
             placeholder="Ask a follow-up question…"
+            aria-label="Ask a follow-up question"
             value={question}
             onChange={(e) => setQuestion(e.target.value)}
             style={{
@@ -479,12 +481,7 @@ export default function LessonClient({ lesson, prev, next, trackTitle, positionI
             </div>
           )}
 
-          <div
-            className="text-xs tracking-widest uppercase mb-2 opacity-50"
-            style={{ fontFamily: "var(--font-mono)", color: "var(--ink-3)" }}
-          >
-            {trackTitle} · Lesson {positionInTrack} of {trackLength}
-          </div>
+          <Eyebrow>{trackTitle} · Lesson {positionInTrack} of {trackLength}</Eyebrow>
           <h1
             className="text-3xl font-semibold mb-1"
             style={{ fontFamily: "var(--font-display)", color: "var(--ink)" }}

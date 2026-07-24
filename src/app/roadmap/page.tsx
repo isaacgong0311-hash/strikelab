@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import Eyebrow from "@/components/Eyebrow";
 
 export const metadata: Metadata = {
   title: "Roadmap",
@@ -66,12 +67,7 @@ export default function RoadmapPage() {
 
       {/* Header */}
       <div className="mb-10">
-        <div
-          className="text-[10px] tracking-widest uppercase mb-2 opacity-50"
-          style={{ fontFamily: "var(--font-mono)", color: "var(--ink-3)" }}
-        >
-          Roadmap
-        </div>
+        <Eyebrow>Roadmap</Eyebrow>
         <h1
           className="text-4xl font-semibold mb-3 leading-tight"
           style={{ fontFamily: "var(--font-display)", color: "var(--ink)" }}

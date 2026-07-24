@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Eyebrow from "@/components/Eyebrow";
 
 export const metadata: Metadata = {
   title: "About",
@@ -46,14 +47,9 @@ export default function AboutPage() {
 
       {/* Hero */}
       <div className="v2-page-head mb-14" data-v2-head style={{ padding: 0, border: 0 }}>
-        <div
-          className="text-[10px] tracking-widest uppercase mb-2 opacity-50"
-          style={{ fontFamily: "var(--font-mono)", color: "#888888" }}
-        >
-          About
-        </div>
+        <Eyebrow>About</Eyebrow>
         <h1
-          className="text-4xl font-semibold text-[#16201c] mb-5 leading-tight"
+          className="text-4xl font-semibold mb-5 leading-tight"
           style={{ fontFamily: "var(--font-display)", color: "var(--ink)" }}
         >
           Built by a high schooler<br />
@@ -88,14 +84,9 @@ export default function AboutPage() {
           IG
         </div>
         <div>
-          <div
-            className="text-[10px] tracking-widest uppercase mb-1.5 opacity-50"
-            style={{ fontFamily: "var(--font-mono)", color: "#888888" }}
-          >
-            Founder
-          </div>
+          <Eyebrow className="mb-1.5">Founder</Eyebrow>
           <h2
-            className="text-2xl font-semibold text-[#16201c] mb-1"
+            className="text-2xl font-semibold mb-1"
             style={{ fontFamily: "var(--font-display)", color: "var(--ink)" }}
           >
             Isaac Gong
@@ -119,14 +110,9 @@ export default function AboutPage() {
 
       {/* Mission */}
       <div className="v2-rise mb-14">
-        <div
-          className="text-[10px] tracking-widest uppercase mb-2 opacity-50"
-          style={{ fontFamily: "var(--font-mono)", color: "#888888" }}
-        >
-          Mission
-        </div>
+        <Eyebrow>Mission</Eyebrow>
         <h2
-          className="text-2xl font-semibold text-[#16201c] mb-3"
+          className="text-2xl font-semibold mb-3"
           style={{ fontFamily: "var(--font-display)", color: "var(--ink)" }}
         >
           Quant finance shouldn&rsquo;t require the right zip code.
@@ -141,14 +127,9 @@ export default function AboutPage() {
 
       {/* Values */}
       <div className="mb-14">
-        <div
-          className="text-[10px] tracking-widest uppercase mb-2 opacity-50"
-          style={{ fontFamily: "var(--font-mono)", color: "#888888" }}
-        >
-          Principles
-        </div>
+        <Eyebrow>Principles</Eyebrow>
         <h2
-          className="text-xl font-semibold text-[#16201c] mb-5"
+          className="text-xl font-semibold mb-5"
           style={{ fontFamily: "var(--font-display)", color: "var(--ink)" }}
         >
           How we build
@@ -167,7 +148,7 @@ export default function AboutPage() {
                 {v.icon}
               </div>
               <h3
-                className="font-semibold text-[#16201c] mb-2"
+                className="font-semibold mb-2"
                 style={{ fontFamily: "var(--font-serif)" }}
               >
                 {v.title}
@@ -182,14 +163,9 @@ export default function AboutPage() {
 
       {/* Timeline */}
       <div className="mb-14">
-        <div
-          className="text-[10px] tracking-widest uppercase mb-2 opacity-50"
-          style={{ fontFamily: "var(--font-mono)", color: "#888888" }}
-        >
-          Timeline
-        </div>
+        <Eyebrow>Timeline</Eyebrow>
         <h2
-          className="text-xl font-semibold text-[#16201c] mb-5"
+          className="text-xl font-semibold mb-5"
           style={{ fontFamily: "var(--font-display)", color: "var(--ink)" }}
         >
           What we&rsquo;ve shipped (and what&rsquo;s next)
@@ -237,12 +213,7 @@ export default function AboutPage() {
 
       {/* Press */}
       <div className="v2-rise mb-14">
-        <div
-          className="text-[10px] tracking-widest uppercase mb-3 opacity-50"
-          style={{ fontFamily: "var(--font-mono)", color: "#888888" }}
-        >
-          Press & Recognition
-        </div>
+        <Eyebrow className="mb-3">Press &amp; Recognition</Eyebrow>
         <div className="flex flex-wrap gap-2">
           {PRESS.map((p) => (
             <span
@@ -267,7 +238,7 @@ export default function AboutPage() {
         style={{ borderColor: "var(--border2)", background: "var(--bg2)" }}
       >
         <h2
-          className="text-xl font-semibold text-[#16201c] mb-2"
+          className="text-xl font-semibold mb-2"
           style={{ fontFamily: "var(--font-display)", color: "var(--ink)" }}
         >
           Want to talk?

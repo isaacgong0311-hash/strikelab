@@ -212,6 +212,18 @@
 .pg-chart-axis { font-family: var(--font-mono); font-size: 9px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--ink-3); opacity: 0.5; }
 .pg-chart-body { flex: 1; min-height: 0; padding: 4px; }
 
+/* Below ~900px the side-by-side editor+charts split doesn't fit — stack
+   them and let the page scroll normally instead of confining everything
+   to one fixed-height screen (matches the .ch-body breakpoint below). */
+@media (max-width: 900px) {
+  .pg-root { height: auto; overflow: visible; }
+  .pg-split { flex-direction: column; overflow: visible; }
+  .pg-left { width: 100%; border-right: none; border-bottom: 1px solid var(--border); }
+  .pg-editor-wrap { max-height: 60vh; }
+  .pg-right { flex: none; }
+  .pg-charts-grid { grid-template-columns: 1fr; grid-template-rows: none; overflow: visible; }
+}
+
 /* ═══════════════════════════════════════════════════════════
    CHALLENGES v2 — premium competition layout
    ═══════════════════════════════════════════════════════════ */
