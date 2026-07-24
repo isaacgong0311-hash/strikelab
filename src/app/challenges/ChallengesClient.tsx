@@ -293,8 +293,11 @@ export default function ChallengesClient() {
           <div className="ch-panel">
             <div className="ch-panel-header">
               <span className="ch-panel-title">This Week&apos;s Leaderboard</span>
-              <span className="ch-panel-tag">{LEADERBOARD.length} entries</span>
+              <span className="ch-panel-tag">Sample data</span>
             </div>
+            <p style={{ fontSize: 11, color: "var(--ink-3)", margin: "-4px 0 8px" }}>
+              Illustrative for now — real per-student tracking is coming soon.
+            </p>
             <div className="ch-leaderboard">
               {LEADERBOARD.map(entry => {
                 const rs = RANK_STYLES[entry.rank];

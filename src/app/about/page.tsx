@@ -12,8 +12,8 @@ const TIMELINE = [
   { date: "Feb 2026", event: "Lessons 6 (Gamma) and 7 (Vega) added. Greek visualizer ships.", state: "done" },
   { date: "Mar 2026", event: "Public launch. Shared on AoPS and math competition forums.", state: "done" },
   { date: "May 2026", event: "Lessons 8–10: Implied Vol, Option Strategies, Binomial Trees. 10-lesson curriculum complete.", state: "done" },
-  { date: "Jun 2026", event: "Weekly coding challenges + leaderboard ship.", state: "done" },
-  { date: "Q3 2026", event: "Paper-trading sandbox in progress.", state: "current" },
+  { date: "Jun 2026", event: "Weekly coding challenges ship.", state: "done" },
+  { date: "Q3 2026", event: "Real per-student leaderboard tracking and paper-trading sandbox in progress.", state: "current" },
   { date: "Q4 2026", event: "School dashboard, certificates, Discord integration.", state: "planned" },
 ];
 

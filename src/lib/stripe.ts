@@ -20,7 +20,10 @@ if (!process.env.STRIPE_SECRET_KEY) {
   console.warn("⚠️  STRIPE_SECRET_KEY is not set. Stripe calls will fail.");
 }
 
-export const stripe = new Stripe(process.env.STRIPE_SECRET_KEY ?? "sk_test_placeholder", {
+// `||`, not `??` — an unset-but-present env var (e.g. `STRIPE_SECRET_KEY=`
+// in .env.local) is an empty string, which `??` would pass straight through
+// to the Stripe SDK and crash the build/server on construction.
+export const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || "sk_test_placeholder", {
   typescript: true,
 });
 
