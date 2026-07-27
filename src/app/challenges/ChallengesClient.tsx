@@ -54,13 +54,23 @@ const RANK_STYLES: Record<number, { bg: string; color: string; label: string }> 
   3: { bg: "rgba(176,109,71,0.18)", color: "#a0674a", label: "03" },
 };
 
-const LEADERBOARD = [
-  { rank: 1, name: "Alex T.",   xp: 200, time: "4m 12s" },
-  { rank: 2, name: "Sam K.",    xp: 200, time: "5m 38s" },
-  { rank: 3, name: "Jordan M.", xp: 200, time: "6m 01s" },
-  { rank: 4, name: "Riley P.",  xp: 150, time: "7m 44s" },
-  { rank: 5, name: "Casey L.",  xp: 150, time: "8m 52s" },
-];
+interface LeaderboardEntry {
+  rank: number;
+  name: string;
+  elapsedSeconds: number;
+  xp: number;
+}
+interface YourStats {
+  solved: number;
+  bonusXp: number;
+  rank: number | null;
+}
+
+function formatElapsed(seconds: number): string {
+  const m = Math.floor(seconds / 60);
+  const s = seconds % 60;
+  return m > 0 ? `${m}m ${String(s).padStart(2, "0")}s` : `${s}s`;
+}
 
 const ARCHIVE = [
   { title: "Vega Surface",      done: true  },
@@ -89,9 +99,32 @@ export default function ChallengesClient() {
   const { isPro, hydrated: subHydrated } = useSubscription();
   const [checkoutLoading, setCheckoutLoading] = useState(false);
 
+  const [leaderboard, setLeaderboard] = useState<LeaderboardEntry[]>([]);
+  const [lbLoading, setLbLoading] = useState(true);
+  const [you, setYou] = useState<YourStats | null>(null);
+
   const runRef = useRef<(() => void) | null>(null);
+  const startTimeRef = useRef(0);
+  const submittedRef = useRef(false);
   const outBorder = status==="pass" ? "rgba(34,197,94,0.45)" : status==="fail" ? "rgba(239,68,68,0.35)" : "var(--border)";
   const diff = DIFFICULTY_STYLES[challenge.difficulty] ?? DIFFICULTY_STYLES.medium;
+
+  const [lbRefreshKey, setLbRefreshKey] = useState(0);
+
+  useEffect(() => {
+    startTimeRef.current = Date.now();
+    let active = true;
+    fetch("/api/challenges/leaderboard")
+      .then(res => res.json())
+      .then(data => {
+        if (!active) return;
+        setLeaderboard(data.leaderboard ?? []);
+        setYou(data.you ?? null);
+      })
+      .catch(() => {})
+      .finally(() => { if (active) setLbLoading(false); });
+    return () => { active = false; };
+  }, [lbRefreshKey]);
 
   const runCode = useCallback(async function runCode() {
     setStatus("running"); setOutput("Running tests…"); setAttempts(n => n + 1);
@@ -102,11 +135,23 @@ export default function ChallengesClient() {
       pyodide.runPython(challenge.testCode);
       setOutput("All tests passed!");
       setStatus("pass");
+
+      if (isPro && !submittedRef.current) {
+        submittedRef.current = true;
+        const elapsedSeconds = Math.max(1, Math.round((Date.now() - startTimeRef.current) / 1000));
+        fetch("/api/challenges/complete", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ challengeId: challenge.id, elapsedSeconds }),
+        })
+          .then(() => setLbRefreshKey(k => k + 1))
+          .catch(() => { submittedRef.current = false; });
+      }
     } catch (err: unknown) {
       setOutput(err instanceof Error ? err.message : String(err));
       setStatus("fail");
     }
-  }, [challenge.testCode, code]);
+  }, [challenge.id, challenge.testCode, code, isPro]);
   useEffect(() => {
     runRef.current = runCode;
   }, [runCode]);
@@ -297,31 +342,35 @@ export default function ChallengesClient() {
           <div className="ch-panel">
             <div className="ch-panel-header">
               <span className="ch-panel-title">This Week&apos;s Leaderboard</span>
-              <span className="ch-panel-tag">Sample data</span>
             </div>
-            <p style={{ fontSize: 11, color: "var(--ink-3)", margin: "-4px 0 8px" }}>
-              Illustrative for now — real per-student tracking is coming soon.
-            </p>
-            <div className="ch-leaderboard">
-              {LEADERBOARD.map(entry => {
-                const rs = RANK_STYLES[entry.rank];
-                return (
-                  <div key={entry.rank} className="ch-lb-row">
-                    <div
-                      className="ch-lb-rank"
-                      style={rs
-                        ? { background: rs.bg, color: rs.color }
-                        : { background: "var(--bg2)", color: "var(--ink-3)" }}
-                    >
-                      {String(entry.rank).padStart(2, "0")}
+            {lbLoading ? (
+              <p style={{ fontSize: 12, color: "var(--ink-3)", margin: "4px 0" }}>Loading…</p>
+            ) : leaderboard.length === 0 ? (
+              <p style={{ fontSize: 12, color: "var(--ink-3)", margin: "4px 0" }}>
+                No one has solved this week&apos;s challenge yet — be the first.
+              </p>
+            ) : (
+              <div className="ch-leaderboard">
+                {leaderboard.map(entry => {
+                  const rs = RANK_STYLES[entry.rank];
+                  return (
+                    <div key={entry.rank} className="ch-lb-row">
+                      <div
+                        className="ch-lb-rank"
+                        style={rs
+                          ? { background: rs.bg, color: rs.color }
+                          : { background: "var(--bg2)", color: "var(--ink-3)" }}
+                      >
+                        {String(entry.rank).padStart(2, "0")}
+                      </div>
+                      <span className="ch-lb-name">{entry.name}</span>
+                      <span className="ch-lb-time">{formatElapsed(entry.elapsedSeconds)}</span>
+                      <span className="ch-lb-xp">+{entry.xp}</span>
                     </div>
-                    <span className="ch-lb-name">{entry.name}</span>
-                    <span className="ch-lb-time">{entry.time}</span>
-                    <span className="ch-lb-xp">+{entry.xp}</span>
-                  </div>
-                );
-              })}
-            </div>
+                  );
+                })}
+              </div>
+            )}
             {subHydrated && !isPro && (
               <div className="ch-panel-footer">
                 <button
@@ -365,15 +414,15 @@ export default function ChallengesClient() {
             <div className="ch-panel-title" style={{ marginBottom: 14 }}>Your Stats</div>
             <div className="ch-stats-grid">
               <div className="ch-stat-cell">
-                <div className="ch-stat-n">0</div>
+                <div className="ch-stat-n">{you?.solved ?? 0}</div>
                 <div className="ch-stat-l">Solved</div>
               </div>
               <div className="ch-stat-cell">
-                <div className="ch-stat-n">—</div>
+                <div className="ch-stat-n">{you?.rank ? `#${you.rank}` : "—"}</div>
                 <div className="ch-stat-l">Rank</div>
               </div>
               <div className="ch-stat-cell">
-                <div className="ch-stat-n">0</div>
+                <div className="ch-stat-n">{you?.bonusXp ?? 0}</div>
                 <div className="ch-stat-l">Bonus XP</div>
               </div>
             </div>

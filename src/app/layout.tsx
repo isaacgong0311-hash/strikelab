@@ -58,9 +58,10 @@ export const metadata: Metadata = {
     google: "dxWqdFnQfkMopeBF2ZXbCzTOfY3A5gxR6oGKyciJ-JM",
   },
   manifest: "/manifest.webmanifest",
-  alternates: {
-    canonical: "/",
-  },
+  // NOTE: deliberately no `alternates.canonical` here. Root metadata is
+  // inherited by every page that doesn't override the field, so a canonical
+  // set here would mark all of them as duplicates of the homepage. Pages
+  // declare their own via `pageMetadata()` in @/lib/seo.
   openGraph: {
     type: "website",
     siteName: SITE_NAME,

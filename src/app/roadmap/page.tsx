@@ -1,11 +1,13 @@
-import type { Metadata } from "next";
 import Link from "next/link";
 import Eyebrow from "@/components/Eyebrow";
+import { pageMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = {
+export const metadata = pageMetadata({
+  path: "/roadmap",
   title: "Roadmap",
-  description: "What's shipping next on StrikeLab.",
-};
+  description:
+    "What's shipping next on StrikeLab — the paper-trading sandbox, school dashboards, certificates, and Discord integration.",
+});
 
 const ROADMAP = [
   {

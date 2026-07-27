@@ -9,30 +9,38 @@
   --card2:   #fbf9f4;
   --border:  #e7e2d7;
   --border2: #d7d1c4;
-  --accent:  #16a34a;
+  --accent:  #15803d;
   --accent2: #586460;
-  --green:   #16a34a;
+  --green:   #15803d;
   --nav-bg:  rgba(247,245,239,0.85);
   --text:    #16201c;
-  --muted:   #8a938e;
+  /* #8a938e was ~2.9:1 on the paper background — too light for the footer,
+     kickers and other small mono labels that use it. Set dark enough to clear
+     4.5:1 on the off-white card/panel fills too, not just on pure white. */
+  --muted:   #5f665f;
   --muted2:  #586460;
 
-  /* Greens + warm tints used across the app */
-  --grass:       #16a34a;
-  --grass-d:     #12833c;
+  /* Accent ramp — deliberately dark enough to double as TEXT on the light
+     paper background and as a SOLID FILL behind white text. The previous
+     values (grass #16a34a, amber #c9870c, coral #ef5a3c, sky #2f6df0) all sat
+     around 3:1 on white, so every green link, XP figure, code token and even
+     the white-on-green primary button failed WCAG AA. These are the same hues
+     one step darker: ~5:1 as text, ~5:1 behind white. */
+  --grass:       #147038;
+  --grass-d:     #0d5a2c;
   --grass-tint:  #e6f6ec;
-  --amber:       #c9870c;
+  --amber:       #92400e;
   --amber-tint:  #f7eed4;
-  --sky:         #2f6df0;
+  --sky:         #1d4ed8;
   --sky-tint:    #e7eefc;
-  --coral:       #ef5a3c;
+  --coral:       #ad3a0a;
   --coral-tint:  #fde9e4;
   --paper:   #f7f5ef;
   --paper-2: #ffffff;
   --paper-3: #fbf9f4;
   --ink:     #16201c;
   --ink-2:   #586460;
-  --ink-3:   #687068; /* darkened from #8a938e — was ~2.9:1 on white, fails WCAG AA (4.5:1) for small text */
+  --ink-3:   #5f665f; /* darkened from #8a938e — was ~2.9:1 on white, fails WCAG AA (4.5:1) for small text */
   --line:    #e7e2d7;
   --line-2:  #d7d1c4;
   --night:   #0f1411;
@@ -40,11 +48,11 @@
 
   --fg:          #16201c;
   --fg-mute:     #586460;
-  --fg-faint:    #8a938e;
+  --fg-faint:    #5f665f; /* see --muted */
   --card-2:      #fbf9f4;
   --border-hi:   #d7d1c4;
   --border-hover:#c8c2b3;
-  --check:       #16a34a;
+  --check:       #15803d;
   --serif: var(--font-serif, Georgia, serif);
   --mono:  var(--font-mono, "Courier New", monospace);
   --sans:  var(--font-sans, system-ui, sans-serif);
@@ -1233,18 +1241,19 @@ main { animation: v2pageIn 0.5s cubic-bezier(.2,.7,.3,1) both; }
 body:has(.sk-home) {
   --nav-bg: rgba(247,245,239,0.82);
   --bg: #f7f5ef;  --bg2: #f1ece0;
-  --fg: #16201c;  --fg-mute: #586460;  --fg-faint: #8a938e;
-  --muted: #8a938e;  --muted2: #586460;
+  --fg: #16201c;  --fg-mute: #586460;  --fg-faint: #5f665f;
+  --muted: #5f665f;  --muted2: #586460;
   --border: #e7e2d7;  --border-hi: #d7d1c4;  --border-hover: #c8c2b3;
 
   /* Landing palette (also visible to Nav/Footer CTAs) */
   --paper: #f7f5ef;  --paper-2: #ffffff;  --paper-3: #fbf9f4;
   --ink: #16201c;  --ink-2: #586460;  --ink-3: #687068;
   --line: #e7e2d7;  --line-2: #d7d1c4;
-  --grass: #16a34a;  --grass-d: #12833c;  --grass-tint: #e6f6ec;
-  --amber: #c9870c;  --amber-tint: #f7eed4;
-  --sky: #2f6df0;  --sky-tint: #e7eefc;
-  --coral: #ef5a3c;  --coral-tint: #fde9e4;
+  /* Must track the :root accent ramp above — see the note there. */
+  --grass: #147038;  --grass-d: #0d5a2c;  --grass-tint: #e6f6ec;
+  --amber: #92400e;  --amber-tint: #f7eed4;
+  --sky: #1d4ed8;  --sky-tint: #e7eefc;
+  --coral: #ad3a0a;  --coral-tint: #fde9e4;
   --night: #0f1411;  --night-2: #161d18;
 }
 body:has(.sk-home) .v2-bg-grid,

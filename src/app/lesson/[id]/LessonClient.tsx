@@ -539,7 +539,7 @@ export default function LessonClient({ lesson, prev, next, trackTitle, positionI
               {!alreadyDone && (
                 <span
                   className="text-[10px] px-2 py-0.5 rounded"
-                  style={{ background: "rgba(251,191,36,0.1)", color: "#fbbf24", fontFamily: "var(--font-mono)" }}
+                  style={{ background: "var(--amber-tint)", color: "var(--amber)", fontFamily: "var(--font-mono)" }}
                 >
                   +100 XP
                 </span>

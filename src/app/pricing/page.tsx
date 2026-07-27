@@ -1,10 +1,12 @@
-import type { Metadata } from "next";
 import PricingClient from "./PricingClient";
+import { pageMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = {
+export const metadata = pageMetadata({
+  path: "/pricing",
   title: "Pricing",
-  description: "Free forever for students. Pro for cohorts. School licenses for classrooms.",
-};
+  description:
+    "The full options pricing and quant finance curriculum is free forever for students. Pro adds weekly coding challenges and AI hints; school licenses cover whole classrooms.",
+});
 
 export default function PricingPage() {
   return <PricingClient />;

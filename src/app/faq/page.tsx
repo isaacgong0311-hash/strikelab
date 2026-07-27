@@ -1,12 +1,13 @@
-import type { Metadata } from "next";
 import FAQClient from "./FAQClient";
 import { FAQ_GROUPS } from "@/lib/faq";
+import { pageMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = {
+export const metadata = pageMetadata({
+  path: "/faq",
   title: "FAQ",
-  description: "Common questions about StrikeLab — pricing, curriculum, technical setup.",
-  alternates: { canonical: "/faq" },
-};
+  description:
+    "Common questions about StrikeLab — what it costs, what maths you need, whether it runs on a school Chromebook, and how the Python exercises work.",
+});
 
 const FAQ_JSON_LD = {
   "@context": "https://schema.org",

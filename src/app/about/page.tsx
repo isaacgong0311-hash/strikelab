@@ -1,10 +1,12 @@
-import type { Metadata } from "next";
 import Eyebrow from "@/components/Eyebrow";
+import { pageMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = {
+export const metadata = pageMetadata({
+  path: "/about",
   title: "About",
-  description: "Why a high school freshman and AIME qualifier built a quant finance platform for high schoolers.",
-};
+  description:
+    "Why a high school freshman and AIME qualifier built a quant finance platform for high schoolers — and how StrikeLab has grown since the first commit.",
+});
 
 const TIMELINE = [
   { date: "Nov 2025", event: "First commit. Black-Scholes engine in Python.", state: "done" },
@@ -14,7 +16,8 @@ const TIMELINE = [
   { date: "Mar 2026", event: "Public launch. Shared on AoPS and math competition forums.", state: "done" },
   { date: "May 2026", event: "Lessons 8–10: Implied Vol, Option Strategies, Binomial Trees. 10-lesson curriculum complete.", state: "done" },
   { date: "Jun 2026", event: "Weekly coding challenges ship.", state: "done" },
-  { date: "Q3 2026", event: "Real per-student leaderboard tracking and paper-trading sandbox in progress.", state: "current" },
+  { date: "Jul 2026", event: "Real per-student leaderboard tracking ships.", state: "done" },
+  { date: "Q3 2026", event: "Paper-trading sandbox in progress.", state: "current" },
   { date: "Q4 2026", event: "School dashboard, certificates, Discord integration.", state: "planned" },
 ];
 

@@ -1,10 +1,12 @@
-import type { Metadata } from "next";
 import ChallengesClient from "./ChallengesClient";
+import { pageMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = {
+export const metadata = pageMetadata({
+  path: "/challenges",
   title: "Weekly Quant Challenges",
-  description: "A new options pricing coding challenge every week. Implement the algorithm, pass the tests, earn XP.",
-};
+  description:
+    "A new options pricing coding challenge every week — implied vol, binomial trees, the Greeks. Write Python in the browser, pass the tests, climb the leaderboard.",
+});
 
 export default function ChallengesPage() {
   return <ChallengesClient />;
