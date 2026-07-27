@@ -18,10 +18,14 @@
  * ──────────────────────────────────────────────────────────────────────────
  */
 import { NextRequest, NextResponse } from "next/server";
-import { stripe, PRICES, BASE_URL } from "@/lib/stripe";
+import { stripe, PRICES, BASE_URL, isStripeConfigured } from "@/lib/stripe";
 import { requireUser } from "@/lib/supabase/requireUser";
 
 export async function POST(req: NextRequest) {
+  if (!isStripeConfigured) {
+    return NextResponse.json({ error: "Payments are not configured yet" }, { status: 503 });
+  }
+
   const auth = await requireUser();
   if ("error" in auth) {
     return NextResponse.json({ error: "Sign in required to start checkout" }, { status: auth.status });
