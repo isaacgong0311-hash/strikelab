@@ -14,7 +14,7 @@
  * 2. Create a "StrikeLab Pro" product → Recurring · $9 / month
  * 3. Copy the Price ID (price_xxx) → set as STRIPE_PRO_PRICE_ID in .env.local
  * 4. Set STRIPE_SECRET_KEY (sk_test_... or sk_live_...) in .env.local
- * 5. Set NEXT_PUBLIC_BASE_URL=https://strikelabco.vercel.app in .env.local
+ * 5. Set NEXT_PUBLIC_BASE_URL=https://strikelab.dev in .env.local
  * ──────────────────────────────────────────────────────────────────────────
  */
 import { NextRequest, NextResponse } from "next/server";

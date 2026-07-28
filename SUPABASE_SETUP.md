@@ -69,9 +69,9 @@ redeploy.
 
 In Supabase: **Authentication → URL Configuration**:
 
-- **Site URL**: `https://strikelabco.vercel.app`
+- **Site URL**: `https://strikelab.dev`
 - **Redirect URLs**: add both
-  - `https://strikelabco.vercel.app/auth/callback`
+  - `https://strikelab.dev/auth/callback`
   - `http://localhost:3000/auth/callback`
 
 ### Email confirmation (optional)

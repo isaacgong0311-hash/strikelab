@@ -10,7 +10,7 @@ I'm a freshman in high school. I qualified for AIME in 8th grade and last year I
 
 The problem: every resource I found was either a grad-school textbook (assumes stochastic calculus) or a $50/month adult MOOC that wasn't built for me. So I spent the last six months building what I wanted to exist.
 
-StrikeLab - strikelabco.vercel.app - free, browser-based, no install.
+StrikeLab - strikelab.dev - free, browser-based, no install.
 
 What it covers (10 lessons):
 
@@ -39,4 +39,4 @@ This is the fastest path I know from "what is a call option?" to implementing an
 
 It's free and open source (MIT). Would love feedback from this community - you're basically my exact target user.
 
-strikelabco.vercel.app
+strikelab.dev

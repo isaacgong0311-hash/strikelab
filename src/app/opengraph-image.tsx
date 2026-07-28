@@ -1,4 +1,5 @@
 import { ImageResponse } from "next/og";
+import { SITE_URL } from "@/lib/site";
 
 export const alt = "StrikeLab — Learn Options Pricing & Quant Finance";
 export const size = { width: 1200, height: 630 };
@@ -24,7 +25,7 @@ export default function OpengraphImage() {
             style={{
               fontSize: 40,
               fontWeight: 800,
-              color: "#16a34a",
+              color: "#4ade80",
             }}
           >
             ∂ StrikeLab
@@ -54,11 +55,11 @@ export default function OpengraphImage() {
             display: "flex",
             gap: 12,
             fontSize: 22,
-            color: "#16a34a",
+            color: "#4ade80",
             fontWeight: 600,
           }}
         >
-          strikelabco.vercel.app
+          {SITE_URL.replace(/^https:\/\//, "")}
         </div>
       </div>
     ),

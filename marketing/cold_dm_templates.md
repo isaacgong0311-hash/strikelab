@@ -9,7 +9,7 @@ Hey - saw you in [server name]. I built a free browser-based options pricing cur
 
 It covers Black-Scholes, all five Greeks, implied vol via Newton-Raphson, and binomial trees - with coding exercises that run Python in-browser (no install). 10 lessons total.
 
-Free: strikelabco.vercel.app
+Free: strikelab.dev
 
 Not a pitch, just think the math is genuinely interesting for people who've done competition math. Happy to answer any questions about how it works.
 
@@ -17,7 +17,7 @@ Not a pitch, just think the math is genuinely interesting for people who've done
 
 ## Twitter/X DM - targeted at math students with public profiles
 
-Hi [name] - I saw your AIME/AMC posts. I built a free site that teaches options pricing for high schoolers (Black-Scholes, Greeks, coding exercises in the browser). I think people in the math competition world would find the math interesting. strikelabco.vercel.app - let me know what you think.
+Hi [name] - I saw your AIME/AMC posts. I built a free site that teaches options pricing for high schoolers (Black-Scholes, Greeks, coding exercises in the browser). I think people in the math competition world would find the math interesting. strikelab.dev - let me know what you think.
 
 ---
 
@@ -34,7 +34,7 @@ The format: 10 structured lessons, each ending with a Python coding exercise tha
 
 Everything is free. I'm not asking for anything - just want the curriculum to reach students who'd benefit from it.
 
-strikelabco.vercel.app
+strikelab.dev
 
 If you'd like to share it with your students or hear more about the school license (30 seats, teacher dashboard, progress reports), I'm happy to chat.
 
@@ -61,7 +61,7 @@ Would love to offer your math club or AP class free access. Can I send you a wal
 Best,
 Isaac
 chaogong@yahoo.com
-strikelabco.vercel.app
+strikelab.dev
 
 ---
 
@@ -75,6 +75,6 @@ I'm a high school freshman who built StrikeLab - a free browser-based curriculum
 
 Your audience is my audience. I'm not asking for a paid promo - I'd just love to be on a video or get a genuine review if you think it's worth sharing. Happy to give your community early access to anything I build next.
 
-strikelabco.vercel.app
+strikelab.dev
 
 Isaac

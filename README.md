@@ -4,7 +4,7 @@
 
 StrikeLab teaches options pricing by making students *build* the engine — not just read about it. Work through ten lessons from call/put basics to binomial trees, implement the pricing functions in an in-browser Python playground, and watch the Greek curves update live as you drag sliders.
 
-Live → **[strikelabco.vercel.app](https://strikelabco.vercel.app)** · Free · Open source · MIT license
+Live → **[strikelab.dev](https://strikelab.dev)** · Free · Open source · MIT license
 
 ---
 

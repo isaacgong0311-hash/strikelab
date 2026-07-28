@@ -13,7 +13,7 @@ The format: each lesson ends with a coding exercise where you implement missing 
 
 Math prereqs: pre-calc + basic stats. No finance background assumed.
 
-Free, open source, no install: **strikelabco.vercel.app**
+Free, open source, no install: **strikelab.dev**
 
 Happy to answer questions about how I built it or about the math.
 
@@ -33,7 +33,7 @@ The problem is nothing connects that math to what quant traders actually do. **S
 
 10 lessons, each ending with a coding exercise (Python, runs in-browser via WebAssembly). Free, no install.
 
-**strikelabco.vercel.app**
+**strikelab.dev**
 
 Would genuinely love feedback from this community — you're my exact target user.
 
@@ -46,6 +46,6 @@ If you've ever tried to actually understand how options are priced — not just 
 
 I built a free, browser-based curriculum that covers it properly: Black-Scholes derivation, all five Greeks with live visualizations, implied volatility, and binomial trees. Each lesson has a coding exercise where you implement the actual pricing functions.
 
-No install, no cost: **strikelabco.vercel.app**
+No install, no cost: **strikelab.dev**
 
 Built it because I wanted it to exist. Feedback welcome.

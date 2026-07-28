@@ -7,7 +7,7 @@
  * ── Setup checklist ────────────────────────────────────────────────────────
  * 1. Go to https://dashboard.stripe.com/webhooks
  * 2. Click "Add endpoint"
- * 3. URL: https://strikelabco.vercel.app/api/stripe/webhook
+ * 3. URL: https://strikelab.dev/api/stripe/webhook
  * 4. Events to listen for:
  *      checkout.session.completed
  *      customer.subscription.created
