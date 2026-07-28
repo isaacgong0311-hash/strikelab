@@ -2767,3 +2767,115 @@ h1, h2, h3, h4 {
 .ai-send:hover:not(:disabled) { filter: brightness(1.06); }
 .ai-send:active:not(:disabled) { transform: translateY(2px); box-shadow: 0 1px 0 var(--grass-d); }
 .ai-send:disabled { opacity: .45; cursor: default; box-shadow: 0 3px 0 var(--line-2); background: var(--line-2); }
+
+/* ══════════════════════════════════════════════════════════════════════════
+   LESSON TABLE OF CONTENTS
+   Sticky section nav living in the column that was previously empty either
+   side of the lesson text. Below 1180px there isn't room for a sidebar, so it
+   collapses away entirely rather than stacking above the prose and pushing
+   the actual lesson below the fold.
+   ══════════════════════════════════════════════════════════════════════════ */
+
+.lesson-shell {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0;
+}
+
+@media (min-width: 1180px) {
+  .lesson-shell {
+    grid-template-columns: 232px minmax(0, 1fr);
+    gap: 48px;
+    align-items: start;
+  }
+}
+
+.lesson-toc-col { display: none; }
+@media (min-width: 1180px) {
+  .lesson-toc-col {
+    display: block;
+    position: sticky;
+    top: 92px;
+    max-height: calc(100vh - 120px);
+    overflow-y: auto;
+    padding-right: 4px;
+  }
+}
+
+.lt-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+.lt-label {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+.lt-pct {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--ink-3);
+  font-variant-numeric: tabular-nums;
+}
+
+.lt-track {
+  height: 3px;
+  border-radius: 2px;
+  background: var(--line);
+  overflow: hidden;
+  margin-bottom: 16px;
+}
+.lt-fill {
+  height: 100%;
+  background: var(--grass);
+  border-radius: 2px;
+  transition: width 120ms linear;
+}
+
+.lt-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.lt-item {
+  display: grid;
+  grid-template-columns: 22px 1fr;
+  gap: 8px;
+  align-items: baseline;
+  padding: 7px 10px 7px 8px;
+  border-radius: var(--r-sm);
+  border-left: 2px solid transparent;
+  color: var(--ink-3);
+  font-size: 13px;
+  line-height: 1.4;
+  text-decoration: none;
+  transition: color .12s, background .12s, border-color .12s;
+}
+.lt-item:hover { color: var(--ink); background: var(--bg2); }
+
+.lt-item.active {
+  color: var(--ink);
+  font-weight: 600;
+  border-left-color: var(--grass);
+  background: var(--grass-tint);
+}
+.lt-item.active .lt-num { color: var(--grass); }
+
+.lt-num {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--ink-3);
+  font-variant-numeric: tabular-nums;
+}
+.lt-text { min-width: 0; }
+
+/* Anchored headings shouldn't hide under the sticky nav when deep-linked. */
+.lesson-content h2 { scroll-margin-top: 92px; }

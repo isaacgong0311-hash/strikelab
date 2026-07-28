@@ -5,6 +5,7 @@ import { SITE_URL, SITE_NAME } from "@/lib/site";
 import { breadcrumbJsonLd, isoDuration } from "@/lib/seo";
 import JsonLd from "@/components/JsonLd";
 import LessonClient from "./LessonClient";
+import { buildLessonToc } from "@/lib/lessonToc";
 
 export async function generateStaticParams() {
   return getAllLessons().map((l) => ({ id: l.id }));
@@ -73,6 +74,10 @@ export default async function LessonPage({ params }: { params: Promise<{ id: str
     },
   };
 
+  // Section ids are injected here rather than client-side so deep links work
+  // on first paint and the anchors exist for crawlers.
+  const toc = buildLessonToc(ctx.lesson.content);
+
   // Gives Google the Home › Lessons › Lesson trail to show under the result
   // instead of a bare URL.
   const breadcrumbs = breadcrumbJsonLd([
@@ -86,6 +91,8 @@ export default async function LessonPage({ params }: { params: Promise<{ id: str
       <JsonLd data={breadcrumbs} />
       <LessonClient
         lesson={ctx.lesson}
+        contentHtml={toc.html}
+        sections={toc.sections}
         prev={ctx.prev}
         next={ctx.next}
         trackTitle={ctx.track.title}

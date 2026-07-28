@@ -8,11 +8,16 @@ import { useProgress } from "@/lib/useProgress";
 import { trackLessonStart, trackTestsPassed, trackLessonComplete, trackQuizAnswer } from "@/lib/analytics";
 import Eyebrow from "@/components/Eyebrow";
 import AiTutor from "@/components/AiTutor";
+import LessonToc from "@/components/LessonToc";
+import type { TocSection } from "@/lib/lessonToc";
 
 const MiniEditor = dynamic(() => import("@/components/MiniEditor"), { ssr: false });
 
 interface Props {
   lesson: Lesson;
+  /** Lesson HTML with section ids injected server-side. */
+  contentHtml: string;
+  sections: TocSection[];
   prev: Lesson | null;
   next: Lesson | null;
   trackTitle: string;
@@ -189,7 +194,7 @@ function CelebrationOverlay({
 
 // ─── Main lesson component ────────────────────────────────────────────────────
 
-export default function LessonClient({ lesson, prev, next, trackTitle, positionInTrack, trackLength }: Props) {
+export default function LessonClient({ lesson, contentHtml, sections, prev, next, trackTitle, positionInTrack, trackLength }: Props) {
   const [code, setCode] = useState(lesson.exercise.starterCode);
   const [output, setOutput] = useState("");
   const [status, setStatus] = useState<"idle" | "running" | "pass" | "fail">("idle");
@@ -266,7 +271,14 @@ export default function LessonClient({ lesson, prev, next, trackTitle, positionI
         />
       )}
 
-      <div className="max-w-3xl mx-auto px-6 py-10">
+      <div className="lesson-shell max-w-6xl mx-auto px-6 py-10">
+        {/* Section nav — occupies the column that used to sit empty beside the
+            prose. Hidden under 1180px, where there's no room for it. */}
+        <aside className="lesson-toc-col">
+          <LessonToc sections={sections} />
+        </aside>
+
+        <div className="min-w-0 max-w-3xl">
         {/* Breadcrumb */}
         <div className="v2-rise in flex items-center gap-2 text-sm mb-5" style={{ color: "var(--muted)" }}>
           <Link href="/lessons" className="transition-opacity hover:opacity-70" style={{ color: "var(--ink-2)" }}>
@@ -311,7 +323,7 @@ export default function LessonClient({ lesson, prev, next, trackTitle, positionI
         <div
           className="v2-rise lesson-content mb-8 pb-8"
           style={{ borderBottom: "1px solid var(--border)", transitionDelay: "80ms" }}
-          dangerouslySetInnerHTML={{ __html: lesson.content }}
+          dangerouslySetInnerHTML={{ __html: contentHtml }}
         />
 
         {/* Knowledge check quiz */}
@@ -523,6 +535,7 @@ export default function LessonClient({ lesson, prev, next, trackTitle, positionI
               Open Playground →
             </Link>
           )}
+        </div>
         </div>
       </div>
     </>
