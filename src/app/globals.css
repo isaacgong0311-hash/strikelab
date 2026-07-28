@@ -3433,3 +3433,27 @@ h1, h2, h3, h4 {
   .sk-track-name { font-size: 18px; }
   .sk-track-card .sk-lessons { padding: 2px 14px 16px; }
 }
+
+/* ══════════════════════════════════════════════════════════════════════════
+   NUMERALS
+   Every figure on this site is data — XP, streaks, lesson counts, durations,
+   prices, Greeks. Tabular numerals keep columns aligned and stop digits from
+   jittering as values change. Applied to the display face too, since the big
+   dashboard stats are set in it.
+   ══════════════════════════════════════════════════════════════════════════ */
+.sk-fact b,
+.db-metric-n, .db-metric-icon, .db-level-lbl, .db-tab-prog,
+.lt-pct, .cp-label,
+.sk-pill, .sk-track-count, .sk-track-mins,
+.sk-lesson-num, .ch-lb-time, .ch-lb-xp, .ch-stat-n,
+.sl-quiz-score, .db-ring-pct {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum" 1, "zero" 1;
+}
+
+/* Code and anything mono gets a slashed zero, which is the whole point of a
+   coding face — 0 and O are indistinguishable otherwise. */
+code, pre, .sk-code, .ai-code, .ai-inline, .pr-output,
+[class*="font-mono"], .cm-editor {
+  font-feature-settings: "zero" 1, "calt" 1;
+}

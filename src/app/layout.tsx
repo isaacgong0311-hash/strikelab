@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Syne, Space_Grotesk, JetBrains_Mono } from "next/font/google";
+import { Plus_Jakarta_Sans, Inter, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import Nav from "@/components/Nav";
 import Footer from "@/components/Footer";
@@ -8,18 +8,31 @@ import { Analytics } from "@vercel/analytics/react";
 import { SITE_URL, SITE_NAME, SITE_DESCRIPTION } from "@/lib/site";
 import { AuthProvider } from "@/lib/auth/AuthProvider";
 
-// Syne — bold geometric display, very distinctive for headings & hero text
-const syne = Syne({
+// Plus Jakarta Sans — headings.
+//
+// Replaces Syne, which was a geometric *poster/fashion* display face. Two
+// problems: it read as editorial rather than educational, and its zero is a
+// perfect circle with no slash or dot, so every figure on the dashboard
+// rendered as a letter — "O LESSONS DONE", "O%", "O/21". On a product whose
+// entire subject is numbers, that isn't a stylistic quibble.
+//
+// Jakarta keeps some warmth and personality at heavy weights without the
+// costume, and its numerals are unambiguous.
+const jakarta = Plus_Jakarta_Sans({
   variable: "--font-display",
   subsets: ["latin"],
-  weight: ["400", "500", "600", "700", "800"],
+  weight: ["500", "600", "700", "800"],
 });
 
-// Space Grotesk — slightly quirky tech grotesque, stands out from generic sans
-const spaceGrotesk = Space_Grotesk({
+// Inter — UI and body.
+//
+// Replaces Space Grotesk. Inter is the workhorse behind most modern learning
+// products for a reason: it is boring in the way interface type should be,
+// and stays legible at the 11-13px the nav, pills and labels rely on.
+const inter = Inter({
   variable: "--font-ui",
   subsets: ["latin"],
-  weight: ["300", "400", "500", "600", "700"],
+  weight: ["400", "500", "600", "700"],
 });
 
 // JetBrains Mono — best-in-class coding mono for the Python exercises
@@ -127,7 +140,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html
       lang="en"
-      className={`${syne.variable} ${spaceGrotesk.variable} ${jetbrains.variable} h-full`}
+      className={`${jakarta.variable} ${inter.variable} ${jetbrains.variable} h-full`}
     >
       <body
         className="min-h-screen flex flex-col"
