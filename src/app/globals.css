@@ -3313,3 +3313,105 @@ h1, h2, h3, h4 {
   .lt-item:hover { transform: none; }
   .lesson-content a { background-size: 100% 1.5px; transition: none; }
 }
+
+/* ══════════════════════════════════════════════════════════════════════════
+   TRACK CARDS (homepage curriculum)
+   Three collapsible cards replacing 21 inline lesson rows. The lessons stay
+   in the DOM at all times — collapsing is a grid-template-rows transition,
+   not conditional rendering — so the internal link graph survives for
+   crawlers and deep links still resolve.
+   ══════════════════════════════════════════════════════════════════════════ */
+
+.sk-tracks { display: flex; flex-direction: column; gap: 14px; }
+
+.sk-track-card {
+  border: 1.5px solid var(--line);
+  border-radius: var(--r-xl);
+  background: var(--paper-2);
+  box-shadow: 0 2px 0 var(--line);
+  overflow: hidden;
+  transition: border-color .18s ease, box-shadow .18s ease;
+}
+.sk-track-card:hover { border-color: var(--line-2); }
+.sk-track-card.open { box-shadow: 0 10px 28px -18px rgba(40,30,10,0.3); }
+
+.sk-track-head {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 46px minmax(0, 1fr) auto 20px;
+  align-items: center;
+  gap: 16px;
+  padding: 18px 20px;
+  background: none;
+  border: 0;
+  cursor: pointer;
+  text-align: left;
+  font: inherit;
+}
+.sk-track-head:hover { background: var(--paper-3); }
+.sk-track-head:focus-visible { outline: 2px solid var(--grass); outline-offset: -2px; }
+
+.sk-track-glyph {
+  width: 46px; height: 46px;
+  border-radius: var(--r-md);
+  display: grid; place-items: center;
+  font-family: var(--font-display), Georgia, serif;
+  font-size: 22px; font-weight: 600;
+}
+
+.sk-track-main { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.sk-track-titles { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.sk-track-level {
+  font-family: var(--font-mono); font-size: 10px; font-weight: 700;
+  letter-spacing: 0.12em; text-transform: uppercase;
+  padding: 3px 9px; border-radius: var(--r-full);
+}
+.sk-track-name {
+  font-family: var(--font-display), Georgia, serif;
+  font-size: 21px; font-weight: 700; color: var(--ink);
+  letter-spacing: -0.02em; line-height: 1.15;
+}
+.sk-track-sub { font-size: 13.5px; color: var(--ink-3); line-height: 1.45; }
+
+.sk-track-meta {
+  display: flex; flex-direction: column; align-items: flex-end; gap: 2px;
+  font-family: var(--font-mono); font-size: 11px; color: var(--ink-3);
+  white-space: nowrap;
+}
+.sk-track-count { color: var(--ink-2); font-weight: 600; }
+
+.sk-track-chev {
+  font-size: 24px; line-height: 1; color: var(--ink-3);
+  transform: rotate(90deg);
+  transition: transform .24s cubic-bezier(.2,.7,.3,1), color .15s ease;
+  justify-self: center;
+}
+.sk-track-card.open .sk-track-chev { transform: rotate(-90deg); color: var(--ink-2); }
+
+/* grid-template-rows 0fr -> 1fr animates height without needing a measured
+   pixel value, and keeps the panel's children mounted the whole time. */
+.sk-track-panel {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows .32s cubic-bezier(.2,.7,.3,1);
+}
+.sk-track-card.open .sk-track-panel { grid-template-rows: 1fr; }
+.sk-track-panel-inner { overflow: hidden; }
+.sk-track-card .sk-lessons { padding: 2px 20px 20px; }
+
+/* Rows already stagger in on page load; inside a panel that would replay on
+   every expand and feel laggy, so opt them out here. */
+.sk-track-panel .sk-lesson { animation: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  .sk-track-panel { transition: none; }
+  .sk-track-chev { transition: none; }
+}
+
+@media (max-width: 620px) {
+  .sk-track-head { grid-template-columns: 40px minmax(0, 1fr) 20px; gap: 12px; padding: 15px 16px; }
+  .sk-track-meta { display: none; }
+  .sk-track-glyph { width: 40px; height: 40px; font-size: 19px; }
+  .sk-track-name { font-size: 18px; }
+  .sk-track-card .sk-lessons { padding: 2px 14px 16px; }
+}

@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import { TRACKS } from "@/lib/tracks";
+import { TRACKS, type Track } from "@/lib/tracks";
 
 // ─── Hero notebook card ──────────────────────────────────────────────────────
 const CODE_ROWS: { ln: string; src: string }[] = [
@@ -32,6 +32,102 @@ const FACTS = [
   { b: "$0",                    s: "Forever free" },
   { b: "0",                     s: "Installs" },
 ];
+
+/**
+ * One collapsible track on the homepage.
+ *
+ * The page used to render all 21 lessons inline, which made it enormous and
+ * pushed the actual call-to-action far below the fold — you had to scroll past
+ * a wall of near-identical rows to reach anything else. Collapsing to three
+ * cards makes the curriculum scannable in one screen while keeping the detail
+ * one click away.
+ *
+ * The lesson links are ALWAYS rendered, never conditionally mounted. Collapsing
+ * is done with a grid-template-rows transition, so every lesson URL stays in
+ * the prerendered HTML and crawlers still see the full internal link graph —
+ * which conditional rendering would have quietly destroyed.
+ */
+function TrackCard({ track, defaultOpen }: { track: Track; defaultOpen: boolean }) {
+  const [open, setOpen] = useState(defaultOpen);
+  const panelId = `track-panel-${track.id}`;
+
+  const totalMinutes = track.lessons.reduce(
+    (sum, l) => sum + (Number.parseInt(l.duration, 10) || 0),
+    0,
+  );
+
+  return (
+    <div className={`sk-track-card${open ? " open" : ""}`} id={track.id}>
+      <button
+        type="button"
+        className="sk-track-head"
+        onClick={() => setOpen((v) => !v)}
+        aria-expanded={open}
+        aria-controls={panelId}
+      >
+        <span
+          className="sk-track-glyph"
+          style={{
+            background: `color-mix(in srgb, ${track.color} 12%, transparent)`,
+            color: track.color,
+          }}
+          aria-hidden="true"
+        >
+          {track.icon}
+        </span>
+
+        <span className="sk-track-main">
+          <span className="sk-track-titles">
+            <span
+              className="sk-track-level"
+              style={{
+                background: `color-mix(in srgb, ${track.color} 14%, transparent)`,
+                color: track.color,
+              }}
+            >
+              {track.level}
+            </span>
+            <span className="sk-track-name">{track.title}</span>
+          </span>
+          <span className="sk-track-sub">{track.subtitle}</span>
+        </span>
+
+        <span className="sk-track-meta">
+          <span className="sk-track-count">{track.lessons.length} lessons</span>
+          <span className="sk-track-mins">{totalMinutes} min</span>
+        </span>
+
+        <span className="sk-track-chev" aria-hidden="true">›</span>
+      </button>
+
+      <div className="sk-track-panel" id={panelId} role="region">
+        <div className="sk-track-panel-inner">
+          <div className="sk-lessons">
+            {track.lessons.map((lesson, i) => (
+              <Link key={lesson.id} href={`/lesson/${lesson.id}`} className="sk-lesson">
+                <div
+                  className="sk-lesson-num"
+                  style={{
+                    background: `color-mix(in srgb, ${track.color} 12%, transparent)`,
+                    color: track.color,
+                  }}
+                >
+                  {String(i + 1).padStart(2, "0")}
+                </div>
+                <div className="sk-lesson-t">
+                  {lesson.title}
+                  <span className="sub">{lesson.subtitle}</span>
+                </div>
+                <span className="sk-pill live">{lesson.duration}</span>
+                <span className="arr">→</span>
+              </Link>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
 
 export default function Home() {
   const [subEmail, setSubEmail] = useState("");
@@ -122,65 +218,11 @@ export default function Home() {
             </p>
           </div>
 
-          {TRACKS.map((track) => (
-            <div key={track.id} style={{ marginBottom: 52 }}>
-              {/* Track header */}
-              <div style={{ display: "flex", alignItems: "baseline", gap: 14, marginBottom: 16 }}>
-                <span
-                  style={{
-                    fontFamily: "var(--font-mono)",
-                    fontSize: 11,
-                    fontWeight: 700,
-                    letterSpacing: "0.12em",
-                    textTransform: "uppercase",
-                    padding: "3px 10px",
-                    borderRadius: 99,
-                    background: `color-mix(in srgb, ${track.color} 14%, transparent)`,
-                    color: track.color,
-                  }}
-                >
-                  {track.level}
-                </span>
-                <span
-                  style={{
-                    fontFamily: "var(--font-display)",
-                    fontSize: 22,
-                    fontWeight: 700,
-                    color: "var(--ink)",
-                    letterSpacing: "-0.02em",
-                  }}
-                >
-                  {track.title}
-                </span>
-                <span style={{ fontSize: 13, color: "var(--ink-3)", marginLeft: 4 }}>
-                  {track.lessons.length} lessons · {track.icon}
-                </span>
-              </div>
-
-              {/* Lessons */}
-              <div className="sk-lessons">
-                {track.lessons.map((lesson, i) => (
-                  <Link key={lesson.id} href={`/lesson/${lesson.id}`} className="sk-lesson">
-                    <div
-                      className="sk-lesson-num"
-                      style={{
-                        background: `color-mix(in srgb, ${track.color} 12%, transparent)`,
-                        color: track.color,
-                      }}
-                    >
-                      {String(i + 1).padStart(2, "0")}
-                    </div>
-                    <div className="sk-lesson-t">
-                      {lesson.title}
-                      <span className="sub">{lesson.subtitle}</span>
-                    </div>
-                    <span className="sk-pill live">{lesson.duration}</span>
-                    <span className="arr">→</span>
-                  </Link>
-                ))}
-              </div>
-            </div>
-          ))}
+          <div className="sk-tracks">
+            {TRACKS.map((track, ti) => (
+              <TrackCard key={track.id} track={track} defaultOpen={ti === 0} />
+            ))}
+          </div>
 
           <div style={{ textAlign: "center", marginTop: 12 }}>
             <Link href="/lessons" className="sk-btn">Open learning path <span className="arr">→</span></Link>
