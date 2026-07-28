@@ -11,15 +11,15 @@ import AiTutor from "@/components/AiTutor";
 import LessonToc from "@/components/LessonToc";
 import AiReview from "@/components/AiReview";
 import ExplainSelection from "@/components/ExplainSelection";
-import type { TocSection } from "@/lib/lessonToc";
+import Checkpoint from "@/components/Checkpoint";
+import { checkpointPlacement, type TocSection } from "@/lib/lessonToc";
 
 const MiniEditor = dynamic(() => import("@/components/MiniEditor"), { ssr: false });
 
 interface Props {
   lesson: Lesson;
-  /** Lesson HTML with section ids injected server-side. */
-  contentHtml: string;
   sections: TocSection[];
+  chunks: string[];
   prev: Lesson | null;
   next: Lesson | null;
   trackTitle: string;
@@ -196,7 +196,7 @@ function CelebrationOverlay({
 
 // ─── Main lesson component ────────────────────────────────────────────────────
 
-export default function LessonClient({ lesson, contentHtml, sections, prev, next, trackTitle, positionInTrack, trackLength }: Props) {
+export default function LessonClient({ lesson, sections, chunks, prev, next, trackTitle, positionInTrack, trackLength }: Props) {
   const [code, setCode] = useState(lesson.exercise.starterCode);
   const [output, setOutput] = useState("");
   const [status, setStatus] = useState<"idle" | "running" | "pass" | "fail">("idle");
@@ -213,6 +213,13 @@ export default function LessonClient({ lesson, contentHtml, sections, prev, next
 
   const quizQuestions = QUIZZES[lesson.id] ?? [];
   const alreadyDone = hydrated && completed.has(lesson.id);
+
+  // Map of chunk index -> question index, so each checkpoint renders after the
+  // section it tests. Questions beyond the number of eligible slots fall back
+  // to the end-of-lesson block instead of being dropped.
+  const placement = checkpointPlacement(quizQuestions.length, sections.length);
+  const checkpointFor = new Map<number, number>(placement.map((chunkIdx, qIdx) => [chunkIdx, qIdx]));
+  const leftoverQuestions = quizQuestions.slice(placement.length);
 
   const runCode = useCallback(async () => {
     setStatus("running");
@@ -324,17 +331,33 @@ export default function LessonClient({ lesson, contentHtml, sections, prev, next
           </p>
         </div>
 
-        {/* Lesson content */}
+        {/* Lesson content, with checkpoints interleaved between sections.
+            The questions used to sit in one block at the end, so you could
+            read the whole lesson without once being asked to retrieve any of
+            it. Each one now lands while its section is still fresh. */}
         <div
           className="v2-rise lesson-content mb-8 pb-8"
           style={{ borderBottom: "1px solid var(--border)", transitionDelay: "80ms" }}
-          dangerouslySetInnerHTML={{ __html: contentHtml }}
-        />
+        >
+          {chunks.map((chunk, i) => (
+            <div key={i}>
+              <div dangerouslySetInnerHTML={{ __html: chunk }} />
+              {checkpointFor.has(i) && (
+                <Checkpoint
+                  question={quizQuestions[checkpointFor.get(i)!]}
+                  lessonId={lesson.id}
+                  index={checkpointFor.get(i)! + 1}
+                />
+              )}
+            </div>
+          ))}
+        </div>
 
-        {/* Knowledge check quiz */}
-        {quizQuestions.length > 0 && (
+        {/* Any questions that didn't fit between sections (short lessons)
+            still get shown, rather than silently dropped. */}
+        {leftoverQuestions.length > 0 && (
           <div className="v2-rise" style={{ transitionDelay: "120ms" }}>
-            <QuizSection questions={quizQuestions} lessonId={lesson.id} />
+            <QuizSection questions={leftoverQuestions} lessonId={lesson.id} />
           </div>
         )}
 

@@ -2992,3 +2992,86 @@ h1, h2, h3, h4 {
   max-height: 320px; overflow-y: auto;
 }
 .explain-body strong { color: var(--ink); font-weight: 700; }
+
+/* ══════════════════════════════════════════════════════════════════════════
+   INLINE CHECKPOINTS
+   A single retrieval question dropped between lesson sections. Styled as an
+   aside that interrupts the reading flow deliberately — it should feel like a
+   pause, not like another paragraph.
+   ══════════════════════════════════════════════════════════════════════════ */
+
+.cp {
+  margin: 28px 0;
+  padding: 16px 18px;
+  border: 1.5px solid var(--line-2);
+  border-left: 3px solid var(--sky);
+  border-radius: var(--r-lg);
+  background: var(--paper-3);
+}
+.cp.correct { border-left-color: var(--grass); background: var(--grass-tint); }
+.cp.wrong   { border-left-color: var(--coral); background: var(--coral-tint); }
+
+.cp-head {
+  display: flex; align-items: baseline; justify-content: space-between;
+  margin-bottom: 9px;
+}
+.cp-label {
+  font-family: var(--font-mono); font-size: 10px;
+  letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-3);
+}
+.cp-verdict {
+  font-family: var(--font-mono); font-size: 10px;
+  letter-spacing: 0.1em; text-transform: uppercase; font-weight: 700;
+}
+.cp.correct .cp-verdict { color: var(--grass); }
+.cp.wrong   .cp-verdict { color: var(--coral); }
+
+.cp-q {
+  font-family: var(--font-display), Georgia, serif;
+  font-size: 15px; font-weight: 600; line-height: 1.45;
+  color: var(--ink);
+  margin: 0 0 12px;
+}
+
+.cp-options { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+@media (max-width: 640px) { .cp-options { grid-template-columns: 1fr; } }
+
+.cp-opt {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 13px;
+  border: 1.5px solid var(--line-2);
+  border-radius: var(--r-md);
+  background: var(--paper-2);
+  color: var(--ink);
+  font-family: var(--font-ui), system-ui, sans-serif;
+  font-size: 13px; line-height: 1.4; text-align: left;
+  cursor: pointer;
+  transition: border-color .12s, background .12s, transform .1s, opacity .12s;
+}
+.cp-opt:hover:not(:disabled) {
+  border-color: var(--grass);
+  background: var(--grass-tint);
+  transform: translateY(-1px);
+}
+.cp-opt:disabled { cursor: default; }
+.cp-opt.is-correct { border-color: var(--grass); background: var(--grass-tint); }
+.cp-opt.is-wrong   { border-color: var(--coral); background: var(--coral-tint); }
+.cp-opt.is-dim     { opacity: .5; }
+
+.cp-letter {
+  flex-shrink: 0;
+  width: 21px; height: 21px;
+  display: grid; place-items: center;
+  border: 1.5px solid var(--line-2);
+  border-radius: 50%;
+  font-family: var(--font-mono); font-size: 10px; font-weight: 600;
+  color: var(--ink-3);
+}
+.cp-opt.is-correct .cp-letter { background: var(--grass); border-color: var(--grass); color: #fff; }
+.cp-opt.is-wrong   .cp-letter { background: var(--coral); border-color: var(--coral); color: #fff; }
+
+.cp-explain {
+  margin: 12px 0 0;
+  font-size: 12.5px; line-height: 1.6;
+  color: var(--ink-2);
+}

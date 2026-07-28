@@ -22,6 +22,29 @@ export interface LessonToc {
   /** The lesson HTML with `id` attributes added to each <h2>. */
   html: string;
   sections: TocSection[];
+  /**
+   * The same HTML split at section boundaries so checkpoints can be dropped
+   * between sections. `chunks[0]` is any preamble before the first heading;
+   * `chunks[i+1]` is section i including its own <h2>. Concatenating chunks
+   * reproduces `html` exactly.
+   */
+  chunks: string[];
+}
+
+/** Splits lesson HTML immediately before each <h2 id="...">. */
+function splitAtSections(html: string): string[] {
+  const positions: number[] = [];
+  const re = /<h2[^>]*\bid="/g;
+  let m: RegExpExecArray | null;
+  while ((m = re.exec(html)) !== null) positions.push(m.index);
+
+  if (positions.length === 0) return [html];
+
+  const chunks: string[] = [html.slice(0, positions[0])];
+  for (let i = 0; i < positions.length; i++) {
+    chunks.push(html.slice(positions[i], positions[i + 1] ?? html.length));
+  }
+  return chunks;
 }
 
 /** Strips tags and decodes the handful of entities our lesson prose uses. */
@@ -75,5 +98,38 @@ export function buildLessonToc(content: string): LessonToc {
     },
   );
 
-  return { html, sections };
+  return { html, sections, chunks: splitAtSections(html) };
+}
+
+/**
+ * Spreads `count` checkpoints across `sectionCount` sections, returning the
+ * chunk indices to place them after.
+ *
+ * Never places one after the final section: the coding exercise already lives
+ * there, and stacking a quiz question directly above it makes the end of the
+ * lesson feel like a gauntlet rather than a finish line.
+ */
+export function checkpointPlacement(count: number, sectionCount: number): number[] {
+  if (count <= 0 || sectionCount <= 1) return [];
+
+  // Chunk indices are 1-based (chunk 0 is the preamble); the last section is
+  // sectionCount, which we exclude.
+  const eligible = sectionCount - 1;
+  const placements: number[] = [];
+
+  for (let i = 0; i < Math.min(count, eligible); i++) {
+    // Spread evenly through the eligible range, biased to land after a
+    // section rather than clustering at the start.
+    const idx = Math.round(((i + 1) * eligible) / (Math.min(count, eligible) + 1));
+    placements.push(Math.max(1, Math.min(eligible, idx)));
+  }
+
+  // De-duplicate if rounding collided, shifting later ones forward.
+  const seen = new Set<number>();
+  return placements.map((p) => {
+    let v = p;
+    while (seen.has(v) && v < eligible) v++;
+    seen.add(v);
+    return v;
+  });
 }
