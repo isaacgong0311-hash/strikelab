@@ -1434,15 +1434,85 @@ body:has(.sk-home) .v2-bg-vignette { display: none; }
 .sk-curr-meta { margin: 26px 0 28px; }
 .sk-curr-meta div { display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid var(--line); font-size: 15px; color: var(--ink-2); }
 .sk-curr-meta b { color: var(--ink); font-weight: 600; }
+/* Lesson rows read as a connected path rather than a stack of identical
+   cards. Twenty-one flat rows in a row is a wall; a spine running through the
+   numbered nodes turns the same list into a route you're partway along, which
+   is the whole reason Duolingo's tree works. */
 .sk-lessons { display: flex; flex-direction: column; gap: 10px; }
+
 .sk-lesson {
+  position: relative;
   display: grid; grid-template-columns: 44px 1fr auto auto; align-items: center; gap: 18px;
   padding: 15px 18px; border-radius: var(--r-lg); background: var(--paper-2);
   border: 1.5px solid var(--line); box-shadow: 0 2px 0 var(--line);
-  transition: transform .12s ease, box-shadow .12s ease, border-color .15s ease;
+  transition: transform .18s cubic-bezier(.2,.7,.3,1),
+              box-shadow .18s cubic-bezier(.2,.7,.3,1),
+              border-color .15s ease;
 }
-.sk-lesson:hover { transform: translateY(-2px); box-shadow: 0 10px 22px -12px rgba(40,30,10,0.28); border-color: var(--line-2); }
-.sk-lesson-num { width: 40px; height: 40px; border-radius: var(--r-md); display: grid; place-items: center; font-family: var(--font-mono); font-weight: 700; font-size: 14px; background: var(--grass-tint); color: var(--grass); }
+
+/* The spine. Sits behind the node, spanning this row's node down to the next
+   one — hence :not(:last-child), so the path stops at the final lesson
+   instead of trailing into nothing. */
+.sk-lesson:not(:last-child)::after {
+  content: "";
+  position: absolute;
+  left: 37px;
+  top: 55px;
+  bottom: -25px;
+  width: 2px;
+  background: var(--line-2);
+  z-index: 0;
+}
+
+.sk-lesson:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 14px 26px -14px rgba(40,30,10,0.32);
+  border-color: var(--line-2);
+}
+
+.sk-lesson-num {
+  position: relative; z-index: 1;
+  width: 40px; height: 40px;
+  border-radius: 50%;
+  display: grid; place-items: center;
+  font-family: var(--font-mono); font-weight: 700; font-size: 14px;
+  background: var(--grass-tint); color: var(--grass);
+  /* Ring in the page colour so the node sits *on* the spine rather than the
+     spine running through it. Deliberately not a tinted ring: each track sets
+     its own node colour inline (blue / green / coral), so a hardcoded green
+     halo would clash on two of the three. */
+  border: 2px solid var(--paper-2);
+  transition: transform .18s cubic-bezier(.34,1.4,.64,1), filter .15s ease;
+}
+/* Scale and deepen rather than recolour — recolouring would override the
+   per-track inline background and make every track's hover look green. */
+.sk-lesson:hover .sk-lesson-num {
+  transform: scale(1.12);
+  filter: saturate(1.5) brightness(0.97);
+}
+
+/* Rows fade up on load, staggered, so the list assembles instead of appearing
+   as a block. Capped at 8 — past that the last rows would wait too long, and
+   they're below the fold anyway. */
+@keyframes sk-row-in {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.sk-lesson { animation: sk-row-in .42s cubic-bezier(.2,.7,.3,1) both; }
+.sk-lesson:nth-child(1) { animation-delay: .02s; }
+.sk-lesson:nth-child(2) { animation-delay: .06s; }
+.sk-lesson:nth-child(3) { animation-delay: .10s; }
+.sk-lesson:nth-child(4) { animation-delay: .14s; }
+.sk-lesson:nth-child(5) { animation-delay: .18s; }
+.sk-lesson:nth-child(6) { animation-delay: .22s; }
+.sk-lesson:nth-child(7) { animation-delay: .26s; }
+.sk-lesson:nth-child(n+8) { animation-delay: .30s; }
+
+@media (prefers-reduced-motion: reduce) {
+  .sk-lesson { animation: none; }
+  .sk-lesson:hover { transform: none; }
+  .sk-lesson:hover .sk-lesson-num { transform: none; }
+}
 .sk-lesson.soon { opacity: 0.62; }
 .sk-lesson.soon .sk-lesson-num { background: var(--paper-3); color: var(--ink-3); }
 .sk-lesson-t { font-family: var(--font-display), Georgia, serif; font-weight: 600; font-size: 19px; color: var(--ink); letter-spacing: -0.012em; line-height: 1.15; }
@@ -3160,3 +3230,86 @@ h1, h2, h3, h4 {
   font-size: 12px; line-height: 1.55; color: var(--ink-3);
 }
 .pr-error { width: 100%; margin: 8px 0 0; font-size: 12.5px; color: var(--coral); }
+
+/* ══════════════════════════════════════════════════════════════════════════
+   MOTION PASS
+   Micro-interactions that give the UI weight. Everything here is short
+   (120-420ms), eased-out, and disabled under prefers-reduced-motion. The one
+   place overshoot is allowed is a correct answer — that's the moment worth
+   celebrating, and it's the Duolingo instinct: feedback should feel physical.
+   ══════════════════════════════════════════════════════════════════════════ */
+
+/* Checkpoint: a correct answer pops, a wrong one shakes once. */
+@keyframes cp-pop {
+  0%   { transform: scale(1); }
+  45%  { transform: scale(1.015); }
+  100% { transform: scale(1); }
+}
+@keyframes cp-shake {
+  0%, 100% { transform: translateX(0); }
+  22%      { transform: translateX(-5px); }
+  55%      { transform: translateX(4px); }
+  80%      { transform: translateX(-2px); }
+}
+.cp.correct { animation: cp-pop .38s cubic-bezier(.34,1.4,.64,1); }
+.cp.wrong   { animation: cp-shake .34s ease-in-out; }
+
+/* The chosen option gets a quick scale so the click lands physically. */
+@keyframes cp-chosen {
+  0%   { transform: scale(1); }
+  40%  { transform: scale(1.04); }
+  100% { transform: scale(1); }
+}
+.cp-opt.is-correct { animation: cp-chosen .34s cubic-bezier(.34,1.5,.64,1); }
+
+/* Explanation slides in rather than snapping. */
+@keyframes cp-explain-in {
+  from { opacity: 0; transform: translateY(-4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.cp-explain { animation: cp-explain-in .26s ease-out both; }
+
+/* Shared entrance easing for hero elements. */
+@keyframes sk-fade-up {
+  from { opacity: 0; transform: translateY(14px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+/* Hero: headline, sub, actions and stats cascade in on load. */
+.sk-hero .sk-tag { animation: sk-fade-up .5s cubic-bezier(.2,.7,.3,1) .02s both; }
+.sk-hero-h { animation: sk-fade-up .55s cubic-bezier(.2,.7,.3,1) .08s both; }
+.sk-hero-sub   { animation: sk-fade-up .55s cubic-bezier(.2,.7,.3,1) .16s both; }
+.sk-hero-cta   { animation: sk-fade-up .55s cubic-bezier(.2,.7,.3,1) .24s both; }
+.sk-facts      { animation: sk-fade-up .55s cubic-bezier(.2,.7,.3,1) .32s both; }
+.sk-codecard   { animation: sk-fade-up .6s  cubic-bezier(.2,.7,.3,1) .18s both; }
+
+/* Every card that lifts should lift the same way. */
+.sk-card, .sk-grow-card, .v2-card {
+  transition: transform .18s cubic-bezier(.2,.7,.3,1),
+              box-shadow .18s cubic-bezier(.2,.7,.3,1),
+              border-color .15s ease;
+}
+
+/* Links in prose get an underline that draws rather than blinks on. */
+.lesson-content a {
+  background-image: linear-gradient(var(--grass), var(--grass));
+  background-size: 0% 1.5px;
+  background-position: 0 100%;
+  background-repeat: no-repeat;
+  transition: background-size .22s cubic-bezier(.2,.7,.3,1);
+  color: var(--grass);
+}
+.lesson-content a:hover { background-size: 100% 1.5px; }
+
+/* TOC items shift slightly toward the reader on hover. */
+.lt-item { will-change: transform; }
+.lt-item:hover { transform: translateX(2px); }
+
+@media (prefers-reduced-motion: reduce) {
+  .cp.correct, .cp.wrong, .cp-opt.is-correct, .cp-explain,
+  .sk-hero .sk-tag, .sk-hero-h, .sk-hero-sub,
+  .sk-hero-cta, .sk-facts, .sk-codecard {
+    animation: none !important;
+  }
+  .lt-item:hover { transform: none; }
+  .lesson-content a { background-size: 100% 1.5px; transition: none; }
+}
