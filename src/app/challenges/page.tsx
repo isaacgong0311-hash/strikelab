@@ -1,5 +1,6 @@
 import ChallengesClient from "./ChallengesClient";
-import { pageMetadata } from "@/lib/seo";
+import JsonLd from "@/components/JsonLd";
+import { pageMetadata, breadcrumbJsonLd } from "@/lib/seo";
 
 export const metadata = pageMetadata({
   path: "/challenges",
@@ -9,5 +10,10 @@ export const metadata = pageMetadata({
 });
 
 export default function ChallengesPage() {
-  return <ChallengesClient />;
+  return (
+    <>
+      <JsonLd data={breadcrumbJsonLd([{ name: "Challenges", path: "/challenges" }])} />
+      <ChallengesClient />
+    </>
+  );
 }

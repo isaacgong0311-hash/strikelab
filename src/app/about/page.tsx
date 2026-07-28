@@ -1,5 +1,6 @@
 import Eyebrow from "@/components/Eyebrow";
-import { pageMetadata } from "@/lib/seo";
+import JsonLd from "@/components/JsonLd";
+import { pageMetadata, breadcrumbJsonLd } from "@/lib/seo";
 
 export const metadata = pageMetadata({
   path: "/about",
@@ -47,6 +48,7 @@ const PRESS = [
 export default function AboutPage() {
   return (
     <div className="max-w-4xl mx-auto px-6 py-14">
+      <JsonLd data={breadcrumbJsonLd([{ name: "About", path: "/about" }])} />
 
       {/* Hero */}
       <div className="v2-page-head mb-14" data-v2-head style={{ padding: 0, border: 0 }}>

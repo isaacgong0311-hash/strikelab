@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { getAllLessons, getLessonContext } from "@/lib/tracks";
 import { notFound } from "next/navigation";
 import { SITE_URL, SITE_NAME } from "@/lib/site";
+import { breadcrumbJsonLd, isoDuration } from "@/lib/seo";
+import JsonLd from "@/components/JsonLd";
 import LessonClient from "./LessonClient";
 
 export async function generateStaticParams() {
@@ -48,38 +50,40 @@ export default async function LessonPage({ params }: { params: Promise<{ id: str
     description: ctx.lesson.subtitle,
     url: `${SITE_URL}/lesson/${id}`,
     learningResourceType: "Lesson",
-    educationalLevel: "high school",
-    timeRequired: ctx.lesson.duration,
+    educationalLevel: ctx.track.level,
+    teaches: ctx.lesson.subtitle,
+    timeRequired: isoDuration(ctx.lesson.duration),
+    dateModified: ctx.track.contentUpdated,
+    isAccessibleForFree: true,
     inLanguage: "en-US",
+    // Same @id as the Course on /lessons, so Google resolves the two into one
+    // entity rather than treating them as unrelated courses with the same name.
     isPartOf: {
       "@type": "Course",
+      "@id": `${SITE_URL}/lessons#${ctx.track.id}`,
       name: `${ctx.track.title} — ${SITE_NAME}`,
+      url: `${SITE_URL}/lessons#${ctx.track.id}`,
     },
-    provider: { "@type": "Organization", name: SITE_NAME, url: SITE_URL },
+    position: ctx.positionInTrack,
+    provider: {
+      "@type": ["Organization", "EducationalOrganization"],
+      "@id": `${SITE_URL}/#organization`,
+      name: SITE_NAME,
+      url: SITE_URL,
+    },
   };
 
   // Gives Google the Home › Lessons › Lesson trail to show under the result
   // instead of a bare URL.
-  const breadcrumbJsonLd = {
-    "@context": "https://schema.org",
-    "@type": "BreadcrumbList",
-    itemListElement: [
-      { "@type": "ListItem", position: 1, name: "Home", item: SITE_URL },
-      { "@type": "ListItem", position: 2, name: "Lessons", item: `${SITE_URL}/lessons` },
-      { "@type": "ListItem", position: 3, name: ctx.lesson.title, item: `${SITE_URL}/lesson/${id}` },
-    ],
-  };
+  const breadcrumbs = breadcrumbJsonLd([
+    { name: "Lessons", path: "/lessons" },
+    { name: ctx.lesson.title, path: `/lesson/${id}` },
+  ]);
 
   return (
     <>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(lessonJsonLd) }}
-      />
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
-      />
+      <JsonLd data={lessonJsonLd} />
+      <JsonLd data={breadcrumbs} />
       <LessonClient
         lesson={ctx.lesson}
         prev={ctx.prev}

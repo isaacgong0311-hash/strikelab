@@ -40,6 +40,37 @@ export function pageMetadata(opts: {
 }
 
 /**
+ * Converts a human duration ("15 min") to the ISO 8601 duration schema.org
+ * expects ("PT15M"). Passing the raw string makes `timeRequired` unparseable,
+ * so Google drops the property rather than showing a course length.
+ */
+export function isoDuration(duration: string): string | undefined {
+  const minutes = Number.parseInt(duration, 10);
+  return Number.isFinite(minutes) && minutes > 0 ? `PT${minutes}M` : undefined;
+}
+
+/**
+ * BreadcrumbList JSON-LD. Google renders this as a "strikelab.dev › Lessons ›
+ * Black-Scholes" trail in place of the raw URL, which reads better in results
+ * and is one of the cheapest rich-result wins available.
+ *
+ * Pass the trail without "Home" — it's prepended here so every page agrees.
+ */
+export function breadcrumbJsonLd(trail: { name: string; path: string }[]) {
+  const items = [{ name: "Home", path: "/" }, ...trail];
+  return {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: items.map((item, i) => ({
+      "@type": "ListItem",
+      position: i + 1,
+      name: item.name,
+      item: item.path === "/" ? SITE_URL : `${SITE_URL}${item.path}`,
+    })),
+  };
+}
+
+/**
  * Metadata for private/utility routes (dashboard, checkout success, auth).
  * These are crawlable — so the noindex directive is actually seen — but kept
  * out of the index. Blocking them in robots.txt instead would hide the

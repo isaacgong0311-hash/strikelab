@@ -92,6 +92,8 @@ export default function Nav() {
   const isActive = (href: string) => path === href || path.startsWith(href + "/");
   const { xp, streak, hydrated } = useProgress();
   const { user, displayName, signOut } = useAuth();
+  // Gates the gamification pills — see the note at their render site.
+  const hasProgress = xp > 0 || streak > 0;
   const [menuOpen, setMenuOpen] = useState(false);
 
   // Close the mobile menu whenever the route changes (adjust state during
@@ -168,37 +170,44 @@ export default function Nav() {
         {/* Right: stats + utility + CTA */}
         <div className="nav-right">
 
-          {/* Streak */}
-          {hydrated && (
-            <Link
-              href="/dashboard"
-              className={`nav-stat-pill${streak > 0 ? " streak-active" : ""}`}
-              title={streak > 0 ? `${streak}-day streak` : "No streak yet"}
-            >
-              <FlameIcon />
-              <span>{streak}</span>
-            </Link>
+          {/* Streak + XP + avatar.
+              Only rendered once there's actually progress to show. A first-time
+              visitor was being greeted by a "0" streak and "0 XP" next to the
+              sign-up button, which advertises an empty account before they have
+              any reason to care — and crowded the bar to 12+ elements. Progress
+              earns its place in the nav; it doesn't start there. */}
+          {hydrated && hasProgress && (
+            <>
+              <Link
+                href="/dashboard"
+                className={`nav-stat-pill${streak > 0 ? " streak-active" : ""}`}
+                title={streak > 0 ? `${streak}-day streak` : "No streak yet"}
+              >
+                <FlameIcon />
+                <span>{streak}</span>
+              </Link>
+
+              <Link
+                href="/dashboard"
+                className="nav-stat-pill xp"
+                title={`${xp} XP total`}
+              >
+                <DiamondIcon />
+                <span>{xp} XP</span>
+              </Link>
+            </>
           )}
 
-          {/* XP */}
-          {hydrated && (
-            <Link
-              href="/dashboard"
-              className="nav-stat-pill xp"
-              title={`${xp} XP total`}
-            >
-              <DiamondIcon />
-              <span>{xp} XP</span>
-            </Link>
-          )}
-
-          {/* Profile avatar */}
+          {/* Profile avatar — signed-in users always get it; signed-out
+              visitors reach the dashboard via the nav link instead. */}
+          {(user || hasProgress) && (
           <Link href="/dashboard" className="nav-avatar" title="Dashboard">
             <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
               <circle cx="7" cy="5" r="3" stroke="currentColor" strokeWidth="1.5"/>
               <path d="M1.5 13c0-2.76 2.462-5 5.5-5s5.5 2.24 5.5 5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
             </svg>
           </Link>
+          )}
 
           {/* GitHub */}
           <a
@@ -261,7 +270,7 @@ export default function Nav() {
               ))}
             </div>
             <div className="nav-mobile-divider" />
-            {hydrated && (
+            {hydrated && hasProgress && (
               <div className="nav-mobile-stats">
                 <span className={`nav-stat-pill${streak > 0 ? " streak-active" : ""}`} style={{ display: "flex" }}>
                   <FlameIcon /><span>{streak} day streak</span>

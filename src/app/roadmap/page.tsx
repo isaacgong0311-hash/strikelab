@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Eyebrow from "@/components/Eyebrow";
-import { pageMetadata } from "@/lib/seo";
+import JsonLd from "@/components/JsonLd";
+import { pageMetadata, breadcrumbJsonLd } from "@/lib/seo";
 
 export const metadata = pageMetadata({
   path: "/roadmap",
@@ -66,6 +67,7 @@ const STATE_STYLES = {
 export default function RoadmapPage() {
   return (
     <div className="max-w-4xl mx-auto px-6 py-14">
+      <JsonLd data={breadcrumbJsonLd([{ name: "Roadmap", path: "/roadmap" }])} />
 
       {/* Header */}
       <div className="mb-10">

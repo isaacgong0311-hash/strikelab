@@ -12,6 +12,13 @@ export interface Track {
   color: string;       // CSS var token
   icon: string;        // math glyph
   lessons: Lesson[];
+  /**
+   * Date this track's lesson content last actually changed (YYYY-MM-DD).
+   * Feeds `<lastmod>` in the sitemap and `dateModified` in lesson JSON-LD.
+   * Bump it when you edit the lessons — a lastmod that moves on every crawl
+   * (what `new Date()` produced here before) is one Google learns to ignore.
+   */
+  contentUpdated: string;
 }
 
 export const TRACKS: Track[] = [
@@ -24,6 +31,7 @@ export const TRACKS: Track[] = [
     color: "var(--sky)",
     icon: "∑",
     lessons: INVESTING_LESSONS,
+    contentUpdated: "2026-06-04",
   },
   {
     id: "options",
@@ -34,6 +42,7 @@ export const TRACKS: Track[] = [
     color: "var(--grass)",
     icon: "∂",
     lessons: OPTIONS_LESSONS,
+    contentUpdated: "2026-06-08",
   },
   {
     id: "quant",
@@ -44,15 +53,25 @@ export const TRACKS: Track[] = [
     color: "var(--coral)",
     icon: "β",
     lessons: QUANT_LESSONS,
+    contentUpdated: "2026-06-04",
   },
 ];
 
 export type { Lesson };
 
 /** All lessons across all tracks, with track metadata injected */
-export function getAllLessons(): (Lesson & { trackId: string; trackTitle: string })[] {
+export function getAllLessons(): (Lesson & {
+  trackId: string;
+  trackTitle: string;
+  contentUpdated: string;
+})[] {
   return TRACKS.flatMap((t) =>
-    t.lessons.map((l) => ({ ...l, trackId: t.id, trackTitle: t.title }))
+    t.lessons.map((l) => ({
+      ...l,
+      trackId: t.id,
+      trackTitle: t.title,
+      contentUpdated: t.contentUpdated,
+    }))
   );
 }
 

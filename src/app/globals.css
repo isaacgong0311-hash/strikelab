@@ -12,7 +12,12 @@
   --accent:  #15803d;
   --accent2: #586460;
   --green:   #15803d;
-  --nav-bg:  rgba(247,245,239,0.85);
+  /* Fully opaque on purpose. The sticky bar was rgba(...,0.85) paired with a
+     backdrop-filter that never actually took effect (it computed to `none`),
+     so scrolled content ghosted straight through it — the white
+     "Start tonight." headline on the dark CTA panel collided with the nav
+     links. With no working blur, translucency buys nothing here. */
+  --nav-bg:  #f7f5ef;
   --text:    #16201c;
   /* #8a938e was ~2.9:1 on the paper background — too light for the footer,
      kickers and other small mono labels that use it. Set dark enough to clear
@@ -1257,7 +1262,7 @@ main { animation: v2pageIn 0.5s cubic-bezier(.2,.7,.3,1) both; }
 
 /* Flip shared Nav + Footer to the light theme on the home route only */
 body:has(.sk-home) {
-  --nav-bg: rgba(247,245,239,0.82);
+  --nav-bg: #f7f5ef; /* see the :root note — prevents scroll bleed-through */
   --bg: #f7f5ef;  --bg2: #f1ece0;
   --fg: #16201c;  --fg-mute: #586460;  --fg-faint: #5f665f;
   --muted: #5f665f;  --muted2: #586460;
@@ -1471,7 +1476,11 @@ body:has(.sk-home) .v2-bg-vignette { display: none; }
 .sk-grow.v .sk-gsym { background: var(--amber-tint); color: var(--amber); }
 .sk-grow.r .sk-gsym { background: var(--paper-3); color: var(--ink-2); }
 .sk-gname { font-weight: 700; font-size: 14px; color: var(--ink); }
-.sk-gnote { font-size: 13px; color: var(--ink-3); margin-top: 1px; }
+/* `display: block` is load-bearing: this and .sk-gname are adjacent inline
+   spans with no whitespace between them in the JSX, so the ticket rendered as
+   "Deltamoves per $1 of underlying". The existing margin-top shows it was
+   always meant to sit under the name, matching the lesson-row title/subtitle. */
+.sk-gnote { display: block; font-size: 13px; color: var(--ink-3); margin-top: 1px; }
 .sk-gval { font-family: var(--font-mono); font-weight: 600; font-size: 15px; color: var(--ink); }
 
 /* ── TOOLS (light) ─────────────────────────────────────────────────────── */
@@ -1650,8 +1659,8 @@ body:has(.sk-home) .v2-bg-vignette { display: none; }
   min-height: 60px;
   border-bottom: 1px solid var(--border);
   background: var(--nav-bg);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
+  /* No backdrop-filter: it computed to `none` here anyway, and the background
+     is opaque now, so a blur would be dead weight on every scroll frame. */
   position: sticky;
   top: 0;
   z-index: 50;

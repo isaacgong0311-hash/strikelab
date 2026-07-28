@@ -1,6 +1,7 @@
 import FAQClient from "./FAQClient";
+import JsonLd from "@/components/JsonLd";
 import { FAQ_GROUPS } from "@/lib/faq";
-import { pageMetadata } from "@/lib/seo";
+import { pageMetadata, breadcrumbJsonLd } from "@/lib/seo";
 
 export const metadata = pageMetadata({
   path: "/faq",
@@ -22,10 +23,8 @@ const FAQ_JSON_LD = {
 export default function FAQPage() {
   return (
     <>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(FAQ_JSON_LD) }}
-      />
+      <JsonLd data={FAQ_JSON_LD} />
+      <JsonLd data={breadcrumbJsonLd([{ name: "FAQ", path: "/faq" }])} />
       <FAQClient />
     </>
   );

@@ -1,6 +1,7 @@
 import { Suspense } from "react";
 import PlaygroundClient from "./PlaygroundClient";
-import { pageMetadata } from "@/lib/seo";
+import JsonLd from "@/components/JsonLd";
+import { pageMetadata, breadcrumbJsonLd } from "@/lib/seo";
 
 export const metadata = pageMetadata({
   path: "/playground",
@@ -11,8 +12,11 @@ export const metadata = pageMetadata({
 
 export default function PlaygroundPage() {
   return (
-    <Suspense>
-      <PlaygroundClient />
-    </Suspense>
+    <>
+      <JsonLd data={breadcrumbJsonLd([{ name: "Playground", path: "/playground" }])} />
+      <Suspense>
+        <PlaygroundClient />
+      </Suspense>
+    </>
   );
 }

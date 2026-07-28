@@ -1,5 +1,6 @@
 import PricingClient from "./PricingClient";
-import { pageMetadata } from "@/lib/seo";
+import JsonLd from "@/components/JsonLd";
+import { pageMetadata, breadcrumbJsonLd } from "@/lib/seo";
 
 export const metadata = pageMetadata({
   path: "/pricing",
@@ -9,5 +10,10 @@ export const metadata = pageMetadata({
 });
 
 export default function PricingPage() {
-  return <PricingClient />;
+  return (
+    <>
+      <JsonLd data={breadcrumbJsonLd([{ name: "Pricing", path: "/pricing" }])} />
+      <PricingClient />
+    </>
+  );
 }
