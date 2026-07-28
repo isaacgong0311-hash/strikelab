@@ -150,7 +150,8 @@ export default function Home() {
 
       {/* ── HERO (dark) ─────────────────────────────────────────────────── */}
       <section className="sk-hero">
-        <div className="sk-container sk-hero-grid">
+        <div className="sk-container">
+        <div className="sk-hero-grid">
           <div>
             <span className="sk-tag dark"><span className="dot" />Free &amp; open-source · stocks · options · quant</span>
             <h1 className="sk-hero-h">
@@ -170,14 +171,6 @@ export default function Home() {
             <div className="sk-hero-cta">
               <Link href="/lesson/inv-1" className="sk-btn">Start investing track <span className="arr">→</span></Link>
               <Link href="/lessons" className="sk-btn ghost dark">See all tracks</Link>
-            </div>
-            <div className="sk-facts">
-              {FACTS.map((f) => (
-                <div key={f.s} className="sk-fact">
-                  <b>{f.b}</b>
-                  <span>{f.s}</span>
-                </div>
-              ))}
             </div>
           </div>
 
@@ -202,6 +195,21 @@ export default function Home() {
               <span>Δ <b>0.443</b></span>
             </div>
           </div>
+        </div>
+
+        {/* Stats sit below both columns rather than inside the text one. The
+            left column ran 600px against a 233px code card, so centring left
+            ~180px of dead air above and below the card. Pulling the stats out
+            shortens the text column and gives the hero a full-width base to
+            rest on instead of two columns floating in space. */}
+        <div className="sk-facts">
+          {FACTS.map((f) => (
+            <div key={f.s} className="sk-fact">
+              <b>{f.b}</b>
+              <span>{f.s}</span>
+            </div>
+          ))}
+        </div>
         </div>
       </section>
 
