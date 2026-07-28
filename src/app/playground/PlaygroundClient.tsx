@@ -108,7 +108,12 @@ def compute_vega(S, K, T, r, sigma):
     return S * _norm_pdf(d1) * math.sqrt(T) / 100
 `;
 
-const SERIES_COLORS = ["#2f6df0", "#16a34a", "#c9870c", "#7c4dd4"];
+// These are not only chart strokes — the same value colours the parameter
+// symbol, its readout ("$100") and each chart's name, all of which are text.
+// The old Tailwind-500 values sat around 3.8:1 once the page background
+// darkened, so they had to come down to the site's accent ramp. Still four
+// clearly separable hues for distinguishing series.
+const SERIES_COLORS = ["#1d4ed8", "#147038", "#92400e", "#7e22ce"];
 
 type GreekName = "delta" | "gamma" | "theta" | "vega";
 const GREEKS: { key: GreekName; label: string; sym: string; fn: string; formula: string; hint: string }[] = [
