@@ -9,6 +9,8 @@ import { trackLessonStart, trackTestsPassed, trackLessonComplete, trackQuizAnswe
 import Eyebrow from "@/components/Eyebrow";
 import AiTutor from "@/components/AiTutor";
 import LessonToc from "@/components/LessonToc";
+import AiReview from "@/components/AiReview";
+import ExplainSelection from "@/components/ExplainSelection";
 import type { TocSection } from "@/lib/lessonToc";
 
 const MiniEditor = dynamic(() => import("@/components/MiniEditor"), { ssr: false });
@@ -278,6 +280,9 @@ export default function LessonClient({ lesson, contentHtml, sections, prev, next
           <LessonToc sections={sections} />
         </aside>
 
+        {/* Highlight any passage in the prose to have it re-explained. */}
+        <ExplainSelection lessonId={lesson.id} />
+
         <div className="min-w-0 max-w-3xl">
         {/* Breadcrumb */}
         <div className="v2-rise in flex items-center gap-2 text-sm mb-5" style={{ color: "var(--muted)" }}>
@@ -488,6 +493,11 @@ export default function LessonClient({ lesson, contentHtml, sections, prev, next
               </pre>
             </div>
           )}
+
+          {/* Review is offered only once the tests pass — reviewing broken
+              code is the tutor's job, and doing it here would just be a second
+              hint button. */}
+          {status === "pass" && <AiReview lessonId={lesson.id} code={code} />}
 
           {/* AI tutor — conversational, sees the current code and error */}
           {showHint && (

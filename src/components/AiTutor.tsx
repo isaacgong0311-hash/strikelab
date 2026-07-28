@@ -1,5 +1,6 @@
 "use client";
 import { useState, useRef, useEffect, useCallback } from "react";
+import { renderAiMarkdown, streamInto } from "./AiMarkdown";
 
 /**
  * Conversational AI tutor panel.
@@ -21,56 +22,6 @@ const STARTERS = [
   "Explain the intuition, not the formula",
   "What's wrong with my code?",
 ];
-
-// ─── Minimal markdown rendering ──────────────────────────────────────────────
-// Handles fenced code, inline code, bold and bullets. Deliberately not a full
-// markdown parser: the system prompt constrains the model to these four, and a
-// real parser is a dependency we don't need for four constructs.
-function renderMarkdown(text: string) {
-  const blocks: React.ReactNode[] = [];
-  const lines = text.split("\n");
-  let codeBuffer: string[] = [];
-  let inCode = false;
-
-  const flushCode = (key: string) => {
-    if (codeBuffer.length === 0) return;
-    blocks.push(
-      <pre key={key} className="ai-code">
-        <code>{codeBuffer.join("\n")}</code>
-      </pre>
-    );
-    codeBuffer = [];
-  };
-
-  lines.forEach((line, i) => {
-    if (line.trim().startsWith("```")) {
-      if (inCode) { flushCode(`code-${i}`); inCode = false; }
-      else inCode = true;
-      return;
-    }
-    if (inCode) { codeBuffer.push(line); return; }
-    if (!line.trim()) { blocks.push(<div key={`gap-${i}`} className="ai-gap" />); return; }
-
-    const isBullet = /^\s*[-*]\s+/.test(line) || /^\s*\d+\.\s+/.test(line);
-    const body = line.replace(/^\s*[-*]\s+/, "").replace(/^\s*(\d+)\.\s+/, "$1. ");
-
-    // Split on **bold** and `code` in one pass so they can co-exist inline.
-    const parts = body.split(/(\*\*[^*]+\*\*|`[^`]+`)/g).filter(Boolean);
-    const rendered = parts.map((p, j) => {
-      if (p.startsWith("**") && p.endsWith("**")) return <strong key={j}>{p.slice(2, -2)}</strong>;
-      if (p.startsWith("`") && p.endsWith("`")) return <code key={j} className="ai-inline">{p.slice(1, -1)}</code>;
-      return <span key={j}>{p}</span>;
-    });
-
-    blocks.push(
-      <p key={`l-${i}`} className={isBullet ? "ai-li" : "ai-p"}>{rendered}</p>
-    );
-  });
-
-  // An unterminated fence means the reply is still streaming — show it anyway.
-  if (codeBuffer.length > 0) flushCode("code-tail");
-  return blocks;
-}
 
 export default function AiTutor({
   lessonId,
@@ -105,29 +56,19 @@ export default function AiTutor({
     setStreaming(true);
 
     try {
-      const res = await fetch("/api/ai/chat", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ lessonId, messages: nextMessages, code, error }),
-      });
-
-      if (!res.body) throw new Error("no body");
-      const reader = res.body.getReader();
-      const decoder = new TextDecoder();
-
-      while (true) {
-        const { done, value } = await reader.read();
-        if (done) break;
-        const chunk = decoder.decode(value, { stream: true });
-        setMessages((prev) => {
-          const copy = [...prev];
-          copy[copy.length - 1] = {
-            role: "assistant",
-            content: copy[copy.length - 1].content + chunk,
-          };
-          return copy;
-        });
-      }
+      await streamInto(
+        "/api/ai/chat",
+        { lessonId, messages: nextMessages, code, error },
+        (chunk) =>
+          setMessages((prev) => {
+            const copy = [...prev];
+            copy[copy.length - 1] = {
+              role: "assistant",
+              content: copy[copy.length - 1].content + chunk,
+            };
+            return copy;
+          }),
+      );
     } catch {
       setMessages((prev) => {
         const copy = [...prev];
@@ -192,7 +133,7 @@ export default function AiTutor({
               ) : m.role === "user" ? (
                 <p className="ai-p">{m.content}</p>
               ) : (
-                renderMarkdown(m.content)
+                renderAiMarkdown(m.content)
               )}
             </div>
           ))

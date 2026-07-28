@@ -2879,3 +2879,116 @@ h1, h2, h3, h4 {
 
 /* Anchored headings shouldn't hide under the sticky nav when deep-linked. */
 .lesson-content h2 { scroll-margin-top: 92px; }
+
+/* ══════════════════════════════════════════════════════════════════════════
+   AI REVIEW  ·  EXPLAIN-THIS
+   ══════════════════════════════════════════════════════════════════════════ */
+
+/* Offered after tests pass — opt-in, so a win isn't immediately critiqued. */
+.ai-review-cta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  flex-wrap: wrap;
+  margin: 0 14px 14px;
+  padding: 12px 14px;
+  border: 1.5px solid var(--line-2);
+  border-radius: var(--r-lg);
+  background: var(--paper-3);
+}
+.ai-review-cta-text { font-size: 13px; color: var(--ink-2); line-height: 1.5; }
+.ai-review-cta-text strong { color: var(--ink); }
+.ai-review-btn {
+  font-family: var(--font-ui), system-ui, sans-serif;
+  font-weight: 700; font-size: 13px;
+  padding: 9px 16px;
+  border: 0; border-radius: var(--r-sm);
+  background: var(--grass); color: #fff; cursor: pointer;
+  box-shadow: 0 3px 0 var(--grass-d);
+  transition: transform .08s, box-shadow .08s, filter .12s;
+  white-space: nowrap;
+}
+.ai-review-btn:hover { filter: brightness(1.06); }
+.ai-review-btn:active { transform: translateY(2px); box-shadow: 0 1px 0 var(--grass-d); }
+
+.ai-review {
+  margin: 0 14px 14px;
+  border: 1.5px solid var(--line-2);
+  border-radius: var(--r-lg);
+  background: var(--paper-2);
+  overflow: hidden;
+}
+.ai-review-head {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--line);
+  background: var(--paper-3);
+}
+.ai-review-title {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-family: var(--font-mono); font-size: 11px;
+  letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-2);
+}
+.ai-review-again {
+  font-family: var(--font-mono); font-size: 11px;
+  color: var(--ink-3); background: none; border: 0; cursor: pointer;
+  padding: 3px 7px; border-radius: var(--r-xs);
+  transition: color .12s, background .12s;
+}
+.ai-review-again:hover { color: var(--ink); background: var(--bg2); }
+.ai-review-body {
+  padding: 14px;
+  font-size: 13.5px; line-height: 1.65; color: var(--ink-2);
+}
+.ai-review-body strong { color: var(--ink); font-weight: 700; }
+
+/* ── Explain-this ─────────────────────────────────────────────────────────── */
+
+.explain-chip {
+  position: absolute;
+  transform: translateX(-50%);
+  z-index: 60;
+  font-family: var(--font-ui), system-ui, sans-serif;
+  font-weight: 600; font-size: 12px;
+  padding: 7px 14px;
+  border: 0; border-radius: var(--r-full);
+  background: var(--ink); color: var(--paper);
+  cursor: pointer;
+  box-shadow: 0 4px 14px -4px rgba(22,32,28,0.45);
+  animation: explain-in 140ms ease-out;
+}
+.explain-chip:hover { filter: brightness(1.15); }
+@keyframes explain-in {
+  from { opacity: 0; transform: translateX(-50%) translateY(4px); }
+  to   { opacity: 1; transform: translateX(-50%) translateY(0); }
+}
+@media (prefers-reduced-motion: reduce) { .explain-chip { animation: none; } }
+
+.explain-panel {
+  position: absolute;
+  transform: translateX(-50%);
+  z-index: 60;
+  width: min(420px, calc(100vw - 32px));
+  border: 1.5px solid var(--line-2);
+  border-radius: var(--r-lg);
+  background: var(--paper-2);
+  box-shadow: 0 18px 40px -16px rgba(22,32,28,0.35);
+  overflow: hidden;
+}
+.explain-head {
+  display: flex; align-items: flex-start; justify-content: space-between; gap: 10px;
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--line);
+  background: var(--paper-3);
+}
+.explain-quote {
+  font-size: 12px; line-height: 1.45; color: var(--ink-3);
+  font-style: italic;
+}
+.explain-body {
+  padding: 13px;
+  font-size: 13.5px; line-height: 1.65; color: var(--ink-2);
+  max-height: 320px; overflow-y: auto;
+}
+.explain-body strong { color: var(--ink); font-weight: 700; }
