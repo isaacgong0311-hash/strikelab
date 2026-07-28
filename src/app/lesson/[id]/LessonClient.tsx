@@ -12,6 +12,7 @@ import LessonToc from "@/components/LessonToc";
 import AiReview from "@/components/AiReview";
 import ExplainSelection from "@/components/ExplainSelection";
 import Checkpoint from "@/components/Checkpoint";
+import PracticeProblem from "@/components/PracticeProblem";
 import { checkpointPlacement, type TocSection } from "@/lib/lessonToc";
 
 const MiniEditor = dynamic(() => import("@/components/MiniEditor"), { ssr: false });
@@ -521,6 +522,11 @@ export default function LessonClient({ lesson, sections, chunks, prev, next, tra
               code is the tutor's job, and doing it here would just be a second
               hint button. */}
           {status === "pass" && <AiReview lessonId={lesson.id} code={code} />}
+
+          {/* Extra drilling on the same concept, for a student who passed but
+              doesn't feel like it clicked. Reuses the Pyodide runtime already
+              loaded here, so a generated exercise costs no extra download. */}
+          {status === "pass" && <PracticeProblem lessonId={lesson.id} />}
 
           {/* AI tutor — conversational, sees the current code and error */}
           {showHint && (

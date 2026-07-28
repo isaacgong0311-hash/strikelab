@@ -120,6 +120,59 @@ export async function streamGroqChat(opts: {
   });
 }
 
+/**
+ * Non-streaming completion that must come back as JSON.
+ *
+ * Streaming is wrong for structured output: you can't parse a half-arrived
+ * object, so the client would just buffer the whole thing anyway. Uses Groq's
+ * json_object response format and still guards the parse, because a malformed
+ * object should degrade to "couldn't generate" rather than throw.
+ *
+ * Returns null on any failure — transport, HTTP, or unparseable body.
+ */
+export async function completeGroqJson<T>(opts: {
+  system: string;
+  user: string;
+  maxTokens?: number;
+  temperature?: number;
+}): Promise<T | null> {
+  if (!isAiConfigured) return null;
+
+  try {
+    const res = await fetch(GROQ_ENDPOINT, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${GROQ_API_KEY}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        model: AI_MODEL,
+        messages: [
+          { role: "system", content: opts.system },
+          { role: "user", content: opts.user },
+        ],
+        response_format: { type: "json_object" },
+        max_tokens: opts.maxTokens ?? 1400,
+        temperature: opts.temperature ?? 0.7,
+      }),
+    });
+
+    if (!res.ok) {
+      console.error("[ai/groq] json error:", res.status, await res.text().catch(() => ""));
+      return null;
+    }
+
+    const body = await res.json();
+    const content: string = body?.choices?.[0]?.message?.content ?? "";
+    if (!content) return null;
+
+    return JSON.parse(content) as T;
+  } catch (err) {
+    console.error("[ai/groq] json request failed:", err);
+    return null;
+  }
+}
+
 /** Replays canned text as a stream so fallbacks look identical to the client. */
 export function textStream(text: string, delayMs = 12): ReadableStream<Uint8Array> {
   const encoder = new TextEncoder();
