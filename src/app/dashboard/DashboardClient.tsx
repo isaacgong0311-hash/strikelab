@@ -86,7 +86,10 @@ export default function DashboardClient() {
     }, 0);
     return () => window.clearTimeout(id);
   }, [displayName]);
-  const firstName = displayName ? displayName.split(" ")[0] : (localName ?? "there");
+  // Null when we genuinely don't know the name. The old fallback was the
+  // literal string "there", which rendered as "Welcome back, there" — the
+  // comma makes it read as a mistake rather than a friendly default.
+  const firstName = displayName ? displayName.split(" ")[0] : localName;
 
   const [activeTrackIdx, setActiveTrackIdx] = useState(0);
 
@@ -99,9 +102,13 @@ export default function DashboardClient() {
           <div className="db-hero-eyebrow">
             {hydrated && streak > 0 ? `🔥 ${streak}-day streak · keep it up` : "Learning Dashboard"}
           </div>
-          <h1 className="db-hero-h">Welcome back, {firstName}</h1>
+          <h1 className="db-hero-h">
+            {firstName ? `Welcome back, ${firstName}` : "Welcome back"}
+          </h1>
           <p className="db-hero-sub">
-            {completedCount} of {totalLessons} lessons complete &mdash; {overallPct}% there
+            {completedCount === 0
+              ? `${totalLessons} lessons ahead of you — start anywhere`
+              : `${completedCount} of ${totalLessons} lessons complete · ${overallPct}% of the way through`}
           </p>
           <div className="db-hero-actions">
             <Link href={nextLesson ? `/lesson/${nextLesson.id}` : "/lessons"} className="db-cta-btn">

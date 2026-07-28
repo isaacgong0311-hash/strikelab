@@ -14,7 +14,7 @@ const ROADMAP = [
   {
     quarter: "Q2 2026",
     label: "Shipped",
-    color: "#16a34a",
+    color: "#147038",
     items: [
       { title: "Lessons 8–10 shipped ✓", state: "done", desc: "Implied Volatility (Newton-Raphson IV solver), Option Strategies (spreads, straddles, iron condor), and Binomial Trees (CRR, American options) all live." },
       { title: "Weekly coding challenges ✓", state: "done", desc: "Time-boxed problems scored on correctness + elegance — quant interview prep, gamified. Live on the Challenges page." },
@@ -24,7 +24,7 @@ const ROADMAP = [
   {
     quarter: "Q3 2026",
     label: "Shipping now",
-    color: "#16a34a",
+    color: "#147038",
     items: [
       { title: "Paper-trading sandbox", state: "in-progress", desc: "Real (delayed) option chains via Polygon.io free tier." },
       { title: "Rho lesson", state: "planned", desc: "The interest-rate Greek. How rate changes move long-dated options." },
@@ -36,7 +36,7 @@ const ROADMAP = [
   {
     quarter: "Q4 2026",
     label: "Next up",
-    color: "#2f6df0",
+    color: "#1d4ed8",
     items: [
       { title: "Certificates of completion", state: "planned", desc: "Shareable on LinkedIn. Verifiable on-chain (optional)." },
       { title: "Teacher dashboard (School plan)", state: "planned", desc: "Class progress, assignment grading, curriculum alignment." },
@@ -58,10 +58,10 @@ const ROADMAP = [
 ];
 
 const STATE_STYLES = {
-  "done":        { label: "Shipped",     color: "#16a34a" },
-  "in-progress": { label: "In progress", color: "#2f6df0" },
+  "done":        { label: "Shipped",     color: "#147038" },
+  "in-progress": { label: "In progress", color: "#1d4ed8" },
   "planned":     { label: "Planned",     color: "#646464" },
-  "exploring":   { label: "Exploring",   color: "#848484" },
+  "exploring":   { label: "Exploring",   color: "#6b6b6b" },
 };
 
 export default function RoadmapPage() {
