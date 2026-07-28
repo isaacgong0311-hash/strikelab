@@ -192,7 +192,7 @@ export default function AboutPage() {
                   className="flex-shrink-0 w-7 h-7 rounded-full flex items-center justify-center text-xs relative z-10"
                   style={{
                     background: `${color}22`,
-                    border: `1.5px solid ${color}`,
+                    border: `1px solid ${color}`,
                     color,
                     fontFamily: "var(--font-mono)",
                   }}

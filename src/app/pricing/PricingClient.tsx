@@ -37,7 +37,7 @@ const TIERS = [
     href: "#",
     action: "stripe-pro" as const,
     popular: true,
-    accent: "#16a34a",
+    accent: "#147038",
     features: [
       "Everything in Student",
       "Weekly coding challenges + achievements",

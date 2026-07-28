@@ -57,7 +57,7 @@ export default async function LessonOpengraphImage({
             style={{
               fontSize: title.length > 34 ? 62 : 76,
               fontWeight: 800,
-              color: "#f7f5ef",
+              color: "#fafaf9",
               lineHeight: 1.05,
               letterSpacing: "-0.02em",
             }}

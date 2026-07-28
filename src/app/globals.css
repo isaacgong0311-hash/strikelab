@@ -251,7 +251,7 @@ input[type="range"]::-moz-range-track {
 }
 .v2-bg-vignette {
   position: fixed; inset: 0; z-index: 0; pointer-events: none;
-  background: radial-gradient(ellipse at 50% -10%, rgba(255,255,255,0.7) 0%, rgba(247,245,239,0) 55%);
+  background: radial-gradient(ellipse at 50% -10%, rgba(255,255,255,0.7) 0%, rgba(250,250,249,0) 55%);
 }
 .v2-wrap { position: relative; z-index: 1; }
 .v2-container { max-width: 1240px; margin: 0 auto; padding: 0 32px; }
@@ -1979,7 +1979,7 @@ body:has(.sk-home) .v2-bg-vignette { display: none; }
 }
 @media (min-width: 768px) { .nav-mobile-overlay { display: none; } }
 .nav-mobile-panel {
-  background: var(--paper, #f7f5ef);
+  background: var(--paper, #fafaf9);
   border-bottom: 1px solid var(--border);
   padding: 16px 20px 24px;
   display: flex;
@@ -2028,12 +2028,12 @@ body:has(.sk-home) .v2-bg-vignette { display: none; }
   border: 2px solid transparent !important;
 }
 .sk-btn.ghost {
-  border: 2px solid rgba(247,245,239,0.4) !important;
+  border: 2px solid rgba(250,250,249,0.4) !important;
 }
 .sk-btn.ghost.dark {
-  border: 2px solid rgba(247,245,239,0.35) !important;
-  background: rgba(247,245,239,0.1) !important;
-  color: #f7f5ef !important;
+  border: 2px solid rgba(250,250,249,0.35) !important;
+  background: rgba(250,250,249,0.1) !important;
+  color: #fafaf9 !important;
 }
 
 /* db- dashboard buttons */
