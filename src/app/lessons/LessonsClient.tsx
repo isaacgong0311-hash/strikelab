@@ -104,7 +104,7 @@ export default function LessonsClient() {
                           ? { background: levelColor, boxShadow: `0 6px 0 color-mix(in srgb, ${levelColor} 70%, #000)` }
                           : state === "active"
                           ? { background: "#fff", color: levelColor, border: `3px solid ${levelColor}`, boxShadow: `0 6px 0 color-mix(in srgb, ${levelColor} 20%, #fff)` }
-                          : { background: "#fff", color: levelColor, border: `2px solid ${levelColor}44`, boxShadow: `0 6px 0 #e7e2d7` }
+                          : { background: "#fff", color: levelColor, border: `2px solid ${levelColor}44`, boxShadow: `0 2px 0 #e7e5e4` }
                       }
                       aria-label={lesson.title}
                     >

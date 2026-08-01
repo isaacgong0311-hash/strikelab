@@ -2,9 +2,10 @@
  * POST /api/stripe/portal
  *
  * Creates a Stripe Customer Portal session so users can manage/cancel their
- * subscription without contacting support.
+ * subscription without contacting support. Requires an authenticated
+ * Supabase session — the Stripe customer id is looked up server-side from
+ * that user's `subscriptions` row, never trusted from the request body.
  *
- * Body: { customerId: string }
  * Returns: { url: string }
  *
  * ── Setup ────────────────────────────────────────────────────────────────
@@ -13,19 +14,33 @@
  * Turn on "Cancel subscriptions" and "Update subscriptions".
  * ─────────────────────────────────────────────────────────────────────────
  */
-import { NextRequest, NextResponse } from "next/server";
-import { stripe, BASE_URL } from "@/lib/stripe";
+import { NextResponse } from "next/server";
+import { stripe, BASE_URL, isStripeConfigured } from "@/lib/stripe";
+import { requireUser } from "@/lib/supabase/requireUser";
 
-export async function POST(req: NextRequest) {
+export async function POST() {
+  if (!isStripeConfigured) {
+    return NextResponse.json({ error: "Payments are not configured yet" }, { status: 503 });
+  }
+
+  const auth = await requireUser();
+  if ("error" in auth) {
+    return NextResponse.json({ error: "Sign in required" }, { status: auth.status });
+  }
+
+  const { data, error: dbError } = await auth.supabase
+    .from("subscriptions")
+    .select("stripe_customer_id")
+    .eq("user_id", auth.userId)
+    .maybeSingle();
+
+  if (dbError || !data?.stripe_customer_id) {
+    return NextResponse.json({ error: "No subscription found for this account" }, { status: 404 });
+  }
+
   try {
-    const { customerId } = await req.json() as { customerId: string };
-
-    if (!customerId) {
-      return NextResponse.json({ error: "customerId required" }, { status: 400 });
-    }
-
     const session = await stripe.billingPortal.sessions.create({
-      customer: customerId,
+      customer: data.stripe_customer_id,
       return_url: `${BASE_URL}/dashboard`,
     });
 

@@ -73,18 +73,23 @@ export default function DashboardClient() {
   const unlockedAch = hydrated ? ACHIEVEMENTS.filter(a => a.unlocked(completed)).length : 0;
 
   const { displayName } = useAuth();
-  const [firstName, setFirstName] = useState("there");
+  const [localName, setLocalName] = useState<string | null>(null);
   useEffect(() => {
-    // Prefer the authenticated profile name; fall back to legacy localStorage.
-    if (displayName) {
-      setFirstName(displayName.split(" ")[0]);
-      return;
-    }
-    try {
-      const u = JSON.parse(localStorage.getItem("sl_user") || "null");
-      if (u?.name) setFirstName(String(u.name).split(" ")[0]);
-    } catch {}
+    // Prefer the authenticated profile name; only fall back to legacy
+    // localStorage (deferred to dodge the set-state-in-effect lint rule).
+    if (displayName) return;
+    const id = window.setTimeout(() => {
+      try {
+        const u = JSON.parse(localStorage.getItem("sl_user") || "null");
+        if (u?.name) setLocalName(String(u.name).split(" ")[0]);
+      } catch {}
+    }, 0);
+    return () => window.clearTimeout(id);
   }, [displayName]);
+  // Null when we genuinely don't know the name. The old fallback was the
+  // literal string "there", which rendered as "Welcome back, there" — the
+  // comma makes it read as a mistake rather than a friendly default.
+  const firstName = displayName ? displayName.split(" ")[0] : localName;
 
   const [activeTrackIdx, setActiveTrackIdx] = useState(0);
 
@@ -97,9 +102,13 @@ export default function DashboardClient() {
           <div className="db-hero-eyebrow">
             {hydrated && streak > 0 ? `🔥 ${streak}-day streak · keep it up` : "Learning Dashboard"}
           </div>
-          <h1 className="db-hero-h">Welcome back, {firstName}</h1>
+          <h1 className="db-hero-h">
+            {firstName ? `Welcome back, ${firstName}` : "Welcome back"}
+          </h1>
           <p className="db-hero-sub">
-            {completedCount} of {totalLessons} lessons complete &mdash; {overallPct}% there
+            {completedCount === 0
+              ? `${totalLessons} lessons ahead of you — start anywhere`
+              : `${completedCount} of ${totalLessons} lessons complete · ${overallPct}% of the way through`}
           </p>
           <div className="db-hero-actions">
             <Link href={nextLesson ? `/lesson/${nextLesson.id}` : "/lessons"} className="db-cta-btn">

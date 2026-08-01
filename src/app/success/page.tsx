@@ -1,34 +1,51 @@
 "use client";
 import { Suspense, useEffect, useState } from "react";
-import { useSearchParams, useRouter } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 
 function SuccessContent() {
   const searchParams = useSearchParams();
-  const router = useRouter();
   const sessionId = searchParams.get("session_id");
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(!!sessionId);
   const [error, setError] = useState("");
 
   useEffect(() => {
-    if (!sessionId) { setLoading(false); return; }
+    if (!sessionId) return;
 
-    // Ask Stripe for the customer ID so we can store it locally
-    fetch(`/api/stripe/status?sessionId=${sessionId}`)
-      .then((r) => r.json())
-      .then((data) => {
-        if (data.customerId) {
-          try { localStorage.setItem("sl_stripe_customer", data.customerId); } catch {}
+    // The webhook persists subscription state asynchronously — poll status
+    // briefly so this page reflects Pro as soon as it lands.
+    let attempts = 0;
+    let cancelled = false;
+
+    async function poll(): Promise<boolean> {
+      while (!cancelled && attempts < 5) {
+        attempts++;
+        try {
+          const res = await fetch("/api/stripe/status");
+          const data = await res.json();
+          if (data.isPro) return true;
+        } catch {
+          // keep trying
         }
-        if (data.email) {
-          try {
-            const user = JSON.parse(localStorage.getItem("sl_user") || "{}");
-            localStorage.setItem("sl_user", JSON.stringify({ ...user, email: data.email }));
-          } catch {}
+        await new Promise((r) => setTimeout(r, 1000));
+      }
+      return false;
+    }
+
+    poll()
+      .then((confirmed) => {
+        if (!confirmed && !cancelled) {
+          setError(
+            "Your payment went through, but we couldn't confirm your subscription yet. Give it a minute and refresh — contact hello@strikelab.app if it still doesn't show up.",
+          );
         }
       })
-      .catch(() => setError("Could not verify subscription — contact hello@strikelab.app"))
-      .finally(() => setLoading(false));
+      .catch(() => {
+        if (!cancelled) setError("Could not verify subscription — contact hello@strikelab.app");
+      })
+      .finally(() => { if (!cancelled) setLoading(false); });
+
+    return () => { cancelled = true; };
   }, [sessionId]);
 
   return (
@@ -44,12 +61,25 @@ function SuccessContent() {
       }}>
         {loading ? (
           <>
-            <div style={{ fontSize: 48, marginBottom: 16 }}>⏳</div>
+            <div style={{
+              width: 80, height: 80, borderRadius: "50%",
+              background: "var(--bg2)", display: "flex",
+              alignItems: "center", justifyContent: "center",
+              fontSize: 32, color: "var(--ink-2)",
+              margin: "0 auto 24px",
+            }} className="ch-spin">◌</div>
             <p style={{ color: "var(--ink-2)" }}>Confirming your subscription…</p>
           </>
         ) : error ? (
           <>
-            <div style={{ fontSize: 48, marginBottom: 16 }}>⚠️</div>
+            <div style={{
+              width: 80, height: 80, borderRadius: "50%",
+              background: "var(--coral)", display: "flex",
+              alignItems: "center", justifyContent: "center",
+              fontSize: 36, fontWeight: 700, color: "#fff",
+              boxShadow: "0 6px 0 #bf4830",
+              margin: "0 auto 24px",
+            }}>!</div>
             <h1 style={{ fontFamily: "var(--font-display)", fontSize: 26, color: "var(--ink)", marginBottom: 10 }}>
               Something went wrong
             </h1>
@@ -87,9 +117,8 @@ function SuccessContent() {
             }}>
               {[
                 "Weekly coding challenges with a live leaderboard",
-                "All Pro lessons (IV, strategies, binomial trees)",
-                "Paper trading sandbox with real market data",
                 "Certificate of completion",
+                "Priority email support",
               ].map((item) => (
                 <li key={item} style={{ display: "flex", gap: 10, fontSize: 14, color: "var(--ink-2)" }}>
                   <span style={{ color: "var(--grass)", fontWeight: 700, flexShrink: 0 }}>✓</span>

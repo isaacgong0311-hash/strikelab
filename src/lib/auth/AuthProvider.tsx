@@ -39,7 +39,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     const supabase = getSupabaseBrowser();
     if (!supabase) {
-      setLoading(false);
+      // isSupabaseConfigured is false here too, so `loading` is already
+      // false from its initial state — no setState needed.
       return;
     }
 

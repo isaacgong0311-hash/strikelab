@@ -1,10 +1,13 @@
-import type { Metadata } from "next";
-import Link from "next/link";
+import Eyebrow from "@/components/Eyebrow";
+import JsonLd from "@/components/JsonLd";
+import { pageMetadata, breadcrumbJsonLd } from "@/lib/seo";
 
-export const metadata: Metadata = {
-  title: "About — StrikeLab",
-  description: "Why a high school freshman and AIME qualifier built a quant finance platform for high schoolers.",
-};
+export const metadata = pageMetadata({
+  path: "/about",
+  title: "About",
+  description:
+    "Why a high school freshman and AIME qualifier built a quant finance platform for high schoolers — and how StrikeLab has grown since the first commit.",
+});
 
 const TIMELINE = [
   { date: "Nov 2025", event: "First commit. Black-Scholes engine in Python.", state: "done" },
@@ -12,8 +15,10 @@ const TIMELINE = [
   { date: "Jan 2026", event: "Lessons 1–5 published. Soft launch on AoPS forums.", state: "done" },
   { date: "Feb 2026", event: "Lessons 6 (Gamma) and 7 (Vega) added. Greek visualizer ships.", state: "done" },
   { date: "Mar 2026", event: "Public launch. Shared on AoPS and math competition forums.", state: "done" },
-  { date: "May 2026", event: "Lessons 8–10: Implied Vol, Option Strategies, Binomial Trees. 10-lesson curriculum complete.", state: "current" },
-  { date: "Q3 2026", event: "Paper-trading sandbox + weekly cohort challenges.", state: "next" },
+  { date: "May 2026", event: "Lessons 8–10: Implied Vol, Option Strategies, Binomial Trees. 10-lesson curriculum complete.", state: "done" },
+  { date: "Jun 2026", event: "Weekly coding challenges ship.", state: "done" },
+  { date: "Jul 2026", event: "Real per-student leaderboard tracking ships.", state: "done" },
+  { date: "Q3 2026", event: "Paper-trading sandbox in progress.", state: "current" },
   { date: "Q4 2026", event: "School dashboard, certificates, Discord integration.", state: "planned" },
 ];
 
@@ -43,17 +48,13 @@ const PRESS = [
 export default function AboutPage() {
   return (
     <div className="max-w-4xl mx-auto px-6 py-14">
+      <JsonLd data={breadcrumbJsonLd([{ name: "About", path: "/about" }])} />
 
       {/* Hero */}
       <div className="v2-page-head mb-14" data-v2-head style={{ padding: 0, border: 0 }}>
-        <div
-          className="text-[10px] tracking-widest uppercase mb-2 opacity-50"
-          style={{ fontFamily: "var(--font-mono)", color: "#888888" }}
-        >
-          About
-        </div>
+        <Eyebrow>About</Eyebrow>
         <h1
-          className="text-4xl font-semibold text-[#16201c] mb-5 leading-tight"
+          className="text-4xl font-semibold mb-5 leading-tight"
           style={{ fontFamily: "var(--font-display)", color: "var(--ink)" }}
         >
           Built by a high schooler<br />
@@ -88,14 +89,9 @@ export default function AboutPage() {
           IG
         </div>
         <div>
-          <div
-            className="text-[10px] tracking-widest uppercase mb-1.5 opacity-50"
-            style={{ fontFamily: "var(--font-mono)", color: "#888888" }}
-          >
-            Founder
-          </div>
+          <Eyebrow className="mb-1.5">Founder</Eyebrow>
           <h2
-            className="text-2xl font-semibold text-[#16201c] mb-1"
+            className="text-2xl font-semibold mb-1"
             style={{ fontFamily: "var(--font-display)", color: "var(--ink)" }}
           >
             Isaac Gong
@@ -119,14 +115,9 @@ export default function AboutPage() {
 
       {/* Mission */}
       <div className="v2-rise mb-14">
-        <div
-          className="text-[10px] tracking-widest uppercase mb-2 opacity-50"
-          style={{ fontFamily: "var(--font-mono)", color: "#888888" }}
-        >
-          Mission
-        </div>
+        <Eyebrow>Mission</Eyebrow>
         <h2
-          className="text-2xl font-semibold text-[#16201c] mb-3"
+          className="text-2xl font-semibold mb-3"
           style={{ fontFamily: "var(--font-display)", color: "var(--ink)" }}
         >
           Quant finance shouldn&rsquo;t require the right zip code.
@@ -141,14 +132,9 @@ export default function AboutPage() {
 
       {/* Values */}
       <div className="mb-14">
-        <div
-          className="text-[10px] tracking-widest uppercase mb-2 opacity-50"
-          style={{ fontFamily: "var(--font-mono)", color: "#888888" }}
-        >
-          Principles
-        </div>
+        <Eyebrow>Principles</Eyebrow>
         <h2
-          className="text-xl font-semibold text-[#16201c] mb-5"
+          className="text-xl font-semibold mb-5"
           style={{ fontFamily: "var(--font-display)", color: "var(--ink)" }}
         >
           How we build
@@ -167,7 +153,7 @@ export default function AboutPage() {
                 {v.icon}
               </div>
               <h3
-                className="font-semibold text-[#16201c] mb-2"
+                className="font-semibold mb-2"
                 style={{ fontFamily: "var(--font-serif)" }}
               >
                 {v.title}
@@ -182,14 +168,9 @@ export default function AboutPage() {
 
       {/* Timeline */}
       <div className="mb-14">
-        <div
-          className="text-[10px] tracking-widest uppercase mb-2 opacity-50"
-          style={{ fontFamily: "var(--font-mono)", color: "#888888" }}
-        >
-          Timeline
-        </div>
+        <Eyebrow>Timeline</Eyebrow>
         <h2
-          className="text-xl font-semibold text-[#16201c] mb-5"
+          className="text-xl font-semibold mb-5"
           style={{ fontFamily: "var(--font-display)", color: "var(--ink)" }}
         >
           What we&rsquo;ve shipped (and what&rsquo;s next)
@@ -211,7 +192,7 @@ export default function AboutPage() {
                   className="flex-shrink-0 w-7 h-7 rounded-full flex items-center justify-center text-xs relative z-10"
                   style={{
                     background: `${color}22`,
-                    border: `1.5px solid ${color}`,
+                    border: `1px solid ${color}`,
                     color,
                     fontFamily: "var(--font-mono)",
                   }}
@@ -237,12 +218,7 @@ export default function AboutPage() {
 
       {/* Press */}
       <div className="v2-rise mb-14">
-        <div
-          className="text-[10px] tracking-widest uppercase mb-3 opacity-50"
-          style={{ fontFamily: "var(--font-mono)", color: "#888888" }}
-        >
-          Press & Recognition
-        </div>
+        <Eyebrow className="mb-3">Press &amp; Recognition</Eyebrow>
         <div className="flex flex-wrap gap-2">
           {PRESS.map((p) => (
             <span
@@ -267,7 +243,7 @@ export default function AboutPage() {
         style={{ borderColor: "var(--border2)", background: "var(--bg2)" }}
       >
         <h2
-          className="text-xl font-semibold text-[#16201c] mb-2"
+          className="text-xl font-semibold mb-2"
           style={{ fontFamily: "var(--font-display)", color: "var(--ink)" }}
         >
           Want to talk?

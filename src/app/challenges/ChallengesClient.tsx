@@ -1,9 +1,10 @@
 "use client";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import dynamic from "next/dynamic";
 import Link from "next/link";
 import { getCurrentChallenge, getNextChallengeDate } from "@/lib/challenges";
 import { trackUpgradeClick } from "@/lib/analytics";
+import { startCheckout, useSubscription } from "@/lib/useSubscription";
 
 const MiniEditor = dynamic(() => import("@/components/MiniEditor"), { ssr: false });
 
@@ -46,45 +47,6 @@ function usePyodide() {
   }, []);
 }
 
-// ── Lock SVG icon ─────────────────────────────────────────────────────────────
-function LockIcon({ size = 40 }: { size?: number }) {
-  return (
-    <svg width={size} height={size} viewBox="0 0 40 40" fill="none" aria-hidden="true">
-      <rect x="8" y="18" width="24" height="18" rx="5" stroke="currentColor" strokeWidth="2"/>
-      <path d="M13 18v-5a7 7 0 0 1 14 0v5" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
-      <circle cx="20" cy="27" r="2.5" fill="currentColor"/>
-      <line x1="20" y1="29" x2="20" y2="33" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
-    </svg>
-  );
-}
-
-// ── Pro gate overlay ──────────────────────────────────────────────────────────
-function ProGate() {
-  return (
-    <div className="ch-gate">
-      <div className="ch-gate-card">
-        <div className="ch-gate-icon">
-          <LockIcon size={36} />
-        </div>
-        <h2 className="ch-gate-title">Pro feature</h2>
-        <p className="ch-gate-desc">
-          Weekly coding challenges, live leaderboards, XP bonuses, and a certificate of completion are all on the Pro plan.
-        </p>
-        <a
-          href={process.env.NEXT_PUBLIC_STRIPE_PRO_LINK ?? "/sign-up"}
-          target="_blank"
-          rel="noopener noreferrer"
-          onClick={() => trackUpgradeClick("challenges_gate")}
-          className="ch-gate-btn"
-        >
-          Start 7-Day Free Trial →
-        </a>
-        <Link href="/pricing" className="ch-gate-link">See all Pro features</Link>
-      </div>
-    </div>
-  );
-}
-
 // ── Rank badge ────────────────────────────────────────────────────────────────
 const RANK_STYLES: Record<number, { bg: string; color: string; label: string }> = {
   1: { bg: "rgba(212,175,55,0.18)", color: "#c9a227", label: "01" },
@@ -92,13 +54,23 @@ const RANK_STYLES: Record<number, { bg: string; color: string; label: string }> 
   3: { bg: "rgba(176,109,71,0.18)", color: "#a0674a", label: "03" },
 };
 
-const LEADERBOARD = [
-  { rank: 1, name: "Alex T.",   xp: 200, time: "4m 12s" },
-  { rank: 2, name: "Sam K.",    xp: 200, time: "5m 38s" },
-  { rank: 3, name: "Jordan M.", xp: 200, time: "6m 01s" },
-  { rank: 4, name: "Riley P.",  xp: 150, time: "7m 44s" },
-  { rank: 5, name: "Casey L.",  xp: 150, time: "8m 52s" },
-];
+interface LeaderboardEntry {
+  rank: number;
+  name: string;
+  elapsedSeconds: number;
+  xp: number;
+}
+interface YourStats {
+  solved: number;
+  bonusXp: number;
+  rank: number | null;
+}
+
+function formatElapsed(seconds: number): string {
+  const m = Math.floor(seconds / 60);
+  const s = seconds % 60;
+  return m > 0 ? `${m}m ${String(s).padStart(2, "0")}s` : `${s}s`;
+}
 
 const ARCHIVE = [
   { title: "Vega Surface",      done: true  },
@@ -124,13 +96,37 @@ export default function ChallengesClient() {
   const [status, setStatus] = useState<"idle" | "running" | "pass" | "fail">("idle");
   const [attempts, setAttempts] = useState(0);
   const [showHint, setShowHint] = useState(false);
-  const isPro = false;
+  const { isPro, hydrated: subHydrated } = useSubscription();
+  const [checkoutLoading, setCheckoutLoading] = useState(false);
+
+  const [leaderboard, setLeaderboard] = useState<LeaderboardEntry[]>([]);
+  const [lbLoading, setLbLoading] = useState(true);
+  const [you, setYou] = useState<YourStats | null>(null);
 
   const runRef = useRef<(() => void) | null>(null);
+  const startTimeRef = useRef(0);
+  const submittedRef = useRef(false);
   const outBorder = status==="pass" ? "rgba(34,197,94,0.45)" : status==="fail" ? "rgba(239,68,68,0.35)" : "var(--border)";
   const diff = DIFFICULTY_STYLES[challenge.difficulty] ?? DIFFICULTY_STYLES.medium;
 
-  async function runCode() {
+  const [lbRefreshKey, setLbRefreshKey] = useState(0);
+
+  useEffect(() => {
+    startTimeRef.current = Date.now();
+    let active = true;
+    fetch("/api/challenges/leaderboard")
+      .then(res => res.json())
+      .then(data => {
+        if (!active) return;
+        setLeaderboard(data.leaderboard ?? []);
+        setYou(data.you ?? null);
+      })
+      .catch(() => {})
+      .finally(() => { if (active) setLbLoading(false); });
+    return () => { active = false; };
+  }, [lbRefreshKey]);
+
+  const runCode = useCallback(async function runCode() {
     setStatus("running"); setOutput("Running tests…"); setAttempts(n => n + 1);
     try {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -139,12 +135,26 @@ export default function ChallengesClient() {
       pyodide.runPython(challenge.testCode);
       setOutput("All tests passed!");
       setStatus("pass");
+
+      if (isPro && !submittedRef.current) {
+        submittedRef.current = true;
+        const elapsedSeconds = Math.max(1, Math.round((Date.now() - startTimeRef.current) / 1000));
+        fetch("/api/challenges/complete", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ challengeId: challenge.id, elapsedSeconds }),
+        })
+          .then(() => setLbRefreshKey(k => k + 1))
+          .catch(() => { submittedRef.current = false; });
+      }
     } catch (err: unknown) {
       setOutput(err instanceof Error ? err.message : String(err));
       setStatus("fail");
     }
-  }
-  runRef.current = runCode;
+  }, [challenge.id, challenge.testCode, code, isPro]);
+  useEffect(() => {
+    runRef.current = runCode;
+  }, [runCode]);
 
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
@@ -153,6 +163,18 @@ export default function ChallengesClient() {
     window.addEventListener("keydown", handler);
     return () => window.removeEventListener("keydown", handler);
   }, []);
+
+  async function handleUpgrade(source: string) {
+    trackUpgradeClick(source);
+    setCheckoutLoading(true);
+    try {
+      await startCheckout("pro");
+    } catch (err: unknown) {
+      setCheckoutLoading(false);
+      setOutput(err instanceof Error ? err.message : "Could not start checkout.");
+      setStatus("fail");
+    }
+  }
 
   return (
     <div className="ch-root">
@@ -253,7 +275,11 @@ export default function ChallengesClient() {
 
               {/* Run bar */}
               <div className="ch-run-bar">
-                {isPro ? (
+                {!subHydrated ? (
+                  <button disabled className="ch-run-btn" style={{ opacity: 0.5 }}>
+                    ▶ Run Tests
+                  </button>
+                ) : isPro ? (
                   <div className="ch-run-left">
                     <button onClick={runCode} disabled={status==="running"} className="ch-run-btn">
                       {status==="running"
@@ -267,16 +293,14 @@ export default function ChallengesClient() {
                     )}
                   </div>
                 ) : (
-                  <a
-                    href={process.env.NEXT_PUBLIC_STRIPE_PRO_LINK ?? "/sign-up"}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    onClick={() => trackUpgradeClick("challenges_run_btn")}
+                  <button
+                    type="button"
+                    onClick={() => handleUpgrade("challenges_run_btn")}
+                    disabled={checkoutLoading}
                     className="ch-run-btn"
-                    style={{ textDecoration: "none" }}
                   >
-                    Unlock with Pro → Start free trial
-                  </a>
+                    {checkoutLoading ? "Redirecting…" : "Unlock with Pro → Start free trial"}
+                  </button>
                 )}
                 {attempts > 0 && (
                   <span className="ch-attempts">{attempts} attempt{attempts > 1 ? "s" : ""}</span>
@@ -318,38 +342,45 @@ export default function ChallengesClient() {
           <div className="ch-panel">
             <div className="ch-panel-header">
               <span className="ch-panel-title">This Week&apos;s Leaderboard</span>
-              <span className="ch-panel-tag">{LEADERBOARD.length} entries</span>
             </div>
-            <div className="ch-leaderboard">
-              {LEADERBOARD.map(entry => {
-                const rs = RANK_STYLES[entry.rank];
-                return (
-                  <div key={entry.rank} className="ch-lb-row">
-                    <div
-                      className="ch-lb-rank"
-                      style={rs
-                        ? { background: rs.bg, color: rs.color }
-                        : { background: "var(--bg2)", color: "var(--ink-3)" }}
-                    >
-                      {String(entry.rank).padStart(2, "0")}
+            {lbLoading ? (
+              <p style={{ fontSize: 12, color: "var(--ink-3)", margin: "4px 0" }}>Loading…</p>
+            ) : leaderboard.length === 0 ? (
+              <p style={{ fontSize: 12, color: "var(--ink-3)", margin: "4px 0" }}>
+                No one has solved this week&apos;s challenge yet — be the first.
+              </p>
+            ) : (
+              <div className="ch-leaderboard">
+                {leaderboard.map(entry => {
+                  const rs = RANK_STYLES[entry.rank];
+                  return (
+                    <div key={entry.rank} className="ch-lb-row">
+                      <div
+                        className="ch-lb-rank"
+                        style={rs
+                          ? { background: rs.bg, color: rs.color }
+                          : { background: "var(--bg2)", color: "var(--ink-3)" }}
+                      >
+                        {String(entry.rank).padStart(2, "0")}
+                      </div>
+                      <span className="ch-lb-name">{entry.name}</span>
+                      <span className="ch-lb-time">{formatElapsed(entry.elapsedSeconds)}</span>
+                      <span className="ch-lb-xp">+{entry.xp}</span>
                     </div>
-                    <span className="ch-lb-name">{entry.name}</span>
-                    <span className="ch-lb-time">{entry.time}</span>
-                    <span className="ch-lb-xp">+{entry.xp}</span>
-                  </div>
-                );
-              })}
-            </div>
-            {!isPro && (
+                  );
+                })}
+              </div>
+            )}
+            {subHydrated && !isPro && (
               <div className="ch-panel-footer">
-                <a
-                  href={process.env.NEXT_PUBLIC_STRIPE_PRO_LINK ?? "/sign-up"}
-                  target="_blank" rel="noopener noreferrer"
-                  onClick={() => trackUpgradeClick("challenges_leaderboard")}
+                <button
+                  type="button"
+                  onClick={() => handleUpgrade("challenges_leaderboard")}
+                  disabled={checkoutLoading}
                   className="ch-upgrade-link"
                 >
-                  Upgrade to compete →
-                </a>
+                  {checkoutLoading ? "Redirecting…" : "Upgrade to compete →"}
+                </button>
               </div>
             )}
           </div>
@@ -358,7 +389,7 @@ export default function ChallengesClient() {
           <div className="ch-panel">
             <div className="ch-panel-header">
               <span className="ch-panel-title">Challenge Archive</span>
-              {!isPro && <span className="ch-pro-tag">Pro</span>}
+              {subHydrated && !isPro && <span className="ch-pro-tag">Pro</span>}
             </div>
             <div className="ch-archive">
               {ARCHIVE.map(item => (
@@ -373,7 +404,7 @@ export default function ChallengesClient() {
                 </div>
               ))}
             </div>
-            {!isPro && (
+            {subHydrated && !isPro && (
               <p className="ch-archive-note">Pro members access all past challenges.</p>
             )}
           </div>
@@ -383,19 +414,19 @@ export default function ChallengesClient() {
             <div className="ch-panel-title" style={{ marginBottom: 14 }}>Your Stats</div>
             <div className="ch-stats-grid">
               <div className="ch-stat-cell">
-                <div className="ch-stat-n">0</div>
+                <div className="ch-stat-n">{you?.solved ?? 0}</div>
                 <div className="ch-stat-l">Solved</div>
               </div>
               <div className="ch-stat-cell">
-                <div className="ch-stat-n">—</div>
+                <div className="ch-stat-n">{you?.rank ? `#${you.rank}` : "—"}</div>
                 <div className="ch-stat-l">Rank</div>
               </div>
               <div className="ch-stat-cell">
-                <div className="ch-stat-n">0</div>
+                <div className="ch-stat-n">{you?.bonusXp ?? 0}</div>
                 <div className="ch-stat-l">Bonus XP</div>
               </div>
             </div>
-            {!isPro && (
+            {subHydrated && !isPro && (
               <Link href="/pricing" className="ch-panel-cta">Unlock with Pro →</Link>
             )}
           </div>

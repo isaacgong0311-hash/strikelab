@@ -60,7 +60,7 @@ export const FAQ_GROUPS: FAQGroup[] = [
       },
       {
         q: "Is my code saved?",
-        a: "Yes — your progress and code edits persist via localStorage on your device. We don't store anything server-side on the free tier. Pro users get optional cloud sync.",
+        a: "Your code edits persist via localStorage on your device. Lesson completions, XP, and streaks also sync to your account automatically if you sign in — free for everyone, not a Pro feature — so your progress carries over to a new device even though the code itself stays local.",
       },
       {
         q: "Is the pricing engine open source?",

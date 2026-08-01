@@ -1,8 +1,46 @@
 import { NextRequest } from "next/server";
+import { requireUser } from "@/lib/supabase/requireUser";
+import type { SupabaseClient } from "@supabase/supabase-js";
 
 const GROQ_API_KEY = process.env.GROQ_API_KEY;
 const MODEL = "llama-3.3-70b-versatile";
 const GROQ_ENDPOINT = "https://api.groq.com/openai/v1/chat/completions";
+const DAILY_HINT_CAP = 20;
+
+/**
+ * Checks and increments today's hint count for a user. Returns true if the
+ * caller is still under the cap (and the count was incremented), false if
+ * they're over it. Fails open (allows the request) on any DB error — a
+ * transient Supabase hiccup shouldn't block a student's hint.
+ */
+async function consumeHintQuota(supabase: SupabaseClient, userId: string): Promise<boolean> {
+  const today = new Date().toISOString().slice(0, 10);
+
+  const { data, error } = await supabase
+    .from("hint_usage")
+    .select("day, count")
+    .eq("user_id", userId)
+    .maybeSingle();
+
+  if (error) {
+    console.error("[ai/hint] quota read failed:", error.message);
+    return true;
+  }
+
+  const isNewDay = !data || data.day !== today;
+  const nextCount = isNewDay ? 1 : data.count + 1;
+
+  if (!isNewDay && data.count >= DAILY_HINT_CAP) {
+    return false;
+  }
+
+  const { error: upsertError } = await supabase
+    .from("hint_usage")
+    .upsert({ user_id: userId, day: today, count: nextCount }, { onConflict: "user_id" });
+
+  if (upsertError) console.error("[ai/hint] quota write failed:", upsertError.message);
+  return true;
+}
 
 // ─── Lesson context lookup ────────────────────────────────────────────────────
 const LESSON_CONTEXT: Record<string, string> = {
@@ -133,7 +171,14 @@ export async function POST(req: NextRequest) {
   };
 
   // ── Mock mode ──────────────────────────────────────────────────────────────
-  if (!GROQ_API_KEY) {
+  // Falls back to a canned hint (no Groq call, no cost) when: no API key is
+  // configured, the caller isn't signed in, or they've hit today's cap. Real
+  // AI hints are a signed-in, rate-limited feature to keep Groq spend bounded.
+  const auth = await requireUser();
+  const isAuthed = !("error" in auth);
+  const underQuota = isAuthed && (await consumeHintQuota(auth.supabase, auth.userId));
+
+  if (!GROQ_API_KEY || !isAuthed || !underQuota) {
     const hint = MOCK_HINTS[lessonId] ?? MOCK_HINTS["default"];
     return new Response(mockStream(hint), {
       headers: {

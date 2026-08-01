@@ -2,6 +2,10 @@
 import { useState } from "react";
 import Link from "next/link";
 import { startCheckout } from "@/lib/useSubscription";
+import { TRACKS } from "@/lib/tracks";
+import Eyebrow from "@/components/Eyebrow";
+
+const TOTAL_LESSONS = TRACKS.reduce((s, t) => s + t.lessons.length, 0);
 
 const TIERS = [
   {
@@ -15,7 +19,7 @@ const TIERS = [
     popular: false,
     accent: "#16201c",
     features: [
-      "All 10 lessons",
+      `All ${TOTAL_LESSONS} lessons`,
       "Browser-based Python playground (Pyodide)",
       "Live Greek visualizer (Δ, Γ, Θ, ν, ρ)",
       "Formula reference panel",
@@ -33,16 +37,15 @@ const TIERS = [
     href: "#",
     action: "stripe-pro" as const,
     popular: true,
-    accent: "#16a34a",
+    accent: "#147038",
     features: [
       "Everything in Student",
       "Weekly coding challenges + achievements",
-      "Paper trading sandbox with live option chains",
-      "Advanced lessons (IV, strategies, binomial trees)",
-      "Real-time market data via Polygon.io",
       "Weekly office hours with the founder",
       "Certificate of completion",
       "Priority email support",
+      "Paper trading sandbox — coming soon",
+      "Real-time market data via Polygon.io — coming soon",
     ],
   },
   {
@@ -72,11 +75,11 @@ const TIERS = [
 const FAQ = [
   {
     q: "Is the free tier really free forever?",
-    a: "Yes. All 10 lessons, the Python playground, and the Greek visualizer stay free forever. We don't gate the educational core — the value-add tiers fund the platform.",
+    a: `Yes. All ${TOTAL_LESSONS} lessons, the Python playground, and the Greek visualizer stay free forever. We don't gate the educational core — the value-add tiers fund the platform.`,
   },
   {
     q: "What does the 7-day free trial include?",
-    a: "Full access to all Pro features — challenges, advanced lessons, and the paper trading sandbox. No charge until the trial ends. Cancel anytime from the billing portal.",
+    a: "Full access to everything currently live in Pro — weekly coding challenges, achievements, and the certificate of completion. No charge until the trial ends. Cancel anytime from the billing portal.",
   },
   {
     q: "What ages is StrikeLab for?",
@@ -107,10 +110,7 @@ export default function PricingClient() {
     <div className="max-w-6xl mx-auto px-6 py-14">
       {/* Header */}
       <div className="text-center mb-12">
-        <div className="text-[10px] tracking-widest uppercase mb-2 opacity-50"
-          style={{ fontFamily: "var(--font-mono)", color: "var(--ink-3)" }}>
-          Pricing
-        </div>
+        <Eyebrow>Pricing</Eyebrow>
         <h1 className="text-4xl font-semibold mb-3"
           style={{ fontFamily: "var(--font-display)", color: "var(--ink)" }}>
           Free forever for students.

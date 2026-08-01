@@ -6,193 +6,21 @@ import { QUIZZES, type QuizQuestion } from "@/lib/quizzes";
 import dynamic from "next/dynamic";
 import { useProgress } from "@/lib/useProgress";
 import { trackLessonStart, trackTestsPassed, trackLessonComplete, trackQuizAnswer } from "@/lib/analytics";
-
-// ─── AI Hint panel ────────────────────────────────────────────────────────────
-function AiHintPanel({
-  lessonId,
-  code,
-  error,
-  onClose,
-}: {
-  lessonId: string;
-  code: string;
-  error: string;
-  onClose: () => void;
-}) {
-  const [hint, setHint] = useState("");
-  const [loading, setLoading] = useState(true);
-  const [question, setQuestion] = useState("");
-  const [asked, setAsked] = useState(false);
-
-  const fetchHint = useCallback(async (q?: string) => {
-    setLoading(true);
-    setHint("");
-    try {
-      const res = await fetch("/api/ai/hint", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ lessonId, code, error: error || undefined, question: q }),
-      });
-      if (!res.body) { setLoading(false); return; }
-      const reader = res.body.getReader();
-      const decoder = new TextDecoder();
-      setLoading(false);
-      while (true) {
-        const { done, value } = await reader.read();
-        if (done) break;
-        setHint((prev) => prev + decoder.decode(value));
-      }
-    } catch {
-      setLoading(false);
-      setHint("Couldn't reach the AI tutor right now. Check your connection and try again.");
-    }
-  }, [lessonId, code, error]);
-
-  // Auto-fetch on mount
-  useEffect(() => { fetchHint(); }, [fetchHint]);
-
-  const handleAsk = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!question.trim()) return;
-    setAsked(true);
-    fetchHint(question);
-  };
-
-  // Simple markdown renderer (bold, code, newlines)
-  const renderHint = (text: string) => {
-    const lines = text.split("\n");
-    return lines.map((line, i) => {
-      // Code block lines
-      if (line.startsWith("```") || line.startsWith("    ")) {
-        return <span key={i} style={{ display: "block", fontFamily: "var(--font-mono)", fontSize: 12, color: "var(--check)", background: "rgba(74,222,128,0.06)", padding: "2px 8px", borderRadius: 4, margin: "2px 0" }}>{line.replace(/^```\w*/, "").replace(/^```/, "") || " "}</span>;
-      }
-      // Bold
-      const parts = line.split(/(\*\*[^*]+\*\*)/g);
-      return (
-        <span key={i} style={{ display: "block", lineHeight: 1.7 }}>
-          {parts.map((p, j) =>
-            p.startsWith("**") && p.endsWith("**")
-              ? <strong key={j} style={{ color: "var(--ink)", fontWeight: 700 }}>{p.slice(2, -2)}</strong>
-              : p
-          )}
-        </span>
-      );
-    });
-  };
-
-  return (
-    <div
-      style={{
-        border: "1px solid var(--border-hi)",
-        borderRadius: 0,
-        background: "#040a06",
-        overflow: "hidden",
-        marginTop: -1,
-      }}
-    >
-      {/* Header */}
-      <div
-        style={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-          padding: "10px 18px",
-          borderBottom: "1px solid rgba(255,255,255,0.06)",
-          background: "#050c07",
-        }}
-      >
-        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-          <span style={{ fontFamily: "var(--font-mono)", fontSize: 10, letterSpacing: "0.18em", textTransform: "uppercase", color: "var(--check)" }}>
-            ∂ AI Tutor
-          </span>
-          {loading && (
-            <span style={{ fontFamily: "var(--font-mono)", fontSize: 10, color: "rgba(34,197,94,0.5)", animation: "v2pageIn 1s ease infinite alternate" }}>
-              thinking…
-            </span>
-          )}
-        </div>
-        <button
-          onClick={onClose}
-          style={{ fontFamily: "var(--font-mono)", fontSize: 12, color: "var(--fg-faint)", background: "none", border: "none", cursor: "pointer", padding: "2px 6px", letterSpacing: "0.04em" }}
-        >
-          ✕ close
-        </button>
-      </div>
-
-      {/* Hint content */}
-      <div
-        style={{
-          padding: "18px 20px",
-          fontFamily: "var(--font-mono)",
-          fontSize: 13,
-          lineHeight: 1.7,
-          color: "rgba(255,255,255,0.72)",
-          minHeight: 80,
-          maxHeight: 320,
-          overflowY: "auto",
-        }}
-      >
-        {loading && !hint ? (
-          <span style={{ color: "rgba(34,197,94,0.45)" }}>▊</span>
-        ) : (
-          <>
-            {renderHint(hint)}
-            {loading && <span style={{ color: "rgba(34,197,94,0.6)" }}>▊</span>}
-          </>
-        )}
-      </div>
-
-      {/* Follow-up question form */}
-      {!loading && hint && !asked && (
-        <form
-          onSubmit={handleAsk}
-          style={{
-            display: "flex",
-            borderTop: "1px solid rgba(255,255,255,0.06)",
-          }}
-        >
-          <input
-            type="text"
-            placeholder="Ask a follow-up question…"
-            value={question}
-            onChange={(e) => setQuestion(e.target.value)}
-            style={{
-              flex: 1,
-              background: "transparent",
-              border: "none",
-              outline: "none",
-              padding: "10px 16px",
-              fontFamily: "var(--font-mono)",
-              fontSize: 12,
-              color: "rgba(255,255,255,0.8)",
-            }}
-          />
-          <button
-            type="submit"
-            style={{
-              padding: "10px 16px",
-              fontFamily: "var(--font-mono)",
-              fontSize: 11,
-              letterSpacing: "0.08em",
-              color: "var(--check)",
-              background: "none",
-              border: "none",
-              borderLeft: "1px solid rgba(255,255,255,0.06)",
-              cursor: "pointer",
-            }}
-          >
-            ask →
-          </button>
-        </form>
-      )}
-    </div>
-  );
-}
+import Eyebrow from "@/components/Eyebrow";
+import AiTutor from "@/components/AiTutor";
+import LessonToc from "@/components/LessonToc";
+import AiReview from "@/components/AiReview";
+import ExplainSelection from "@/components/ExplainSelection";
+import Checkpoint from "@/components/Checkpoint";
+import PracticeProblem from "@/components/PracticeProblem";
+import { checkpointPlacement, type TocSection } from "@/lib/lessonToc";
 
 const MiniEditor = dynamic(() => import("@/components/MiniEditor"), { ssr: false });
 
 interface Props {
   lesson: Lesson;
+  sections: TocSection[];
+  chunks: string[];
   prev: Lesson | null;
   next: Lesson | null;
   trackTitle: string;
@@ -369,7 +197,7 @@ function CelebrationOverlay({
 
 // ─── Main lesson component ────────────────────────────────────────────────────
 
-export default function LessonClient({ lesson, prev, next, trackTitle, positionInTrack, trackLength }: Props) {
+export default function LessonClient({ lesson, sections, chunks, prev, next, trackTitle, positionInTrack, trackLength }: Props) {
   const [code, setCode] = useState(lesson.exercise.starterCode);
   const [output, setOutput] = useState("");
   const [status, setStatus] = useState<"idle" | "running" | "pass" | "fail">("idle");
@@ -386,6 +214,13 @@ export default function LessonClient({ lesson, prev, next, trackTitle, positionI
 
   const quizQuestions = QUIZZES[lesson.id] ?? [];
   const alreadyDone = hydrated && completed.has(lesson.id);
+
+  // Map of chunk index -> question index, so each checkpoint renders after the
+  // section it tests. Questions beyond the number of eligible slots fall back
+  // to the end-of-lesson block instead of being dropped.
+  const placement = checkpointPlacement(quizQuestions.length, sections.length);
+  const checkpointFor = new Map<number, number>(placement.map((chunkIdx, qIdx) => [chunkIdx, qIdx]));
+  const leftoverQuestions = quizQuestions.slice(placement.length);
 
   const runCode = useCallback(async () => {
     setStatus("running");
@@ -446,7 +281,17 @@ export default function LessonClient({ lesson, prev, next, trackTitle, positionI
         />
       )}
 
-      <div className="max-w-3xl mx-auto px-6 py-10">
+      <div className="lesson-shell max-w-6xl mx-auto px-6 py-10">
+        {/* Section nav — occupies the column that used to sit empty beside the
+            prose. Hidden under 1180px, where there's no room for it. */}
+        <aside className="lesson-toc-col">
+          <LessonToc sections={sections} />
+        </aside>
+
+        {/* Highlight any passage in the prose to have it re-explained. */}
+        <ExplainSelection lessonId={lesson.id} />
+
+        <div className="min-w-0 max-w-3xl">
         {/* Breadcrumb */}
         <div className="v2-rise in flex items-center gap-2 text-sm mb-5" style={{ color: "var(--muted)" }}>
           <Link href="/lessons" className="transition-opacity hover:opacity-70" style={{ color: "var(--ink-2)" }}>
@@ -475,12 +320,7 @@ export default function LessonClient({ lesson, prev, next, trackTitle, positionI
             </div>
           )}
 
-          <div
-            className="text-xs tracking-widest uppercase mb-2 opacity-50"
-            style={{ fontFamily: "var(--font-mono)", color: "var(--ink-3)" }}
-          >
-            {trackTitle} · Lesson {positionInTrack} of {trackLength}
-          </div>
+          <Eyebrow>{trackTitle} · Lesson {positionInTrack} of {trackLength}</Eyebrow>
           <h1
             className="text-3xl font-semibold mb-1"
             style={{ fontFamily: "var(--font-display)", color: "var(--ink)" }}
@@ -492,17 +332,33 @@ export default function LessonClient({ lesson, prev, next, trackTitle, positionI
           </p>
         </div>
 
-        {/* Lesson content */}
+        {/* Lesson content, with checkpoints interleaved between sections.
+            The questions used to sit in one block at the end, so you could
+            read the whole lesson without once being asked to retrieve any of
+            it. Each one now lands while its section is still fresh. */}
         <div
           className="v2-rise lesson-content mb-8 pb-8"
           style={{ borderBottom: "1px solid var(--border)", transitionDelay: "80ms" }}
-          dangerouslySetInnerHTML={{ __html: lesson.content }}
-        />
+        >
+          {chunks.map((chunk, i) => (
+            <div key={i}>
+              <div dangerouslySetInnerHTML={{ __html: chunk }} />
+              {checkpointFor.has(i) && (
+                <Checkpoint
+                  question={quizQuestions[checkpointFor.get(i)!]}
+                  lessonId={lesson.id}
+                  index={checkpointFor.get(i)! + 1}
+                />
+              )}
+            </div>
+          ))}
+        </div>
 
-        {/* Knowledge check quiz */}
-        {quizQuestions.length > 0 && (
+        {/* Any questions that didn't fit between sections (short lessons)
+            still get shown, rather than silently dropped. */}
+        {leftoverQuestions.length > 0 && (
           <div className="v2-rise" style={{ transitionDelay: "120ms" }}>
-            <QuizSection questions={quizQuestions} lessonId={lesson.id} />
+            <QuizSection questions={leftoverQuestions} lessonId={lesson.id} />
           </div>
         )}
 
@@ -538,7 +394,7 @@ export default function LessonClient({ lesson, prev, next, trackTitle, positionI
               {!alreadyDone && (
                 <span
                   className="text-[10px] px-2 py-0.5 rounded"
-                  style={{ background: "rgba(251,191,36,0.1)", color: "#fbbf24", fontFamily: "var(--font-mono)" }}
+                  style={{ background: "var(--amber-tint)", color: "var(--amber)", fontFamily: "var(--font-mono)" }}
                 >
                   +100 XP
                 </span>
@@ -618,7 +474,7 @@ export default function LessonClient({ lesson, prev, next, trackTitle, positionI
                   cursor: "pointer",
                 }}
               >
-                ∂ {showHint ? "Hide hint" : "Get a hint"}
+                ∂ {showHint ? "Hide tutor" : "Ask the tutor"}
               </button>
             </div>
 
@@ -662,14 +518,26 @@ export default function LessonClient({ lesson, prev, next, trackTitle, positionI
             </div>
           )}
 
-          {/* AI Hint panel */}
+          {/* Review is offered only once the tests pass — reviewing broken
+              code is the tutor's job, and doing it here would just be a second
+              hint button. */}
+          {status === "pass" && <AiReview lessonId={lesson.id} code={code} />}
+
+          {/* Extra drilling on the same concept, for a student who passed but
+              doesn't feel like it clicked. Reuses the Pyodide runtime already
+              loaded here, so a generated exercise costs no extra download. */}
+          {status === "pass" && <PracticeProblem lessonId={lesson.id} />}
+
+          {/* AI tutor — conversational, sees the current code and error */}
           {showHint && (
-            <AiHintPanel
-              lessonId={lesson.id}
-              code={code}
-              error={status === "fail" ? output : ""}
-              onClose={() => setShowHint(false)}
-            />
+            <div style={{ padding: "0 14px 14px" }}>
+              <AiTutor
+                lessonId={lesson.id}
+                code={code}
+                error={status === "fail" ? output : ""}
+                onClose={() => setShowHint(false)}
+              />
+            </div>
           )}
         </div>
 
@@ -706,6 +574,7 @@ export default function LessonClient({ lesson, prev, next, trackTitle, positionI
               Open Playground →
             </Link>
           )}
+        </div>
         </div>
       </div>
     </>

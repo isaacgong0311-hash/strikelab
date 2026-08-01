@@ -3,6 +3,9 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { getSupabaseBrowser } from "@/lib/supabase/client";
+import { TRACKS } from "@/lib/tracks";
+
+const TOTAL_LESSONS = TRACKS.reduce((s, t) => s + t.lessons.length, 0);
 
 export default function SignUpPage() {
   const router = useRouter();
@@ -88,7 +91,7 @@ export default function SignUpPage() {
       <div className="auth-card">
         <div className="auth-brand"><span className="auth-logo">∫</span></div>
         <h1 className="auth-title">Start learning free</h1>
-        <p className="auth-sub">All 10 lessons, the Python playground, and the Greek visualizer — free forever.</p>
+        <p className="auth-sub">All {TOTAL_LESSONS} lessons, the Python playground, and the Greek visualizer — free forever.</p>
 
         {error && <p className="auth-error" style={{ color: "var(--coral, #ef4444)", fontSize: 13, marginBottom: 10 }}>{error}</p>}
 

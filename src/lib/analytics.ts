@@ -10,6 +10,7 @@
  */
 
 import { track } from "@vercel/analytics";
+import { getAttribution } from "./attribution";
 
 // ─── Lesson funnel ────────────────────────────────────────────────────────────
 
@@ -44,17 +45,17 @@ export function trackPlaygroundRun() {
 
 /** User clicks any "Upgrade to Pro" / "Start Free Trial" button */
 export function trackUpgradeClick(source: string) {
-  track("upgrade_click", { source });
+  track("upgrade_click", { source, ...getAttribution() });
 }
 
 /** User clicks "Contact Sales" for the school plan */
 export function trackSchoolClick(source: string) {
-  track("school_click", { source });
+  track("school_click", { source, ...getAttribution() });
 }
 
 /** User submits the newsletter signup form */
 export function trackNewsletterSignup() {
-  track("newsletter_signup");
+  track("newsletter_signup", getAttribution());
 }
 
 // ─── Engagement ───────────────────────────────────────────────────────────────

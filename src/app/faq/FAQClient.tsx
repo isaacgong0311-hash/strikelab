@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
 import { FAQ_GROUPS } from "@/lib/faq";
+import Eyebrow from "@/components/Eyebrow";
 
 export default function FAQClient() {
   const [open, setOpen] = useState<string | null>(null);
@@ -8,9 +9,7 @@ export default function FAQClient() {
   return (
     <div className="max-w-3xl mx-auto px-6 py-10">
       <div className="v2-page-head mb-8" data-v2-head style={{ padding: 0, border: 0 }}>
-        <div className="text-[10px] tracking-widest uppercase mb-2 opacity-50" style={{ fontFamily: "var(--font-mono)", color: "var(--ink-3)" }}>
-          FAQ
-        </div>
+        <Eyebrow>FAQ</Eyebrow>
         <h1 className="text-4xl font-semibold mb-3" style={{ fontFamily: "var(--font-display)", color: "var(--ink)" }}>
           Frequently asked questions
         </h1>
@@ -26,9 +25,7 @@ export default function FAQClient() {
         {FAQ_GROUPS.map((group) => (
           <div key={group.section}>
             <div className="v2-rise flex items-center gap-3 mb-3">
-              <div className="text-[10px] tracking-widest uppercase opacity-40" style={{ fontFamily: "var(--font-mono)", color: "var(--ink-3)" }}>
-                {group.section}
-              </div>
+              <Eyebrow className="">{group.section}</Eyebrow>
               <div className="flex-1 h-px" style={{ background: "var(--border)" }} />
             </div>
             <div className="flex flex-col gap-1.5" data-v2-stagger>

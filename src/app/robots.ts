@@ -6,8 +6,11 @@ export default function robots(): MetadataRoute.Robots {
     rules: {
       userAgent: "*",
       allow: "/",
-      // Private / auth / non-content routes — no SEO value, keep them out of the index.
-      disallow: ["/api/", "/dashboard", "/success", "/sign-in", "/sign-up"],
+      // Only /api/ is blocked here. The private routes (/dashboard, /success,
+      // /sign-in, /sign-up) send `noindex` via metadata instead — blocking them
+      // in robots.txt would stop crawlers reading that directive, so they could
+      // still get indexed from inbound links with no way to drop them.
+      disallow: ["/api/"],
     },
     sitemap: `${SITE_URL}/sitemap.xml`,
     host: SITE_URL,

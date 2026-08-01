@@ -21,7 +21,7 @@ const config = {
   webDir: "out",
   backgroundColor: "#f7f5ef",
   server: {
-    url: "https://strikelabco.vercel.app",
+    url: "https://strikelab.dev",
     cleartext: false,
   },
 };
