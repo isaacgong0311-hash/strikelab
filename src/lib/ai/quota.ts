@@ -22,6 +22,7 @@ export const AI_COST = {
   review: 2,
   practice: 2,
   sandboxInsight: 1,
+  sandboxTradeIdea: 2,
 } as const;
 
 export type AiFeature = keyof typeof AI_COST;
