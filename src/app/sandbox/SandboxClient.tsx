@@ -5,15 +5,18 @@ import {
   LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid,
 } from "recharts";
 import { useAuth } from "@/lib/auth/AuthProvider";
+import { streamInto, renderAiMarkdown } from "@/components/AiMarkdown";
 import {
   WATCHLIST,
   simulatePrice,
   simulatePriceHistory,
   markPrice,
   type AssetType,
+  type WatchlistSymbol,
 } from "@/lib/pricing";
 
 const POLL_MS = 5000;
+const POPULAR_SYMBOLS = ["AAPL", "MSFT", "NVDA", "TSLA", "AMZN", "GOOGL", "META", "SPY"];
 
 interface PositionApi {
   id: string;
@@ -106,6 +109,136 @@ function PriceChart({ symbol, tick }: { symbol: string; tick: number }) {
         <Line type="monotone" dataKey="price" stroke={color} strokeWidth={2} dot={false} isAnimationActive={false} />
       </LineChart>
     </ResponsiveContainer>
+  );
+}
+
+// ── Ticker search (any of the ~90 simulated symbols) ────────────────────────────
+function SymbolPicker({
+  symbol,
+  onSelect,
+}: {
+  symbol: string;
+  onSelect: (w: WatchlistSymbol) => void;
+}) {
+  const [query, setQuery] = useState("");
+  const [open, setOpen] = useState(false);
+  const current = WATCHLIST.find((w) => w.symbol === symbol)!;
+
+  const matches = useMemo(() => {
+    const q = query.trim().toLowerCase();
+    if (!q) return [];
+    return WATCHLIST.filter(
+      (w) => w.symbol.toLowerCase().includes(q) || w.name.toLowerCase().includes(q)
+    ).slice(0, 8);
+  }, [query]);
+
+  function pick(w: WatchlistSymbol) {
+    onSelect(w);
+    setQuery("");
+    setOpen(false);
+  }
+
+  return (
+    <div className="sb-symbol-picker">
+      <div className="sb-symbol-current">
+        <span className="sb-symbol-current-ticker">{current.symbol}</span>
+        <span className="sb-symbol-current-name">{current.name}</span>
+      </div>
+
+      <div className="sb-symbol-search-wrap">
+        <input
+          type="text"
+          className="sb-symbol-search"
+          placeholder="Search any of ~90 tickers (e.g. AMZN, PLTR, JPM)…"
+          value={query}
+          onChange={(e) => { setQuery(e.target.value); setOpen(true); }}
+          onFocus={() => setOpen(true)}
+          onBlur={() => setTimeout(() => setOpen(false), 120)}
+        />
+        {open && query.trim() !== "" && (
+          <div className="sb-symbol-dropdown">
+            {matches.length > 0 ? (
+              matches.map((w) => (
+                <button
+                  key={w.symbol}
+                  type="button"
+                  className="sb-symbol-option"
+                  onMouseDown={() => pick(w)}
+                >
+                  <span className="sb-symbol-option-ticker">{w.symbol}</span>
+                  <span className="sb-symbol-option-name">{w.name}</span>
+                </button>
+              ))
+            ) : (
+              <div className="sb-symbol-empty">No match in the simulated universe.</div>
+            )}
+          </div>
+        )}
+      </div>
+
+      <div className="sb-symbol-chips">
+        {POPULAR_SYMBOLS.map((s) => (
+          <button
+            key={s}
+            type="button"
+            className={`sb-symbol-chip${symbol === s ? " active" : ""}`}
+            onClick={() => pick(WATCHLIST.find((w) => w.symbol === s)!)}
+          >
+            {s}
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+// ── AI trade coach ───────────────────────────────────────────────────────────────
+interface InsightPayload {
+  symbol: string;
+  name: string;
+  assetType: AssetType;
+  side: "long" | "short";
+  qty: number;
+  strike: number | null;
+  expiry: string | null;
+  price: number | null;
+  unrealizedPnl?: number;
+  status: "proposed" | "open";
+}
+
+function TradeInsight({ payload, disabled }: { payload: InsightPayload; disabled?: boolean }) {
+  const [state, setState] = useState<"idle" | "loading" | "done">("idle");
+  const [text, setText] = useState("");
+
+  async function run() {
+    setState("loading");
+    setText("");
+    try {
+      await streamInto("/api/ai/sandbox-insight", payload, (chunk) => setText((p) => p + chunk));
+    } catch {
+      setText("Couldn't reach the AI coach. Try again in a moment.");
+    } finally {
+      setState("done");
+    }
+  }
+
+  if (state === "idle") {
+    return (
+      <button type="button" className="sb-ai-btn" onClick={run} disabled={disabled}>
+        ✨ AI take on this trade
+      </button>
+    );
+  }
+
+  return (
+    <div className="sb-ai-panel">
+      <div className="sb-ai-panel-label">AI take</div>
+      {state === "loading" && !text ? (
+        <div className="sb-ai-loading">Thinking…</div>
+      ) : (
+        <div className="sb-ai-text">{renderAiMarkdown(text)}</div>
+      )}
+    </div>
   );
 }
 
@@ -248,19 +381,10 @@ export default function SandboxClient() {
         <div className="sb-left">
           <div className="sb-card">
             <div className="sb-card-title">Symbol</div>
-            <div className="sb-symbol-grid">
-              {WATCHLIST.map((w) => (
-                <button
-                  key={w.symbol}
-                  type="button"
-                  className={`sb-symbol-btn${symbol === w.symbol ? " active" : ""}`}
-                  onClick={() => { setSymbol(w.symbol); setStrike(Math.round(w.basePrice)); }}
-                >
-                  <span className="sb-symbol-ticker">{w.symbol}</span>
-                  <span className="sb-symbol-name">{w.name}</span>
-                </button>
-              ))}
-            </div>
+            <SymbolPicker
+              symbol={symbol}
+              onSelect={(w) => { setSymbol(w.symbol); setStrike(Math.round(w.basePrice)); }}
+            />
 
             <div className="sb-chart-wrap">
               <PriceChart symbol={symbol} tick={tick} />
@@ -345,6 +469,21 @@ export default function SandboxClient() {
             <button type="button" className="sb-execute-btn" onClick={placeOrder} disabled={placing || quote == null}>
               {placing ? "Placing…" : `${side === "long" ? "Buy" : "Sell"} ${symbol}`}
             </button>
+
+            <TradeInsight
+              disabled={quote == null}
+              payload={{
+                symbol,
+                name: watch.name,
+                assetType,
+                side,
+                qty,
+                strike: assetType === "stock" ? null : strike,
+                expiry: assetType === "stock" ? null : expiry,
+                price: quote,
+                status: "proposed",
+              }}
+            />
           </div>
         </div>
 
@@ -365,26 +504,42 @@ export default function SandboxClient() {
                 <div className="sb-empty">No open positions yet — place an order to get started.</div>
               ) : (
                 portfolio.positions.map((p) => (
-                  <div key={p.id} className="sb-position-row">
-                    <div className="sb-position-main">
-                      <div className="sb-position-symbol">
-                        {p.symbol}
-                        <span className={`sb-tag ${p.side}`}>{p.side}</span>
-                        <span className="sb-tag type">{p.asset_type}</span>
+                  <div key={p.id} className="sb-position-card">
+                    <div className="sb-position-row">
+                      <div className="sb-position-main">
+                        <div className="sb-position-symbol">
+                          {p.symbol}
+                          <span className={`sb-tag ${p.side}`}>{p.side}</span>
+                          <span className="sb-tag type">{p.asset_type}</span>
+                        </div>
+                        <div className="sb-position-detail">
+                          {p.qty} {p.asset_type === "stock" ? "sh" : "ct"} @ {money(p.avg_cost)}
+                          {p.strike != null && ` · K=${p.strike}`}
+                          {p.expiry && ` · exp ${p.expiry}`}
+                        </div>
                       </div>
-                      <div className="sb-position-detail">
-                        {p.qty} {p.asset_type === "stock" ? "sh" : "ct"} @ {money(p.avg_cost)}
-                        {p.strike != null && ` · K=${p.strike}`}
-                        {p.expiry && ` · exp ${p.expiry}`}
+                      <div className="sb-position-pnl">
+                        <div className="sb-position-mark">{money(p.markPrice)}</div>
+                        <div className={`sb-pnl ${p.unrealizedPnl >= 0 ? "gain" : "loss"}`}>
+                          {p.unrealizedPnl >= 0 ? "+" : ""}{money(p.unrealizedPnl)}
+                        </div>
                       </div>
+                      <button type="button" className="sb-close-btn" onClick={() => handleClose(p.id)}>Close</button>
                     </div>
-                    <div className="sb-position-pnl">
-                      <div className="sb-position-mark">{money(p.markPrice)}</div>
-                      <div className={`sb-pnl ${p.unrealizedPnl >= 0 ? "gain" : "loss"}`}>
-                        {p.unrealizedPnl >= 0 ? "+" : ""}{money(p.unrealizedPnl)}
-                      </div>
-                    </div>
-                    <button type="button" className="sb-close-btn" onClick={() => handleClose(p.id)}>Close</button>
+                    <TradeInsight
+                      payload={{
+                        symbol: p.symbol,
+                        name: WATCHLIST.find((w) => w.symbol === p.symbol)?.name ?? p.symbol,
+                        assetType: p.asset_type,
+                        side: p.side,
+                        qty: p.qty,
+                        strike: p.strike,
+                        expiry: p.expiry,
+                        price: p.markPrice,
+                        unrealizedPnl: p.unrealizedPnl,
+                        status: "open",
+                      }}
+                    />
                   </div>
                 ))
               )}
