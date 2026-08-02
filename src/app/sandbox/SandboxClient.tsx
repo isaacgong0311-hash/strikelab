@@ -242,6 +242,74 @@ function TradeInsight({ payload, disabled }: { payload: InsightPayload; disabled
   );
 }
 
+// ── AI trade idea generator (NL thesis → structured trade) ─────────────────────
+interface TradeIdea {
+  symbol: string;
+  assetType: AssetType;
+  side: "long" | "short";
+  strike: number | null;
+  expiryDays: number | null;
+  qty: number;
+  rationale: string;
+}
+
+function TradeIdeaGenerator({ onIdea }: { onIdea: (idea: TradeIdea) => void }) {
+  const [thesis, setThesis] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [rationale, setRationale] = useState<string | null>(null);
+
+  async function generate() {
+    setLoading(true);
+    setError(null);
+    setRationale(null);
+    try {
+      const res = await fetch("/api/ai/sandbox-trade-idea", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ thesis }),
+      });
+      const body = await res.json();
+      if (!res.ok) {
+        setError(body.error ?? "Couldn't generate an idea.");
+        return;
+      }
+      onIdea(body as TradeIdea);
+      setRationale((body as TradeIdea).rationale);
+    } catch {
+      setError("Network error reaching the AI.");
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  return (
+    <div className="sb-card sb-idea-card">
+      <div className="sb-card-title">✨ AI trade idea</div>
+      <p className="sb-idea-hint">
+        Describe your market view — the AI turns it into a concrete trade and fills in the order below.
+      </p>
+      <textarea
+        className="sb-idea-input"
+        rows={2}
+        placeholder="e.g. I think Tesla drops after earnings but I don't want unlimited risk…"
+        value={thesis}
+        onChange={(e) => setThesis(e.target.value)}
+      />
+      <button
+        type="button"
+        className="sb-idea-btn"
+        onClick={generate}
+        disabled={loading || thesis.trim().length < 5}
+      >
+        {loading ? "Thinking…" : "Generate trade idea"}
+      </button>
+      {error && <div className="sb-banner error small">{error}</div>}
+      {rationale && <div className="sb-idea-rationale">{rationale}</div>}
+    </div>
+  );
+}
+
 // ── Main component ──────────────────────────────────────────────────────────────
 export default function SandboxClient() {
   const { user, loading: authLoading } = useAuth();
@@ -261,6 +329,17 @@ export default function SandboxClient() {
   const [tab, setTab] = useState<"positions" | "trades">("positions");
 
   const watch = WATCHLIST.find((w) => w.symbol === symbol)!;
+
+  function applyIdea(idea: TradeIdea) {
+    setSymbol(idea.symbol);
+    setAssetType(idea.assetType);
+    setSide(idea.side);
+    setQty(idea.qty);
+    if (idea.assetType !== "stock") {
+      setStrike(idea.strike ?? Math.round(WATCHLIST.find((w) => w.symbol === idea.symbol)!.basePrice));
+      setExpiry(defaultExpiry(idea.expiryDays ?? 30));
+    }
+  }
 
   const refresh = useCallback(async () => {
     try {
@@ -379,6 +458,8 @@ export default function SandboxClient() {
       <div className="sb-split">
         {/* ── Left: order ticket ── */}
         <div className="sb-left">
+          <TradeIdeaGenerator onIdea={applyIdea} />
+
           <div className="sb-card">
             <div className="sb-card-title">Symbol</div>
             <SymbolPicker
