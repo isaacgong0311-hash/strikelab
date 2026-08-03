@@ -5,23 +5,14 @@ import { TRACKS, getAllLessons } from "@/lib/tracks";
 import { useProgress, getLevel, getXpToNextLevel, XP_LEVELS } from "@/lib/useProgress";
 import { useAuth } from "@/lib/auth/AuthProvider";
 import FlameIcon from "@/components/FlameIcon";
+import ActivityHeatmap from "@/components/ActivityHeatmap";
+import { ACHIEVEMENTS, isUnlocked } from "@/lib/achievements";
 
-const DAY_LABELS = ["M", "T", "W", "T", "F", "S", "S"];
-
-const ACHIEVEMENTS = [
-  { id: "first",    icon: "⊗",  name: "First Strike",   desc: "Complete your first lesson",          unlocked: (ids: Set<string>) => ids.size >= 1 },
-  { id: "parity",   icon: "≡",  name: "Parity Pro",     desc: "Master Put-Call Parity",              unlocked: (ids: Set<string>) => ids.has("2") },
-  { id: "bsm",      icon: "∂",  name: "BSM Builder",    desc: "Implement Black-Scholes",             unlocked: (ids: Set<string>) => ids.has("3") },
-  { id: "greeks",   icon: "Δ",  name: "Greek Scholar",  desc: "Complete all four Greek lessons",     unlocked: (ids: Set<string>) => ["4","5","6","7"].every(id => ids.has(id)) },
-  { id: "iv",       icon: "σ",  name: "Vol Wizard",     desc: "Solve for implied volatility",        unlocked: (ids: Set<string>) => ids.has("8") },
-  { id: "strategy", icon: "∑",  name: "Strategist",     desc: "Learn option strategies",             unlocked: (ids: Set<string>) => ids.has("9") },
-  { id: "investor", icon: "↗",  name: "Investor",       desc: "Start the Investing track",           unlocked: (ids: Set<string>) => ids.has("inv-1") },
-  { id: "portfolio",icon: "⊞",  name: "Portfolio Mgr",  desc: "Finish all 6 Investing lessons",      unlocked: (ids: Set<string>) => ["inv-1","inv-2","inv-3","inv-4","inv-5","inv-6"].every(id => ids.has(id)) },
-  { id: "capm",     icon: "β",  name: "Quant Initiate", desc: "Understand CAPM and Beta",            unlocked: (ids: Set<string>) => ids.has("q1") },
-  { id: "factor",   icon: "λ",  name: "Factor King",    desc: "Master factor investing",             unlocked: (ids: Set<string>) => ids.has("q2") },
-  { id: "backtest", icon: "⟲",  name: "Backtester",     desc: "Build your first backtest",           unlocked: (ids: Set<string>) => ids.has("q3") },
-  { id: "allstar",  icon: "✶",  name: "All-Star",       desc: "Complete all 21 lessons",             unlocked: (ids: Set<string>) => ids.size >= 21 },
-];
+const LEVEL_COLORS: Record<string, string> = {
+  Beginner:     "var(--sky)",
+  Intermediate: "var(--grass)",
+  Advanced:     "var(--coral)",
+};
 
 // ── SVG circular progress ring ──────────────────────────────
 function XPRing({ pct, color, size = 130 }: { pct: number; color: string; size?: number }) {
@@ -53,7 +44,7 @@ function MiniBar({ pct, color }: { pct: number; color: string }) {
 }
 
 export default function DashboardClient() {
-  const { completed, hydrated, xp, streak, weekActivity } = useProgress();
+  const { completed, hydrated, xp, streak, activityByDate } = useProgress();
   const allLessons = getAllLessons();
   const totalLessons = allLessons.length;
   const completedCount = hydrated ? allLessons.filter(l => completed.has(l.id)).length : 0;
@@ -67,11 +58,7 @@ export default function DashboardClient() {
     ? allLessons.find(l => !completed.has(l.id)) ?? allLessons[0]
     : allLessons[0];
 
-  const week = weekActivity ?? Array(7).fill(0);
-  const todayDOW = new Date().getDay(); // 0=Sun
-  const mondayOffset = (todayDOW + 6) % 7; // index in Mon-first array that is today
-
-  const unlockedAch = hydrated ? ACHIEVEMENTS.filter(a => a.unlocked(completed)).length : 0;
+  const unlockedAch = hydrated ? ACHIEVEMENTS.filter(a => isUnlocked(a, completed)).length : 0;
 
   const { displayName } = useAuth();
   const [localName, setLocalName] = useState<string | null>(null);
@@ -195,39 +182,42 @@ export default function DashboardClient() {
           </div>
         </div>
 
-        {/* Activity heatmap */}
+        {/* Difficulty-tier breakdown */}
         <div className="db-panel">
           <div className="db-panel-head">
-            <span className="db-panel-title">Last 7 days</span>
-            <span className="db-streak-pill" style={{ color: streak > 0 ? "var(--coral)" : "var(--ink-3)" }}>
-              {streak > 0 ? <><FlameIcon size={12} /> {streak} days</> : "No active streak"}
-            </span>
+            <span className="db-panel-title">Solved by difficulty</span>
+            <span className="db-section-meta">{completedCount} / {totalLessons}</span>
           </div>
-          <div className="db-heatmap">
-            {week.map((v, i) => {
-              const isToday = i === mondayOffset;
-              const intensity = v > 0 ? Math.min(v / 3, 1) : 0;
-              const bg = v > 0
-                ? isToday
-                  ? "var(--coral)"
-                  : `rgba(34,197,94,${0.25 + intensity * 0.75})`
-                : "var(--bg2)";
+          <div className="db-tier-list">
+            {TRACKS.map((track) => {
+              const done = hydrated ? track.lessons.filter(l => completed.has(l.id)).length : 0;
+              const total = track.lessons.length;
+              const pct = total ? Math.round((done / total) * 100) : 0;
+              const color = LEVEL_COLORS[track.level] ?? "var(--grass)";
               return (
-                <div key={i} className="db-heatmap-col">
-                  <div
-                    className={`db-heatmap-cell ${isToday ? "today" : ""} ${v > 0 ? "active" : ""}`}
-                    style={{ background: bg, boxShadow: isToday && v > 0 ? `0 0 14px rgba(239,68,68,0.4)` : "none" }}
-                    title={v > 0 ? `${v} lesson${v > 1 ? "s" : ""} completed` : "No activity"}
-                  >
-                    {v > 0 && <span className="db-heatmap-n">{v}</span>}
+                <div key={track.id} className="db-tier-row">
+                  <div className="db-tier-head">
+                    <span className="db-tier-name" style={{ color }}>{track.level}</span>
+                    <span className="db-tier-count">{done}<span className="db-tier-count-sep">/{total}</span></span>
                   </div>
-                  <div className={`db-heatmap-day ${isToday ? "today" : ""}`}>{DAY_LABELS[i]}</div>
+                  <MiniBar pct={pct} color={color} />
                 </div>
               );
             })}
           </div>
-          <p className="db-panel-note">Finish at least one lesson each day to grow your streak.</p>
         </div>
+      </div>
+
+      {/* ── ACTIVITY ─────────────────────────────────────── */}
+      <div className="db-panel" style={{ marginBottom: 16 }}>
+        <div className="db-panel-head">
+          <span className="db-panel-title">Activity</span>
+          <span className="db-streak-pill" style={{ color: streak > 0 ? "var(--coral)" : "var(--ink-3)" }}>
+            {streak > 0 ? <><FlameIcon size={12} /> {streak} day streak</> : "No active streak"}
+          </span>
+        </div>
+        <ActivityHeatmap activityByDate={activityByDate ?? {}} />
+        <p className="db-panel-note">Finish at least one lesson each day to grow your streak.</p>
       </div>
 
       {/* ── CURRICULUM PROGRESS ──────────────────────────── */}
@@ -360,11 +350,13 @@ export default function DashboardClient() {
       {/* ── ACHIEVEMENTS ─────────────────────────────────── */}
       <div className="db-section-head" style={{ marginTop: 8 }}>
         <span className="db-section-title">Achievements</span>
-        <span className="db-section-meta">{unlockedAch} / {ACHIEVEMENTS.length} unlocked</span>
+        <Link href="/achievements" className="db-section-meta db-section-link">
+          {unlockedAch} / {ACHIEVEMENTS.length} unlocked · View all →
+        </Link>
       </div>
       <div className="db-ach-grid">
         {ACHIEVEMENTS.map(a => {
-          const unlocked = hydrated && a.unlocked(completed);
+          const unlocked = hydrated && isUnlocked(a, completed);
           return (
             <div key={a.id} className={`db-ach ${unlocked ? "unlocked" : ""}`} title={a.desc}>
               {unlocked && <div className="db-ach-glow" />}

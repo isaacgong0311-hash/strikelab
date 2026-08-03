@@ -3,6 +3,7 @@ import Link from "next/link";
 import { TRACKS } from "@/lib/tracks";
 import { useProgress } from "@/lib/useProgress";
 import FlameIcon from "@/components/FlameIcon";
+import TrophyIcon from "@/components/TrophyIcon";
 
 const OFFSETS = [0, 44, 62, 44, 0, -44, -62, -44];
 
@@ -115,6 +116,25 @@ export default function LessonsClient() {
                   </div>
                 );
               })}
+
+              {/* Track-finish trophy */}
+              <div className={`dnode dfinish ${trackDone === track.lessons.length ? "won" : ""}`}>
+                <div
+                  className="dfinish-btn"
+                  style={
+                    trackDone === track.lessons.length
+                      ? { background: levelColor, color: "#fff", boxShadow: `0 6px 0 color-mix(in srgb, ${levelColor} 70%, #000)` }
+                      : { background: "#fff", color: levelColor, border: `2px dashed ${levelColor}66` }
+                  }
+                >
+                  <TrophyIcon size={30} />
+                </div>
+                <div className="dnode-label">
+                  {trackDone === track.lessons.length
+                    ? `${track.title} complete`
+                    : `${track.lessons.length - trackDone} more to finish ${track.title}`}
+                </div>
+              </div>
             </div>
           </div>
         );

@@ -220,6 +220,7 @@ export function useProgress() {
     xp: state.xp,
     streak: currentStreak,
     weekActivity,
+    activityByDate: state.activityByDate,
     level,
     xpProgress,
   };

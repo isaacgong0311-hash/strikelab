@@ -1706,6 +1706,16 @@ body:has(.sk-home) .v2-bg-vignette { display: none; }
 .dnode-label { margin-top: 10px; font-family: var(--font-display), Georgia, serif; font-weight: 600; font-size: 14px; color: var(--ink); text-align: center; max-width: 210px; line-height: 1.2; }
 .dnode.locked .dnode-label { color: var(--ink-3); }
 
+.dfinish { margin-top: 4px; }
+.dfinish-btn {
+  width: 84px; height: 84px; border-radius: 50%;
+  display: grid; place-items: center;
+  transition: transform .1s ease, box-shadow .1s ease, filter .15s ease;
+}
+.dfinish:not(.won) .dnode-label { color: var(--ink-3); font-weight: 500; }
+.dfinish.won .dfinish-btn { animation: dfinish-pop .5s cubic-bezier(.2,.8,.3,1.2); }
+@keyframes dfinish-pop { 0% { transform: scale(0.85); } 60% { transform: scale(1.06); } 100% { transform: scale(1); } }
+
 /* ════════════════════════════════════════════════════════════════════════════
    AUTH (sign-in / sign-up) — friendly light
    ════════════════════════════════════════════════════════════════════════════ */
@@ -2335,6 +2345,38 @@ h1, h2, h3, h4 {
 }
 .db-heatmap-day.today { color: var(--ink); font-weight: 700; }
 
+/* Full-year activity heatmap */
+.ah { overflow-x: auto; padding-bottom: 4px; }
+.ah-months {
+  display: flex; gap: 3px; margin-left: 22px; margin-bottom: 4px;
+  font-family: var(--font-mono); font-size: 10px; color: var(--ink-3);
+}
+.ah-month { width: 13px; flex-shrink: 0; overflow: visible; white-space: nowrap; }
+.ah-body { display: flex; gap: 6px; }
+.ah-daylabels {
+  display: flex; flex-direction: column; gap: 3px;
+  font-family: var(--font-mono); font-size: 9px; color: var(--ink-3);
+  width: 14px; flex-shrink: 0;
+}
+.ah-daylabels span { height: 10px; line-height: 10px; }
+.ah-grid { display: flex; gap: 3px; }
+.ah-col { display: flex; flex-direction: column; gap: 3px; }
+.ah-cell {
+  width: 10px; height: 10px; border-radius: 2px;
+  background: var(--bg2);
+}
+.ah-cell.today { outline: 1.5px solid var(--coral); outline-offset: 1px; }
+.ah-cell.future { background: transparent; }
+.ah-legend { display: flex; align-items: center; gap: 4px; margin-top: 10px; font-family: var(--font-mono); font-size: 10px; color: var(--ink-3); }
+.ah-legend-cell { width: 10px; height: 10px; border-radius: 2px; background: var(--bg2); }
+
+/* Difficulty-tier breakdown */
+.db-tier-list { display: flex; flex-direction: column; gap: 18px; }
+.db-tier-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 7px; }
+.db-tier-name { font-family: var(--font-mono); font-size: 12px; font-weight: 600; letter-spacing: 0.04em; }
+.db-tier-count { font-family: var(--font-display), Georgia, serif; font-weight: 700; font-size: 16px; color: var(--ink); }
+.db-tier-count-sep { font-size: 13px; color: var(--ink-3); font-weight: 400; }
+
 /* ── Section headers ── */
 .db-section-head {
   display: flex;
@@ -2354,6 +2396,8 @@ h1, h2, h3, h4 {
   font-size: 11px;
   color: var(--ink-3);
 }
+.db-section-link { text-decoration: none; transition: color .12s ease; }
+.db-section-link:hover { color: var(--grass); }
 
 /* ── Track tabs ── */
 .db-tabs {
@@ -2671,6 +2715,26 @@ h1, h2, h3, h4 {
   font-size: 9px;
   color: #f59e0b;
   font-weight: 700;
+}
+
+/* Standalone achievements page */
+.ach-page-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+}
+.ach-page-card { padding: 26px 18px 22px; }
+.ach-page-card .db-ach-icon { font-size: 34px; }
+.ach-page-progress { width: 100%; margin-top: 4px; display: flex; align-items: center; gap: 8px; }
+.ach-page-progress .db-mini-bar { flex: 1; border-radius: var(--r-full); }
+.ach-page-progress .db-mini-bar-fill { border-radius: var(--r-full); }
+.ach-page-progress-n { font-family: var(--font-mono); font-size: 10px; color: var(--ink-3); flex-shrink: 0; }
+.ach-page-status { font-family: var(--font-mono); font-size: 10px; text-transform: uppercase; letter-spacing: 0.08em; margin-top: 2px; }
+@media (max-width: 700px) {
+  .ach-page-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 420px) {
+  .ach-page-grid { grid-template-columns: 1fr; }
 }
 
 /* ── Responsive ── */
