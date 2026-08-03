@@ -12,8 +12,8 @@
   --bg2:     #e9e9e6;
   --card:    #ffffff;
   --card2:   #f8f8f7;
-  --border:  #dcdcd8;
-  --border2: #c2c2bd;
+  --border:  #cfcfc9;
+  --border2: #b0b0a9;
   --accent:  #15803d;
   --accent2: #586460;
   --green:   #15803d;
@@ -57,8 +57,8 @@
   --ink:     #1c1917;  /* 16.9:1 on paper */
   --ink-2:   #44403c;  /*  9.7:1 */
   --ink-3:   #57534e;  /*  7.0:1 — was #8a938e at 2.9:1, which failed AA */
-  --line:    #dcdcd8;
-  --line-2:  #c2c2bd;
+  --line:    #cfcfc9;
+  --line-2:  #b0b0a9;
   --night:   #0f1411;
   --night-2: #161d18;
 
@@ -66,7 +66,7 @@
   --fg-mute:     #586460;
   --fg-faint:    #5f665f; /* see --muted */
   --card-2:      #fbf9f4;
-  --border-hi:   #d7d1c4;
+  --border-hi:   #b0b0a9;
   --border-hover:#c8c2b3;
   --check:       #15803d;
   /* ── Radius scale ─────────────────────────────────────────────────────────
@@ -1280,12 +1280,12 @@ body:has(.sk-home) {
   --bg: #f2f2f0;  --bg2: #e9e9e6;
   --fg: #1c1917;  --fg-mute: #44403c;  --fg-faint: #57534e;
   --muted: #57534e;  --muted2: #44403c;
-  --border: #dcdcd8;  --border-hi: #c2c2bd;  --border-hover: #a3a39d;
+  --border: #cfcfc9;  --border-hi: #b0b0a9;  --border-hover: #94948d;
 
   /* Landing palette (also visible to Nav/Footer CTAs) */
   --paper: #f2f2f0;  --paper-2: #ffffff;  --paper-3: #f8f8f7;
   --ink: #1c1917;  --ink-2: #44403c;  --ink-3: #57534e;
-  --line: #dcdcd8;  --line-2: #c2c2bd;
+  --line: #cfcfc9;  --line-2: #b0b0a9;
   /* Must track the :root accent ramp above — see the note there. */
   --grass: #147038;  --grass-d: #0d5a2c;  --grass-tint: #e6f6ec;
   --amber: #92400e;  --amber-tint: #f7eed4;
@@ -3470,4 +3470,49 @@ h1, h2, h3, h4 {
 code, pre, .sk-code, .ai-code, .ai-inline, .pr-output,
 [class*="font-mono"], .cm-editor {
   font-feature-settings: "zero" 1, "calt" 1;
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   PATH SCENERY
+   Duolingo puts scenery behind its tree so the path feels like somewhere
+   rather than a list. The equivalent here is the maths each track is about —
+   decoration that carries meaning instead of filler. Kept faint enough to sit
+   behind the lesson rows without competing with them.
+   ══════════════════════════════════════════════════════════════════════════ */
+
+.sk-track-panel-inner {
+  position: relative;
+  overflow: hidden;
+  /* Call-option payoff — flat, then the kink at the strike, then linear.
+     The single most recognisable shape in the subject. */
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='190' height='130' viewBox='0 0 190 130'%3E%3Cg fill='none' stroke='%23cfcfc9' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M18 108 H174' stroke-width='2' opacity='.55'/%3E%3Cpath d='M18 108 V16' stroke-width='2' opacity='.55'/%3E%3Cpath d='M26 88 H92 L160 30' stroke-width='4'/%3E%3C/g%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 18px bottom 14px;
+  background-size: 190px 130px;
+}
+
+/* The track's own glyph, oversized and faint, anchored top-right. Uses the
+   track colour so each path reads as its own place. */
+.sk-track-deco {
+  position: absolute;
+  top: -26px;
+  right: 22px;
+  font-family: var(--font-display), Georgia, serif;
+  font-size: 190px;
+  font-weight: 800;
+  line-height: 1;
+  opacity: 0.05;
+  pointer-events: none;
+  user-select: none;
+  z-index: 0;
+}
+
+/* Lesson rows must stay above the scenery. */
+.sk-track-panel-inner .sk-lessons { position: relative; z-index: 1; }
+
+@media (max-width: 720px) {
+  /* On a phone the rows fill the width and the art would only show through
+     the text. Scenery is a wide-viewport luxury. */
+  .sk-track-panel-inner { background-image: none; }
+  .sk-track-deco { display: none; }
 }

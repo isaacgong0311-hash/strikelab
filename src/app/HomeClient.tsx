@@ -102,6 +102,13 @@ function TrackCard({ track, defaultOpen }: { track: Track; defaultOpen: boolean 
 
       <div className="sk-track-panel" id={panelId} role="region">
         <div className="sk-track-panel-inner">
+          {/* Background character for the path. Duolingo puts scenery behind
+              its tree; the equivalent here is the maths the track is actually
+              about, so the decoration means something instead of just being
+              filler. Purely ornamental — hidden from assistive tech. */}
+          <span className="sk-track-deco" aria-hidden="true" style={{ color: track.color }}>
+            {track.icon}
+          </span>
           <div className="sk-lessons">
             {track.lessons.map((lesson, i) => (
               <Link key={lesson.id} href={`/lesson/${lesson.id}`} className="sk-lesson">
