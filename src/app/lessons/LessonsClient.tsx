@@ -2,6 +2,7 @@
 import Link from "next/link";
 import { TRACKS } from "@/lib/tracks";
 import { useProgress } from "@/lib/useProgress";
+import FlameIcon from "@/components/FlameIcon";
 
 const OFFSETS = [0, 44, 62, 44, 0, -44, -62, -44];
 
@@ -32,7 +33,7 @@ export default function LessonsClient() {
           </div>
           <div className="dpath-stats">
             <div className="dstat">
-              <span className="i">🔥</span>
+              <FlameIcon className="i" size={13} style={{ color: "var(--coral)" }} />
               <b>{hydrated ? streak : 0}</b>
               <span className="l">streak</span>
             </div>

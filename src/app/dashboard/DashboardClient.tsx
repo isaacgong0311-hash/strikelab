@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { TRACKS, getAllLessons } from "@/lib/tracks";
 import { useProgress, getLevel, getXpToNextLevel, XP_LEVELS } from "@/lib/useProgress";
 import { useAuth } from "@/lib/auth/AuthProvider";
+import FlameIcon from "@/components/FlameIcon";
 
 const DAY_LABELS = ["M", "T", "W", "T", "F", "S", "S"];
 
@@ -100,7 +101,11 @@ export default function DashboardClient() {
       <div className="db-hero">
         <div className="db-hero-content">
           <div className="db-hero-eyebrow">
-            {hydrated && streak > 0 ? `🔥 ${streak}-day streak · keep it up` : "Learning Dashboard"}
+            {hydrated && streak > 0 ? (
+              <>
+                <FlameIcon size={12} style={{ color: "var(--coral)" }} /> {streak}-day streak · keep it up
+              </>
+            ) : "Learning Dashboard"}
           </div>
           <h1 className="db-hero-h">
             {firstName ? `Welcome back, ${firstName}` : "Welcome back"}
@@ -195,7 +200,7 @@ export default function DashboardClient() {
           <div className="db-panel-head">
             <span className="db-panel-title">Last 7 days</span>
             <span className="db-streak-pill" style={{ color: streak > 0 ? "var(--coral)" : "var(--ink-3)" }}>
-              {streak > 0 ? `🔥 ${streak} days` : "No active streak"}
+              {streak > 0 ? <><FlameIcon size={12} /> {streak} days</> : "No active streak"}
             </span>
           </div>
           <div className="db-heatmap">

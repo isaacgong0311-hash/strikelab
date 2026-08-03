@@ -14,6 +14,7 @@ import ExplainSelection from "@/components/ExplainSelection";
 import Checkpoint from "@/components/Checkpoint";
 import PracticeProblem from "@/components/PracticeProblem";
 import { checkpointPlacement, type TocSection } from "@/lib/lessonToc";
+import FlameIcon from "@/components/FlameIcon";
 
 const MiniEditor = dynamic(() => import("@/components/MiniEditor"), { ssr: false });
 
@@ -160,7 +161,7 @@ function CelebrationOverlay({
         <div className="sl-streak-display">
           {streak > 0 ? (
             <>
-              🔥 <span className="streak-num">{streak}-day</span> streak — keep it up!
+              <FlameIcon size={13} style={{ color: "var(--coral)" }} /> <span className="streak-num">{streak}-day</span> streak — keep it up!
             </>
           ) : (
             "Complete a lesson each day to build your streak"
