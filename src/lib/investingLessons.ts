@@ -8,31 +8,31 @@ export const INVESTING_LESSONS: Lesson[] = [
     duration: "12 min",
     content: `
 <h2>Owning a Piece of a Business</h2>
-<p>When a company needs capital to grow — to build factories, hire engineers, or expand into new markets — it can raise money in two ways: borrow it (debt) or sell ownership stakes (equity). A <strong>stock</strong> (also called a <strong>share</strong> or <strong>equity</strong>) represents a fractional ownership interest in a corporation.</p>
-<p>If Apple has 15.3 billion shares outstanding and you own 100 shares, you own approximately 0.0000007% of Apple — a tiny slice, but a real one. As a shareholder, you own a proportional claim on Apple's assets and earnings. If Apple earns $100 billion in profit, your 100 shares entitle you to a proportional share of those earnings (either paid out as dividends, or reinvested in the company on your behalf).</p>
+<p>When a company needs capital to grow, to build factories, hire engineers, or expand into new markets, it can raise money in two ways: borrow it (debt) or sell ownership stakes (equity). A <strong>stock</strong> (also called a <strong>share</strong> or <strong>equity</strong>) represents a fractional ownership interest in a corporation.</p>
+<p>If Apple has 15.3 billion shares outstanding and you own 100 shares, you own about 0.0000007% of Apple. A tiny slice, but a real one. As a shareholder, you own a proportional claim on Apple's assets and earnings. If Apple earns $100 billion in profit, your 100 shares entitle you to a proportional share of those earnings (either paid out as dividends, or reinvested in the company on your behalf).</p>
 
 <h2>IPOs: Going Public</h2>
-<p>Companies start as private — owned by founders, employees, and private investors. When they decide to sell shares to the general public for the first time, they conduct an <strong>Initial Public Offering (IPO)</strong>.</p>
-<p>In an IPO, the company works with investment banks (underwriters) who help set the initial share price, market the offering to institutional investors, and list the shares on an exchange (NYSE or NASDAQ). The company receives cash from the primary sale; after that, investors trade shares among themselves in the <strong>secondary market</strong> — this is what you see on stock market apps.</p>
-<p>Famous IPOs: Google (2004, $85/share), Facebook (2012, $38/share), Airbnb (2020, $68/share). Each was a moment when private wealth became publicly tradeable.</p>
+<p>Companies start private, owned by founders, employees, and early investors. When they decide to sell shares to the general public for the first time, they conduct an <strong>Initial Public Offering (IPO)</strong>.</p>
+<p>In an IPO, the company works with investment banks (underwriters) who help set the initial share price, market the offering to institutional investors, and list the shares on an exchange (NYSE or NASDAQ). The company receives cash from the primary sale. After that, investors trade shares among themselves in the <strong>secondary market</strong>, which is what you see on stock market apps.</p>
+<p>A few famous IPOs: Google in 2004 at $85/share, Facebook in 2012 at $38/share, Airbnb in 2020 at $68/share. Each was a moment when private wealth became publicly tradeable.</p>
 
 <h2>Common vs. Preferred Stock</h2>
 <p>Not all stock is equal. Most individual investors buy <strong>common stock</strong>, which gives:</p>
 <ul>
   <li><strong>Voting rights:</strong> typically one vote per share on major company decisions (electing the board, approving mergers)</li>
   <li><strong>Dividends (if declared):</strong> periodic cash payments from profits, at the board's discretion</li>
-  <li><strong>Residual claim:</strong> if the company is liquidated, common shareholders receive what's left after all creditors and preferred holders are paid — often nothing in bankruptcies</li>
+  <li><strong>Residual claim:</strong> if the company is liquidated, common shareholders receive what's left after all creditors and preferred holders are paid, which is often nothing in bankruptcies</li>
 </ul>
 <p><strong>Preferred stock</strong> sits between bonds and common stock. Preferred holders receive a fixed dividend before common holders get anything, and have priority in liquidation. But they typically have no voting rights and limited upside if the company succeeds.</p>
 
 <h2>How Stock Prices Are Set</h2>
-<p>Stock prices are set by supply and demand among buyers and sellers on exchanges. There's no formula — the price is wherever a willing buyer and willing seller agree to transact right now.</p>
-<p>But prices aren't arbitrary. Over time, prices reflect expectations about future cash flows. A stock trading at $100 with earnings of $5/share has a Price-to-Earnings (P/E) ratio of 20 — investors are willing to pay 20 years' worth of current earnings today, implying they expect significant growth. We'll go deep on valuation in Lesson 4.</p>
+<p>Stock prices are set by supply and demand among buyers and sellers on exchanges. There's no formula: the price is wherever a willing buyer and a willing seller agree to transact right now.</p>
+<p>But prices aren't arbitrary. Over time, prices reflect expectations about future cash flows. A stock trading at $100 with earnings of $5/share has a Price-to-Earnings (P/E) ratio of 20, meaning investors are willing to pay 20 years' worth of current earnings today because they expect the company to keep growing. We'll go deep on valuation in Lesson 4.</p>
 
 <h2>Market Capitalization</h2>
 <p><strong>Market capitalization</strong> (market cap) is the total dollar value of all outstanding shares:</p>
 <blockquote>Market Cap = Share Price × Shares Outstanding</blockquote>
-<p>This is the market's current opinion of what the entire company is worth. Companies are categorized by market cap:</p>
+<p>It's the market's current opinion of what the entire company is worth. Companies are categorized by market cap:</p>
 <ul>
   <li><strong>Mega-cap:</strong> $200B+ (Apple, Microsoft, Nvidia)</li>
   <li><strong>Large-cap:</strong> $10B–$200B (Walmart, Nike)</li>
@@ -40,12 +40,27 @@ export const INVESTING_LESSONS: Lesson[] = [
   <li><strong>Small-cap:</strong> $300M–$2B</li>
   <li><strong>Micro-cap:</strong> below $300M</li>
 </ul>
-<p>Market cap differs from <em>enterprise value</em> (EV), which includes debt and subtracts cash — the true "acquisition price" of a company. We'll use EV in Lesson 4.</p>
+<p>Market cap differs from <em>enterprise value</em> (EV), which includes debt and subtracts cash: the real "acquisition price" of a company. We'll use EV in Lesson 4.</p>
 
 <h2>Why Does the Stock Price Change?</h2>
-<p>Prices change when new information arrives that changes investors' expectations about future cash flows. Earnings beats, new products, management changes, macroeconomic data, interest rate changes — all move prices by updating the market's collective forecast.</p>
-<p>Markets are surprisingly efficient at incorporating public information quickly — professional traders with supercomputers and satellite data compete intensely to be first. This is why it's hard to beat the market consistently: prices already reflect most known information.</p>
+<p>Prices change when new information arrives that shifts investors' expectations about future cash flows. Earnings beats, new products, management changes, macroeconomic data, interest rate changes: all of it moves prices by updating the market's collective forecast.</p>
+<p>Markets are surprisingly quick at absorbing public information. Professional traders with supercomputers and satellite data are racing to be first. That's why it's hard to beat the market consistently: prices already reflect most of what's knowable.</p>
     `,
+    sandboxes: [
+      {
+        afterSectionId: "market-capitalization",
+        title: "Market Cap",
+        formula: "Market Cap = Share Price × Shares Outstanding",
+        variables: [
+          { key: "price", label: "Share price", unit: "$", defaultValue: 185, min: 1, max: 500, step: 1 },
+          { key: "shares", label: "Shares outstanding", unit: "B", defaultValue: 15.4, min: 0.1, max: 20, step: 0.1 },
+        ],
+        computeId: "marketCap",
+        resultLabel: "Market cap",
+        resultPrefix: "$",
+        decimals: 0,
+      },
+    ],
     exercise: {
       prompt: "Implement `market_cap(price, shares_outstanding)` and `pe_ratio(price, earnings_per_share)`.",
       starterCode: `def market_cap(price, shares_outstanding):
@@ -115,12 +130,12 @@ print("Tests passed!")
   <li><strong>Ask (offer):</strong> the lowest price any seller is currently willing to accept</li>
 </ul>
 <p>The <strong>spread</strong> = Ask − Bid. This is the transaction cost for immediate execution. For large-cap stocks like Apple, the spread might be $0.01 (one cent). For illiquid small-caps, spreads can be $0.50 or more.</p>
-<p>If you submit a <strong>market order</strong> to buy, you pay the ask. If you submit a market order to sell, you receive the bid. The market maker captures the spread as compensation for providing liquidity — standing ready to buy or sell on demand.</p>
+<p>If you submit a <strong>market order</strong> to buy, you pay the ask. If you submit a market order to sell, you receive the bid. The market maker keeps the spread as payment for providing liquidity: standing ready to buy or sell on demand.</p>
 
 <h2>Order Types</h2>
 <p>Knowing your order types prevents costly mistakes:</p>
 <ul>
-  <li><strong>Market order:</strong> Execute immediately at whatever the current price is. Guarantees execution, not price. Never use market orders on illiquid stocks — you might pay far more than expected.</li>
+  <li><strong>Market order:</strong> Execute immediately at whatever the current price is. Guarantees execution, not price. Never use market orders on illiquid stocks; you might pay far more than expected.</li>
   <li><strong>Limit order:</strong> Execute only at your specified price or better. Buy limit at $100 means you buy only if someone will sell at $100 or less. Guarantees price, not execution.</li>
   <li><strong>Stop order (stop-loss):</strong> Becomes a market order once the price hits your stop price. Used to limit losses: "sell if price falls to $90."</li>
   <li><strong>Stop-limit order:</strong> Becomes a limit order at your stop price. Avoids the gap-down problem of a pure stop order.</li>
@@ -128,12 +143,12 @@ print("Tests passed!")
 <p>For most investors making deliberate purchases, <strong>limit orders are almost always better than market orders</strong>. The difference in execution quality on a $10,000 trade can easily be $10–50.</p>
 
 <h2>The Order Book</h2>
-<p>Every exchange maintains an <strong>order book</strong> — a real-time list of all outstanding limit orders. The best bid and best ask (the top of the book) form the National Best Bid and Offer (NBBO), which brokers are legally required to give you.</p>
-<p>Below the best bid are lower bids (buyers willing to pay less). Above the best ask are higher asks (sellers wanting more). The order book shows the depth of liquidity — how much you could buy or sell without moving the price.</p>
+<p>Every exchange maintains an <strong>order book</strong>, a real-time list of all outstanding limit orders. The best bid and best ask (the top of the book) form the National Best Bid and Offer (NBBO), which brokers are legally required to give you.</p>
+<p>Below the best bid are lower bids (buyers willing to pay less). Above the best ask are higher asks (sellers wanting more). The order book shows the depth of liquidity: how much you could buy or sell without moving the price.</p>
 <p>High-frequency trading firms (HFTs) operate at microsecond timescales, continuously posting and canceling orders in the book to capture the spread and react to news faster than any human.</p>
 
 <h2>Price Impact and Market Impact</h2>
-<p>When a large order hits the market, it "walks up" (or down) the order book, consuming multiple price levels. This is called <strong>market impact</strong>. A retail investor buying $5,000 of Apple (a $3 trillion company) has essentially zero market impact. A hedge fund buying $500 million of Apple in a single day will move the price — and sophisticated traders know how to minimize this cost through algorithmic execution (VWAP, TWAP algorithms).</p>
+<p>When a large order hits the market, it "walks up" (or down) the order book, consuming multiple price levels. This is called <strong>market impact</strong>. A retail investor buying $5,000 of Apple (a $3 trillion company) has essentially zero market impact. A hedge fund buying $500 million of Apple in a single day will move the price. Traders who handle those orders minimize the cost through algorithmic execution (VWAP, TWAP algorithms) instead of placing one giant market order.</p>
 
 <h2>Indices: The Market's Report Card</h2>
 <p>Stock market indices aggregate price movements across many companies into a single number:</p>
@@ -145,8 +160,23 @@ print("Tests passed!")
 </ul>
 <p>Index funds and ETFs track these indices, giving investors instant diversification at extremely low cost.</p>
     `,
+    sandboxes: [
+      {
+        afterSectionId: "the-bid-ask-spread",
+        title: "Bid-Ask Spread",
+        formula: "Spread = Ask − Bid",
+        variables: [
+          { key: "bid", label: "Bid", unit: "$", defaultValue: 149.99, min: 1, max: 500, step: 0.01 },
+          { key: "ask", label: "Ask", unit: "$", defaultValue: 150.00, min: 1, max: 500, step: 0.01 },
+        ],
+        computeId: "bidAskSpread",
+        resultLabel: "Spread",
+        resultPrefix: "$",
+        decimals: 2,
+      },
+    ],
     exercise: {
-      prompt: "Implement `bid_ask_spread(bid, ask)` and `effective_cost(shares, price, spread)` — the total transaction cost including the spread.",
+      prompt: "Implement `bid_ask_spread(bid, ask)` and `effective_cost(shares, price, spread)`, the total transaction cost including the spread.",
       starterCode: `def bid_ask_spread(bid, ask):
     """
     Return the bid-ask spread: ask - bid.
@@ -208,7 +238,7 @@ print("Tests passed!")
   <li><strong>Revenue (Sales):</strong> Total money received from customers before any deductions</li>
   <li><strong>Cost of Goods Sold (COGS):</strong> Direct costs of producing what was sold</li>
   <li><strong>Gross Profit = Revenue − COGS</strong></li>
-  <li><strong>Operating Expenses (OpEx):</strong> R&D, sales, marketing, G&A — the costs of running the business</li>
+  <li><strong>Operating Expenses (OpEx):</strong> R&D, sales, marketing, G&A: the costs of running the business</li>
   <li><strong>EBIT (Operating Income) = Gross Profit − OpEx</strong></li>
   <li><strong>EBITDA</strong> = EBIT + Depreciation + Amortization. Widely used because it removes non-cash charges and shows "cash earnings" from operations.</li>
   <li><strong>Net Income = Revenue − all expenses − taxes − interest</strong></li>
@@ -233,7 +263,7 @@ print("Tests passed!")
 <h2>3. Cash Flow Statement</h2>
 <p>Net income can be manipulated through accounting choices. Cash is harder to fake. The cash flow statement tracks actual cash in and out:</p>
 <ul>
-  <li><strong>Operating Cash Flow (OCF):</strong> Cash from core business operations. The most important section — start here. Good businesses generate consistently positive OCF.</li>
+  <li><strong>Operating Cash Flow (OCF):</strong> Cash from core business operations. Start here; it's the most important section. Good businesses generate consistently positive OCF.</li>
   <li><strong>Investing Cash Flow:</strong> Cash spent on capital expenditures (buying equipment, buildings), acquisitions, or investments. Usually negative for growing companies.</li>
   <li><strong>Financing Cash Flow:</strong> Cash from issuing/repaying debt, issuing stock, or paying dividends/buybacks.</li>
 </ul>
@@ -251,6 +281,21 @@ print("Tests passed!")
   <li>Goodwill that's large relative to total assets (often from overpriced acquisitions)</li>
 </ul>
     `,
+    sandboxes: [
+      {
+        afterSectionId: "1-income-statement-pl",
+        title: "Gross Margin",
+        formula: "Gross Margin = (Revenue − COGS) / Revenue",
+        variables: [
+          { key: "revenue", label: "Revenue", unit: "$M", defaultValue: 1000, min: 10, max: 5000, step: 10 },
+          { key: "cogs", label: "COGS", unit: "$M", defaultValue: 400, min: 0, max: 5000, step: 10 },
+        ],
+        computeId: "grossMargin",
+        resultLabel: "Gross margin",
+        resultSuffix: "%",
+        decimals: 1,
+      },
+    ],
     exercise: {
       prompt: "Implement key financial metrics: `gross_margin`, `operating_margin`, `free_cash_flow`, and `debt_to_equity`.",
       starterCode: `def gross_margin(revenue, cogs):
@@ -341,23 +386,23 @@ print("Tests passed!")
     duration: "18 min",
     content: `
 <h2>Intrinsic Value vs. Market Price</h2>
-<p>The central question in investing: is this stock cheap or expensive? To answer this, you need both the market price (easy — it's on your phone) and an estimate of <strong>intrinsic value</strong> — what the business is fundamentally worth based on its future cash flows. Valuation is the art and science of estimating that number.</p>
-<p>The legendary investor Benjamin Graham put it simply: "Price is what you pay. Value is what you get." When market price is well below intrinsic value, you have a <strong>margin of safety</strong> — room to be wrong and still not lose money. This is the core idea of value investing.</p>
+<p>The central question in investing: is this stock cheap or expensive? To answer this, you need both the market price (easy, it's on your phone) and an estimate of <strong>intrinsic value</strong>: what the business is fundamentally worth based on its future cash flows. Valuation is the art and science of estimating that number.</p>
+<p>Benjamin Graham put it simply: "Price is what you pay. Value is what you get." When market price is well below intrinsic value, you have a <strong>margin of safety</strong>, room to be wrong and still not lose money. That's the core idea of value investing.</p>
 
 <h2>Relative Valuation: Multiples</h2>
-<p>The fastest way to value a company is to compare it to similar companies using valuation multiples — ratios that normalize price relative to some fundamental measure.</p>
+<p>The fastest way to value a company is to compare it to similar companies using valuation multiples: ratios that normalize price relative to some fundamental measure.</p>
 
 <p><strong>Price-to-Earnings (P/E):</strong></p>
 <blockquote>P/E = Stock Price / Earnings Per Share (EPS)</blockquote>
 <p>A P/E of 20 means investors are paying $20 for every $1 of current annual earnings. Higher P/E implies the market expects faster growth. S&P 500 historical average P/E is ~15–16; during tech booms it's reached 30+. Growth stocks (Amazon, NVIDIA) trade at 40–100× earnings; "value stocks" trade at 8–12×.</p>
-<p>Limitations: EPS can be manipulated. Negative earnings make P/E meaningless. Compare P/E only within the same industry — tech vs. utilities have different structural growth rates.</p>
+<p>Limitations: EPS can be manipulated. Negative earnings make P/E meaningless. Compare P/E only within the same industry, since tech and utilities have very different structural growth rates.</p>
 
 <p><strong>Enterprise Value to EBITDA (EV/EBITDA):</strong></p>
 <blockquote>EV = Market Cap + Total Debt − Cash<br/>EV/EBITDA = Enterprise Value / EBITDA</blockquote>
 <p>EV/EBITDA is preferred by professionals because it's capital-structure-neutral (works regardless of how much debt the company has) and pre-tax (comparable across tax jurisdictions). Typical ranges: 6–10× for mature industries, 15–25× for high-growth tech, 3–6× for capital-intensive businesses.</p>
 
 <p><strong>Price-to-Sales (P/S):</strong> Used for companies with no profits yet. Tech startups are often valued at 5–20× revenue.</p>
-<p><strong>Price-to-Book (P/B):</strong> Price relative to net assets (book value). Banks and financial companies are often analyzed this way. P/B below 1 means the stock is trading below its liquidation value — often signals distress or deep value.</p>
+<p><strong>Price-to-Book (P/B):</strong> Price relative to net assets (book value). Banks and financial companies are often analyzed this way. P/B below 1 means the stock is trading below its liquidation value, which often signals distress or, occasionally, a real bargain.</p>
 
 <h2>Discounted Cash Flow (DCF): The Gold Standard</h2>
 <p>Multiples tell you relative valuation. DCF tells you absolute value. A DCF values a company by projecting its future free cash flows and discounting them back to today at a rate that reflects risk.</p>
@@ -371,10 +416,10 @@ print("Tests passed!")
 </ul>
 <p><strong>Terminal value</strong> is typically estimated using the Gordon Growth Model:</p>
 <blockquote>Terminal Value = FCF_final × (1 + g) / (r − g)</blockquote>
-<p>where g is the long-term growth rate (usually 2–3%, roughly GDP growth). Terminal value often accounts for 60–80% of total DCF value — which is why small changes in assumptions can swing valuations dramatically.</p>
+<p>where g is the long-term growth rate (usually 2–3%, roughly GDP growth). Terminal value often accounts for 60–80% of total DCF value, which is why small changes in assumptions can swing valuations dramatically.</p>
 
 <h2>The Problem With DCF</h2>
-<p>DCF sounds precise but is extremely sensitive to inputs. Changing the discount rate from 10% to 12%, or changing the terminal growth rate from 3% to 2%, can change the output by 30–50%. As the joke goes, "DCF stands for 'Don't Count on Figures.'" Wall Street analysts use DCF to justify predetermined conclusions at least as often as to discover them.</p>
+<p>DCF sounds precise but is extremely sensitive to inputs. Changing the discount rate from 10% to 12%, or changing the terminal growth rate from 3% to 2%, can change the output by 30–50%. As the joke goes, "DCF stands for 'Don't Count on Figures.'" Wall Street analysts use DCF to justify conclusions they'd already reached at least as often as to discover new ones.</p>
 <p>Good practice: use DCF alongside multiples, stress-test your assumptions, and focus on the <em>range</em> of possible values rather than a single point estimate.</p>
 
 <h2>A Simple Valuation Framework</h2>
@@ -386,6 +431,21 @@ print("Tests passed!")
   <li><strong>Sanity-check with DCF:</strong> Do the multiples imply reasonable long-term growth assumptions?</li>
 </ol>
     `,
+    sandboxes: [
+      {
+        afterSectionId: "relative-valuation-multiples",
+        title: "P/E Ratio",
+        formula: "P/E = Stock Price / EPS",
+        variables: [
+          { key: "price", label: "Stock price", unit: "$", defaultValue: 100, min: 1, max: 1000, step: 1 },
+          { key: "eps", label: "Earnings per share", unit: "$", defaultValue: 5, min: 0.1, max: 50, step: 0.1 },
+        ],
+        computeId: "peRatio",
+        resultLabel: "P/E ratio",
+        resultSuffix: "×",
+        decimals: 1,
+      },
+    ],
     exercise: {
       prompt: "Implement `enterprise_value`, `ev_ebitda`, and a simple `dcf_value` function.",
       starterCode: `def enterprise_value(market_cap, total_debt, cash):
@@ -470,8 +530,8 @@ print("Tests passed!")
     duration: "16 min",
     content: `
 <h2>The Risk-Return Tradeoff</h2>
-<p>One of finance's most fundamental principles: in efficient markets, higher expected returns come with higher risk. There's no free lunch. Treasury bills (U.S. government 3-month debt) return ~5% with near-zero risk. The S&P 500 has returned ~10% historically, but with years like 2008 (−37%) and 2022 (−18%). Startup equity might return 50%+ — or 0%.</p>
-<p>Risk in finance is typically measured by <strong>volatility</strong> — the standard deviation of returns. A stock with annual return volatility of 25% will typically see its price fluctuate within a range of ±25% around its expected return in two-thirds of years (one standard deviation interval).</p>
+<p>One of finance's most fundamental principles: in efficient markets, higher expected returns come with higher risk. There's no free lunch. Treasury bills (U.S. government 3-month debt) return ~5% with near-zero risk. The S&P 500 has returned ~10% historically, but with years like 2008 (−37%) and 2022 (−18%). Startup equity might return 50%+, or 0%.</p>
+<p>Risk in finance is typically measured by <strong>volatility</strong>, the standard deviation of returns. A stock with annual return volatility of 25% will typically see its price fluctuate within a range of ±25% around its expected return in two-thirds of years (one standard deviation interval).</p>
 
 <h2>Measuring Volatility</h2>
 <p>For a stock with daily returns r₁, r₂, …, rₙ:</p>
@@ -484,25 +544,40 @@ print("Tests passed!")
 <p>The √252 annualization uses 252 as the number of trading days per year. This is a standard convention across all of finance.</p>
 
 <h2>The Magic of Diversification</h2>
-<p>Here's one of finance's few true free lunches: diversification reduces risk <em>without</em> sacrificing expected return. When you hold multiple assets, their random fluctuations partially cancel out — as long as they don't move in perfect lockstep.</p>
+<p>Here's one of finance's few true free lunches: diversification reduces risk <em>without</em> sacrificing expected return. When you hold multiple assets, their random fluctuations partially cancel out, as long as they don't move in perfect lockstep.</p>
 <p>The correlation ρ between two assets ranges from −1 (perfectly opposite) to +1 (perfectly same). For a two-asset portfolio:</p>
 <blockquote>σ²_portfolio = w₁²σ₁² + w₂²σ₂² + 2·w₁·w₂·σ₁·σ₂·ρ</blockquote>
-<p>When ρ &lt; 1, the portfolio volatility is less than the weighted average of individual volatilities. When ρ = −1, you can theoretically build a zero-variance portfolio — a perfect hedge. In practice, correlations between stocks are positive (0.3–0.7) but not perfect, so diversification always helps.</p>
-<p>Nobel Prize winner Harry Markowitz formalized this in 1952 as <strong>Modern Portfolio Theory</strong>. The key insight: risk that can be diversified away (idiosyncratic risk) doesn't require additional expected return — only undiversifiable risk (market risk, or systematic risk) is compensated.</p>
+<p>When ρ &lt; 1, the portfolio volatility is less than the weighted average of individual volatilities. When ρ = −1, you can theoretically build a zero-variance portfolio: a perfect hedge. In practice, correlations between stocks are positive (0.3–0.7) but not perfect, so diversification always helps.</p>
+<p>Nobel Prize winner Harry Markowitz formalized this in 1952 as <strong>Modern Portfolio Theory</strong>. The key insight: risk that can be diversified away (idiosyncratic risk) doesn't require additional expected return. Only undiversifiable risk (market risk, or systematic risk) is compensated.</p>
 
 <h2>The Sharpe Ratio: Risk-Adjusted Return</h2>
 <p>Comparing raw returns is misleading. A fund returning 20%/year taking extreme risk is not necessarily better than one returning 12%/year with steady performance. The <strong>Sharpe ratio</strong> adjusts for risk:</p>
 <blockquote>Sharpe = (Return_portfolio − Return_risk_free) / σ_portfolio</blockquote>
-<p>A Sharpe ratio of 1.0 means you're earning 1 unit of excess return per unit of risk — considered good. Above 2.0 is excellent and rare. Below 0.5 is poor. Buffett's Berkshire Hathaway has maintained a Sharpe ratio of ~0.7 over decades — seemingly modest, but extraordinary at that scale and consistency.</p>
+<p>A Sharpe ratio of 1.0 means you're earning 1 unit of excess return per unit of risk, considered good. Above 2.0 is excellent and rare. Below 0.5 is poor. Buffett's Berkshire Hathaway has maintained a Sharpe ratio of ~0.7 over decades. That sounds modest until you factor in the scale and how long it's held up.</p>
 
 <h2>Systematic vs. Idiosyncratic Risk</h2>
 <p>Total stock risk decomposes into two components:</p>
 <ul>
-  <li><strong>Systematic (market) risk:</strong> Driven by economy-wide factors — recessions, interest rate changes, pandemics. All stocks are affected. Cannot be diversified away. Measured by <strong>beta</strong> (covered in the Quant track).</li>
-  <li><strong>Idiosyncratic (specific) risk:</strong> Company-specific events — a product failure, CEO scandal, accounting fraud. Holding 20–30 uncorrelated stocks reduces idiosyncratic risk by ~90%. This is the free lunch.</li>
+  <li><strong>Systematic (market) risk:</strong> Driven by economy-wide factors like recessions, interest rate changes, and pandemics. All stocks are affected. Cannot be diversified away. Measured by <strong>beta</strong> (covered in the Quant track).</li>
+  <li><strong>Idiosyncratic (specific) risk:</strong> Company-specific events like a product failure, a CEO scandal, accounting fraud. Holding 20–30 uncorrelated stocks reduces idiosyncratic risk by ~90%. This is the free lunch.</li>
 </ul>
 <p>Academic research (Fama-French) found that a portfolio of 20–50 randomly chosen stocks captures most of the diversification benefit. Beyond 50 stocks, marginal diversification is minimal.</p>
     `,
+    sandboxes: [
+      {
+        afterSectionId: "the-sharpe-ratio-risk-adjusted-return",
+        title: "Sharpe Ratio",
+        formula: "Sharpe = (Return − Risk-Free Rate) / Volatility",
+        variables: [
+          { key: "ret", label: "Portfolio return", unit: "%", defaultValue: 12, min: -20, max: 40, step: 0.5 },
+          { key: "rf", label: "Risk-free rate", unit: "%", defaultValue: 5, min: 0, max: 10, step: 0.25 },
+          { key: "vol", label: "Volatility (σ)", unit: "%", defaultValue: 10, min: 1, max: 50, step: 0.5 },
+        ],
+        computeId: "sharpeRatio",
+        resultLabel: "Sharpe ratio",
+        decimals: 2,
+      },
+    ],
     exercise: {
       prompt: "Implement `annualized_volatility`, `portfolio_volatility` (two assets), and `sharpe_ratio`.",
       starterCode: `import math
@@ -591,7 +666,7 @@ print("Tests passed!")
     duration: "14 min",
     content: `
 <h2>Asset Allocation: The Most Important Decision</h2>
-<p>Research consistently shows that <strong>asset allocation</strong> — how you divide your portfolio among different asset classes — explains about 90% of long-term portfolio performance. Whether you pick Apple or Microsoft matters far less than whether you're 80% equities vs. 50% equities.</p>
+<p>A famous 1986 study by Brinson, Hood, and Beebower found that <strong>asset allocation</strong> (how you divide your portfolio among different asset classes) explains about 90% of long-term portfolio performance. Whether you pick Apple or Microsoft matters far less than whether you're 80% equities vs. 50% equities.</p>
 <p>The main asset classes:</p>
 <ul>
   <li><strong>Equities (stocks):</strong> Highest long-term return (~10%/year historically), highest volatility (~15–20%/year). Primary wealth-building engine.</li>
@@ -599,20 +674,20 @@ print("Tests passed!")
   <li><strong>Cash &amp; cash equivalents:</strong> Money market funds, T-bills. Virtually zero risk, low return. Store of value.</li>
   <li><strong>Alternatives:</strong> Real estate (REITs), commodities, private equity, hedge funds. Diversification and inflation hedging.</li>
 </ul>
-<p>A classic rule of thumb: hold your age in bonds (60-year-old → 60% bonds, 40% stocks). Modern advice is more aggressive for young investors — a 20-year-old with a 40-year investment horizon can ride out volatility and should be mostly in equities.</p>
+<p>A classic rule of thumb: hold your age in bonds (60-year-old → 60% bonds, 40% stocks). Modern advice skews more aggressive for young investors: a 20-year-old with a 40-year investment horizon can ride out volatility and should be mostly in equities.</p>
 
 <h2>The Case for Index Funds</h2>
 <p>Most professional fund managers underperform their benchmark index over 10+ years after fees. S&P Dow Jones data shows that over 15 years, 85–90% of actively managed large-cap funds underperform the S&P 500. Why?</p>
 <ul>
-  <li>Markets are semi-efficient — professional analysts already know everything in public filings</li>
+  <li>Markets are semi-efficient: professional analysts already know most of what's in public filings</li>
   <li>Management fees (1–2%/year for active funds vs. 0.03–0.05% for index funds) compound dramatically over time</li>
   <li>Transaction costs from frequent trading erode returns</li>
 </ul>
 <p>Warren Buffett's 2007 bet: he wagered $1 million that a simple S&P 500 index fund would outperform any basket of hedge funds over 10 years. He won easily. The hedge funds returned 22% cumulative over 10 years; the S&P 500 index fund returned 85.4%.</p>
-<p>For most investors — especially high schoolers starting out — a simple portfolio of two or three low-cost index ETFs is likely to outperform everything more complicated.</p>
+<p>For most investors, especially high schoolers just starting out, a simple portfolio of two or three low-cost index ETFs is likely to outperform everything more complicated.</p>
 
 <h2>A Simple Three-Fund Portfolio</h2>
-<p>The "Bogleheads three-fund portfolio" (popularized by Vanguard founder Jack Bogle) is one of the most robust, evidence-based investment strategies available:</p>
+<p>The "Bogleheads three-fund portfolio" (popularized by Vanguard founder Jack Bogle) has decades of evidence behind it, and it's about as simple as investing gets:</p>
 <ol>
   <li><strong>U.S. Total Stock Market:</strong> VTI (0.03% fee). Captures ~4,000 U.S. companies.</li>
   <li><strong>International Stock Market:</strong> VXUS (0.07% fee). Diversifies beyond U.S. stocks.</li>
@@ -628,11 +703,27 @@ print("Tests passed!")
   <li>After 30 years: $174,494</li>
   <li>After 40 years: $452,593</li>
 </ul>
-<p>Albert Einstein allegedly called compound interest "the eighth wonder of the world" (he probably didn't, but the math is genuinely astonishing). Starting at 18 instead of 28 — just 10 extra years — roughly doubles your ending wealth.</p>
+<p>Albert Einstein allegedly called compound interest "the eighth wonder of the world" (he probably didn't, but the numbers above make a decent case for him). Starting at 18 instead of 28, just 10 extra years, roughly doubles your ending wealth.</p>
 
 <h2>Rebalancing</h2>
-<p>As assets grow at different rates, your allocation drifts. If equities surge, you might end up 90% stocks when you wanted 70%. Annual rebalancing — selling what grew and buying what lagged — keeps you at target and forces you to "buy low, sell high" mechanically, without emotional decisions.</p>
+<p>As assets grow at different rates, your allocation drifts. If equities surge, you might end up 90% stocks when you wanted 70%. Annual rebalancing, selling what grew and buying what lagged, keeps you at target and forces you to "buy low, sell high" mechanically, without emotional decisions.</p>
     `,
+    sandboxes: [
+      {
+        afterSectionId: "the-power-of-compounding",
+        title: "Compound Growth",
+        formula: "FV = Initial × (1 + Rate)^Years",
+        variables: [
+          { key: "initial", label: "Initial amount", unit: "$", defaultValue: 10000, min: 100, max: 100000, step: 100 },
+          { key: "rate", label: "Annual return", unit: "%", defaultValue: 10, min: 0, max: 20, step: 0.5 },
+          { key: "years", label: "Years", defaultValue: 20, min: 1, max: 50, step: 1 },
+        ],
+        computeId: "compoundGrowth",
+        resultLabel: "Future value",
+        resultPrefix: "$",
+        decimals: 0,
+      },
+    ],
     exercise: {
       prompt: "Implement `compound_growth` and `rebalance_weights`.",
       starterCode: `def compound_growth(initial, annual_return, years):
