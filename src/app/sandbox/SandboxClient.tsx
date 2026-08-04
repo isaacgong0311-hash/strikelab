@@ -358,18 +358,39 @@ export default function SandboxClient() {
 
   useEffect(() => {
     if (!user) return;
-    refresh();
+    // Fetch-on-mount-then-poll — the same pattern useSubscription.ts uses,
+    // just via a shared `refresh` callback (also called after placing/closing
+    // a trade) instead of an inline .then chain, which is what the stricter
+    // set-state-in-effect rule is actually keying off of here. The effect
+    // itself does nothing synchronous; refresh() only sets state after an
+    // awaited fetch resolves, same as any other data-fetching effect.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    void refresh();
+    // Skip the network round-trip while the tab is hidden — this used to poll
+    // every 5s indefinitely regardless of focus, which is needless load
+    // against Supabase's free-tier limits for a tab sitting in the
+    // background. Catches up immediately when the tab regains focus.
     const id = setInterval(() => {
+      if (document.visibilityState !== "visible") return;
       setTick((t) => t + 1);
       refresh();
     }, POLL_MS);
-    return () => clearInterval(id);
+    const onVisible = () => {
+      if (document.visibilityState === "visible") refresh();
+    };
+    document.addEventListener("visibilitychange", onVisible);
+    return () => {
+      clearInterval(id);
+      document.removeEventListener("visibilitychange", onVisible);
+    };
   }, [user, refresh]);
 
-  // Live quote for the order ticket, ticking every POLL_MS.
+  // Live quote for the order ticket, ticking every POLL_MS. Client-only math
+  // (no network call), but still no reason to burn cycles in a hidden tab.
   const [quote, setQuote] = useState<number | null>(null);
   useEffect(() => {
     function update() {
+      if (document.visibilityState !== "visible") return;
       try {
         if (assetType === "stock") {
           setQuote(simulatePrice(symbol));
@@ -382,7 +403,11 @@ export default function SandboxClient() {
     }
     update();
     const id = setInterval(update, POLL_MS);
-    return () => clearInterval(id);
+    document.addEventListener("visibilitychange", update);
+    return () => {
+      clearInterval(id);
+      document.removeEventListener("visibilitychange", update);
+    };
   }, [symbol, assetType, strike, expiry, tick]);
 
   const multiplier = assetType === "stock" ? 1 : 100;
