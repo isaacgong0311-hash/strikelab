@@ -2,7 +2,7 @@
 
 **Browser-based quantitative finance education for high schoolers.**
 
-StrikeLab teaches options pricing by making students *build* the engine — not just read about it. Work through ten lessons from call/put basics to binomial trees, implement the pricing functions in an in-browser Python playground, and watch the Greek curves update live as you drag sliders.
+StrikeLab teaches quant finance by making students *build* the engine — not just read about it. Work through 21 lessons across three tracks, from what a stock is to a working Black-Scholes engine to CAPM and backtesting, implement the pricing functions in an in-browser Python playground, and watch the Greek curves update live as you drag sliders.
 
 Live → **[strikelab.dev](https://strikelab.dev)** · Free · Open source · MIT license
 
@@ -10,20 +10,26 @@ Live → **[strikelab.dev](https://strikelab.dev)** · Free · Open source · MI
 
 ## Curriculum
 
+Three tracks, 21 lessons, each ending with a coding exercise — students fill in missing functions in a real pricing engine, run unit tests in-browser, and see live charts update.
+
+**Investing Fundamentals** (Beginner, 6 lessons) — stocks, markets, valuation, risk, and building a portfolio.
+
+**Options Pricing** (Intermediate, 10 lessons):
+
 | # | Lesson | Key concept |
 |---|--------|-------------|
-| 1 | Option Fundamentals | Calls, puts, strike price, expiration |
-| 2 | Intrinsic & Time Value | Why options are worth more than their payoff |
-| 3 | The Black-Scholes Model | Deriving intuition for the formula |
-| 4 | The Greeks: Delta & Gamma | Directional exposure and its rate of change |
-| 5 | The Greeks: Theta & Vega | Time decay and volatility sensitivity |
-| 6 | Rho & the Full Picture | Interest rate sensitivity and the complete Greek surface |
-| 7 | Put-Call Parity | The no-arbitrage relationship that ties it together |
+| 1 | What Is an Option? | Calls, puts, strike price, expiration |
+| 2 | Put-Call Parity | The no-arbitrage relationship that ties it together |
+| 3 | Black-Scholes Formula | Deriving intuition for the formula |
+| 4 | Delta: Directional Exposure | How option value moves with the underlying |
+| 5 | Theta: Time Decay | Why options lose value as expiration approaches |
+| 6 | Gamma: Rate of Change of Delta | Directional exposure and its rate of change |
+| 7 | Vega: Volatility Sensitivity | How option value responds to implied vol |
 | 8 | Implied Volatility | Inverting Black-Scholes with Newton-Raphson |
 | 9 | Option Strategies | Spreads, straddles, and iron condors |
 | 10 | Binomial Trees | Pricing American options via the CRR model |
 
-Each lesson ends with a coding exercise. Students fill in missing functions in a real pricing engine, run unit tests in-browser, and see live charts update.
+**Quant Investing** (Advanced, 5 lessons) — CAPM and beta, factor investing, backtesting, portfolio optimization, statistical arbitrage.
 
 ---
 
@@ -31,9 +37,12 @@ Each lesson ends with a coding exercise. Students fill in missing functions in a
 
 | Surface | What it does |
 |---------|-------------|
-| **Lesson track** | Ten structured lessons, each ending with a Pyodide-powered coding exercise that runs directly in the browser — no install. |
+| **Lesson track** | 21 structured lessons across three tracks, each ending with a Pyodide-powered coding exercise that runs directly in the browser — no install. |
 | **Pricing playground** | A CodeMirror editor pre-loaded with a partial Black-Scholes engine. Implement `compute_delta`, `compute_gamma`, `compute_theta`, `compute_vega`, click Run, and all four Greek curves render live. |
 | **Greek visualizer** | Recharts plots of Δ, Γ, Θ, ν as functions of strike price. Drag sliders for stock price (S), time to expiry (T), risk-free rate (r), and volatility (σ) to reshape the curves in real time. |
+| **Paper-trading sandbox** | $100,000 in simulated cash, options priced live with the same Black-Scholes engine from the lessons. |
+| **Weekly challenges** | Time-boxed quant-interview-style problems, scored on correctness + elegance, with a live leaderboard. |
+| **Dashboard** | XP, streaks, a full-year activity heatmap, per-difficulty stats, and 12 achievement badges. |
 
 ---
 
@@ -45,7 +54,7 @@ Each lesson ends with a coding exercise. Students fill in missing functions in a
 | Code editor | CodeMirror 6 via `@uiw/react-codemirror` |
 | Python runtime | [Pyodide](https://pyodide.org) — WebAssembly, runs entirely client-side |
 | Charts | Recharts |
-| Auth | Clerk |
+| Auth + database | Supabase (Postgres, auth, RLS) |
 | Payments | Stripe |
 | Deployment | Vercel |
 
@@ -62,11 +71,15 @@ npm run build     # production build
 Environment variables (create `.env.local`):
 
 ```
-NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=...
-CLERK_SECRET_KEY=...
-NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=...
+NEXT_PUBLIC_SUPABASE_URL=...
+NEXT_PUBLIC_SUPABASE_ANON_KEY=...
+SUPABASE_SERVICE_ROLE_KEY=...
 STRIPE_SECRET_KEY=...
+STRIPE_PRO_PRICE_ID=...
+STRIPE_SCHOOL_PRICE_ID=...
 ```
+
+The app runs without any of these set — Supabase-backed features (auth, progress sync, sandbox) and Stripe checkout fall back to a clean disabled state instead of crashing.
 
 ---
 
@@ -121,6 +134,6 @@ def implied_vol(C_mkt, S, K, T, r, tol=1e-6, max_iter=100):
 
 ## Why this exists
 
-Quant finance is gatekept behind elite university networks. Students at top schools get exposure through alumni pipelines; everyone else finds it junior year of college — four years too late. StrikeLab is the fastest path from "what is a call option?" to implementing Black-Scholes and computing all five Greeks, for free, in a browser.
+Quant finance is gatekept behind elite university networks. Students at top schools get exposure through alumni pipelines; everyone else finds it junior year of college — four years too late. StrikeLab is the fastest path from "what is a stock?" to implementing Black-Scholes, computing the Greeks, and backtesting a factor model, for free, in a browser.
 
 > *Quant finance shouldn't require the right zip code.*
