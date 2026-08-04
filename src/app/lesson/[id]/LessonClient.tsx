@@ -1,7 +1,7 @@
 "use client";
 import { useState, useEffect, useRef, useCallback } from "react";
 import Link from "next/link";
-import type { Lesson } from "@/lib/lessons";
+import type { Lesson, FormulaSandboxConfig } from "@/lib/lessons";
 import { QUIZZES, type QuizQuestion } from "@/lib/quizzes";
 import dynamic from "next/dynamic";
 import { useProgress } from "@/lib/useProgress";
@@ -12,6 +12,7 @@ import LessonToc from "@/components/LessonToc";
 import AiReview from "@/components/AiReview";
 import ExplainSelection from "@/components/ExplainSelection";
 import Checkpoint from "@/components/Checkpoint";
+import FormulaSandbox from "@/components/FormulaSandbox";
 import PracticeProblem from "@/components/PracticeProblem";
 import { checkpointPlacement, type TocSection } from "@/lib/lessonToc";
 import FlameIcon from "@/components/FlameIcon";
@@ -253,6 +254,18 @@ export default function LessonClient({ lesson, sections, chunks, prev, next, tra
   const checkpointFor = new Map<number, number>(placement.map((chunkIdx, qIdx) => [chunkIdx, qIdx]));
   const leftoverQuestions = quizQuestions.slice(placement.length);
 
+  // Map of chunk index -> sandbox config, keyed by matching each sandbox's
+  // afterSectionId to its section's position (chunk i+1 holds section i).
+  const sandboxList: FormulaSandboxConfig[] = lesson.sandboxes ?? [];
+  const sandboxFor = new Map<number, FormulaSandboxConfig>(
+    sandboxList
+      .map((sb): [number, FormulaSandboxConfig] | null => {
+        const sectionIdx = sections.findIndex((s) => s.id === sb.afterSectionId);
+        return sectionIdx === -1 ? null : [sectionIdx + 1, sb];
+      })
+      .filter((entry): entry is [number, FormulaSandboxConfig] => entry !== null)
+  );
+
   const runCode = useCallback(async () => {
     setStatus("running");
     setOutput("Running tests…");
@@ -374,6 +387,9 @@ export default function LessonClient({ lesson, sections, chunks, prev, next, tra
           {chunks.map((chunk, i) => (
             <div key={i}>
               <div dangerouslySetInnerHTML={{ __html: chunk }} />
+              {sandboxFor.has(i) && (
+                <FormulaSandbox config={sandboxFor.get(i)!} />
+              )}
               {checkpointFor.has(i) && (
                 <Checkpoint
                   question={quizQuestions[checkpointFor.get(i)!]}

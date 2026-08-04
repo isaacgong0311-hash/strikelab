@@ -1,9 +1,44 @@
+export interface SandboxVariable {
+  key: string;
+  label: string;
+  unit?: string;
+  defaultValue: number;
+  min: number;
+  max: number;
+  step?: number;
+}
+
+/**
+ * A "try it" widget dropped inline, right after the section that introduces
+ * its formula — build intuition by playing with real numbers, rather than
+ * only testing recall (Checkpoint) or requiring the full coding exercise at
+ * the end. `afterSectionId` matches a slugified <h2> id from the lesson's
+ * table of contents (see src/lib/lessonToc.ts).
+ *
+ * `computeId` keys into the registry in FormulaSandbox.tsx rather than
+ * holding an actual function — this data flows from a Server Component
+ * (the lesson page) into a Client Component prop, and functions can't cross
+ * that boundary (they're not serializable).
+ */
+export interface FormulaSandboxConfig {
+  afterSectionId: string;
+  title: string;
+  formula: string;
+  variables: SandboxVariable[];
+  computeId: string;
+  resultLabel: string;
+  resultPrefix?: string;
+  resultSuffix?: string;
+  decimals?: number;
+}
+
 export interface Lesson {
   id: string;
   title: string;
   subtitle: string;
   duration: string;
   content: string; // markdown-like HTML string
+  sandboxes?: FormulaSandboxConfig[];
   exercise: {
     prompt: string;
     starterCode: string;
