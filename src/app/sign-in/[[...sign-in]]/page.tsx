@@ -70,7 +70,12 @@ export default function SignInPage() {
             />
           </label>
           <label className="auth-label">
-            Password
+            <span style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline" }}>
+              Password
+              <Link href="/forgot-password" style={{ fontSize: 12, fontWeight: 400, color: "var(--ink-3, #78716c)" }}>
+                Forgot password?
+              </Link>
+            </span>
             <input
               className="auth-input"
               type="password"
