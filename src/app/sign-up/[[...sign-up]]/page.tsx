@@ -141,6 +141,12 @@ export default function SignUpPage() {
           </button>
         )}
 
+        <p className="auth-legal" style={{ fontSize: 11, color: "var(--ink-3, #78716c)", marginTop: 14, lineHeight: 1.5 }}>
+          By creating an account, you agree to StrikeLab&rsquo;s{" "}
+          <Link href="/terms">Terms of Service</Link> and{" "}
+          <Link href="/privacy">Privacy Policy</Link>.
+        </p>
+
         <p className="auth-alt">
           Already have an account? <Link href="/sign-in">Sign in</Link>
         </p>

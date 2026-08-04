@@ -29,6 +29,8 @@ const STATIC_PAGES: {
   { path: "/about", updated: "2026-07-27", priority: 0.6, freq: "monthly" },
   { path: "/faq", updated: "2026-07-24", priority: 0.6, freq: "monthly" },
   { path: "/roadmap", updated: "2026-07-27", priority: 0.5, freq: "monthly" },
+  { path: "/privacy", updated: "2026-08-04", priority: 0.3, freq: "yearly" },
+  { path: "/terms", updated: "2026-08-04", priority: 0.3, freq: "yearly" },
 ];
 
 export default function sitemap(): MetadataRoute.Sitemap {
