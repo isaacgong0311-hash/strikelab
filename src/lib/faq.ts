@@ -14,7 +14,7 @@ export const FAQ_GROUPS: FAQGroup[] = [
     items: [
       {
         q: "What is StrikeLab?",
-        a: "A free, browser-based curriculum that teaches options pricing the way quant desks actually learn it — by writing code. Seven lessons take you from \"what is a call option?\" to a working Black-Scholes engine with all five Greeks.",
+        a: "A free, browser-based quant finance curriculum, taught the way quant desks actually learn it — by writing code. 21 lessons across three tracks — Investing Fundamentals, Options Pricing, and Quant Investing — take you from \"what is a stock?\" to a working Black-Scholes engine with all five Greeks to CAPM and backtesting.",
       },
       {
         q: "Who is it for?",
@@ -35,15 +35,15 @@ export const FAQ_GROUPS: FAQGroup[] = [
     items: [
       {
         q: "How long does it take?",
-        a: "Each lesson is 10–20 minutes of reading + a 5–15 minute coding exercise. Most students finish all seven in 4–6 hours total, often spread over a week.",
+        a: "Each lesson is 10–20 minutes of reading + a 5–15 minute coding exercise. Most students finish all 21 in a few weeks, spread over evenings — the tracks are independent, so there's no requirement to binge one before starting another.",
       },
       {
-        q: "Why options instead of stocks?",
-        a: "Options are where quantitative thinking actually starts. Stock-picking is mostly narrative; options pricing forces you to engage with probability, time decay, and risk-adjusted returns. Plus, no other high-school resource teaches it.",
+        q: "Do I have to start with options?",
+        a: "No — start wherever fits you. Investing Fundamentals (stocks, markets, valuation) is the on-ramp if you're new to finance entirely; Options Pricing is where the quantitative thinking really starts, and Quant Investing (CAPM, factor models, backtesting) is the advanced track. All three are free and independent.",
       },
       {
         q: "Will there be more advanced content?",
-        a: "Yes. The roadmap has Implied Volatility, Option Strategies, Binomial Trees, and eventually VaR / Monte Carlo. See the /roadmap page for shipping dates.",
+        a: "Yes — the Greeks (Delta through Vega), Implied Volatility, Option Strategies, and Binomial Trees are all live already. Next up: a Rho lesson (the interest-rate Greek) and a bridge into VaR, GARCH, and Monte Carlo. See /roadmap for what's shipping and when.",
       },
       {
         q: "Can I use this for AP Stats / AP Calc?",
@@ -77,15 +77,15 @@ export const FAQ_GROUPS: FAQGroup[] = [
     items: [
       {
         q: "Is StrikeLab really free?",
-        a: "The full curriculum + playground + Greek visualizer is free forever. The Pro tier ($9/mo) adds live market data and advanced lessons. School licenses fund the platform.",
+        a: "The full curriculum (all 21 lessons), the playground, the Greek visualizer, and the paper-trading sandbox are free forever — nothing there is gated. The Pro tier ($9/mo) adds weekly coding challenges, achievements, office hours, and a certificate of completion. School licenses fund the platform.",
       },
       {
         q: "Is this safe to use as a minor?",
-        a: "Yes. No real money is ever involved. Paper-trading (when it ships) uses simulated balances on delayed market data. No personal financial info is collected.",
+        a: "Yes. No real money is ever involved anywhere on the platform. The paper-trading sandbox uses a simulated $100,000 balance priced with StrikeLab's own Black-Scholes engine, not a live brokerage connection. See /privacy for what account data we actually collect.",
       },
       {
         q: "Will you ever sell my data?",
-        a: "No. We don't run ads. We don't sell user lists. The business model is freemium subscriptions + school licenses — both depend on users trusting us, so we behave accordingly.",
+        a: "No. We don't run ads. We don't sell user lists. The business model is freemium subscriptions + school licenses — both depend on users trusting us, so we behave accordingly. Full details at /privacy.",
       },
       {
         q: "Who built this?",
