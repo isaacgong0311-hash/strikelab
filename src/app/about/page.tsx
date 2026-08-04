@@ -18,7 +18,7 @@ const TIMELINE = [
   { date: "May 2026", event: "Lessons 8–10: Implied Vol, Option Strategies, Binomial Trees. 10-lesson curriculum complete.", state: "done" },
   { date: "Jun 2026", event: "Weekly coding challenges ship.", state: "done" },
   { date: "Jul 2026", event: "Real per-student leaderboard tracking ships.", state: "done" },
-  { date: "Q3 2026", event: "Paper-trading sandbox in progress.", state: "current" },
+  { date: "Aug 2026", event: "Paper-trading sandbox ships — $100,000 in simulated cash, options priced live with the same Black-Scholes engine from the lessons.", state: "done" },
   { date: "Q4 2026", event: "School dashboard, certificates, Discord integration.", state: "planned" },
 ];
 
@@ -40,9 +40,13 @@ const VALUES = [
   },
 ];
 
-const PRESS = [
+// Not third-party press — StrikeLab hasn't been covered anywhere yet. These
+// are our own milestones, labeled as such rather than dressed up as "Press &
+// Recognition," which implied outside coverage that doesn't exist.
+const MILESTONES = [
   "AoPS forum launch thread (March 2026)",
   "10-lesson curriculum shipped (May 2026)",
+  "Paper-trading sandbox shipped (Aug 2026)",
 ];
 
 export default function AboutPage() {
@@ -107,8 +111,8 @@ export default function AboutPage() {
           </p>
           <p className="text-sm leading-relaxed" style={{ color: "var(--muted2)" }}>
             So I built the resource I needed. StrikeLab is a multi-year project — the pricing
-            engine, the curriculum, and eventually a paper-trading sandbox with real market data.
-            If you&rsquo;re a student staring at the same wall, this is for you.
+            engine, the curriculum, and a paper-trading sandbox for practicing what you learn
+            with simulated cash. If you&rsquo;re a student staring at the same wall, this is for you.
           </p>
         </div>
       </div>
@@ -216,11 +220,11 @@ export default function AboutPage() {
         </div>
       </div>
 
-      {/* Press */}
+      {/* Milestones */}
       <div className="v2-rise mb-14">
-        <Eyebrow className="mb-3">Press &amp; Recognition</Eyebrow>
+        <Eyebrow className="mb-3">Milestones</Eyebrow>
         <div className="flex flex-wrap gap-2">
-          {PRESS.map((p) => (
+          {MILESTONES.map((p) => (
             <span
               key={p}
               className="text-xs px-3 py-1.5 rounded-lg border"

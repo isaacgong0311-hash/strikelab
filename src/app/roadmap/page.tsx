@@ -7,7 +7,7 @@ export const metadata = pageMetadata({
   path: "/roadmap",
   title: "Roadmap",
   description:
-    "What's shipping next on StrikeLab — the paper-trading sandbox, school dashboards, certificates, and Discord integration.",
+    "What's shipping next on StrikeLab — school dashboards, certificates, and Discord integration.",
 });
 
 const ROADMAP = [
@@ -26,9 +26,9 @@ const ROADMAP = [
     label: "Shipping now",
     color: "#147038",
     items: [
-      { title: "Paper-trading sandbox", state: "in-progress", desc: "Real (delayed) option chains via Polygon.io free tier." },
+      { title: "Paper-trading sandbox ✓", state: "done", desc: "$100,000 in simulated cash, options priced live with the same Black-Scholes engine from the lessons. Real (delayed) market data via Polygon.io is still on the roadmap." },
       { title: "Rho lesson", state: "planned", desc: "The interest-rate Greek. How rate changes move long-dated options." },
-      { title: "Achievement system", state: "planned", desc: "Badges for completing tracks, perfect Greek scores, streak milestones." },
+      { title: "Achievement system ✓", state: "done", desc: "12 badges for completing tracks, perfect Greek scores, and streak milestones — live on the dashboard and at /achievements." },
       { title: "Interactive payoff diagrams", state: "planned", desc: "Drag-to-build strategy payoff charts directly in the lesson UI." },
       { title: "Binomial tree visualizer", state: "planned", desc: "Interactive lattice diagram — click any node to inspect the early-exercise decision." },
     ],
