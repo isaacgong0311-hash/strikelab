@@ -90,6 +90,7 @@ export default async function LessonPage({ params }: { params: Promise<{ id: str
       <JsonLd data={lessonJsonLd} />
       <JsonLd data={breadcrumbs} />
       <LessonClient
+        key={ctx.lesson.id}
         lesson={ctx.lesson}
         sections={toc.sections}
         chunks={toc.chunks}

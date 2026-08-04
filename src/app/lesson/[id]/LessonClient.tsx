@@ -18,6 +18,28 @@ import FlameIcon from "@/components/FlameIcon";
 
 const MiniEditor = dynamic(() => import("@/components/MiniEditor"), { ssr: false });
 
+// Exercise code was pure React state with no persistence at all — reloading
+// the tab, or even just navigating to another lesson and back, silently threw
+// away everything the student had typed. Saved per-lesson so a draft survives
+// both.
+const CODE_KEY_PREFIX = "strikelab_code_";
+
+function readSavedCode(lessonId: string): string | null {
+  try {
+    return localStorage.getItem(CODE_KEY_PREFIX + lessonId);
+  } catch {
+    return null;
+  }
+}
+
+function writeSavedCode(lessonId: string, code: string) {
+  try {
+    localStorage.setItem(CODE_KEY_PREFIX + lessonId, code);
+  } catch {
+    // ignore (private browsing, quota, etc. — same fallback as useProgress)
+  }
+}
+
 interface Props {
   lesson: Lesson;
   sections: TocSection[];
@@ -199,13 +221,21 @@ function CelebrationOverlay({
 // ─── Main lesson component ────────────────────────────────────────────────────
 
 export default function LessonClient({ lesson, sections, chunks, prev, next, trackTitle, positionInTrack, trackLength }: Props) {
-  const [code, setCode] = useState(lesson.exercise.starterCode);
+  const [code, setCodeState] = useState(() => readSavedCode(lesson.id) ?? lesson.exercise.starterCode);
   const [output, setOutput] = useState("");
   const [status, setStatus] = useState<"idle" | "running" | "pass" | "fail">("idle");
   const [showCelebration, setShowCelebration] = useState(false);
   const [showHint, setShowHint] = useState(false);
   const { markComplete, completed, streak, hydrated } = useProgress();
   const runRef = useRef<(() => void) | null>(null);
+
+  // Persisting from the setter itself, rather than a useEffect watching
+  // `code`, ties the write directly to the edit event instead of a render
+  // pass.
+  const setCode = useCallback((next: string) => {
+    setCodeState(next);
+    writeSavedCode(lesson.id, next);
+  }, [lesson.id]);
 
   // Track lesson start
   useEffect(() => {
