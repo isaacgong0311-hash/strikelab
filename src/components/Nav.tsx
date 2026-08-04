@@ -127,7 +127,9 @@ export default function Nav() {
       {/* ─── Announcement bar ──────────────────────────────────────────────── */}
       <div className="nav-announce">
         New &mdash;{" "}
-        <span className="nav-announce-bold">Investing Fundamentals &amp; Quant Investing just shipped</span>{" "}
+        <Link href="/sandbox" className="nav-announce-bold" style={{ textDecoration: "none" }}>
+          Paper-trading sandbox just shipped
+        </Link>{" "}
         &middot;{" "}
         <Link href="/roadmap" className="nav-announce-link">
           What&rsquo;s next →
