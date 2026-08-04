@@ -4,6 +4,7 @@ import { TRACKS } from "@/lib/tracks";
 import { useProgress } from "@/lib/useProgress";
 import FlameIcon from "@/components/FlameIcon";
 import TrophyIcon from "@/components/TrophyIcon";
+import ConstructionIcon from "@/components/ConstructionIcon";
 
 const OFFSETS = [0, 44, 62, 44, 0, -44, -62, -44];
 
@@ -11,6 +12,14 @@ const LEVEL_COLORS: Record<string, string> = {
   Beginner:     "var(--sky)",
   Intermediate: "var(--grass)",
   Advanced:     "var(--coral)",
+};
+
+// Roadmap items ("planned"/"in-progress" on /roadmap) shown as a preview
+// past each track's finish line — the path keeps going, it's just not paved
+// yet. Update alongside ROADMAP in src/app/roadmap/page.tsx.
+const COMING_SOON: Record<string, string> = {
+  options: "Rho — the interest-rate Greek",
+  quant: "VaR, GARCH & Monte Carlo",
 };
 
 export default function LessonsClient() {
@@ -135,6 +144,20 @@ export default function LessonsClient() {
                     : `${track.lessons.length - trackDone} more to finish ${track.title}`}
                 </div>
               </div>
+
+              {/* Coming soon — the path keeps going past what's built */}
+              {COMING_SOON[track.id] && (
+                <div
+                  className="dnode locked"
+                  style={{ transform: `translateX(${OFFSETS[(track.lessons.length + 1) % OFFSETS.length]}px)` }}
+                >
+                  <span className="dnode-soon">COMING SOON</span>
+                  <div className="dnode-btn">
+                    <ConstructionIcon size={24} />
+                  </div>
+                  <div className="dnode-label">{COMING_SOON[track.id]}</div>
+                </div>
+              )}
             </div>
           </div>
         );

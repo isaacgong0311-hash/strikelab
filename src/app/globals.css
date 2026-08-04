@@ -1704,6 +1704,13 @@ body:has(.sk-home) .v2-bg-vignette { display: none; }
 }
 .dnode-start::after { content: ''; position: absolute; bottom: -4px; left: 50%; transform: translateX(-50%) rotate(45deg); width: 8px; height: 8px; background: var(--ink); }
 @keyframes dbounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-4px); } }
+.dnode-soon {
+  position: absolute; top: -30px; z-index: 2;
+  background: #e2ddd0; color: #8a8478; font-weight: 700; font-size: 9px; letter-spacing: 0.1em;
+  padding: 4px 10px; border-radius: var(--r-sm);
+  font-family: var(--font-mono);
+  pointer-events: none;
+}
 .dnode-label { margin-top: 10px; font-family: var(--font-display), Georgia, serif; font-weight: 600; font-size: 14px; color: var(--ink); text-align: center; max-width: 210px; line-height: 1.2; }
 .dnode.locked .dnode-label { color: var(--ink-3); }
 
