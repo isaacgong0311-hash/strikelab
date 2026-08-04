@@ -240,14 +240,19 @@ export default function ChallengesClient() {
                 if (line.startsWith("- "))
                   return <li key={i} className="ch-p-li">{line.slice(2)}</li>;
                 if (!line.trim()) return <div key={i} className="ch-p-gap"/>;
-                const parts = line.split(/(`[^`]+`)/g);
+                // Inline code spans and inline **bold** — the whole-line check above
+                // only catches a line that's bold start-to-finish, not bold mixed
+                // into a sentence (e.g. "implement it with **bisection search**").
+                const parts = line.split(/(`[^`]+`|\*\*[^*]+\*\*)/g);
                 return (
                   <p key={i} className="ch-p">
-                    {parts.map((p, j) =>
-                      p.startsWith("`") && p.endsWith("`")
-                        ? <code key={j} className="ch-inline-code">{p.slice(1,-1)}</code>
-                        : p
-                    )}
+                    {parts.map((p, j) => {
+                      if (p.startsWith("`") && p.endsWith("`"))
+                        return <code key={j} className="ch-inline-code">{p.slice(1,-1)}</code>;
+                      if (p.startsWith("**") && p.endsWith("**"))
+                        return <strong key={j}>{p.slice(2,-2)}</strong>;
+                      return p;
+                    })}
                   </p>
                 );
               })}
