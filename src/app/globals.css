@@ -3430,7 +3430,7 @@ h1, h2, h3, h4 {
   -webkit-appearance: none; appearance: none;
   width: 16px; height: 16px;
   border-radius: 50%;
-  background: var(--amber);
+  background: var(--slider-accent, var(--amber));
   border: 2px solid var(--paper);
   box-shadow: 0 1px 3px rgba(0,0,0,0.25);
   cursor: pointer;
@@ -3438,7 +3438,7 @@ h1, h2, h3, h4 {
 .fsb-slider::-moz-range-thumb {
   width: 16px; height: 16px;
   border-radius: 50%;
-  background: var(--amber);
+  background: var(--slider-accent, var(--amber));
   border: 2px solid var(--paper);
   box-shadow: 0 1px 3px rgba(0,0,0,0.25);
   cursor: pointer;
@@ -3455,6 +3455,132 @@ h1, h2, h3, h4 {
 .fsb-result-val {
   font-family: var(--font-mono); font-size: 20px; font-weight: 700;
   color: var(--amber);
+}
+
+/* Shared toggle chips — used by the payoff diagram (strategy picker) and the
+   binomial tree (option type / exercise style). Same shape as .fsb-slider's
+   thumb treatment: hairline outline, filled ink on the active state. */
+.viz-chip {
+  font-family: var(--font-mono); font-size: 11px;
+  letter-spacing: 0.03em;
+  padding: 5px 10px;
+  border: 1px solid var(--line-2);
+  border-radius: var(--r-md);
+  background: var(--paper);
+  color: var(--ink-2);
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+  white-space: nowrap;
+}
+.viz-chip:hover { border-color: var(--ink-3); }
+.viz-chip.active {
+  background: var(--ink);
+  border-color: var(--ink);
+  color: var(--paper);
+}
+.viz-chip-row { display: flex; flex-wrap: wrap; gap: 6px; }
+
+/* ── Payoff diagram ─────────────────────────────────────────────────────── */
+.payoff {
+  margin: 28px 0;
+  padding: 16px 18px;
+  border: 1px solid var(--line-2);
+  border-left: 3px solid var(--coral);
+  border-radius: var(--r-lg);
+  background: var(--paper-3);
+  --slider-accent: var(--coral);
+}
+.payoff-head { margin-bottom: 12px; }
+.payoff-label {
+  font-family: var(--font-mono); font-size: 10px;
+  letter-spacing: 0.14em; text-transform: uppercase; color: var(--coral);
+}
+.payoff-legs {
+  font-family: var(--font-mono); font-size: 11.5px; line-height: 1.7;
+  color: var(--ink-2);
+  margin: 10px 0 14px;
+}
+.payoff-slider-row { margin-bottom: 4px; }
+.payoff-chart { width: 100%; height: 220px; margin: 14px 0 10px; }
+.payoff-stats {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px;
+  padding-top: 12px;
+  border-top: 1px dashed var(--line-2);
+}
+.payoff-stat-label {
+  display: block;
+  font-family: var(--font-mono); font-size: 10px;
+  letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-3);
+  margin-bottom: 3px;
+}
+.payoff-stat-val {
+  font-family: var(--font-mono); font-size: 15px; font-weight: 700;
+  color: var(--ink);
+}
+.payoff-stat-val.pos { color: var(--grass); }
+.payoff-stat-val.neg { color: var(--coral); }
+@media (max-width: 480px) {
+  .payoff-stats { grid-template-columns: 1fr; gap: 8px; }
+}
+
+/* ── Binomial tree visualizer ──────────────────────────────────────────── */
+.btree {
+  margin: 28px 0;
+  padding: 16px 18px;
+  border: 1px solid var(--line-2);
+  border-left: 3px solid var(--sky);
+  border-radius: var(--r-lg);
+  background: var(--paper-3);
+  --slider-accent: var(--sky);
+}
+.btree-head { margin-bottom: 12px; }
+.btree-label {
+  font-family: var(--font-mono); font-size: 10px;
+  letter-spacing: 0.14em; text-transform: uppercase; color: var(--sky);
+}
+.btree-controls { display: flex; flex-wrap: wrap; gap: 14px; align-items: flex-end; margin: 12px 0 14px; }
+.btree-slider-col { flex: 1 1 160px; min-width: 140px; }
+.btree-svg-wrap { width: 100%; overflow-x: auto; margin: 10px 0 14px; }
+.btree-svg-wrap svg { display: block; min-width: 480px; }
+.btree-node { cursor: pointer; }
+.btree-node-price {
+  font-family: var(--font-mono); font-size: 9px; fill: var(--ink-3);
+}
+.btree-detail {
+  padding-top: 12px;
+  border-top: 1px dashed var(--line-2);
+}
+.btree-detail-title {
+  font-family: var(--font-mono); font-size: 11px;
+  letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-3);
+  margin-bottom: 8px;
+}
+.btree-detail-grid {
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px;
+  margin-bottom: 8px;
+}
+.btree-detail-item-label {
+  display: block;
+  font-family: var(--font-mono); font-size: 9.5px;
+  letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-3);
+  margin-bottom: 2px;
+}
+.btree-detail-item-val {
+  font-family: var(--font-mono); font-size: 13px; font-weight: 700;
+  color: var(--ink);
+}
+.btree-decision {
+  font-family: var(--font-ui), system-ui, sans-serif;
+  font-size: 12.5px; line-height: 1.5;
+  color: var(--ink-2);
+  padding: 8px 10px;
+  border-radius: var(--r-md);
+  background: var(--paper);
+  border: 1px solid var(--line-2);
+}
+.btree-decision.exercise { border-left: 3px solid var(--sky); }
+@media (max-width: 480px) {
+  .btree-detail-grid { grid-template-columns: repeat(2, 1fr); }
 }
 
 /* ══════════════════════════════════════════════════════════════════════════

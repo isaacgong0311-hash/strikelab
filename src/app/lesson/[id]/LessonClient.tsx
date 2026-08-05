@@ -1,7 +1,7 @@
 "use client";
 import { useState, useEffect, useRef, useCallback } from "react";
 import Link from "next/link";
-import type { Lesson, FormulaSandboxConfig } from "@/lib/lessons";
+import type { Lesson, FormulaSandboxConfig, LessonVisual } from "@/lib/lessons";
 import { QUIZZES, type QuizQuestion } from "@/lib/quizzes";
 import dynamic from "next/dynamic";
 import { useProgress } from "@/lib/useProgress";
@@ -13,6 +13,8 @@ import AiReview from "@/components/AiReview";
 import ExplainSelection from "@/components/ExplainSelection";
 import Checkpoint from "@/components/Checkpoint";
 import FormulaSandbox from "@/components/FormulaSandbox";
+import PayoffDiagram from "@/components/PayoffDiagram";
+import BinomialTree from "@/components/BinomialTree";
 import PracticeProblem from "@/components/PracticeProblem";
 import { checkpointPlacement, type TocSection } from "@/lib/lessonToc";
 import FlameIcon from "@/components/FlameIcon";
@@ -266,6 +268,18 @@ export default function LessonClient({ lesson, sections, chunks, prev, next, tra
       .filter((entry): entry is [number, FormulaSandboxConfig] => entry !== null)
   );
 
+  // Same placement mechanics as sandboxFor, for the larger interactive tools
+  // (payoff diagram, binomial tree) that have their own dedicated components.
+  const visualList: LessonVisual[] = lesson.visuals ?? [];
+  const visualFor = new Map<number, LessonVisual>(
+    visualList
+      .map((vz): [number, LessonVisual] | null => {
+        const sectionIdx = sections.findIndex((s) => s.id === vz.afterSectionId);
+        return sectionIdx === -1 ? null : [sectionIdx + 1, vz];
+      })
+      .filter((entry): entry is [number, LessonVisual] => entry !== null)
+  );
+
   const runCode = useCallback(async () => {
     setStatus("running");
     setOutput("Running tests…");
@@ -390,6 +404,8 @@ export default function LessonClient({ lesson, sections, chunks, prev, next, tra
               {sandboxFor.has(i) && (
                 <FormulaSandbox config={sandboxFor.get(i)!} />
               )}
+              {visualFor.get(i)?.type === "payoffDiagram" && <PayoffDiagram />}
+              {visualFor.get(i)?.type === "binomialTree" && <BinomialTree />}
               {checkpointFor.has(i) && (
                 <Checkpoint
                   question={quizQuestions[checkpointFor.get(i)!]}

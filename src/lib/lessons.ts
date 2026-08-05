@@ -32,6 +32,17 @@ export interface FormulaSandboxConfig {
   decimals?: number;
 }
 
+/**
+ * A larger interactive tool (payoff diagram, binomial lattice) dropped inline
+ * the same way a FormulaSandbox is — keyed by `type` instead of `computeId`
+ * since these have their own dedicated components rather than a plug-in
+ * compute function.
+ */
+export interface LessonVisual {
+  afterSectionId: string;
+  type: "payoffDiagram" | "binomialTree";
+}
+
 export interface Lesson {
   id: string;
   title: string;
@@ -39,6 +50,7 @@ export interface Lesson {
   duration: string;
   content: string; // markdown-like HTML string
   sandboxes?: FormulaSandboxConfig[];
+  visuals?: LessonVisual[];
   exercise: {
     prompt: string;
     starterCode: string;
@@ -1053,7 +1065,12 @@ print("Tests passed!")
   <li><strong>Own stock, want income:</strong> Covered call</li>
 </ul>
 <p>The Greek profile should match your time horizon and risk tolerance. Buying straddles bleeds theta daily — you need your event to happen quickly. Selling iron condors collects theta slowly — you benefit from the passage of time and punish by tail moves. Understanding this alignment is what separates systematic options trading from gambling.</p>
+<div class="lesson-callout">
+  <span class="lesson-callout-label">Try it</span>
+  <p>Build any of the strategies above with the tool below and watch its payoff shape change in real time.</p>
+</div>
     `,
+    visuals: [{ afterSectionId: "choosing-the-right-strategy", type: "payoffDiagram" }],
     exercise: {
       prompt: "Implement `bull_call_spread_payoff(S_T, K1, K2, premium_paid)` — returns the P&L at expiration for a bull call spread.",
       starterCode: `def bull_call_spread_payoff(S_T, K1, K2, premium_paid):
@@ -1162,6 +1179,10 @@ print("Tests passed!")
   <li><strong>American calls on dividend-paying stocks:</strong> Sometimes optimal to exercise just before the ex-dividend date, to capture the dividend. Binomial trees handle this automatically.</li>
   <li><strong>American puts:</strong> Deep ITM puts can be worth exercising early, especially when interest rates are high. Holding the put instead of exercising means you forgo the interest on K. When the interest earned on K exceeds the remaining time value, early exercise is optimal. This is a uniquely American option feature.</li>
 </ul>
+<div class="lesson-callout">
+  <span class="lesson-callout-label">Try it</span>
+  <p>Click through the lattice below — American vs. European, call vs. put — and watch which nodes choose to exercise early.</p>
+</div>
 
 <h2>Convergence to Black-Scholes</h2>
 <p>For a European option (no early exercise), the binomial tree price converges to the Black-Scholes formula as N → ∞. In practice:</p>
@@ -1175,6 +1196,7 @@ print("Tests passed!")
 <h2>Beyond Binomial: Monte Carlo and Finite Difference</h2>
 <p>For more complex payoffs (barrier options, Asian options, multi-asset options), other numerical methods take over. <strong>Monte Carlo simulation</strong> simulates thousands of stock price paths and averages the payoffs — it scales well to high dimensions but is slow for American options (which require knowing the optimal exercise boundary). <strong>Finite difference methods</strong> (like Crank-Nicolson) solve the Black-Scholes PDE on a grid — highly accurate, fast, and the method of choice for most derivatives desks. Binomial trees are the conceptual foundation for all of these.</p>
     `,
+    visuals: [{ afterSectionId: "when-is-early-exercise-optimal", type: "binomialTree" }],
     exercise: {
       prompt: "Implement `binomial_european(S, K, T, r, sigma, N, option_type)` — price a European option using an N-step CRR binomial tree.",
       starterCode: `import math
