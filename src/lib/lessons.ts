@@ -121,6 +121,21 @@ export const LESSONS: Lesson[] = [
 </ol>
 <p>Understanding which use case a trade serves is critical to evaluating whether it makes sense. The same instrument — a put option — can be portfolio insurance for a hedger, a speculative short bet for a directional trader, or a cash-secured income trade for a seller.</p>
     `,
+    sandboxes: [
+      {
+        afterSectionId: "intrinsic-value-vs-extrinsic-value",
+        title: "Intrinsic Value (Call)",
+        formula: "Intrinsic Value = max(Stock Price − Strike, 0)",
+        variables: [
+          { key: "price", label: "Stock price", unit: "$", defaultValue: 190, min: 50, max: 400, step: 1 },
+          { key: "strike", label: "Strike price", unit: "$", defaultValue: 185, min: 50, max: 400, step: 1 },
+        ],
+        computeId: "intrinsicValueCall",
+        resultLabel: "Intrinsic value",
+        resultPrefix: "$",
+        decimals: 2,
+      },
+    ],
     exercise: {
       prompt: "Implement `intrinsic_value(S, K, option_type)` that returns the intrinsic value of an option.",
       starterCode: `def intrinsic_value(S, K, option_type="call"):
@@ -161,6 +176,10 @@ print("Tests passed!")
 <p>The relationship is:</p>
 <blockquote><strong>C − P = S − K · e<sup>−rT</sup></strong></blockquote>
 <p>where C is the call price, P is the put price, S is the current stock price, K is the shared strike, r is the continuously compounded risk-free rate, and T is time to expiration in years. The term K · e<sup>−rT</sup> is the present value of K — what you'd need to invest today at the risk-free rate to have exactly K at expiration.</p>
+<div class="lesson-callout">
+  <span class="lesson-callout-label">Try the sandbox below</span>
+  <p>Play with S, K, r, and T and watch the right-hand side, S − K·e<sup>−rT</sup>, move. That's exactly what C − P has to equal, no matter what the market's current sentiment is — it's an accounting identity, not a prediction.</p>
+</div>
 
 <h2>The Proof: Two Portfolios, One Payoff</h2>
 <p>Consider two portfolios constructed today and held to expiration at time T:</p>
@@ -205,6 +224,23 @@ print("Tests passed!")
 <p>P = $8.50 − $190 + $187.64 = <strong>$6.14</strong></p>
 <p>If the market is quoting the put at $7.50, that's a violation. You'd short the put at $7.50, buy the call at $8.50, short the stock at $190, and invest $187.64 at the risk-free rate. Your net cash inflow today: $7.50 − $8.50 + $190 − $187.64 = $1.36. At expiration, all legs net to zero regardless of where AAPL trades. Free money.</p>
     `,
+    sandboxes: [
+      {
+        afterSectionId: "the-most-important-relationship-in-options",
+        title: "Put-Call Parity",
+        formula: "C − P = S − K·e^(−rT)",
+        variables: [
+          { key: "stock", label: "Stock price (S)", unit: "$", defaultValue: 190, min: 50, max: 400, step: 1 },
+          { key: "strike", label: "Strike price (K)", unit: "$", defaultValue: 190, min: 50, max: 400, step: 1 },
+          { key: "rate", label: "Risk-free rate (r)", unit: "%", defaultValue: 5, min: 0, max: 10, step: 0.25 },
+          { key: "time", label: "Time to expiry (T)", unit: "yrs", defaultValue: 0.25, min: 0.01, max: 2, step: 0.01 },
+        ],
+        computeId: "putCallParity",
+        resultLabel: "C − P",
+        resultPrefix: "$",
+        decimals: 2,
+      },
+    ],
     exercise: {
       prompt: "Implement `put_from_call(call_price, S, K, T, r)` using put-call parity.",
       starterCode: `import math
@@ -1225,6 +1261,135 @@ assert abs(parity_lhs - parity_rhs) < 0.05, f"Put-call parity: {parity_lhs:.4f} 
 c_lo = binomial_european(S, K, T, r, 0.10, N=100, option_type="call")
 c_hi = binomial_european(S, K, T, r, 0.40, N=100, option_type="call")
 assert c_hi > c_lo, "Higher vol should produce higher option price"
+
+print("Tests passed!")
+`,
+    },
+  },
+  {
+    id: "11",
+    title: "Rho: Interest Rate Sensitivity",
+    subtitle: "The forgotten Greek that matters most when rates move",
+    duration: "13 min",
+    content: `
+<h2>The Fifth Greek</h2>
+<p>Rho (ρ) measures how much an option's price changes for a one percentage-point move in the risk-free rate. It's the least-discussed of the five Greeks traders track day to day, and for a good reason: on any given trading day, the risk-free rate barely moves, so rho's contribution to a short-dated option's P&L is usually tiny compared to delta or gamma. But "usually small" is not "always irrelevant" — and the years when it isn't small are exactly the years that catch unprepared traders off guard.</p>
+<blockquote>ρ = ∂V / ∂r</blockquote>
+<p>A call with ρ = 0.15 gains about $0.15 in value for every 1 percentage-point rise in the risk-free rate. That sounds negligible next to a delta of 0.60 moving the price a dollar for a dollar move in the stock. It is negligible, for a rate move of a few basis points on a normal day. It stops being negligible when the rate itself moves several percentage points over a year, which is exactly what happened from 2022 to 2023.</p>
+
+<h2>The Formula</h2>
+<blockquote>ρ<sub>call</sub> = K · T · e<sup>−rT</sup> · N(d₂) / 100<br/>ρ<sub>put</sub> = −K · T · e<sup>−rT</sup> · N(−d₂) / 100</blockquote>
+<p>Unlike vega, rho is <em>not</em> the same for calls and puts — it has opposite sign. Rising rates help call holders and hurt put holders. The intuition: a call is economically similar to a leveraged long position financed at the risk-free rate. When rates rise, deferring payment of the strike price (which is what a call effectively lets you do) becomes more valuable, so the call price rises. A put is the mirror image — it's closer to a deferred short sale, and rising rates make deferring a sale less attractive.</p>
+<p>As with vega, dividing by 100 expresses rho "per 1 percentage point" of rate move rather than per unit (a 1.00 move in r, i.e. a 100-point move, would be absurd). Check which convention a source uses before comparing numbers across textbooks.</p>
+
+<h2>Why Rho Scales With Time</h2>
+<p>Rho contains a T term directly in the formula, and it shows up again inside N(d₂). This means rho grows roughly linearly with time to expiration — a much stronger relationship than vega's √T scaling. A 30-day option might have a rho of $0.02; the same option struck two years out could have a rho of $1.50 or more.</p>
+<p>This is why rho is nearly ignored for short-dated options and taken seriously for LEAPS (Long-term Equity AnticiPation Securities, options expiring a year or more out) and for anything priced off a long-dated bond or rate future. A trader running a book of 2-year options who ignores rho is implicitly making an unhedged bet on interest rates, whether they meant to or not.</p>
+
+<h2>The 2022–2023 Lesson</h2>
+<p>The Federal Reserve raised the federal funds rate from near 0% in March 2022 to about 5.25–5.50% by July 2023 — the fastest hiking cycle in four decades. For short-dated options, this barely registered next to the volatility from the moves themselves. For LEAPS desks and anyone holding long-dated options through the cycle, rho stopped being a rounding error. A long-dated call's rho-driven gain from that rate move alone could rival its vega-driven move from the volatility spike that accompanied it.</p>
+<p>The broader lesson isn't "rho matters now, memorize a new rule." It's that every Greek's importance is conditional on the environment. Theta dominates near expiration. Vega dominates when implied vol is unstable. Rho dominates when rates are moving fast and time-to-expiry is long. Knowing which regime you're in matters more than any single number.</p>
+
+<h2>Rho and the Discount Rate Intuition</h2>
+<p>There's a simpler way to hold rho in your head, without the formula: a call option, deep in the money, behaves like owning the stock on credit — you've locked in the right to buy at K, but you haven't paid K yet. The present value of that deferred payment is K·e<sup>−rT</sup>. When r rises, that present value falls, which means the call (whose value includes "you get to keep the difference") rises. Put options work the other way: a deep ITM put is closer to a deferred sale, and the present value of the money you'll receive falls as r rises, dragging the put's value down with it.</p>
+<p>This is the same K·e<sup>−rT</sup> term you've already seen in put-call parity (Lesson 2) and in the Black-Scholes formula itself (Lesson 3) — rho isn't a new idea bolted onto the model, it's what falls out when you differentiate a term that was already there.</p>
+
+<h2>The Complete Greek Family</h2>
+<table>
+  <thead><tr><th>Greek</th><th>Measures sensitivity to</th><th>Typical magnitude</th></tr></thead>
+  <tbody>
+    <tr><td>Delta (Δ)</td><td>Stock price</td><td>Largest day-to-day driver of P&amp;L</td></tr>
+    <tr><td>Gamma (Γ)</td><td>Rate of change of delta</td><td>Peaks near expiry, ATM</td></tr>
+    <tr><td>Theta (Θ)</td><td>Time decay</td><td>Accelerates into expiration</td></tr>
+    <tr><td>Vega (ν)</td><td>Implied volatility</td><td>Peaks for long-dated ATM options</td></tr>
+    <tr><td>Rho (ρ)</td><td>Interest rates</td><td>Grows linearly with time to expiry</td></tr>
+  </tbody>
+</table>
+<p>Every professional options desk tracks all five, even when four of them are doing all the work on a given day. The one you ignored is the one that eventually costs you.</p>
+    `,
+    sandboxes: [
+      {
+        afterSectionId: "the-formula",
+        title: "Rho (Call)",
+        formula: "ρ = K · T · e^(−rT) · N(d₂) / 100",
+        variables: [
+          { key: "stock", label: "Stock price (S)", unit: "$", defaultValue: 100, min: 20, max: 300, step: 1 },
+          { key: "strike", label: "Strike price (K)", unit: "$", defaultValue: 100, min: 20, max: 300, step: 1 },
+          { key: "time", label: "Time to expiry (T)", unit: "yrs", defaultValue: 1, min: 0.05, max: 3, step: 0.05 },
+          { key: "rate", label: "Risk-free rate (r)", unit: "%", defaultValue: 5, min: 0, max: 10, step: 0.25 },
+          { key: "vol", label: "Volatility (σ)", unit: "%", defaultValue: 20, min: 5, max: 80, step: 1 },
+        ],
+        computeId: "rhoCall",
+        resultLabel: "Rho (per 1% rate move)",
+        resultPrefix: "$",
+        decimals: 3,
+      },
+    ],
+    exercise: {
+      prompt: "Implement `compute_rho(S, K, T, r, sigma, option_type=\"call\")`, returning rho per 1% move in the risk-free rate.",
+      starterCode: `import math
+
+def _norm_cdf(x):
+    """Standard normal CDF: N(x)"""
+    return 0.5 * math.erfc(-x / math.sqrt(2))
+
+def _d1(S, K, T, r, sigma):
+    return (math.log(S / K) + (r + 0.5 * sigma**2) * T) / (sigma * math.sqrt(T))
+
+def _d2(S, K, T, r, sigma):
+    return _d1(S, K, T, r, sigma) - sigma * math.sqrt(T)
+
+def compute_rho(S, K, T, r, sigma, option_type="call"):
+    """
+    Rho, per 1 percentage-point move in the risk-free rate.
+
+    Call: rho = K * T * exp(-r*T) * N(d2)  / 100
+    Put:  rho = -K * T * exp(-r*T) * N(-d2) / 100
+    """
+    # YOUR CODE HERE
+    pass
+`,
+      solution: `import math
+
+def _norm_cdf(x):
+    return 0.5 * math.erfc(-x / math.sqrt(2))
+
+def _d1(S, K, T, r, sigma):
+    return (math.log(S / K) + (r + 0.5 * sigma**2) * T) / (sigma * math.sqrt(T))
+
+def _d2(S, K, T, r, sigma):
+    return _d1(S, K, T, r, sigma) - sigma * math.sqrt(T)
+
+def compute_rho(S, K, T, r, sigma, option_type="call"):
+    d2 = _d2(S, K, T, r, sigma)
+    if option_type == "call":
+        return K * T * math.exp(-r * T) * _norm_cdf(d2) / 100
+    else:
+        return -K * T * math.exp(-r * T) * _norm_cdf(-d2) / 100
+`,
+      testFn: `
+# Call rho is positive
+rc = compute_rho(100, 100, 1.0, 0.05, 0.20, "call")
+assert rc > 0, f"Call rho must be positive: {rc}"
+
+# Put rho is negative
+rp = compute_rho(100, 100, 1.0, 0.05, 0.20, "put")
+assert rp < 0, f"Put rho must be negative: {rp}"
+
+# Rho grows with time to expiry (call)
+r_1y = compute_rho(100, 100, 1.0, 0.05, 0.20, "call")
+r_5y = compute_rho(100, 100, 5.0, 0.05, 0.20, "call")
+assert r_5y > r_1y, "Longer-dated calls should have larger rho"
+
+# Rho magnitude roughly matches a known reference value
+r_ref = compute_rho(100, 100, 1.0, 0.05, 0.20, "call")
+assert 0.4 < r_ref < 0.7, f"ATM 1yr call rho out of expected range: {r_ref:.3f}"
+
+# Deep ITM call has larger rho than deep OTM call (more likely to be exercised,
+# so the deferred-payment value of K matters more)
+r_itm = compute_rho(150, 100, 1.0, 0.05, 0.20, "call")
+r_otm = compute_rho(60, 100, 1.0, 0.05, 0.20, "call")
+assert r_itm > r_otm, "Deep ITM call should have larger rho than deep OTM call"
 
 print("Tests passed!")
 `,

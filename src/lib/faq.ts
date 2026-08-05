@@ -14,7 +14,7 @@ export const FAQ_GROUPS: FAQGroup[] = [
     items: [
       {
         q: "What is StrikeLab?",
-        a: "A free, browser-based quant finance curriculum, taught the way quant desks actually learn it — by writing code. 21 lessons across three tracks — Investing Fundamentals, Options Pricing, and Quant Investing — take you from \"what is a stock?\" to a working Black-Scholes engine with all five Greeks to CAPM and backtesting.",
+        a: "A free, browser-based quant finance curriculum, taught the way quant desks actually learn it — by writing code. 22 lessons across three tracks — Investing Fundamentals, Options Pricing, and Quant Investing — take you from \"what is a stock?\" to a working Black-Scholes engine with all five Greeks to CAPM and backtesting.",
       },
       {
         q: "Who is it for?",
@@ -35,7 +35,7 @@ export const FAQ_GROUPS: FAQGroup[] = [
     items: [
       {
         q: "How long does it take?",
-        a: "Each lesson is 10–20 minutes of reading + a 5–15 minute coding exercise. Most students finish all 21 in a few weeks, spread over evenings — the tracks are independent, so there's no requirement to binge one before starting another.",
+        a: "Each lesson is 10–20 minutes of reading + a 5–15 minute coding exercise. Most students finish all 22 in a few weeks, spread over evenings — the tracks are independent, so there's no requirement to binge one before starting another.",
       },
       {
         q: "Do I have to start with options?",
@@ -43,7 +43,7 @@ export const FAQ_GROUPS: FAQGroup[] = [
       },
       {
         q: "Will there be more advanced content?",
-        a: "Yes — the Greeks (Delta through Vega), Implied Volatility, Option Strategies, and Binomial Trees are all live already. Next up: a Rho lesson (the interest-rate Greek) and a bridge into VaR, GARCH, and Monte Carlo. See /roadmap for what's shipping and when.",
+        a: "Yes — all five Greeks (Delta through Rho), Implied Volatility, Option Strategies, and Binomial Trees are all live already. Next up: a bridge into VaR, GARCH, and Monte Carlo for the Quant Investing track. See /roadmap for what's shipping and when.",
       },
       {
         q: "Can I use this for AP Stats / AP Calc?",
@@ -77,7 +77,7 @@ export const FAQ_GROUPS: FAQGroup[] = [
     items: [
       {
         q: "Is StrikeLab really free?",
-        a: "The full curriculum (all 21 lessons), the playground, the Greek visualizer, and the paper-trading sandbox are free forever — nothing there is gated. The Pro tier ($9/mo) adds weekly coding challenges, achievements, office hours, and a certificate of completion. School licenses fund the platform.",
+        a: "The full curriculum (all 22 lessons), the playground, the Greek visualizer, and the paper-trading sandbox are free forever — nothing there is gated. The Pro tier ($9/mo) adds weekly coding challenges, achievements, office hours, and a certificate of completion. School licenses fund the platform.",
       },
       {
         q: "Is this safe to use as a minor?",

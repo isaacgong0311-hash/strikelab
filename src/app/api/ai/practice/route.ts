@@ -1,7 +1,7 @@
 /**
  * POST /api/ai/practice — generates a fresh exercise on the lesson's concept.
  *
- * The curriculum is 21 fixed exercises. A student who finishes one and hasn't
+ * The curriculum is 22 fixed exercises. A student who finishes one and hasn't
  * yet internalised it has nowhere to drill; this gives them another variant on
  * the same idea, as many times as their daily budget allows.
  *

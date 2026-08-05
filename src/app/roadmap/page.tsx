@@ -27,7 +27,7 @@ const ROADMAP = [
     color: "#147038",
     items: [
       { title: "Paper-trading sandbox ✓", state: "done", desc: "$100,000 in simulated cash, options priced live with the same Black-Scholes engine from the lessons. Real (delayed) market data via Polygon.io is still on the roadmap." },
-      { title: "Rho lesson", state: "planned", desc: "The interest-rate Greek. How rate changes move long-dated options." },
+      { title: "Rho lesson ✓", state: "done", desc: "The interest-rate Greek — how rate changes move long-dated options, and why it mattered so much during the 2022-2023 hiking cycle." },
       { title: "Achievement system ✓", state: "done", desc: "12 badges for completing tracks, perfect Greek scores, and streak milestones — live on the dashboard and at /achievements." },
       { title: "Interactive payoff diagrams", state: "planned", desc: "Drag-to-build strategy payoff charts directly in the lesson UI." },
       { title: "Binomial tree visualizer", state: "planned", desc: "Interactive lattice diagram — click any node to inspect the early-exercise decision." },

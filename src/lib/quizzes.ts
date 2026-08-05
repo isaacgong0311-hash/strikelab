@@ -774,4 +774,43 @@ export const QUIZZES: Record<string, QuizQuestion[]> = {
         "Dozens of quantitative funds ran nearly identical pairs strategies. When one fund began forced liquidation (due to losses elsewhere), it moved the spread against every other fund holding the same trades, triggering a cascade. Strategies that had never lost money historically suffered massive simultaneous drawdowns.",
     },
   ],
+
+  "11": [
+    {
+      question: "Rho (ρ) measures an option's sensitivity to:",
+      options: [
+        "The passage of time",
+        "Changes in implied volatility",
+        "Changes in the risk-free interest rate",
+        "Changes in the underlying stock price",
+      ],
+      correct: 2,
+      explanation:
+        "Rho = ∂V/∂r. It's usually the smallest-magnitude Greek for short-dated options, which is why it gets the least attention day to day — but it isn't zero, and it grows with time to expiry.",
+    },
+    {
+      question: "How does rho differ between calls and puts?",
+      options: [
+        "It's identical for calls and puts, like vega",
+        "Call rho is positive; put rho is negative",
+        "Call rho is negative; put rho is positive",
+        "Both are always positive, but calls are larger",
+      ],
+      correct: 1,
+      explanation:
+        "Rising rates help call holders (a call behaves like a deferred, leveraged long position — deferring payment becomes more valuable as rates rise) and hurt put holders (a put behaves like a deferred short sale, which becomes less attractive as rates rise).",
+    },
+    {
+      question: "Why did rho suddenly matter more to options traders in 2022–2023?",
+      options: [
+        "The CBOE changed how options are quoted",
+        "The Federal Reserve raised rates from near 0% to over 5% in about 16 months — the fastest hiking cycle in decades",
+        "Implied volatility fell to record lows",
+        "Congress passed new options-trading regulations",
+      ],
+      correct: 1,
+      explanation:
+        "Rho's day-to-day contribution is usually tiny because the risk-free rate barely moves. During the 2022–2023 hiking cycle, the rate itself moved several percentage points over about a year, which stopped being a rounding error for anyone holding long-dated options.",
+    },
+  ],
 };

@@ -18,7 +18,6 @@ const LEVEL_COLORS: Record<string, string> = {
 // past each track's finish line — the path keeps going, it's just not paved
 // yet. Update alongside ROADMAP in src/app/roadmap/page.tsx.
 const COMING_SOON: Record<string, string> = {
-  options: "Rho — the interest-rate Greek",
   quant: "VaR, GARCH & Monte Carlo",
 };
 

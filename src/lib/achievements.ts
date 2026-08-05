@@ -13,7 +13,7 @@ export const ACHIEVEMENTS: Achievement[] = [
   { id: "first",     icon: "⊗", name: "First Strike",   desc: "Complete your first lesson",       total: 1,  progress: (ids) => Math.min(ids.size, 1) },
   { id: "parity",    icon: "≡", name: "Parity Pro",     desc: "Master Put-Call Parity",            total: 1,  progress: (ids) => (ids.has("2") ? 1 : 0) },
   { id: "bsm",       icon: "∂", name: "BSM Builder",    desc: "Implement Black-Scholes",           total: 1,  progress: (ids) => (ids.has("3") ? 1 : 0) },
-  { id: "greeks",    icon: "Δ", name: "Greek Scholar",  desc: "Complete all four Greek lessons",   total: 4,  progress: (ids) => count(ids, ["4", "5", "6", "7"]) },
+  { id: "greeks",    icon: "Δ", name: "Greek Scholar",  desc: "Complete all five Greek lessons",   total: 5,  progress: (ids) => count(ids, ["4", "5", "6", "7", "11"]) },
   { id: "iv",        icon: "σ", name: "Vol Wizard",     desc: "Solve for implied volatility",      total: 1,  progress: (ids) => (ids.has("8") ? 1 : 0) },
   { id: "strategy",  icon: "∑", name: "Strategist",     desc: "Learn option strategies",           total: 1,  progress: (ids) => (ids.has("9") ? 1 : 0) },
   { id: "investor",  icon: "↗", name: "Investor",       desc: "Start the Investing track",         total: 1,  progress: (ids) => (ids.has("inv-1") ? 1 : 0) },
@@ -21,7 +21,7 @@ export const ACHIEVEMENTS: Achievement[] = [
   { id: "capm",      icon: "β", name: "Quant Initiate", desc: "Understand CAPM and Beta",          total: 1,  progress: (ids) => (ids.has("q1") ? 1 : 0) },
   { id: "factor",    icon: "λ", name: "Factor King",    desc: "Master factor investing",           total: 1,  progress: (ids) => (ids.has("q2") ? 1 : 0) },
   { id: "backtest",  icon: "⟲", name: "Backtester",     desc: "Build your first backtest",         total: 1,  progress: (ids) => (ids.has("q3") ? 1 : 0) },
-  { id: "allstar",   icon: "✶", name: "All-Star",       desc: "Complete all 21 lessons",           total: 21, progress: (ids) => Math.min(ids.size, 21) },
+  { id: "allstar",   icon: "✶", name: "All-Star",       desc: "Complete all 22 lessons",           total: 22, progress: (ids) => Math.min(ids.size, 22) },
 ];
 
 export function isUnlocked(a: Achievement, ids: Set<string>): boolean {
