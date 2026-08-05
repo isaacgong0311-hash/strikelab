@@ -18,6 +18,10 @@ export const QUANT_LESSONS: Lesson[] = [
   <li>E[R_m] − R_f = <strong>equity risk premium</strong> — the extra return for taking equity risk (~5–6%)</li>
   <li>β_i = <strong>beta</strong> — a stock's sensitivity to market movements</li>
 </ul>
+<div class="lesson-callout">
+  <span class="lesson-callout-label">Try the sandbox below</span>
+  <p>Drag beta up past 1.0 and watch the expected return climb faster than the market premium alone would suggest — that's the whole point of CAPM: risk you can't diversify away has to be paid for.</p>
+</div>
 
 <h2>Beta: Market Sensitivity</h2>
 <p>Beta measures how much a stock moves for a 1% move in the market:</p>
@@ -52,6 +56,22 @@ export const QUANT_LESSONS: Lesson[] = [
   <li><strong>Cost of capital:</strong> Companies use CAPM to estimate their cost of equity for capital budgeting (should we invest in this project?)</li>
 </ul>
     `,
+    sandboxes: [
+      {
+        afterSectionId: "the-capital-asset-pricing-model",
+        title: "CAPM",
+        formula: "E[R] = Rf + β × (E[Rm] − Rf)",
+        variables: [
+          { key: "rf", label: "Risk-free rate", unit: "%", defaultValue: 5, min: 0, max: 10, step: 0.25 },
+          { key: "beta", label: "Beta (β)", defaultValue: 1.2, min: -1, max: 3, step: 0.05 },
+          { key: "rm", label: "Expected market return", unit: "%", defaultValue: 10, min: 0, max: 20, step: 0.5 },
+        ],
+        computeId: "capm",
+        resultLabel: "Expected return",
+        resultSuffix: "%",
+        decimals: 2,
+      },
+    ],
     exercise: {
       prompt: "Implement `compute_beta` (from return series) and `expected_return_capm`.",
       starterCode: `def compute_beta(stock_returns, market_returns):
@@ -262,6 +282,10 @@ print("Tests passed!")
 <p><strong>Maximum Drawdown:</strong> The largest peak-to-trough decline in portfolio value during the test period. A strategy that returns 20%/year but occasionally loses 60% is psychologically and practically very hard to implement — you'd likely panic and stop at the worst moment.</p>
 <blockquote>Max Drawdown = max(Peak − Trough) / Peak</blockquote>
 <p>In practice, professionals care deeply about the <strong>Sharpe-to-max-drawdown</strong> relationship (Calmar ratio = Annual Return / Max Drawdown). A Calmar ratio above 1 is respectable.</p>
+<div class="lesson-callout">
+  <span class="lesson-callout-label">Try the sandbox below</span>
+  <p>A strategy that quietly compounds at 15%/year but once dropped 55% from peak to trough is a much harder hold than the return alone suggests. Play with the numbers and see how fast drawdown scales.</p>
+</div>
 
 <h2>The Deadly Sins of Backtesting</h2>
 <p><strong>1. Look-ahead bias:</strong> Using data in your signal that wasn't available at the time. Using today's closing price to generate today's trading signal means you'd need a time machine. Always ensure signals use data available <em>before</em> the trade executes.</p>
@@ -277,6 +301,21 @@ print("Tests passed!")
 <h2>When a Backtest Is "Too Good"</h2>
 <p>Sharpe above 3 in a backtest almost always means overfitting, look-ahead bias, or transaction cost ignorance. Real live-trading strategies by elite hedge funds target Sharpe of 1–2 after costs. Be very suspicious of any backtest claiming 5+ Sharpe before real-world verification.</p>
     `,
+    sandboxes: [
+      {
+        afterSectionId: "the-holy-trinity-of-backtest-metrics",
+        title: "Max Drawdown",
+        formula: "Max Drawdown = (Peak − Trough) / Peak",
+        variables: [
+          { key: "peak", label: "Peak value", unit: "$", defaultValue: 100000, min: 1000, max: 1000000, step: 1000 },
+          { key: "trough", label: "Trough value", unit: "$", defaultValue: 65000, min: 0, max: 1000000, step: 1000 },
+        ],
+        computeId: "maxDrawdown",
+        resultLabel: "Max drawdown",
+        resultSuffix: "%",
+        decimals: 1,
+      },
+    ],
     exercise: {
       prompt: "Implement `backtest_simple_ma` — a simple moving average crossover backtest.",
       starterCode: `def simple_moving_average(prices, window):
@@ -535,6 +574,10 @@ print("Tests passed!")
   <li>When z-score → 0: spread has mean-reverted → <strong>close position</strong></li>
 </ul>
 <p>The ±2 sigma threshold is a common choice, but optimal thresholds depend on the speed of reversion, transaction costs, and signal half-life.</p>
+<div class="lesson-callout">
+  <span class="lesson-callout-label">Try the sandbox below</span>
+  <p>Push the spread past 2 standard deviations from its mean and watch the z-score cross the ±2 threshold traders actually watch for.</p>
+</div>
 
 <h2>Risks and Limitations</h2>
 <p><strong>Relationship breakdown:</strong> Pairs can stop cointegrating. Coke and Pepsi move together because they compete in the same market — but if Coke acquires a tech company and pivots its strategy, the relationship breaks permanently. No statistical test can tell you in advance if today's divergence is a temporary blip or a regime change.</p>
@@ -542,6 +585,21 @@ print("Tests passed!")
 <p><strong>Execution:</strong> Requires simultaneously entering both legs. Any delay between legs creates gap risk — the spread might move further before the second leg executes.</p>
 <p><strong>Borrow availability:</strong> Short selling requires borrowing shares. For popular short targets, borrow costs can be substantial and eat into returns.</p>
     `,
+    sandboxes: [
+      {
+        afterSectionId: "trading-the-spread",
+        title: "Spread Z-Score",
+        formula: "z = (Spread − Mean) / Std Dev",
+        variables: [
+          { key: "spread", label: "Current spread", defaultValue: 2.5, min: -10, max: 10, step: 0.1 },
+          { key: "mean", label: "Historical mean (μ)", defaultValue: 0, min: -10, max: 10, step: 0.1 },
+          { key: "std", label: "Std dev (σ)", defaultValue: 1, min: 0.1, max: 5, step: 0.1 },
+        ],
+        computeId: "zscore",
+        resultLabel: "Z-score",
+        decimals: 2,
+      },
+    ],
     exercise: {
       prompt: "Implement `compute_spread`, `zscore`, and `pairs_trade_signals`.",
       starterCode: `def compute_spread(prices1, prices2, hedge_ratio):

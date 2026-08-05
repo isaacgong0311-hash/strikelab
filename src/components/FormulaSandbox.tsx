@@ -2,6 +2,19 @@
 import { useMemo, useState } from "react";
 import type { FormulaSandboxConfig } from "@/lib/lessons";
 
+/** Abramowitz & Stegun 7.1.26 — accurate to ~1.5e-7, plenty for a "try it" widget. */
+function erf(x: number): number {
+  const sign = x < 0 ? -1 : 1;
+  const ax = Math.abs(x);
+  const a1 = 0.254829592, a2 = -0.284496736, a3 = 1.421413741, a4 = -1.453152027, a5 = 1.061405429, p = 0.3275911;
+  const t = 1 / (1 + p * ax);
+  const y = 1 - (((((a5 * t + a4) * t) + a3) * t + a2) * t + a1) * t * Math.exp(-ax * ax);
+  return sign * y;
+}
+function normCdf(x: number): number {
+  return 0.5 * (1 + erf(x / Math.SQRT2));
+}
+
 /**
  * Named compute functions, keyed by `computeId` in the lesson data. Lives
  * here (client-side) rather than in the lesson data itself — lesson data
@@ -15,6 +28,17 @@ const COMPUTE: Record<string, (v: Record<string, number>) => number> = {
   peRatio: (v) => v.price / v.eps,
   sharpeRatio: (v) => (v.vol === 0 ? 0 : (v.ret - v.rf) / v.vol),
   compoundGrowth: (v) => v.initial * Math.pow(1 + v.rate / 100, v.years),
+  intrinsicValueCall: (v) => Math.max(v.price - v.strike, 0),
+  putCallParity: (v) => v.stock - v.strike * Math.exp((-v.rate / 100) * v.time),
+  capm: (v) => v.rf + v.beta * (v.rm - v.rf),
+  maxDrawdown: (v) => (v.peak === 0 ? 0 : ((v.peak - v.trough) / v.peak) * 100),
+  zscore: (v) => (v.std === 0 ? 0 : (v.spread - v.mean) / v.std),
+  rhoCall: (v) => {
+    const S = v.stock, K = v.strike, T = v.time, r = v.rate / 100, sigma = v.vol / 100;
+    const d1 = (Math.log(S / K) + (r + 0.5 * sigma * sigma) * T) / (sigma * Math.sqrt(T));
+    const d2 = d1 - sigma * Math.sqrt(T);
+    return (K * T * Math.exp(-r * T) * normCdf(d2)) / 100;
+  },
 };
 
 /**

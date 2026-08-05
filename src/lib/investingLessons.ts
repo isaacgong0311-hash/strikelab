@@ -17,13 +17,27 @@ export const INVESTING_LESSONS: Lesson[] = [
 <p>A few famous IPOs: Google in 2004 at $85/share, Facebook in 2012 at $38/share, Airbnb in 2020 at $68/share. Each was a moment when private wealth became publicly tradeable.</p>
 
 <h2>Common vs. Preferred Stock</h2>
-<p>Not all stock is equal. Most individual investors buy <strong>common stock</strong>, which gives:</p>
-<ul>
-  <li><strong>Voting rights:</strong> typically one vote per share on major company decisions (electing the board, approving mergers)</li>
-  <li><strong>Dividends (if declared):</strong> periodic cash payments from profits, at the board's discretion</li>
-  <li><strong>Residual claim:</strong> if the company is liquidated, common shareholders receive what's left after all creditors and preferred holders are paid, which is often nothing in bankruptcies</li>
-</ul>
-<p><strong>Preferred stock</strong> sits between bonds and common stock. Preferred holders receive a fixed dividend before common holders get anything, and have priority in liquidation. But they typically have no voting rights and limited upside if the company succeeds.</p>
+<p>Not all stock is equal. Most individual investors buy <strong>common stock</strong>; a smaller, more bond-like slice of the market is <strong>preferred stock</strong>.</p>
+<div class="lesson-compare">
+  <div>
+    <span class="lesson-compare-label">Common stock</span>
+    <ul>
+      <li><strong>Voting rights:</strong> typically one vote per share on major decisions (electing the board, approving mergers)</li>
+      <li><strong>Dividends:</strong> periodic cash payments from profits, if the board declares them</li>
+      <li><strong>Residual claim:</strong> gets what's left after creditors and preferred holders are paid in a liquidation, often nothing in bankruptcies</li>
+    </ul>
+  </div>
+  <div>
+    <span class="lesson-compare-label">Preferred stock</span>
+    <ul>
+      <li><strong>No voting rights</strong> in most cases</li>
+      <li><strong>Fixed dividend</strong> paid before common holders get anything</li>
+      <li><strong>Priority in liquidation</strong>, ahead of common stock, behind debt</li>
+      <li><strong>Limited upside:</strong> doesn't participate much if the company succeeds big</li>
+    </ul>
+  </div>
+</div>
+<p>In short: preferred stock sits between bonds and common stock on the risk-reward spectrum, trading upside for a steadier payout and a better claim if things go wrong.</p>
 
 <h2>How Stock Prices Are Set</h2>
 <p>Stock prices are set by supply and demand among buyers and sellers on exchanges. There's no formula: the price is wherever a willing buyer and a willing seller agree to transact right now.</p>
@@ -140,10 +154,18 @@ print("Tests passed!")
   <li><strong>Stop order (stop-loss):</strong> Becomes a market order once the price hits your stop price. Used to limit losses: "sell if price falls to $90."</li>
   <li><strong>Stop-limit order:</strong> Becomes a limit order at your stop price. Avoids the gap-down problem of a pure stop order.</li>
 </ul>
-<p>For most investors making deliberate purchases, <strong>limit orders are almost always better than market orders</strong>. The difference in execution quality on a $10,000 trade can easily be $10–50.</p>
+<p>For most investors making deliberate purchases, <strong>limit orders are almost always better than market orders</strong>.</p>
+<div class="lesson-stat">
+  <span class="lesson-stat-value">$10–50</span>
+  <span class="lesson-stat-label">Difference in execution quality on a single $10,000 trade, just from choosing a limit order over a market order.</span>
+</div>
 
 <h2>The Order Book</h2>
-<p>Every exchange maintains an <strong>order book</strong>, a real-time list of all outstanding limit orders. The best bid and best ask (the top of the book) form the National Best Bid and Offer (NBBO), which brokers are legally required to give you.</p>
+<p>Every exchange maintains an <strong>order book</strong>, a real-time list of all outstanding limit orders. The best bid and best ask (the top of the book) form the National Best Bid and Offer (NBBO).</p>
+<div class="lesson-callout">
+  <span class="lesson-callout-label">Definition</span>
+  <p><strong>NBBO (National Best Bid and Offer):</strong> the single best bid and best ask price across every U.S. exchange at once. Brokers are legally required to route your order at a price at least as good as the NBBO, no matter which exchange actually fills it.</p>
+</div>
 <p>Below the best bid are lower bids (buyers willing to pay less). Above the best ask are higher asks (sellers wanting more). The order book shows the depth of liquidity: how much you could buy or sell without moving the price.</p>
 <p>High-frequency trading firms (HFTs) operate at microsecond timescales, continuously posting and canceling orders in the book to capture the spread and react to news faster than any human.</p>
 
@@ -267,7 +289,10 @@ print("Tests passed!")
   <li><strong>Investing Cash Flow:</strong> Cash spent on capital expenditures (buying equipment, buildings), acquisitions, or investments. Usually negative for growing companies.</li>
   <li><strong>Financing Cash Flow:</strong> Cash from issuing/repaying debt, issuing stock, or paying dividends/buybacks.</li>
 </ul>
-<p><strong>Free Cash Flow (FCF) = Operating Cash Flow − Capital Expenditures</strong>. FCF is the cash available to return to shareholders or reinvest in the business. Many professional investors consider FCF the ultimate measure of business quality.</p>
+<div class="lesson-callout">
+  <span class="lesson-callout-label">Key idea</span>
+  <p><strong>Free Cash Flow (FCF) = Operating Cash Flow − Capital Expenditures.</strong> It's the cash actually available to return to shareholders or reinvest in the business, after paying for the equipment and buildings needed to keep operating. Many professional investors treat FCF as the single best measure of business quality, more than net income.</p>
+</div>
 
 <h2>How the Statements Connect</h2>
 <p>The three statements are deeply interlinked. Net income flows into retained earnings on the balance sheet. Depreciation is added back in OCF (it's a non-cash expense). Capital expenditures appear in investing activities and reduce FCF. Changes in working capital (inventory, receivables) show up in operating cash flow. Understanding these connections prevents you from being fooled by companies that report profits but burn cash.</p>
@@ -416,7 +441,11 @@ print("Tests passed!")
 </ul>
 <p><strong>Terminal value</strong> is typically estimated using the Gordon Growth Model:</p>
 <blockquote>Terminal Value = FCF_final × (1 + g) / (r − g)</blockquote>
-<p>where g is the long-term growth rate (usually 2–3%, roughly GDP growth). Terminal value often accounts for 60–80% of total DCF value, which is why small changes in assumptions can swing valuations dramatically.</p>
+<p>where g is the long-term growth rate (usually 2–3%, roughly GDP growth).</p>
+<div class="lesson-stat">
+  <span class="lesson-stat-value">60–80%</span>
+  <span class="lesson-stat-label">Share of a typical DCF's total value that comes from the terminal value alone, not the forecast years. That's why small changes in assumptions can swing a valuation dramatically.</span>
+</div>
 
 <h2>The Problem With DCF</h2>
 <p>DCF sounds precise but is extremely sensitive to inputs. Changing the discount rate from 10% to 12%, or changing the terminal growth rate from 3% to 2%, can change the output by 30–50%. As the joke goes, "DCF stands for 'Don't Count on Figures.'" Wall Street analysts use DCF to justify conclusions they'd already reached at least as often as to discover new ones.</p>
@@ -559,9 +588,12 @@ print("Tests passed!")
 <p>Total stock risk decomposes into two components:</p>
 <ul>
   <li><strong>Systematic (market) risk:</strong> Driven by economy-wide factors like recessions, interest rate changes, and pandemics. All stocks are affected. Cannot be diversified away. Measured by <strong>beta</strong> (covered in the Quant track).</li>
-  <li><strong>Idiosyncratic (specific) risk:</strong> Company-specific events like a product failure, a CEO scandal, accounting fraud. Holding 20–30 uncorrelated stocks reduces idiosyncratic risk by ~90%. This is the free lunch.</li>
+  <li><strong>Idiosyncratic (specific) risk:</strong> Company-specific events like a product failure, a CEO scandal, accounting fraud. This is the free lunch: it can be diversified away almost entirely.</li>
 </ul>
-<p>Academic research (Fama-French) found that a portfolio of 20–50 randomly chosen stocks captures most of the diversification benefit. Beyond 50 stocks, marginal diversification is minimal.</p>
+<div class="lesson-stat">
+  <span class="lesson-stat-value">~90%</span>
+  <span class="lesson-stat-label">Reduction in idiosyncratic risk from holding just 20–30 uncorrelated stocks instead of one. Academic research (Fama-French) found that 20–50 randomly chosen stocks captures most of the benefit; beyond 50, it's marginal.</span>
+</div>
     `,
     sandboxes: [
       {
@@ -683,7 +715,19 @@ print("Tests passed!")
   <li>Management fees (1–2%/year for active funds vs. 0.03–0.05% for index funds) compound dramatically over time</li>
   <li>Transaction costs from frequent trading erode returns</li>
 </ul>
-<p>Warren Buffett's 2007 bet: he wagered $1 million that a simple S&P 500 index fund would outperform any basket of hedge funds over 10 years. He won easily. The hedge funds returned 22% cumulative over 10 years; the S&P 500 index fund returned 85.4%.</p>
+<p>Warren Buffett's 2007 bet: he wagered $1 million that a simple S&P 500 index fund would outperform any basket of hedge funds over 10 years. He won easily.</p>
+<div class="lesson-compare">
+  <div>
+    <span class="lesson-compare-label">Basket of hedge funds</span>
+    <p style="margin:0;font-family:var(--font-mono);font-size:1.6rem;font-weight:700;color:var(--ink);">22%</p>
+    <p style="margin-top:0.3rem;font-size:0.85rem;color:var(--ink-3);">Cumulative return, 10 years</p>
+  </div>
+  <div>
+    <span class="lesson-compare-label">S&amp;P 500 index fund</span>
+    <p style="margin:0;font-family:var(--font-mono);font-size:1.6rem;font-weight:700;color:var(--grass);">85.4%</p>
+    <p style="margin-top:0.3rem;font-size:0.85rem;color:var(--ink-3);">Cumulative return, 10 years</p>
+  </div>
+</div>
 <p>For most investors, especially high schoolers just starting out, a simple portfolio of two or three low-cost index ETFs is likely to outperform everything more complicated.</p>
 
 <h2>A Simple Three-Fund Portfolio</h2>

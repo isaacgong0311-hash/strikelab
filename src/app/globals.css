@@ -142,7 +142,16 @@ code, pre, .mono {
   margin-bottom: 0.6rem;
   letter-spacing: -0.01em;
 }
-.lesson-content h2:first-child { margin-top: 0; }
+/* NOT `.lesson-content h2:first-child` — each section is rendered into its
+   own isolated wrapper div (see the chunk-splitting in LessonClient.tsx /
+   lessonToc.ts, which lets Checkpoint and FormulaSandbox interleave between
+   sections), so every single h2 is a first-child of its own container, not
+   just the lesson's actual first section. That selector was silently
+   zeroing every section's top margin, not just the first one — a real,
+   pre-existing bug, not something specific to the divider below. Margin and
+   the divider now apply uniformly; the lesson header above the first
+   section already has its own bottom spacing, so the first section doesn't
+   need special-casing. */
 .lesson-content p {
   color: #3d453f;
   line-height: 1.85;
@@ -188,6 +197,125 @@ code, pre, .mono {
   border: 1px solid var(--border);
 }
 .lesson-content h2 { color: var(--ink); }
+.lesson-content table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1.5rem 0;
+  font-size: 0.88rem;
+  border: 1px solid var(--line-2, var(--border2));
+  border-radius: var(--r-md, 10px);
+  overflow: hidden;
+}
+.lesson-content th, .lesson-content td {
+  padding: 0.6rem 0.9rem;
+  text-align: left;
+  border-bottom: 1px solid var(--line, var(--border));
+}
+.lesson-content thead th {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-3, var(--muted));
+  background: var(--paper-2, var(--card2));
+}
+.lesson-content tbody tr:last-child td { border-bottom: none; }
+.lesson-content tbody td:first-child { color: var(--ink); font-weight: 600; }
+
+/* Section rhythm — a hairline between h2 sections instead of relying on
+   margin alone. Every section used to run straight into the next with no
+   visual beat, which is a big part of why long lessons read as one flat
+   wall of text. Applies to every h2 uniformly — see the note above the
+   removed :first-child rule for why a first-section exclusion doesn't work
+   in this markup. */
+.lesson-content h2 {
+  padding-top: 1.75rem;
+  border-top: 1px solid var(--line, var(--border));
+}
+
+/* Definition / key-idea callout — a neutral aside distinct from the colored
+   Checkpoint and FormulaSandbox boxes (deliberately no accent color here;
+   the site already has grass/sky/amber/coral each coded to a specific
+   meaning, and a fourth decorative color would just be noise). */
+.lesson-callout {
+  margin: 1.75rem 0;
+  padding: 1.1rem 1.3rem;
+  border: 1px solid var(--line-2, var(--border2));
+  border-radius: var(--r-lg, 12px);
+  background: var(--paper-2, var(--card2));
+}
+.lesson-callout-label {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-3, var(--muted));
+  margin-bottom: 0.5rem;
+}
+.lesson-callout p {
+  margin: 0;
+  color: var(--ink-2, #3d453f);
+  font-size: 0.94rem;
+  line-height: 1.75;
+}
+.lesson-callout p + p { margin-top: 0.6rem; }
+.lesson-callout strong { color: var(--ink); }
+
+/* Pull-stat — one standout number breaks paragraph rhythm and gives the eye
+   somewhere to land. Uses the site's one primary accent, reserved for the
+   single most important figure on screen at that moment. */
+.lesson-stat {
+  margin: 2rem 0;
+  padding: 0.25rem 0 0.25rem 1.1rem;
+  border-left: 3px solid var(--grass);
+}
+.lesson-stat-value {
+  display: block;
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  font-size: 2.1rem;
+  font-weight: 700;
+  line-height: 1.1;
+  color: var(--grass);
+  letter-spacing: -0.01em;
+}
+.lesson-stat-label {
+  display: block;
+  margin-top: 0.35rem;
+  font-size: 0.85rem;
+  color: var(--ink-3, var(--muted));
+  line-height: 1.5;
+  max-width: 32rem;
+}
+
+/* Two-up comparison — for "X vs. Y" content that was previously just two
+   separate bullet lists with no visual link between them. */
+.lesson-compare {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1px;
+  margin: 1.75rem 0;
+  background: var(--line-2, var(--border2));
+  border: 1px solid var(--line-2, var(--border2));
+  border-radius: var(--r-lg, 12px);
+  overflow: hidden;
+}
+@media (max-width: 640px) { .lesson-compare { grid-template-columns: 1fr; } }
+.lesson-compare > div { background: var(--paper-2, var(--card2)); padding: 1rem 1.2rem; }
+.lesson-compare-label {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-3, var(--muted));
+  margin-bottom: 0.5rem;
+}
+.lesson-compare ul { margin-bottom: 0; }
 
 /* ── Range inputs ────────────────────────────────────────────────────────── */
 input[type="range"] {
