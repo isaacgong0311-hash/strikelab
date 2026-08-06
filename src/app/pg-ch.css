@@ -224,6 +224,13 @@
   .pg-charts-grid { grid-template-columns: 1fr; grid-template-rows: none; overflow: visible; }
 }
 
+/* At true phone widths, 4 sliders across leaves ~72px each (measured at
+   375px) — too narrow to read "Risk-free rate" or drag precisely. Drop to
+   2x2 so each slider gets real room; still fits above the fold. */
+@media (max-width: 600px) {
+  .pg-sliders-grid { grid-template-columns: repeat(2, 1fr); gap: 16px 14px; }
+}
+
 /* ═══════════════════════════════════════════════════════════
    CHALLENGES v2 — premium competition layout
    ═══════════════════════════════════════════════════════════ */

@@ -22,11 +22,22 @@ const NO_BROWSER_TEXT_ASSIST = EditorView.contentAttributes.of({
   "data-gramm": "false", // also opts out Grammarly, which has the same failure mode
 });
 
+// Without this, CodeMirror's default no-wrap behavior forces horizontal
+// scrolling on any line wider than the pane — trivially true on mobile,
+// where the decorative comment dividers (e.g. "# ── Helpers ─────...")
+// in the starter code are 60-80 chars wide against a ~340px viewport. The
+// editor pane scrolled internally rather than breaking page layout, so this
+// was easy to miss without measuring, but it made every lesson's exercise
+// less readable on a phone. Wrapping is a net improvement on desktop too —
+// no code line in this codebase's lessons is long enough that wrapping ever
+// kicks in unintentionally.
+const LINE_WRAP = EditorView.lineWrapping;
+
 export default function MiniEditor({ value, onChange, readOnly }: Props) {
   return (
     <CodeMirror
       value={value}
-      extensions={[python(), NO_BROWSER_TEXT_ASSIST]}
+      extensions={[python(), NO_BROWSER_TEXT_ASSIST, LINE_WRAP]}
       theme={oneDark}
       onChange={onChange}
       readOnly={readOnly}
