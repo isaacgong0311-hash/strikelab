@@ -49,6 +49,7 @@ interface Props {
   chunks: string[];
   prev: Lesson | null;
   next: Lesson | null;
+  trackId: string;
   trackTitle: string;
   positionInTrack: number;
   trackLength: number;
@@ -64,7 +65,11 @@ interface QuizState {
 
 // ─── Quiz component ───────────────────────────────────────────────────────────
 
-function QuizSection({ questions, lessonId }: { questions: QuizQuestion[]; lessonId: string }) {
+function QuizSection({
+  questions, lessonId, onAnswered,
+}: {
+  questions: QuizQuestion[]; lessonId: string; onAnswered?: () => void;
+}) {
   const [state, setState] = useState<QuizState>({
     answered: questions.map(() => null),
   });
@@ -83,6 +88,7 @@ function QuizSection({ questions, lessonId }: { questions: QuizQuestion[]; lesso
       next[qIdx] = optIdx;
       return { answered: next };
     });
+    onAnswered?.();
   }
 
   return (
@@ -223,14 +229,25 @@ function CelebrationOverlay({
 
 // ─── Main lesson component ────────────────────────────────────────────────────
 
-export default function LessonClient({ lesson, sections, chunks, prev, next, trackTitle, positionInTrack, trackLength }: Props) {
+export default function LessonClient({ lesson, sections, chunks, prev, next, trackId, trackTitle, positionInTrack, trackLength }: Props) {
+  // Investing Fundamentals has no coding exercise — the track's own pitch is
+  // "no finance background required, just curiosity and pre-algebra," and
+  // every one of its lessons already has a no-code drag-slider
+  // FormulaSandbox covering the same formula the old Python exercise made
+  // you re-implement. Completion for this track gates on the Knowledge
+  // Check quiz instead (below). Options/Quant keep the Python exercise —
+  // "implement Black-Scholes yourself" is the whole point there.
+  const hasCodingExercise = trackId !== "investing";
+
   const [code, setCodeState] = useState(() => readSavedCode(lesson.id) ?? lesson.exercise.starterCode);
   const [output, setOutput] = useState("");
   const [status, setStatus] = useState<"idle" | "running" | "pass" | "fail">("idle");
   const [showCelebration, setShowCelebration] = useState(false);
   const [showHint, setShowHint] = useState(false);
+  const [quizAnsweredCount, setQuizAnsweredCount] = useState(0);
   const { markComplete, completed, streak, hydrated } = useProgress();
   const runRef = useRef<(() => void) | null>(null);
+  const celebratedRef = useRef(false);
 
   // Persisting from the setter itself, rather than a useEffect watching
   // `code`, ties the write directly to the edit event instead of a render
@@ -248,6 +265,33 @@ export default function LessonClient({ lesson, sections, chunks, prev, next, tra
 
   const quizQuestions = QUIZZES[lesson.id] ?? [];
   const alreadyDone = hydrated && completed.has(lesson.id);
+
+  // No-code lessons: completion gates on the Knowledge Check instead of a
+  // passed exercise. Fires once, the moment the last question is answered.
+  //
+  // Deliberately does NOT branch on markComplete's return value — under
+  // React Strict Mode's dev-only double-invocation of setState updaters,
+  // that return value can't be trusted to reflect whether this was really
+  // the first completion (verified: it fired with isNew=false on both
+  // invocations in dev, despite this genuinely being a first completion).
+  // `alreadyDone` is recomputed fresh each render from the real progress
+  // state instead, and `celebratedRef` stops a second effect invocation
+  // from scheduling a second celebration.
+  useEffect(() => {
+    if (hasCodingExercise) return;
+    if (quizQuestions.length === 0) return;
+    if (quizAnsweredCount < quizQuestions.length) return;
+    if (!hydrated) return; // avoid marking complete before we know it's already done
+    if (celebratedRef.current) return;
+
+    markComplete(lesson.id); // idempotent — no-op if already completed
+
+    if (!alreadyDone) {
+      celebratedRef.current = true;
+      trackLessonComplete(lesson.id);
+      setTimeout(() => setShowCelebration(true), 400);
+    }
+  }, [hasCodingExercise, quizAnsweredCount, quizQuestions.length, hydrated, alreadyDone, markComplete, lesson.id]);
 
   // Map of chunk index -> question index, so each checkpoint renders after the
   // section it tests. Questions beyond the number of eligible slots fall back
@@ -388,6 +432,18 @@ export default function LessonClient({ lesson, sections, chunks, prev, next, tra
           <p className="text-sm" style={{ color: "var(--muted)", fontFamily: "var(--font-mono)" }}>
             {lesson.subtitle} · {lesson.duration}
           </p>
+          {/* Coding-exercise lessons show their +100 XP badge on the exercise
+              panel itself, further down. No-code lessons don't have that
+              panel, so say it here instead — otherwise there's no visible
+              reward for finishing the Knowledge Check below. */}
+          {!hasCodingExercise && !alreadyDone && quizQuestions.length > 0 && (
+            <p
+              className="text-xs mt-2"
+              style={{ color: "var(--amber)", fontFamily: "var(--font-mono)" }}
+            >
+              +100 XP for finishing the Knowledge Check below
+            </p>
+          )}
         </div>
 
         {/* Lesson content, with checkpoints interleaved between sections.
@@ -411,6 +467,7 @@ export default function LessonClient({ lesson, sections, chunks, prev, next, tra
                   question={quizQuestions[checkpointFor.get(i)!]}
                   lessonId={lesson.id}
                   index={checkpointFor.get(i)! + 1}
+                  onAnswered={() => setQuizAnsweredCount((c) => c + 1)}
                 />
               )}
             </div>
@@ -421,11 +478,16 @@ export default function LessonClient({ lesson, sections, chunks, prev, next, tra
             still get shown, rather than silently dropped. */}
         {leftoverQuestions.length > 0 && (
           <div className="v2-rise" style={{ transitionDelay: "120ms" }}>
-            <QuizSection questions={leftoverQuestions} lessonId={lesson.id} />
+            <QuizSection
+              questions={leftoverQuestions}
+              lessonId={lesson.id}
+              onAnswered={() => setQuizAnsweredCount((c) => c + 1)}
+            />
           </div>
         )}
 
-        {/* Exercise */}
+        {/* Exercise — Options/Quant only, see hasCodingExercise above */}
+        {hasCodingExercise && (
         <div
           className="v2-rise border overflow-hidden mb-8"
           style={{
@@ -603,9 +665,12 @@ export default function LessonClient({ lesson, sections, chunks, prev, next, tra
             </div>
           )}
         </div>
+        )}
 
-        {/* Pyodide loader */}
-        <PyodideLoader />
+        {/* Pyodide loader — only needed when there's a Python exercise on
+            the page (Options/Quant). Loading a WASM Python runtime for an
+            Investing lesson that has no code editor was pure waste. */}
+        {hasCodingExercise && <PyodideLoader />}
 
         {/* Navigation */}
         <div className="v2-rise flex justify-between items-center" style={{ transitionDelay: "240ms" }}>

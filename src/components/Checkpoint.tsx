@@ -18,10 +18,14 @@ export default function Checkpoint({
   question,
   lessonId,
   index,
+  onAnswered,
 }: {
   question: QuizQuestion;
   lessonId: string;
   index: number;
+  /** Fires once, the first time this checkpoint is answered — lets the
+   *  lesson page track when every question on the page has been seen. */
+  onAnswered?: () => void;
 }) {
   const [chosen, setChosen] = useState<number | null>(null);
   const answered = chosen !== null;
@@ -31,6 +35,7 @@ export default function Checkpoint({
     if (answered) return;
     trackQuizAnswer(lessonId, optIdx === question.correct);
     setChosen(optIdx);
+    onAnswered?.();
   }
 
   return (

@@ -1,5 +1,12 @@
 import type { Lesson } from "./lessons";
 
+// Every lesson below still carries an `exercise` field (the type requires
+// one) but LessonClient no longer renders it for this track — see
+// `hasCodingExercise` there. It was a mandatory Python re-implementation of
+// the same formula each lesson's FormulaSandbox already lets you play with
+// no-code, which didn't fit a track pitched as "no finance background
+// required, just curiosity and pre-algebra." Left in place rather than
+// deleted in case a future "optional practice" mode wants it back.
 export const INVESTING_LESSONS: Lesson[] = [
   {
     id: "inv-1",

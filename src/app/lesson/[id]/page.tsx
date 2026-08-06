@@ -19,7 +19,14 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
   // No manual " — StrikeLab" suffix: the root layout's "%s — StrikeLab" title
   // template already appends it. Adding both produced titles like
   // "Black-Scholes Formula — StrikeLab — StrikeLab".
-  const description = `${ctx.lesson.subtitle}. Lesson ${ctx.positionInTrack} of ${ctx.trackLength} in the ${ctx.track.title} track on StrikeLab — learn it by writing Python in your browser.`;
+  //
+  // Investing Fundamentals lessons don't have a coding exercise (see
+  // LessonClient's `hasCodingExercise`) — claiming "learn it by writing
+  // Python" for a track that's explicitly no-code-required would be wrong.
+  const closer = ctx.track.id === "investing"
+    ? "with an interactive formula sandbox and knowledge checks."
+    : "learn it by writing Python in your browser.";
+  const description = `${ctx.lesson.subtitle}. Lesson ${ctx.positionInTrack} of ${ctx.trackLength} in the ${ctx.track.title} track on StrikeLab — ${closer}`;
   const canonical = `/lesson/${id}`;
   const ogTitle = `${ctx.lesson.title} — ${SITE_NAME}`;
 
@@ -96,6 +103,7 @@ export default async function LessonPage({ params }: { params: Promise<{ id: str
         chunks={toc.chunks}
         prev={ctx.prev}
         next={ctx.next}
+        trackId={ctx.track.id}
         trackTitle={ctx.track.title}
         positionInTrack={ctx.positionInTrack}
         trackLength={ctx.trackLength}
