@@ -8,6 +8,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
+    "test": "vitest run",
+    "test:watch": "vitest",
     "electron:dev": "concurrently --kill-others \"npm run dev\" \"wait-on http://localhost:3000 && cross-env NODE_ENV=development electron .\"",
     "electron:build": "npm run build && node scripts/copy-standalone.mjs && electron-builder --win --config electron-builder.json"
   },
@@ -40,6 +42,8 @@
     "pptxgenjs": "^4.0.1",
     "tailwindcss": "^4",
     "typescript": "^5",
+    "vite-tsconfig-paths": "^6.1.1",
+    "vitest": "^4.1.10",
     "wait-on": "^9.0.5"
   }
 }
