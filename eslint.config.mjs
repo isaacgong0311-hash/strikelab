@@ -12,6 +12,10 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // finpath/ is a separate, unrelated project (its own package.json,
+    // tsconfig, Next 14) that happens to live in this repo. It isn't part
+    // of the StrikeLab app and shouldn't be swept into its lint run.
+    "finpath/**",
   ]),
 ]);
 
