@@ -100,7 +100,15 @@ export default function PricingClient() {
     try {
       await startCheckout(plan);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Something went wrong. Try again.");
+      const msg = err instanceof Error ? err.message : "Something went wrong. Try again.";
+      // "Payments are not configured yet" is a permanent state until Stripe
+      // is wired up, not a transient failure — give it its own honest copy
+      // instead of the raw backend message.
+      setError(
+        msg === "Payments are not configured yet"
+          ? "Online checkout isn't live yet."
+          : msg,
+      );
       setLoading(null);
     }
   }
@@ -120,7 +128,7 @@ export default function PricingClient() {
         </p>
         {error && (
           <p className="mt-4 text-sm font-medium" style={{ color: "var(--coral)" }}>
-            {error} — if this persists, email hello@strikelab.app
+            {error} — email hello@strikelab.app and we'll get you set up.
           </p>
         )}
       </div>
