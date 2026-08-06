@@ -128,7 +128,7 @@ export default function PricingClient() {
         </p>
         {error && (
           <p className="mt-4 text-sm font-medium" style={{ color: "var(--coral)" }}>
-            {error} — email hello@strikelab.app and we'll get you set up.
+            {error} — email hello@strikelab.app and we&apos;ll get you set up.
           </p>
         )}
       </div>
