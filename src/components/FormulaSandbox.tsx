@@ -14,6 +14,17 @@ function erf(x: number): number {
 function normCdf(x: number): number {
   return 0.5 * (1 + erf(x / Math.SQRT2));
 }
+function normPdf(x: number): number {
+  return Math.exp(-0.5 * x * x) / Math.sqrt(2 * Math.PI);
+}
+
+/** Shared d1/d2 for the Black-Scholes-family sandboxes below (call side only — these are "try it" widgets, not full pricers). */
+function bsD1D2(v: Record<string, number>) {
+  const S = v.stock, K = v.strike, T = v.time, r = v.rate / 100, sigma = v.vol / 100;
+  const d1 = (Math.log(S / K) + (r + 0.5 * sigma * sigma) * T) / (sigma * Math.sqrt(T));
+  const d2 = d1 - sigma * Math.sqrt(T);
+  return { S, K, T, r, sigma, d1, d2 };
+}
 
 /**
  * Named compute functions, keyed by `computeId` in the lesson data. Lives
@@ -34,10 +45,29 @@ const COMPUTE: Record<string, (v: Record<string, number>) => number> = {
   maxDrawdown: (v) => (v.peak === 0 ? 0 : ((v.peak - v.trough) / v.peak) * 100),
   zscore: (v) => (v.std === 0 ? 0 : (v.spread - v.mean) / v.std),
   rhoCall: (v) => {
-    const S = v.stock, K = v.strike, T = v.time, r = v.rate / 100, sigma = v.vol / 100;
-    const d1 = (Math.log(S / K) + (r + 0.5 * sigma * sigma) * T) / (sigma * Math.sqrt(T));
-    const d2 = d1 - sigma * Math.sqrt(T);
+    const { K, T, r, d2 } = bsD1D2(v);
     return (K * T * Math.exp(-r * T) * normCdf(d2)) / 100;
+  },
+  blackScholesCall: (v) => {
+    const { S, K, T, r, d1, d2 } = bsD1D2(v);
+    return S * normCdf(d1) - K * Math.exp(-r * T) * normCdf(d2);
+  },
+  deltaCall: (v) => {
+    const { d1 } = bsD1D2(v);
+    return normCdf(d1);
+  },
+  thetaCall: (v) => {
+    const { S, K, T, r, sigma, d1, d2 } = bsD1D2(v);
+    const common = (-S * normPdf(d1) * sigma) / (2 * Math.sqrt(T));
+    return (common - r * K * Math.exp(-r * T) * normCdf(d2)) / 365;
+  },
+  gammaCall: (v) => {
+    const { S, T, sigma, d1 } = bsD1D2(v);
+    return normPdf(d1) / (S * sigma * Math.sqrt(T));
+  },
+  vegaCall: (v) => {
+    const { S, T, d1 } = bsD1D2(v);
+    return (S * normPdf(d1) * Math.sqrt(T)) / 100;
   },
 };
 
@@ -62,8 +92,11 @@ export default function FormulaSandbox({ config }: { config: FormulaSandboxConfi
     }
   }, [values, config.computeId]);
 
+  // Keep a negative sign in front of the prefix ("−$0.05", not "$−0.05") by
+  // formatting the magnitude and prepending the sign separately.
+  const isNegative = Number.isFinite(result) && result < 0;
   const formatted = Number.isFinite(result)
-    ? result.toLocaleString(undefined, {
+    ? Math.abs(result).toLocaleString(undefined, {
         maximumFractionDigits: config.decimals ?? 2,
         minimumFractionDigits: 0,
       })
@@ -106,6 +139,7 @@ export default function FormulaSandbox({ config }: { config: FormulaSandboxConfi
       <div className="fsb-result">
         <span className="fsb-result-label">{config.resultLabel}</span>
         <span className="fsb-result-val">
+          {isNegative && "−"}
           {config.resultPrefix}
           {formatted}
           {config.resultSuffix}

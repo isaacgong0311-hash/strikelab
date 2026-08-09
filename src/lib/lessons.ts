@@ -67,71 +67,71 @@ export const LESSONS: Lesson[] = [
     duration: "15 min",
     content: `
 <h2>A 2,600-Year-Old Idea</h2>
-<p>Options are not a modern invention. Around 600 BCE, the Greek philosopher Thales of Miletus predicted a bumper olive harvest based on his study of the stars. He didn't have money to buy olive presses outright, so he paid a small deposit to lock in the right to rent them at a fixed price when harvest season arrived. When his prediction proved correct and demand for presses surged, Thales exercised his right, rented the presses at the agreed price, and sublet them at the higher market rate, pocketing the difference. He had just traded the world's first recorded option.</p>
-<p>The modern options market traces to April 26, 1973, when the Chicago Board Options Exchange (CBOE) opened for business — the same year Fischer Black and Myron Scholes published the formula we'll study in Lesson 3. Before the CBOE, options were traded informally between dealers, with no standardized terms and no central clearing. The CBOE introduced standardized contracts, public price quotes, and a clearinghouse that guaranteed both sides. Trading volume on day one: 911 contracts. Today, roughly <strong>40 million options contracts</strong> trade daily on U.S. exchanges alone.</p>
+<p>Options feel like a modern financial invention, but they're not. Around 600 BCE, the Greek philosopher Thales of Miletus studied the stars, decided a bumper olive harvest was coming, and acted on it — except he didn't have the money to buy up olive presses outright. So he paid a small deposit for the right to rent them at a fixed price once harvest season arrived. His prediction turned out right, demand for presses spiked, and Thales exercised that right, rented the presses at the price he'd locked in, and sublet them at the much higher going rate. The spread was his profit. Without knowing it, he'd just traded the first option on record.</p>
+<p>The modern market traces to April 26, 1973, when the Chicago Board Options Exchange opened its doors — the same year Fischer Black and Myron Scholes published the formula we'll dig into in Lesson 3. Before the CBOE, options changed hands informally between dealers, with no standard terms and nobody guaranteeing either side would actually pay up. The CBOE fixed that: standardized contracts, public quotes, a clearinghouse backing every trade. Day one volume was a modest 911 contracts. Today it's roughly <strong>40 million options contracts</strong> trading daily on U.S. exchanges alone.</p>
 
 <h2>The Core Idea</h2>
-<p>An option is a contract that gives its buyer the <strong>right, but not the obligation</strong>, to buy or sell an asset at a predetermined price on or before a specified date. Three terms define every option:</p>
+<p>An option is a contract giving its buyer the <strong>right, but not the obligation</strong>, to buy or sell something at a set price, on or before a set date. Every option, no matter how exotic it gets later, boils down to three numbers:</p>
 <ul>
-  <li><strong>Underlying (S):</strong> the asset the option is written on — most commonly a stock, but also an index, ETF, commodity, or currency.</li>
-  <li><strong>Strike price (K):</strong> the price at which the option holder may buy or sell. Also called the exercise price.</li>
-  <li><strong>Expiration date (T):</strong> the last date the option can be exercised. After this date it expires worthless if unexercised.</li>
+  <li><strong>Underlying (S):</strong> whatever the option is written on — usually a stock, but it could be an index, ETF, commodity, or currency</li>
+  <li><strong>Strike price (K):</strong> the price at which the holder gets to buy or sell, also called the exercise price</li>
+  <li><strong>Expiration date (T):</strong> the last day the option can be used. Miss it and, if it wasn't exercised, the contract just expires worthless</li>
 </ul>
-<p>The price paid for the option itself is the <strong>premium</strong>. This is the most the buyer can ever lose.</p>
+<p>Whatever you pay to own the option itself is the <strong>premium</strong> — and it's also the absolute most you can ever lose as the buyer.</p>
 
 <h2>Calls and Puts</h2>
-<p>There are exactly two kinds of options:</p>
+<p>There are only two flavors:</p>
 <ul>
-  <li>A <strong>call option</strong> gives the holder the right to <em>buy</em> the underlying at the strike price. Calls profit when the underlying rises.</li>
-  <li>A <strong>put option</strong> gives the holder the right to <em>sell</em> the underlying at the strike price. Puts profit when the underlying falls.</li>
+  <li>A <strong>call option</strong> gives you the right to <em>buy</em> the underlying at the strike. You want the price to go up.</li>
+  <li>A <strong>put option</strong> gives you the right to <em>sell</em> the underlying at the strike. You want the price to go down.</li>
 </ul>
-<p>Every option has two parties. The <strong>buyer</strong> (long) pays the premium and holds the right. The <strong>seller</strong> (short, or writer) collects the premium and takes on the obligation to fulfill the contract if the buyer exercises.</p>
+<p>Every option trade has two sides. The <strong>buyer</strong> (long) hands over the premium and holds the right to act. The <strong>seller</strong> (short, or "writer") pockets that premium up front but is on the hook to fulfill the contract if the buyer decides to exercise.</p>
 
 <h2>A Concrete Example</h2>
-<p>Suppose Apple (AAPL) is trading at $190. You believe it will rise before earnings next month. You buy one call option with:</p>
+<p>Say Apple (AAPL) is trading at $190 and you think it's heading higher before next month's earnings. You buy one call option:</p>
 <ul>
   <li>Strike: $195</li>
   <li>Expiration: 30 days</li>
   <li>Premium: $4.50 per share</li>
 </ul>
-<p>One standard equity option contract covers <strong>100 shares</strong>, so you pay $450 total.</p>
-<p><strong>Scenario A — AAPL rises to $210 at expiration:</strong> You exercise the call, buying 100 shares at $195 and immediately selling them at $210. Gross profit: $1,500. Subtract the $450 premium. Net profit: $1,050 — a 233% return on your $450 outlay.</p>
-<p><strong>Scenario B — AAPL stays at $190 at expiration:</strong> The call expires worthless. You lose your entire $450 premium. The stock moved against you, but your maximum loss was capped at the premium — not the full $19,000 you'd have lost buying 100 shares.</p>
-<p>This asymmetry is the fundamental appeal of options: <strong>limited downside, leveraged upside</strong>.</p>
+<p>Since one standard equity option contract covers <strong>100 shares</strong>, that premium costs you $450 total.</p>
+<p><strong>Scenario A — AAPL rises to $210 by expiration:</strong> you exercise, buying 100 shares at $195 and immediately selling at $210. That's $1,500 gross profit. Subtract the $450 you paid and you've netted $1,050 — a 233% return on the money you actually risked.</p>
+<p><strong>Scenario B — AAPL sits at $190 through expiration:</strong> the call expires worthless and you lose the full $450 premium. Painful, but notice what didn't happen — you didn't lose anywhere near the $19,000 you'd have been out if you'd bought 100 shares outright and the stock went nowhere.</p>
+<p>That asymmetry is the whole appeal of options in one sentence: <strong>limited downside, leveraged upside</strong>.</p>
 
 <h2>American vs. European Options</h2>
-<p>Options come in two exercise styles:</p>
+<p>Options also come in two exercise styles:</p>
 <ul>
-  <li><strong>American options</strong> can be exercised at any time before expiration. Most stock options traded on U.S. exchanges are American-style.</li>
-  <li><strong>European options</strong> can only be exercised at expiration. Most index options (SPX, NDX) are European-style. The Black-Scholes formula we'll derive in Lesson 3 is technically for European options.</li>
+  <li><strong>American options</strong> can be exercised any time before expiration — most U.S.-listed stock options work this way.</li>
+  <li><strong>European options</strong> can only be exercised right at expiration, not a day before. Most index options (SPX, NDX) are European-style, and — slightly confusingly — the Black-Scholes formula we derive in Lesson 3 is technically built for European options only.</li>
 </ul>
-<p>The ability to exercise early is almost always worth something for put options (especially deep in-the-money puts) but rarely worth much for calls on non-dividend stocks. We'll revisit this in the Binomial Trees lesson.</p>
+<p>The right to exercise early is genuinely valuable for puts, especially deep in-the-money ones, but rarely worth much for calls on stocks that don't pay dividends. We'll come back to exactly why in the Binomial Trees lesson.</p>
 
 <h2>Intrinsic Value vs. Extrinsic Value</h2>
-<p>An option's premium decomposes into two components:</p>
+<p>Every option's premium is really two things stacked together:</p>
 <ul>
-  <li><strong>Intrinsic value</strong> is what you'd capture if you exercised right now. For a call: max(S − K, 0). For a put: max(K − S, 0). It can never be negative.</li>
-  <li><strong>Extrinsic value</strong> (also called time value) is everything else. It reflects the probability that the option will gain more intrinsic value before expiry, driven by time remaining and volatility.</li>
+  <li><strong>Intrinsic value</strong> — what you'd pocket if you exercised this instant. For a call: max(S − K, 0). For a put: max(K − S, 0). It's never negative; the worst case is zero.</li>
+  <li><strong>Extrinsic value</strong> (or "time value") — everything left over. It's the market pricing in the chance the option gains more intrinsic value before it expires, driven mostly by how much time is left and how volatile the stock is.</li>
 </ul>
-<p>Example: AAPL at $190, call with K = $185 trading at $9.00. Intrinsic value = $5.00. Extrinsic value = $4.00. An option always trades at or above intrinsic value — otherwise there's an immediate arbitrage.</p>
+<p>Concrete example: AAPL at $190, a $185-strike call trading at $9.00. Intrinsic value is $5.00, so the remaining $4.00 is extrinsic value. An option should always trade at or above its intrinsic value — if it didn't, you could exercise and resell for a free, instant profit, and the market doesn't leave that sitting around for long.</p>
 
 <h2>Moneyness</h2>
-<p>Moneyness describes where the current stock price sits relative to the strike:</p>
+<p>"Moneyness" is just a way of describing where the stock price sits relative to the strike:</p>
 <ul>
-  <li><strong>In-the-money (ITM):</strong> the option has positive intrinsic value. Call: S &gt; K. Put: S &lt; K.</li>
-  <li><strong>At-the-money (ATM):</strong> S ≈ K. Intrinsic value is approximately zero but extrinsic value is at its maximum for a given expiry.</li>
-  <li><strong>Out-of-the-money (OTM):</strong> intrinsic value is zero. Call: S &lt; K. Put: S &gt; K. Pure time value — essentially a bet that the stock will move enough.</li>
+  <li><strong>In-the-money (ITM):</strong> positive intrinsic value. Call: S &gt; K. Put: S &lt; K.</li>
+  <li><strong>At-the-money (ATM):</strong> S ≈ K. Intrinsic value is close to zero, but this is where extrinsic value peaks for a given expiration.</li>
+  <li><strong>Out-of-the-money (OTM):</strong> zero intrinsic value. Call: S &lt; K. Put: S &gt; K. What you're paying for here is pure time value — essentially a bet that the stock moves far enough, fast enough.</li>
 </ul>
-<p>Deep OTM options are cheap in absolute terms but highly leveraged. A $0.10 option that pays off $5 delivers a 50x return. They are also the most likely to expire worthless — over 70% of options held to expiration expire with zero value according to CBOE data.</p>
+<p>Deep OTM options are cheap in dollar terms but extremely leveraged — a $0.10 option that pays off $5 hands you a 50x return. They're also the most likely to end up worthless: CBOE data puts the share of options held to expiration that expire with zero value above 70%.</p>
 
 <h2>Why Options Exist</h2>
-<p>Three legitimate uses drive the options market:</p>
+<p>Strip away the speculation and three legitimate uses actually drive this market:</p>
 <ol>
-  <li><strong>Hedging:</strong> A portfolio manager owning 10,000 shares of Apple might buy puts to protect against a crash — paying a small premium to cap downside losses. This is portfolio insurance.</li>
-  <li><strong>Speculation:</strong> Traders use options to express directional or volatility views with defined risk and high leverage.</li>
-  <li><strong>Income generation:</strong> Shareholders sell covered calls against stock they own, collecting premium as income in exchange for capping their upside.</li>
+  <li><strong>Hedging:</strong> a fund manager sitting on 10,000 shares of Apple might buy puts as insurance against a crash — a small, known premium in exchange for capping how much they can lose.</li>
+  <li><strong>Speculation:</strong> traders use options to bet on direction or volatility with a defined, capped downside and outsized leverage.</li>
+  <li><strong>Income generation:</strong> shareholders sell covered calls against stock they already own, collecting premium as income in exchange for giving up some of the upside if the stock rips higher.</li>
 </ol>
-<p>Understanding which use case a trade serves is critical to evaluating whether it makes sense. The same instrument — a put option — can be portfolio insurance for a hedger, a speculative short bet for a directional trader, or a cash-secured income trade for a seller.</p>
+<p>Knowing which of these three a given trade actually serves matters more than it sounds — the exact same instrument, a put option, can be portfolio insurance for a hedger, a leveraged short bet for a speculator, or a cash-secured income play for a seller, all at once, depending only on who's on which side.</p>
     `,
     sandboxes: [
       {
@@ -184,57 +184,57 @@ print("Tests passed!")
     duration: "15 min",
     content: `
 <h2>The Most Important Relationship in Options</h2>
-<p>Put-call parity is a no-arbitrage constraint that ties together the prices of European calls, European puts, the underlying stock, and a risk-free bond. It requires no assumptions about how stock prices move — it follows purely from the absence of free money. Understanding it deeply will teach you more about options pricing than memorizing any formula.</p>
-<p>The relationship is:</p>
+<p>Put-call parity is a no-arbitrage rule linking the price of a European call, a European put, the underlying stock, and a risk-free bond. What makes it powerful is what it doesn't require: no assumption about which way the stock is headed, how volatile it is, or anything about the future at all. It falls straight out of one idea — that free money doesn't just sit around waiting to be picked up. Spend the time to really understand this relationship and you'll walk away knowing more about how options pricing actually works than you would from memorizing a dozen formulas.</p>
+<p>The relationship itself:</p>
 <blockquote><strong>C − P = S − K · e<sup>−rT</sup></strong></blockquote>
-<p>where C is the call price, P is the put price, S is the current stock price, K is the shared strike, r is the continuously compounded risk-free rate, and T is time to expiration in years. The term K · e<sup>−rT</sup> is the present value of K — what you'd need to invest today at the risk-free rate to have exactly K at expiration.</p>
+<p>C is the call price, P the put price, S the current stock price, K the strike both options share, r the continuously compounded risk-free rate, and T the time to expiration in years. That K · e<sup>−rT</sup> term is just the present value of K — how much you'd need to invest today at the risk-free rate to have exactly K in hand at expiration.</p>
 <div class="lesson-callout">
   <span class="lesson-callout-label">Try the sandbox below</span>
   <p>Play with S, K, r, and T and watch the right-hand side, S − K·e<sup>−rT</sup>, move. That's exactly what C − P has to equal, no matter what the market's current sentiment is — it's an accounting identity, not a prediction.</p>
 </div>
 
 <h2>The Proof: Two Portfolios, One Payoff</h2>
-<p>Consider two portfolios constructed today and held to expiration at time T:</p>
-<p><strong>Portfolio A:</strong> Buy one European call at strike K. Invest K · e<sup>−rT</sup> in a risk-free bond.</p>
-<p><strong>Portfolio B:</strong> Buy one European put at strike K. Buy one share of the stock.</p>
-<p>What does each portfolio pay at expiration? Let S<sub>T</sub> denote the stock price at time T.</p>
-<p><strong>If S<sub>T</sub> &gt; K (call expires in-the-money):</strong></p>
+<p>Here's the cleanest way to see why the formula has to be true. Build two portfolios today, hold both to expiration at time T, and compare what each one pays out.</p>
+<p><strong>Portfolio A:</strong> buy one European call at strike K, and invest K · e<sup>−rT</sup> in a risk-free bond.</p>
+<p><strong>Portfolio B:</strong> buy one European put at strike K, and buy one share of the stock.</p>
+<p>Let S<sub>T</sub> be the stock price at time T, and check both portfolios in both possible worlds.</p>
+<p><strong>If S<sub>T</sub> &gt; K (the call finishes in-the-money):</strong></p>
 <ul>
-  <li>Portfolio A: Call pays S<sub>T</sub> − K. Bond matures to K. Total: <strong>S<sub>T</sub></strong>.</li>
-  <li>Portfolio B: Put expires worthless (worth 0). Stock worth S<sub>T</sub>. Total: <strong>S<sub>T</sub></strong>.</li>
+  <li>Portfolio A: the call pays S<sub>T</sub> − K, the bond matures to K. Total: <strong>S<sub>T</sub></strong>.</li>
+  <li>Portfolio B: the put expires worthless, the stock is worth S<sub>T</sub>. Total: <strong>S<sub>T</sub></strong>.</li>
 </ul>
-<p><strong>If S<sub>T</sub> &lt; K (put expires in-the-money):</strong></p>
+<p><strong>If S<sub>T</sub> &lt; K (the put finishes in-the-money):</strong></p>
 <ul>
-  <li>Portfolio A: Call expires worthless. Bond matures to K. Total: <strong>K</strong>.</li>
-  <li>Portfolio B: Put pays K − S<sub>T</sub>. Stock worth S<sub>T</sub>. Total: K − S<sub>T</sub> + S<sub>T</sub> = <strong>K</strong>.</li>
+  <li>Portfolio A: the call expires worthless, the bond matures to K. Total: <strong>K</strong>.</li>
+  <li>Portfolio B: the put pays K − S<sub>T</sub>, the stock is worth S<sub>T</sub>. Total: K − S<sub>T</sub> + S<sub>T</sub> = <strong>K</strong>.</li>
 </ul>
-<p>In both cases, Portfolio A and Portfolio B pay identical amounts at expiration: max(S<sub>T</sub>, K). Since they have identical future cash flows with certainty, they must cost the same today — otherwise you could buy the cheap portfolio, short the expensive one, and lock in a risk-free profit. This argument is called the <strong>law of one price</strong>.</p>
-<p>Therefore: C + K · e<sup>−rT</sup> = P + S, which rearranges to C − P = S − K · e<sup>−rT</sup>.</p>
+<p>Either way, Portfolio A and Portfolio B pay out exactly the same amount: max(S<sub>T</sub>, K). Two portfolios with identical, guaranteed future cash flows have to cost the same today — if one were cheaper, you could buy it, short the pricier one, and pocket a riskless profit. Economists call this the <strong>law of one price</strong>, and it's about as close to an iron law as finance gets.</p>
+<p>So C + K · e<sup>−rT</sup> = P + S, and rearranging that gives you back C − P = S − K · e<sup>−rT</sup>.</p>
 
 <h2>What Happens When Parity Breaks?</h2>
-<p>In 2010, researchers documented persistent put-call parity violations in equity options during the 2008 financial crisis. When Lehman Brothers was failing, put prices on financial stocks were dramatically elevated relative to calls — a violation of parity that couldn't be easily arbitraged away because shorting the required stocks was impossible (regulators had temporarily banned short selling in financial stocks). This is a perfect example of how no-arbitrage relationships depend on the ability to execute all legs of the trade freely.</p>
-<p>In normal markets, any violation is exploited and closed within milliseconds by algorithmic traders. The parity relationship is one of the most tightly enforced in all of finance.</p>
+<p>It's not entirely unbreakable, though — just very hard to break for long. Researchers later documented real put-call parity violations in equity options during the 2008 crisis. As Lehman Brothers was collapsing, puts on financial stocks traded dramatically rich relative to calls, and the usual arbitrage that should have closed the gap couldn't run: regulators had temporarily banned short selling in financial stocks, so the trade that would normally correct the mispricing simply wasn't available. It's a useful reminder that no-arbitrage relationships only hold as long as every leg of the trade stays executable.</p>
+<p>Outside a crisis, though, any parity violation gets found and closed within milliseconds by algorithmic traders. Few relationships in finance are enforced as tightly as this one.</p>
 
 <h2>Synthetic Positions</h2>
-<p>Rearranging put-call parity gives you four synthetic equivalences that every options trader knows:</p>
+<p>Rearrange put-call parity a few different ways and you get four equivalences every options trader eventually memorizes:</p>
 <ul>
-  <li><strong>Synthetic long stock:</strong> C − P + K · e<sup>−rT</sup> = S. Buy call, sell put, invest PV(K) → same payoff as owning the stock.</li>
-  <li><strong>Synthetic call:</strong> C = P + S − K · e<sup>−rT</sup>. If calls are expensive, you can replicate one using a put plus stock.</li>
-  <li><strong>Synthetic put:</strong> P = C − S + K · e<sup>−rT</sup>. If you know the call price, you can derive the put price exactly.</li>
-  <li><strong>Box spread:</strong> Buy a call spread and sell a put spread at the same strikes. The payoff at expiration is always K<sub>2</sub> − K<sub>1</sub> (a constant), so the box must trade at its present value. Box spreads are used by market makers to borrow and lend at the implied options rate.</li>
+  <li><strong>Synthetic long stock:</strong> C − P + K · e<sup>−rT</sup> = S. Buy a call, sell a put, invest PV(K), and you've recreated owning the stock outright.</li>
+  <li><strong>Synthetic call:</strong> C = P + S − K · e<sup>−rT</sup>. If calls look overpriced, you can build one yourself out of a put plus the stock.</li>
+  <li><strong>Synthetic put:</strong> P = C − S + K · e<sup>−rT</sup>. Know the call price and you can back out exactly what the put should cost.</li>
+  <li><strong>Box spread:</strong> buy a call spread and sell a put spread at the same two strikes. The payoff at expiration is always the fixed gap K<sub>2</sub> − K<sub>1</sub>, no matter where the stock lands — so the box has to trade at that gap's present value. Market makers use box spreads to effectively borrow and lend at whatever rate the options market implies.</li>
 </ul>
 
 <h2>Dividends and Early Exercise</h2>
-<p>The parity formula above assumes no dividends. When the underlying pays a dividend with present value PV(D), the relationship becomes:</p>
+<p>Everything above assumes the stock pays no dividends. Once it does, with present value PV(D), the relationship needs one more term:</p>
 <blockquote>C − P = S − PV(D) − K · e<sup>−rT</sup></blockquote>
-<p>This matters enormously in practice. In the days before a large dividend, deep ITM call holders sometimes exercise early to capture the dividend — a situation where American and European prices diverge. The dividend-adjusted parity helps predict when this will happen.</p>
+<p>This isn't just a footnote — it shows up in real trading. In the days before a large dividend, holders of deep in-the-money American calls sometimes exercise early specifically to capture that dividend, which is exactly the situation where American and European option prices start to diverge. The dividend-adjusted version of parity is what lets you predict when that's likely to happen.</p>
 
 <h2>A Numerical Example</h2>
-<p>AAPL is trading at $190. A 90-day call with K = $190 trades at $8.50. The risk-free rate is 5%. No dividends. What should the put trade at?</p>
-<p>Using P = C − S + K · e<sup>−rT</sup>:</p>
+<p>AAPL trades at $190. A 90-day call at K = $190 trades at $8.50. The risk-free rate is 5%, and there are no dividends. What should the put be worth?</p>
+<p>Start from P = C − S + K · e<sup>−rT</sup>:</p>
 <p>K · e<sup>−rT</sup> = 190 · e<sup>−0.05 × 0.25</sup> = 190 · 0.9876 = $187.64</p>
 <p>P = $8.50 − $190 + $187.64 = <strong>$6.14</strong></p>
-<p>If the market is quoting the put at $7.50, that's a violation. You'd short the put at $7.50, buy the call at $8.50, short the stock at $190, and invest $187.64 at the risk-free rate. Your net cash inflow today: $7.50 − $8.50 + $190 − $187.64 = $1.36. At expiration, all legs net to zero regardless of where AAPL trades. Free money.</p>
+<p>Now say the market's actually quoting the put at $7.50 — that's a real violation, and here's how you'd capture it: short the put at $7.50, buy the call at $8.50, short the stock at $190, and invest $187.64 at the risk-free rate. Net cash in your pocket today: $7.50 − $8.50 + $190 − $187.64 = $1.36. Every leg cancels out at expiration no matter where AAPL ends up — the $1.36 is yours, risk-free, from a pricing inconsistency alone.</p>
     `,
     sandboxes: [
       {
@@ -297,25 +297,25 @@ print("Tests passed!")
     duration: "20 min",
     content: `
 <h2>The Nobel Prize Formula</h2>
-<p>On May 1, 1973 — exactly five days after the CBOE opened — the <em>Journal of Political Economy</em> published "The Pricing of Options and Corporate Liabilities" by Fischer Black and Myron Scholes. The paper had been rejected by two journals before publication. In 1997, Scholes and Robert Merton shared the Nobel Prize in Economics for this work (Black had died in 1995). The committee called it "a major contribution to economic sciences."</p>
-<p>The formula gave options a theoretical price for the first time. Before 1973, traders priced options by feel. After 1973, there was a number — and within years, almost every options trader on earth was using it. The CBOE even distributed hand-held calculators pre-programmed with Black-Scholes to traders on its floor.</p>
+<p>On May 1, 1973 — just five days after the CBOE opened for trading — the <em>Journal of Political Economy</em> published "The Pricing of Options and Corporate Liabilities" by Fischer Black and Myron Scholes. Two journals had already rejected it. In 1997, Scholes and Robert Merton shared the Nobel Prize in Economics for the work (Black had passed away in 1995 and Nobels aren't awarded posthumously), with the committee calling it "a major contribution to economic sciences" — which undersells it a bit, honestly.</p>
+<p>What the formula actually did was give options a real, theoretical price for the first time. Before 1973, pricing an option was mostly a matter of feel and negotiation. After 1973, there was an actual number to anchor around — and within a few years, nearly every options trader on the planet was using some version of it. The CBOE went as far as handing traders on its floor calculators pre-programmed with the formula.</p>
 
 <h2>The Setup: Geometric Brownian Motion</h2>
-<p>Black and Scholes modeled stock price movements as <strong>geometric Brownian motion (GBM)</strong>. The key intuition: the <em>percentage</em> change in a stock price over a small time interval is normally distributed with mean μ dt and standard deviation σ √dt, where μ is the expected return and σ is the volatility.</p>
-<p>In math: dS = μS dt + σS dW<sub>t</sub>, where dW<sub>t</sub> is an increment of a Wiener process (continuous-time random walk). This implies that log returns — log(S<sub>t</sub>/S<sub>0</sub>) — are normally distributed, making the stock price itself <strong>log-normally distributed</strong>. Log-normal makes sense: prices can't go below zero, and a 10% gain followed by a 10% loss doesn't return you to the starting price.</p>
-<p>Under this model, the stock price at time T starting from S today is:</p>
+<p>Black and Scholes needed a model of how stock prices move, and they landed on <strong>geometric Brownian motion (GBM)</strong>. The core idea: over a tiny slice of time, the <em>percentage</em> change in a stock's price is normally distributed, with mean μ dt and standard deviation σ √dt — μ being the expected return, σ the volatility.</p>
+<p>Written out: dS = μS dt + σS dW<sub>t</sub>, where dW<sub>t</sub> is one increment of a Wiener process — a continuous-time random walk. This has a nice consequence: log returns, log(S<sub>t</sub>/S<sub>0</sub>), end up normally distributed, which makes the stock price itself <strong>log-normally distributed</strong>. That's actually the sensible outcome — prices can never dip below zero, and a 10% gain followed by a 10% loss doesn't get you back to where you started, which is exactly the kind of asymmetry a log-normal distribution captures and a normal one doesn't.</p>
+<p>Under this model, the price at time T starting from today's price S works out to:</p>
 <blockquote>S<sub>T</sub> = S · exp((μ − σ²/2)T + σ√T · Z)</blockquote>
-<p>where Z ~ N(0,1). The σ²/2 term is a Jensen's inequality correction — because log is concave, the expected log return is slightly less than μ.</p>
+<p>with Z ~ N(0,1). That σ²/2 term is a small correction from Jensen's inequality — since log is a concave function, the expected log return ends up a touch below μ.</p>
 
 <h2>The Key Insight: Risk-Neutral Pricing</h2>
-<p>Black and Scholes made a stunning discovery: <strong>the option price does not depend on the expected return μ of the stock</strong>. This seems wrong at first — surely a stock that's expected to rise is worth more as a call option?</p>
-<p>The logic is subtle. If you hold a call and continuously delta-hedge it (buy and sell the underlying to stay delta-neutral), you can eliminate all directional risk from the position. The resulting hedged portfolio must earn the risk-free rate — otherwise there's an arbitrage. But this means the drift μ cancels out of the pricing equation entirely. You can price the option as if the stock grows at the risk-free rate r, regardless of its true expected return. This is <strong>risk-neutral pricing</strong>.</p>
-<p>Mathematically, this means replacing μ with r in the GBM, which gives:</p>
+<p>Here's the part of the paper that made everyone sit up: <strong>the option's price turns out not to depend on the stock's expected return μ at all</strong>. That sounds wrong on first read — shouldn't a call option on a stock everyone expects to rise be worth more?</p>
+<p>The reasoning behind it is subtle but airtight. If you hold a call and continuously delta-hedge it — constantly buying and selling the underlying to stay delta-neutral — you can strip out all the directional risk from the position entirely. Whatever's left over is a hedged portfolio that has to earn exactly the risk-free rate, or there's an arbitrage sitting right there. But notice what that means: the drift μ never actually appears in the pricing equation — it cancels out completely. You can price the option as if the stock simply grows at the risk-free rate r, regardless of what anyone actually believes about it. That's <strong>risk-neutral pricing</strong>.</p>
+<p>Mechanically, that just means swapping μ for r in the GBM formula:</p>
 <blockquote>S<sub>T</sub> = S · exp((r − σ²/2)T + σ√T · Z), where Z ~ N(0,1)</blockquote>
-<p>The option price is then the expected payoff under this risk-neutral measure, discounted at the risk-free rate.</p>
+<p>From there, the option's price is simply the expected payoff under this risk-neutral world, discounted back at the risk-free rate.</p>
 
 <h2>The Black-Scholes Formula</h2>
-<p>Taking the expected value of max(S<sub>T</sub> − K, 0) under the log-normal distribution and discounting gives:</p>
+<p>Take the expected value of max(S<sub>T</sub> − K, 0) under that log-normal distribution, discount it, and out comes the formula everyone knows:</p>
 <blockquote>
   <strong>C = S · N(d₁) − K · e<sup>−rT</sup> · N(d₂)</strong><br/>
   <strong>P = K · e<sup>−rT</sup> · N(−d₂) − S · N(−d₁)</strong>
@@ -324,39 +324,57 @@ print("Tests passed!")
 <ul>
   <li>d₁ = [ln(S/K) + (r + σ²/2)·T] / (σ·√T)</li>
   <li>d₂ = d₁ − σ·√T = [ln(S/K) + (r − σ²/2)·T] / (σ·√T)</li>
-  <li>N(·) is the standard normal CDF — the probability that a standard normal variable is below a given value</li>
+  <li>N(·) is the standard normal CDF — the probability a standard normal variable falls below a given value</li>
 </ul>
 
 <h2>Interpreting Each Term</h2>
-<p>The formula has a clean interpretation. For a call:</p>
+<p>The formula isn't just symbol-pushing — each piece has a clean, readable meaning. For a call:</p>
 <ul>
-  <li><strong>N(d₂)</strong> is the risk-neutral probability that the call expires in-the-money (S<sub>T</sub> &gt; K). It's approximately the probability you'll end up with the stock.</li>
-  <li><strong>N(d₁)</strong> is a delta-adjusted probability — the expected fraction of the stock price you effectively "own" through the option. It's always slightly larger than N(d₂) because of the log-normal skew.</li>
-  <li><strong>S · N(d₁)</strong> is the present value of receiving the stock conditional on the call being exercised.</li>
-  <li><strong>K · e<sup>−rT</sup> · N(d₂)</strong> is the present value of paying the strike K conditional on exercise.</li>
+  <li><strong>N(d₂)</strong> is the risk-neutral probability the call finishes in-the-money (S<sub>T</sub> &gt; K) — roughly, the odds you actually end up owning the stock.</li>
+  <li><strong>N(d₁)</strong> is a delta-adjusted version of that same probability — the expected fraction of the stock's value you effectively hold through the option. It's always a touch bigger than N(d₂), a consequence of the log-normal distribution's skew.</li>
+  <li><strong>S · N(d₁)</strong> is the present value of receiving the stock, conditional on the call getting exercised.</li>
+  <li><strong>K · e<sup>−rT</sup> · N(d₂)</strong> is the present value of having to pay the strike K, conditional on that same exercise.</li>
 </ul>
-<p>The call price is what you get (the stock) minus what you pay (the strike), each probability-weighted and discounted.</p>
+<p>So the call's price is really just what you get minus what you pay — the stock side minus the strike side — each one weighted by its probability and discounted back to today.</p>
 
 <h2>What d₁ and d₂ Measure</h2>
-<p>Think of d₁ and d₂ as standardized measures of how far in-the-money the option is:</p>
+<p>d₁ and d₂ are best thought of as standardized versions of "how deep in-the-money is this option":</p>
 <ul>
-  <li>ln(S/K) measures how far the stock is from the strike in log-space. Positive means S &gt; K (ITM call).</li>
-  <li>(r + σ²/2)·T adjusts for the drift of the log-normal process.</li>
-  <li>σ·√T normalizes by the uncertainty over the life of the option.</li>
+  <li>ln(S/K) captures the distance between stock and strike in log-space — positive means S &gt; K, an in-the-money call</li>
+  <li>(r + σ²/2)·T adjusts for the log-normal process's built-in drift</li>
+  <li>σ·√T rescales everything by how much uncertainty has accumulated over the option's life</li>
 </ul>
-<p>As T → 0 at expiration, the formula collapses to the intrinsic value: C → max(S − K, 0). As σ → 0 (certain world), the formula gives the discounted payoff with certainty. Both limits make sense.</p>
+<p>Two sanity checks worth internalizing: as T → 0 approaching expiration, the whole formula collapses down to plain intrinsic value, C → max(S − K, 0). And as σ → 0, meaning a world with no uncertainty at all, it gives you exactly the discounted certain payoff. Both edge cases behave exactly the way common sense says they should.</p>
 
 <h2>The Assumptions (and Their Violations)</h2>
-<p>Black-Scholes makes five key assumptions, all of which are violated to some degree in practice:</p>
+<p>Black-Scholes rests on five assumptions, and every single one of them is at least somewhat wrong in the real world:</p>
 <ol>
-  <li><strong>Constant volatility:</strong> Real volatility changes over time and across strikes. This is why traders use the "volatility smile" — different implied vols for different strikes — a direct contradiction of the model.</li>
-  <li><strong>Log-normal returns:</strong> Real stock returns have "fat tails" — extreme moves happen far more often than the normal distribution predicts. The 1987 Black Monday crash (Dow −22.6% in one day) was a 27-sigma event under Black-Scholes — theoretically impossible.</li>
-  <li><strong>No jumps:</strong> Stocks can gap overnight or on news. GBM assumes continuous paths.</li>
-  <li><strong>Continuous trading at zero cost:</strong> Delta hedging requires continuous rebalancing. In practice, trading is discrete and has transaction costs.</li>
-  <li><strong>Constant risk-free rate:</strong> Interest rates move, especially over longer option maturities.</li>
+  <li><strong>Constant volatility:</strong> real volatility drifts over time and varies by strike. That's exactly why traders talk about a "volatility smile" — different implied vols at different strikes — which is, strictly speaking, a direct contradiction of the model's own assumptions.</li>
+  <li><strong>Log-normal returns:</strong> real stock returns have fatter tails than a log-normal distribution predicts — extreme moves happen far more often than the model expects. Black Monday in 1987, when the Dow fell 22.6% in a single day, was a 27-sigma event under Black-Scholes — a move the model says should essentially never happen.</li>
+  <li><strong>No jumps:</strong> stocks gap overnight and on news constantly. GBM only knows how to model smooth, continuous price paths.</li>
+  <li><strong>Continuous trading at zero cost:</strong> proper delta hedging needs constant rebalancing. Real trading happens in discrete chunks and comes with real transaction costs.</li>
+  <li><strong>Constant risk-free rate:</strong> rates move, and that matters more the longer an option's maturity stretches out.</li>
 </ol>
-<p>Despite these violations, Black-Scholes remains the lingua franca of options markets. Traders don't use it to believe its prices are correct — they use it as a common language to quote <strong>implied volatility</strong>, which we'll study in Lesson 8.</p>
+<p>None of that has retired the formula, though. Traders don't use Black-Scholes because they believe its output is literally correct — they use it as a shared language, a common way to quote <strong>implied volatility</strong>, which is where Lesson 8 picks up.</p>
     `,
+    sandboxes: [
+      {
+        afterSectionId: "the-black-scholes-formula",
+        title: "Black-Scholes Call Price",
+        formula: "C = S·N(d₁) − K·e^(−rT)·N(d₂)",
+        variables: [
+          { key: "stock", label: "Stock price (S)", unit: "$", defaultValue: 100, min: 20, max: 300, step: 1 },
+          { key: "strike", label: "Strike price (K)", unit: "$", defaultValue: 100, min: 20, max: 300, step: 1 },
+          { key: "time", label: "Time to expiry (T)", unit: "yrs", defaultValue: 1, min: 0.05, max: 3, step: 0.05 },
+          { key: "rate", label: "Risk-free rate (r)", unit: "%", defaultValue: 5, min: 0, max: 10, step: 0.25 },
+          { key: "vol", label: "Volatility (σ)", unit: "%", defaultValue: 20, min: 5, max: 80, step: 1 },
+        ],
+        computeId: "blackScholesCall",
+        resultLabel: "Call price",
+        resultPrefix: "$",
+        decimals: 2,
+      },
+    ],
     exercise: {
       prompt: "Implement `black_scholes_call(S, K, T, r, sigma)` from scratch.",
       starterCode: `import math
@@ -415,46 +433,63 @@ print("Tests passed!")
     duration: "15 min",
     content: `
 <h2>The First Derivative</h2>
-<p>The Greeks are the partial derivatives of an option's price with respect to each input in the Black-Scholes formula. Delta (Δ) is the most important: it's the partial derivative of the option price with respect to the <em>stock price</em>.</p>
+<p>The "Greeks" are just partial derivatives — how much the option's price shifts as you nudge each input to Black-Scholes. Delta (Δ) is the one traders reach for first, because it measures the option's sensitivity to the thing that matters most: the <em>stock price</em>.</p>
 <blockquote>Δ = ∂V / ∂S</blockquote>
-<p>In plain English: if the stock moves up by $1, the option moves up by approximately Δ dollars. If a call has Δ = 0.60, a $1 rise in the stock produces approximately a $0.60 rise in the call price. This approximation improves as the stock move gets smaller.</p>
+<p>Translated into plain English: if the stock moves up $1, the option moves roughly Δ dollars. A call with Δ = 0.60 gains about $0.60 for every $1 the stock rises. "Roughly" and "about" are doing real work in that sentence — it's a linear approximation that gets more accurate the smaller the stock's move actually is.</p>
 
 <h2>Delta Ranges and What They Mean</h2>
 <ul>
-  <li><strong>Call delta:</strong> always between 0 and +1. Deep OTM calls have Δ near 0; deep ITM calls have Δ near 1.</li>
-  <li><strong>Put delta:</strong> always between −1 and 0. Deep OTM puts have Δ near 0; deep ITM puts have Δ near −1.</li>
+  <li><strong>Call delta:</strong> always somewhere between 0 and +1. Deep out-of-the-money calls sit near 0; deep in-the-money calls sit near 1.</li>
+  <li><strong>Put delta:</strong> always between −1 and 0. Deep OTM puts sit near 0; deep ITM puts sit near −1.</li>
 </ul>
-<p>The Black-Scholes formulas:</p>
+<p>Straight from Black-Scholes:</p>
 <blockquote>
   Δ<sub>call</sub> = N(d₁)<br/>
   Δ<sub>put</sub>  = N(d₁) − 1 = −N(−d₁)
 </blockquote>
-<p>Note that Δ<sub>call</sub> + |Δ<sub>put</sub>| = N(d₁) + N(−d₁) = 1. This follows directly from put-call parity: a long call and short put at the same strike is equivalent to owning the stock (a synthetic long), so their deltas must sum to 1.</p>
+<p>Notice that Δ<sub>call</sub> + |Δ<sub>put</sub>| = N(d₁) + N(−d₁) = 1 — and this isn't a coincidence. It falls straight out of put-call parity from Lesson 2: a long call plus a short put at the same strike replicates owning the stock outright, so their deltas have no choice but to add up to exactly one.</p>
 
 <h2>Delta as a Probability Proxy</h2>
-<p>There's a useful intuition: an option's delta is approximately the risk-neutral probability that it will expire in-the-money. An ATM option with Δ ≈ 0.50 has roughly a 50/50 chance of expiring ITM. A deep OTM call with Δ = 0.05 has only about a 5% chance.</p>
-<p>This approximation is not exact — the true risk-neutral ITM probability is N(d₂), not N(d₁) — but the difference is small for short-dated options, and the intuition is extremely useful. Traders think of delta as moneyness and probability simultaneously.</p>
+<p>There's a handy shortcut buried in delta: it's a rough stand-in for the probability an option finishes in-the-money. An at-the-money option with Δ ≈ 0.50 is close to a coin flip. A deep OTM call at Δ = 0.05 has maybe a 5% shot.</p>
+<p>It's an approximation, not an identity — the actual risk-neutral probability is N(d₂), not N(d₁) — but for short-dated options the gap is tiny, and the shortcut earns its keep day to day. Ask any options trader what a "30-delta" or "70-delta" strike means and they'll answer in terms of probability without even thinking about it.</p>
 
 <h2>Delta Hedging: How Market Makers Think</h2>
-<p>The key insight of Black-Scholes is that you can hedge away the directional risk of an option by holding Δ shares of the underlying. This is called <strong>delta hedging</strong> or being <strong>delta-neutral</strong>.</p>
-<p>Example: A market maker sells 100 call contracts (options on 10,000 shares) with Δ = 0.45. To hedge, she buys 4,500 shares (10,000 × 0.45). Her net delta is zero — small stock moves don't hurt her. She makes money from the bid-ask spread, not from directional bets.</p>
-<p>But delta changes as the stock moves — that's gamma, which we cover in Lesson 6. When the stock rises, the call delta rises (options go more ITM), so the market maker must buy more shares. When the stock falls, she sells shares. She's perpetually rebalancing. This dynamic hedging process is called <strong>delta-gamma hedging</strong>, and the cost of doing it continuously is how the option's premium is "consumed."</p>
+<p>The real payoff of knowing delta is that it tells you exactly how to cancel out an option's directional risk: hold Δ shares of the underlying against it. That's <strong>delta hedging</strong>, and a position with zero net delta is <strong>delta-neutral</strong>.</p>
+<p>Say a market maker sells 100 call contracts — options on 10,000 shares total — each with Δ = 0.45. To hedge, she buys 4,500 shares (10,000 × 0.45). Her net delta lands at zero, so small moves in the stock barely touch her P&L either way. Her actual profit comes from the bid-ask spread she captured on the trade, not from any view on where the stock is headed.</p>
+<p>The catch is that delta doesn't sit still — it shifts as the stock moves, which is exactly what gamma (Lesson 6) measures. Stock rises, the call's delta creeps higher as it moves further in-the-money, and she has to buy more shares to stay hedged. Stock falls, she sells some back. She's constantly rebalancing, a process traders call <strong>delta-gamma hedging</strong> — and the cost of doing that rebalancing over and over is essentially how the option's premium gets "spent" over its life.</p>
 
 <h2>Delta in Practice: Real Numbers</h2>
-<p>Consider an SPY (S&P 500 ETF) option with the following inputs: S = 450, K = 450, T = 30 days (0.082 years), r = 5.25%, σ = 18%.</p>
-<p>Computing d₁: ln(450/450) + (0.0525 + 0.018²/2) × 0.082 all over 0.18 × √0.082 = (0 + 0.00447) / 0.0516 ≈ 0.0866</p>
-<p>Δ<sub>call</sub> = N(0.0866) ≈ 0.535. So a $1 move in SPY moves this ATM call by about $0.535. Not exactly $0.50 because of the r + σ²/2 drift term in d₁.</p>
+<p>Take an SPY option: S = 450, K = 450, T = 30 days (0.082 years), r = 5.25%, σ = 18%.</p>
+<p>First, d₁: ln(450/450) + (0.0525 + 0.18²/2) × 0.082, all over 0.18 × √0.082 — that's (0 + 0.00563) / 0.0515 ≈ 0.109.</p>
+<p>So Δ<sub>call</sub> = N(0.109) ≈ 0.544. A $1 move in SPY nudges this at-the-money call by about $0.544 — not the clean $0.50 you might guess, because of that r + σ²/2 drift term tucked inside d₁.</p>
 
 <h2>Portfolio Delta and Dollar Delta</h2>
-<p>The beauty of delta is that it's additive across positions. A portfolio's total delta is just the sum of deltas weighted by position size. A portfolio manager with:</p>
+<p>What makes delta so useful in practice is that it's additive — you can just sum it across an entire portfolio. Take a portfolio manager holding:</p>
 <ul>
-  <li>Long 500 shares of AAPL (Δ = 1 each): portfolio delta +500</li>
-  <li>Long 10 AAPL call contracts (Δ = 0.4, 100 shares each): portfolio delta +400</li>
-  <li>Long 5 AAPL put contracts (Δ = −0.3, 100 shares each): portfolio delta −150</li>
+  <li>500 shares of AAPL (Δ = 1 each): +500 portfolio delta</li>
+  <li>10 AAPL call contracts (Δ = 0.4, 100 shares each): +400 portfolio delta</li>
+  <li>5 AAPL put contracts (Δ = −0.3, 100 shares each): −150 portfolio delta</li>
 </ul>
-<p>Total delta: 500 + 400 − 150 = +750. The portfolio behaves like owning 750 shares of AAPL for small moves. To go delta-neutral, sell 750 shares (or buy puts covering 750 shares of delta).</p>
-<p><strong>Dollar delta</strong> scales this by the stock price: 750 × $190 = $142,500. A 1% move in AAPL changes this portfolio by approximately $1,425.</p>
+<p>Add it up: 500 + 400 − 150 = +750. For small moves, this whole portfolio behaves just like owning 750 plain shares of AAPL. To flatten it out entirely, sell 750 shares — or buy enough puts to offset that same 750 of delta.</p>
+<p><strong>Dollar delta</strong> just scales that by the stock price: 750 × $190 = $142,500. A 1% move in AAPL shifts this portfolio's value by roughly $1,425.</p>
     `,
+    sandboxes: [
+      {
+        afterSectionId: "delta-ranges-and-what-they-mean",
+        title: "Delta (Call)",
+        formula: "Δ = N(d₁)",
+        variables: [
+          { key: "stock", label: "Stock price (S)", unit: "$", defaultValue: 450, min: 20, max: 600, step: 1 },
+          { key: "strike", label: "Strike price (K)", unit: "$", defaultValue: 450, min: 20, max: 600, step: 1 },
+          { key: "time", label: "Time to expiry (T)", unit: "yrs", defaultValue: 0.08, min: 0.01, max: 2, step: 0.01 },
+          { key: "rate", label: "Risk-free rate (r)", unit: "%", defaultValue: 5.25, min: 0, max: 10, step: 0.25 },
+          { key: "vol", label: "Volatility (σ)", unit: "%", defaultValue: 18, min: 5, max: 80, step: 1 },
+        ],
+        computeId: "deltaCall",
+        resultLabel: "Delta",
+        decimals: 3,
+      },
+    ],
     exercise: {
       prompt: "Implement `compute_delta(S, K, T, r, sigma, option_type)` using the Black-Scholes formula.",
       starterCode: `import math
@@ -517,49 +552,67 @@ print("Tests passed!")
     duration: "15 min",
     content: `
 <h2>Options Are Wasting Assets</h2>
-<p>Every option has an expiration date. Each day that passes without a favorable move in the underlying, the option loses value — not because the stock moved against you, but simply because there's less time remaining for it to move in your favor. This erosion is called <strong>time decay</strong>, and it's measured by theta (Θ).</p>
-<p>Theta is the partial derivative of the option price with respect to time:</p>
+<p>Every option carries an expiration date, and that changes its whole character compared to just owning the stock. Every day that passes without the underlying moving in your favor, the option loses a little value — not because anything bad happened, but simply because there's now less time left for things to go your way. That erosion has a name, <strong>time decay</strong>, and a Greek letter attached to it: theta (Θ).</p>
+<p>Theta is the option price's partial derivative with respect to time:</p>
 <blockquote>Θ = ∂V / ∂t</blockquote>
-<p>By convention, theta is typically quoted as the change in option price per calendar day, with a negative sign — theta is almost always negative for long options because options lose value as time passes.</p>
-<p>If you own a call with Θ = −0.05, you lose approximately $0.05 per day from time decay alone, all else equal. Over a three-day weekend, you'd lose ~$0.15 without the stock moving at all.</p>
+<p>By convention it's quoted as the dollar change per calendar day, and for a long option it's almost always negative — time only ever works against you when you're the one holding the option.</p>
+<p>Own a call with Θ = −0.05 and you're bleeding roughly $0.05 a day from decay alone, everything else held equal. Sit through a three-day weekend and that's about $0.15 gone with the stock not having moved a cent.</p>
 
 <h2>The Formula</h2>
-<p>The Black-Scholes theta for a European call is:</p>
+<p>For a European call, Black-Scholes gives:</p>
 <blockquote>
   Θ<sub>call</sub> = [−S · n(d₁) · σ / (2√T) − r · K · e<sup>−rT</sup> · N(d₂)] / 365
 </blockquote>
-<p>And for a put:</p>
+<p>and for a put:</p>
 <blockquote>
   Θ<sub>put</sub> = [−S · n(d₁) · σ / (2√T) + r · K · e<sup>−rT</sup> · N(−d₂)] / 365
 </blockquote>
-<p>where n(·) is the standard normal PDF (not CDF). The division by 365 converts from annualized to daily theta. The first term — involving n(d₁) — is always negative and represents the optionality decaying. The second term involves the interest on the strike and can be positive for puts, which is why deep ITM puts sometimes have slightly positive theta.</p>
+<p>n(·) here is the standard normal PDF, not the CDF you saw earlier — a different function, easy to mix up. Dividing by 365 just converts the annualized number into something per-day. The first term, built around n(d₁), is always negative and captures pure optionality bleeding away. The second term is really interest accruing on the strike, and it can flip positive for puts — which is exactly why deep in-the-money puts occasionally show slightly positive theta, a quirk that surprises people the first time they see it.</p>
 
 <h2>Time Decay Is Not Linear</h2>
-<p>One of the most important practical facts about theta: <strong>time decay accelerates as expiration approaches</strong>. An ATM option doesn't lose 1/365 of its value each day — it loses much more in its final days.</p>
-<p>The reason is that the option's extrinsic value is approximately proportional to σ√T (the "vol-time" product). As T decreases, the rate of decrease of √T accelerates:</p>
+<p>Here's the practical fact that matters more than the formula: <strong>time decay speeds up the closer you get to expiration</strong>. An at-the-money option doesn't shed a tidy 1/365th of its value each day — it loses far more in its final days than in its first.</p>
+<p>The reason traces back to extrinsic value being roughly proportional to σ√T, the "vol-time" product. As T shrinks, √T doesn't shrink at a constant rate — its rate of change accelerates:</p>
 <blockquote>d(√T)/dt = 1/(2√T)</blockquote>
-<p>This blows up as T → 0. An ATM option with 30 days left decays much faster per day than the same option with 180 days left. Empirically, roughly half of an ATM option's time value is lost in the final 25% of its life.</p>
-<p>This is why option sellers love the final weeks before expiration — theta is collecting fastest. It's also why option buyers need their underlying to move quickly — each day of delay costs more than the previous one.</p>
+<p>and that expression blows up as T approaches zero. An ATM option with 30 days left is decaying meaningfully faster, day for day, than the identical option with 180 days left. As a rough rule of thumb, roughly half of an ATM option's remaining time value disappears in just the final quarter of its life.</p>
+<p>That's exactly why option sellers love the last few weeks before expiration — theta is paying out fastest right there. And it's why option buyers feel the clock pressing harder every day: each day of waiting costs more than the one before it.</p>
 
 <h2>Theta and Volatility: The ATM Peak</h2>
-<p>Theta is largest (most negative) for <strong>at-the-money options</strong>. This seems counterintuitive — shouldn't the most expensive options decay fastest in absolute terms? Yes, and ATM options have the most extrinsic value, so they decay the most.</p>
-<p>Deep ITM options have almost no extrinsic value left to decay. Deep OTM options are cheap and also have little extrinsic value. The ATM option has the maximum extrinsic value — and therefore the maximum theta exposure.</p>
-<p>Numerically: with S = K = 100, T = 30 days, r = 5%, σ = 20%, the ATM call theta is about −$0.055/day. The same call but OTM (K = 120) has theta of about −$0.012/day. The ITM call (K = 80) has theta of about −$0.030/day.</p>
+<p>Theta hits its most negative point exactly at-the-money. That might seem backwards at first, but it tracks: ATM options carry the most extrinsic value of any strike, so naturally they have the most extrinsic value left to lose.</p>
+<p>Deep ITM options barely have any extrinsic value left to decay. Deep OTM options are cheap for the same reason — barely any extrinsic value to begin with. The ATM strike sits at the peak of extrinsic value, and so it sits at the peak of theta exposure too.</p>
+<p>Concretely: with S = K = 100, T = 30 days, r = 5%, σ = 20%, the ATM call's theta comes out to about −$0.045/day. Shift to an OTM call (K = 110) and it drops to roughly −$0.012/day. An ITM call (K = 92) lands around −$0.023/day — smaller than ATM, bigger than the OTM strike, exactly as you'd expect from the shape of extrinsic value.</p>
 
 <h2>The Theta-Gamma Tradeoff: The Central Tension</h2>
-<p>Theta and gamma are the yin and yang of options trading. You cannot have one without paying for the other. This relationship comes directly from the Black-Scholes partial differential equation:</p>
+<p>Theta and gamma are effectively two sides of the same coin in options trading — you cannot pick up one without paying for it with the other. That's not a rule of thumb; it falls directly out of the Black-Scholes partial differential equation:</p>
 <blockquote>Θ + ½σ²S²Γ + rSΔ − rV = 0</blockquote>
-<p>This is the Black-Scholes PDE, and it must hold for any option price. Rearranging roughly: Θ ≈ −½σ²S²Γ for delta-hedged positions. Theta and gamma have opposite signs and are proportional to each other.</p>
+<p>Every option price has to satisfy this equation. Simplify it for a delta-hedged position and you get roughly Θ ≈ −½σ²S²Γ — theta and gamma sit on opposite sides of zero and scale together.</p>
 <ul>
-  <li><strong>Long options (long gamma, negative theta):</strong> You benefit from large moves in either direction — gamma gives you a "free" improvement in delta when the stock moves. But you pay for this through daily theta decay. You're rooting for volatility to materialize.</li>
-  <li><strong>Short options (short gamma, positive theta):</strong> You collect theta every day, but lose when the stock makes a large move. You're rooting for the stock to go nowhere and time to pass quietly.</li>
+  <li><strong>Long options (long gamma, negative theta):</strong> you benefit from a big move in either direction — gamma hands you a favorable delta adjustment "for free" as the stock moves. The cost is theta bleeding out every single day you're waiting. You're implicitly rooting for volatility to actually show up.</li>
+  <li><strong>Short options (short gamma, positive theta):</strong> theta pays you every day, but a large move in the stock hurts. You're rooting for the opposite — quiet markets and time passing without incident.</li>
 </ul>
-<p>Professional options traders frame every position around this tradeoff. "How much gamma am I paying for with theta?" is the question that drives structuring decisions. A market maker delta-hedging an ATM option is long gamma (profits from moves) and paying theta (loses each quiet day). They need enough moves to cover the theta cost — this is called <strong>gamma scalping</strong>.</p>
+<p>This tradeoff is the lens every professional options trader structures positions through — "how much gamma am I paying for with this theta?" is close to the central question of the whole business. A market maker delta-hedging an ATM option is long gamma and paying theta at the same time, which means she needs the stock to actually move enough, and often enough, to earn back what theta is quietly costing her. That hunt for enough movement to cover the decay has its own name: <strong>gamma scalping</strong>.</p>
 
 <h2>Calendar Spreads: Trading Pure Theta</h2>
-<p>A <strong>calendar spread</strong> exploits the difference in theta between near-term and far-term options. You sell the near-term option (high theta, decays faster) and buy the far-term option (lower theta, decays slower) at the same strike. Your net theta is positive. If the stock stays near the strike, the near-term option decays faster than the long option, and you profit.</p>
-<p>This is a pure volatility play: you want near-term realized volatility to be low (so the short option expires worthless) and forward volatility to remain high (keeping the long option valuable).</p>
+<p>A <strong>calendar spread</strong> is built specifically to exploit the theta gap between near-term and far-term options. Sell the near-term option, which decays fast and carries high theta, and buy a far-term option at the same strike, which decays much more slowly. Net theta on the position ends up positive: if the stock parks itself near the strike, the short leg decays away faster than the long leg loses value, and the difference is your profit.</p>
+<p>It's really a volatility bet dressed up as a time-decay trade — you want near-term realized volatility to stay low, so the short leg expires worthless, while hoping forward-looking volatility stays elevated enough to keep the long leg valuable.</p>
     `,
+    sandboxes: [
+      {
+        afterSectionId: "the-formula",
+        title: "Theta (Call)",
+        formula: "Θ = [−S·n(d₁)·σ/(2√T) − r·K·e^(−rT)·N(d₂)] / 365",
+        variables: [
+          { key: "stock", label: "Stock price (S)", unit: "$", defaultValue: 100, min: 20, max: 300, step: 1 },
+          { key: "strike", label: "Strike price (K)", unit: "$", defaultValue: 100, min: 20, max: 300, step: 1 },
+          { key: "time", label: "Time to expiry (T)", unit: "yrs", defaultValue: 0.08, min: 0.01, max: 2, step: 0.01 },
+          { key: "rate", label: "Risk-free rate (r)", unit: "%", defaultValue: 5, min: 0, max: 10, step: 0.25 },
+          { key: "vol", label: "Volatility (σ)", unit: "%", defaultValue: 20, min: 5, max: 80, step: 1 },
+        ],
+        computeId: "thetaCall",
+        resultLabel: "Theta (per day)",
+        resultPrefix: "$",
+        decimals: 4,
+      },
+    ],
     exercise: {
       prompt: "Implement `compute_theta(S, K, T, r, sigma, option_type)` returning daily theta (annualized / 365).",
       starterCode: `import math
@@ -629,45 +682,62 @@ print("Tests passed!")
     duration: "15 min",
     content: `
 <h2>The Second Derivative</h2>
-<p>Delta tells you how much an option moves for a small stock price change. But delta itself changes as the stock moves — and gamma measures how fast. Formally:</p>
+<p>Delta tells you how much an option's price moves for a small move in the stock. But delta doesn't hold still either — it shifts as the stock moves, and gamma measures exactly how fast:</p>
 <blockquote>Γ = ∂Δ / ∂S = ∂²V / ∂S²</blockquote>
-<p>Gamma is the second derivative of the option price with respect to the stock price. It measures the <em>convexity</em> of the option price curve. If a call has Δ = 0.50 and Γ = 0.06, then after a $1 rise in the stock, the new delta is approximately 0.56. After a $2 rise, it's approximately 0.62. The option gains delta as the stock rises — this is positive convexity, and it's what option buyers are paying for.</p>
+<p>Gamma is the second derivative of the option price with respect to the stock price — it's what captures the <em>curvature</em>, or convexity, in how the option's value bends as the stock moves. Take a call with Δ = 0.50 and Γ = 0.06: after a $1 rise, delta ticks up to roughly 0.56; after $2, roughly 0.62. The option is picking up more delta the further the stock rises in its favor — that's positive convexity, and it's precisely what you're paying for when you buy an option.</p>
 
 <h2>The Formula</h2>
 <blockquote>Γ = n(d₁) / (S · σ · √T)</blockquote>
-<p>where n(d₁) is the standard normal PDF evaluated at d₁. Two crucial facts:</p>
+<p>with n(d₁) the standard normal PDF at d₁. Two facts worth internalizing here:</p>
 <ol>
-  <li><strong>Gamma is always positive for long options</strong> — both calls and puts. If you're long options, you benefit from large moves in either direction (positive convexity).</li>
-  <li><strong>The formula is identical for calls and puts.</strong> A call and put with the same strike and expiry have the same gamma. This follows from put-call parity: C − P = S − PV(K), so ∂²C/∂S² = ∂²P/∂S².</li>
+  <li><strong>Gamma is always positive for long options</strong> — calls and puts alike. Being long any option means you benefit from a big move in either direction, which is exactly what positive convexity gives you.</li>
+  <li><strong>The formula is identical for calls and puts.</strong> Same strike, same expiry, same gamma — no exceptions. This is really just put-call parity again in disguise: C − P = S − PV(K) means ∂²C/∂S² = ∂²P/∂S² has to hold too.</li>
 </ol>
 
 <h2>Where Gamma Lives: ATM Near Expiry</h2>
-<p>Gamma is not uniformly distributed across strikes and maturities. It is highest for <strong>at-the-money options close to expiration</strong>. Let's understand why intuitively:</p>
-<p>Think about what delta does as expiration approaches for an ATM option. With 1 year left, a $1 move in the stock barely changes whether the option expires ITM or OTM — delta changes slowly. With 1 day left, a $1 move can flip the option from almost certainly OTM to almost certainly ITM — delta changes violently. This rapid delta change is high gamma.</p>
-<p>Numerically: an ATM option with 1 year to expiration might have Γ = 0.02 (delta changes by 0.02 per $1 stock move). The same option with 1 week to expiration might have Γ = 0.15. The option is "pinned" near the strike — either side wins big, and small moves determine everything.</p>
+<p>Gamma isn't spread evenly across strikes and maturities — it concentrates hard around <strong>at-the-money options close to expiration</strong>. Here's the intuition for why.</p>
+<p>Picture delta as expiration approaches on an ATM option. With a full year left, a $1 stock move barely nudges the odds of finishing ITM or OTM — delta drifts slowly. With one day left, a $1 move can flip the option from "almost surely worthless" to "almost surely in the money" — delta lurches violently. That violent shift, packed into a tiny window, is what high gamma looks like.</p>
+<p>Numbers make it concrete: an ATM option with a year to go might carry Γ = 0.02, meaning delta shifts just 0.02 per $1 stock move. The same option with a week left might sit at Γ = 0.15. The option is effectively "pinned" to the strike — small moves in either direction suddenly decide everything.</p>
 
 <h2>Gamma Risk: The Pin and the Explosion</h2>
-<p>High gamma near expiration creates two distinct risks that options professionals manage carefully:</p>
-<p><strong>Pin risk:</strong> When a heavily-traded option's strike coincides with the stock price near expiration, market makers who have sold those options must delta-hedge aggressively. As the stock moves above the strike, they buy shares (delta rising toward 1). As it moves below, they sell shares (delta falling toward 0). This creates a self-fulfilling "magnetism" — the stock can get pinned to the strike as hedgers chase delta on both sides. This phenomenon is called the "max pain" effect and is visible in large-cap stocks on monthly expiration Fridays (OpEx).</p>
-<p><strong>Gamma explosion:</strong> In the days before expiration, 0DTE (zero days to expiration) options have enormous gamma. A 5-point SPX move can change a 0DTE option's delta by 0.40 or more. Market makers short 0DTE options face potentially unlimited delta exposure from small moves. The rise of 0DTE trading — 0DTE options now account for over 40% of SPX options volume — has fundamentally changed how professionals think about intraday hedging.</p>
+<p>That concentrated gamma creates two distinct headaches professionals watch closely.</p>
+<p><strong>Pin risk:</strong> when a heavily-traded strike sits right where the stock is trading near expiration, market makers who sold those options are forced into aggressive delta-hedging. Stock ticks above the strike, they buy shares as delta climbs toward 1; it ticks below, they sell as delta falls toward 0. That hedging creates a kind of self-fulfilling gravity — the stock can end up "pinned" near the strike as hedgers chase delta from both sides at once. Traders call this the "max pain" effect, and it's visible in large-cap names on monthly options-expiration Fridays.</p>
+<p><strong>Gamma explosion:</strong> in the last days before expiration, 0DTE (zero-days-to-expiration) options carry enormous gamma. A modest 5-point move in SPX can shift a 0DTE option's delta by 0.40 or more in minutes. Market makers short those options can face effectively unlimited delta exposure from moves that would be trivial on a longer-dated contract. 0DTE volume has exploded in recent years — now over 40% of SPX options volume — and that shift has genuinely changed how professionals think about hedging intraday.</p>
 
 <h2>Gamma Scalping: Profiting from Moves</h2>
-<p>A trader who is long gamma (long options, delta-hedged) can make money from volatility through a strategy called <strong>gamma scalping</strong>. The mechanics:</p>
+<p>Someone long gamma — long options, delta-hedged — can turn volatility itself into profit through a strategy called <strong>gamma scalping</strong>. The mechanics run like this:</p>
 <ol>
-  <li>Buy ATM options and delta-hedge to neutrality.</li>
-  <li>When the stock rises, your delta becomes positive (gamma effect). Sell some stock to rebalance to delta-neutral. You've sold high.</li>
-  <li>When the stock then falls back, your delta becomes negative. Buy stock to rebalance. You've bought low.</li>
-  <li>Each round-trip rebalance locks in a small profit proportional to the stock move squared times gamma: P&L ≈ ½Γ(ΔS)².</li>
+  <li>Buy ATM options and delta-hedge down to neutral.</li>
+  <li>Stock rises → delta drifts positive (that's gamma at work) → sell some stock to rebalance back to neutral. You just sold into strength.</li>
+  <li>Stock falls back → delta drifts negative → buy stock to rebalance. You just bought into weakness.</li>
+  <li>Each round trip locks in a small, real profit, roughly proportional to the squared stock move times gamma: P&L ≈ ½Γ(ΔS)².</li>
 </ol>
-<p>The catch: you're paying theta every day for this privilege. Gamma scalping is profitable only if the realized volatility exceeds the implied volatility embedded in the options you bought. If IV = 20% but the stock only moves as if σ = 15%, you'll lose theta faster than you earn from rebalancing. This is the core question every options trader faces: is the option cheap or expensive relative to realized vol?</p>
+<p>Nothing here is free, though — you're still paying theta every day for the privilege of holding this position. Gamma scalping only turns a profit if realized volatility ends up beating the implied volatility baked into the options you bought. Pay for 20% implied vol and the stock only actually moves like 15%, and theta will eat you faster than the rebalancing can pay you back. That comparison — implied vol versus what actually happens — is close to the central question every options trader is implicitly asking.</p>
 
 <h2>The Black-Scholes PDE Revisited</h2>
-<p>Recall the Black-Scholes PDE from the theta lesson:</p>
+<p>Back to the Black-Scholes PDE from the theta lesson:</p>
 <blockquote>Θ + ½σ²S²Γ + rSΔ − rV = 0</blockquote>
-<p>For a delta-hedged portfolio (net Δ = 0), this simplifies to:</p>
+<p>For a fully delta-hedged portfolio (net Δ = 0), that simplifies down to:</p>
 <blockquote>Θ + ½σ²S²Γ = rV (roughly)</blockquote>
-<p>The term ½σ²S²Γ is the "gamma P&L" from stock moves, and Θ is the theta cost. In equilibrium, they balance. This equation is essentially saying: the expected gamma profits from continuous rebalancing exactly offset the theta cost, leaving a risk-free return. It's the mathematical statement that options are "fairly priced" under Black-Scholes.</p>
+<p>½σ²S²Γ is the expected "gamma P&L" from the stock jiggling around, and Θ is what that gamma costs you in decay. In equilibrium, they exactly cancel out. Read as a sentence, the equation is saying something almost philosophical: the expected profit from continuously rebalancing a gamma position exactly offsets its theta cost, leaving nothing but a risk-free return behind. That balance is the mathematical fingerprint of an option being fairly priced under Black-Scholes.</p>
     `,
+    sandboxes: [
+      {
+        afterSectionId: "the-formula",
+        title: "Gamma",
+        formula: "Γ = n(d₁) / (S·σ·√T)",
+        variables: [
+          { key: "stock", label: "Stock price (S)", unit: "$", defaultValue: 100, min: 20, max: 300, step: 1 },
+          { key: "strike", label: "Strike price (K)", unit: "$", defaultValue: 100, min: 20, max: 300, step: 1 },
+          { key: "time", label: "Time to expiry (T)", unit: "yrs", defaultValue: 1, min: 0.02, max: 2, step: 0.02 },
+          { key: "rate", label: "Risk-free rate (r)", unit: "%", defaultValue: 5, min: 0, max: 10, step: 0.25 },
+          { key: "vol", label: "Volatility (σ)", unit: "%", defaultValue: 20, min: 5, max: 80, step: 1 },
+        ],
+        computeId: "gammaCall",
+        resultLabel: "Gamma",
+        decimals: 4,
+      },
+    ],
     exercise: {
       prompt: "Implement `compute_gamma(S, K, T, r, sigma)` using the Black-Scholes formula.",
       starterCode: `import math
@@ -728,54 +798,72 @@ print("Tests passed!")
     duration: "15 min",
     content: `
 <h2>The Volatility Greek</h2>
-<p>Vega (ν) measures how much an option price changes for a one percentage-point change in implied volatility. It is in some ways the most important Greek for professional options traders, because professional options trading is largely about <em>trading volatility</em> — not direction.</p>
+<p>Vega (ν) measures how much an option's price shifts for a one-percentage-point change in implied volatility. It might be the single most important Greek for a professional, because professional options trading is, at its core, mostly about <em>trading volatility itself</em> — not about guessing which way a stock is headed.</p>
 <blockquote>ν = ∂V / ∂σ</blockquote>
-<p>An ATM one-year call with ν = 0.40 gains $0.40 in value for every 1% rise in implied vol. If IV moves from 20% to 25%, the call gains approximately $2.00 from vega alone, even if the stock doesn't move.</p>
-<p>Note: despite the Greek letter, "vega" is not actually a Greek letter — it was invented by traders. In academic literature it sometimes appears as κ (kappa) or λ (lambda). The name stuck because it sounds Greek-ish and starts with 'v' for volatility.</p>
+<p>An ATM one-year call with ν = 0.40 picks up $0.40 in value for every 1-point rise in implied vol. Push IV from 20% to 25% and that call gains roughly $2.00 from vega alone — the stock itself doesn't have to move an inch.</p>
+<p>A small aside worth knowing: despite the name, vega isn't actually a Greek letter. Traders made it up. Academic papers sometimes use κ (kappa) or λ (lambda) instead for the same concept — "vega" just stuck because it sounds Greek enough and conveniently starts with a V, for volatility.</p>
 
 <h2>The Formula</h2>
 <blockquote>ν = S · n(d₁) · √T / 100</blockquote>
-<p>where n(d₁) is the standard normal PDF. The formula is <strong>identical for calls and puts</strong> — a call and put with the same strike and expiry have the same vega. This again follows from put-call parity: C − P = S − PV(K), and differentiating both sides with respect to σ gives ∂C/∂σ = ∂P/∂σ.</p>
-<p>The division by 100 converts from "per unit vol" to "per percentage point." Some books define vega without the /100, which means the answer is 100x larger — always check which convention is being used.</p>
+<p>with n(d₁) the standard normal PDF. Like gamma, this formula is <strong>identical for calls and puts</strong> — same strike, same expiry, same vega, no exceptions. Once again, put-call parity is why: C − P = S − PV(K) differentiated with respect to σ gives ∂C/∂σ = ∂P/∂σ directly.</p>
+<p>The /100 just rescales from "per unit of vol" to "per percentage point" — a convenience, not a law of nature. Some textbooks skip that division, which means their answer is 100x bigger than what you'd get here. Always check which convention you're reading before comparing numbers across sources.</p>
 
 <h2>Vega Is Largest for ATM Long-Dated Options</h2>
-<p>Two factors drive vega:</p>
+<p>Two things drive how much vega an option carries:</p>
 <ul>
-  <li><strong>Moneyness:</strong> Vega peaks at the ATM strike and falls off for ITM and OTM options. Deep OTM options are nearly binary (they'll either be worth a lot or nothing), so an incremental vol change doesn't matter much. Deep ITM options will likely be exercised regardless.</li>
-  <li><strong>Time to expiry:</strong> Vega scales with √T. A 1-year ATM option has roughly √(12) ≈ 3.46× the vega of a 1-month ATM option. Longer-dated options have more time for vol to matter, making them much more sensitive to vol changes.</li>
+  <li><strong>Moneyness:</strong> vega peaks right at the ATM strike and tapers off on either side. Deep OTM options are close to binary bets — they'll be worth either a lot or nothing — so a small shift in vol barely changes that calculus. Deep ITM options are close to certain to be exercised regardless, so vol doesn't move the needle much there either.</li>
+  <li><strong>Time to expiry:</strong> vega scales with √T. A 1-year ATM option carries roughly √12 ≈ 3.46× the vega of a 1-month ATM option — more time on the clock means more room for volatility to actually matter.</li>
 </ul>
-<p>This means long-dated options are "vol products" more than "directional products." A 2-year LEAPS option might have vega of $0.80 — a 5 vol-point move shifts its price by $4, far more than most delta-driven moves over the same period.</p>
+<p>The upshot is that long-dated options behave more like a bet on volatility than a bet on direction. A 2-year LEAPS option might sit around $0.80 of vega — a 5-point move in vol shifts its price by $4, often more than the delta-driven move you'd get from a comparable stretch of time.</p>
 
 <h2>Implied Volatility: The Market's Forecast</h2>
-<p>Black-Scholes takes σ as an input. In reality, σ is not directly observable. What we observe is the <em>market price</em> of an option. Traders invert the formula: given the market price, what σ makes Black-Scholes match it? That σ is called <strong>implied volatility (IV)</strong>.</p>
-<p>Implied vol is not a prediction of actual future volatility — it's the market's consensus <em>price</em> for uncertainty. Historically, IV tends to exceed realized volatility by 1–3 percentage points on average. This gap — called the <strong>variance risk premium</strong> — is why option selling (collecting IV premium) has historically been profitable on average, at the cost of occasional large losses when volatility spikes.</p>
+<p>Black-Scholes takes σ as one of its inputs, but here's the catch: nobody can actually observe σ directly. What you do observe is the option's <em>market price</em>. So traders run the formula backwards — given this market price, what σ would make Black-Scholes spit out that exact number? That backed-out σ is <strong>implied volatility (IV)</strong>.</p>
+<p>IV isn't a forecast of how volatile the stock will actually be — think of it instead as the market's collective price tag for uncertainty. Historically, IV runs above realized volatility by roughly 1–3 percentage points on average, a gap known as the <strong>variance risk premium</strong>. That gap is why selling options has historically been profitable on average — at the cost of the occasional brutal loss when volatility spikes without warning.</p>
 
 <h2>The Volatility Surface: Where Black-Scholes Breaks Down</h2>
-<p>If Black-Scholes were literally true, every option on the same stock and expiry would have the same implied vol. In practice, they don't. Plotting IV against strike gives the famous <strong>volatility smile</strong> (or skew).</p>
-<p><strong>Equity skew:</strong> For equity index options (SPX, SPY), OTM puts almost always trade at higher IV than ATM options, which trade at higher IV than OTM calls. The shape is asymmetric — a skew rather than a smile. This reflects:</p>
+<p>If Black-Scholes were exactly right, every option on the same stock and expiry would carry the same implied vol. In reality, they don't come close. Plot IV against strike and you get the famous <strong>volatility smile</strong> — or in equities, more often a skew.</p>
+<p><strong>Equity skew:</strong> for index options like SPX and SPY, OTM puts consistently trade at higher IV than ATM options, which in turn trade higher than OTM calls. It's lopsided, not symmetric — a skew rather than a smile — and a few things explain why:</p>
 <ol>
-  <li><strong>Crash risk demand:</strong> Investors pay a premium for put protection (portfolio insurance). High demand for OTM puts drives their IV up.</li>
-  <li><strong>Leverage effect:</strong> When stocks fall, companies become more levered (debt stays constant, equity falls), increasing volatility. Crashes historically come with vol spikes.</li>
-  <li><strong>Stochastic volatility:</strong> Real volatility is not constant — it varies, and it's negatively correlated with stock returns.</li>
+  <li><strong>Crash risk demand:</strong> investors are willing to pay up for put protection as portfolio insurance, and that demand for OTM puts specifically pushes their IV higher.</li>
+  <li><strong>Leverage effect:</strong> when stock prices drop, companies effectively become more leveraged — debt stays fixed while equity value shrinks — and that raises volatility. Crashes and vol spikes tend to arrive together.</li>
+  <li><strong>Stochastic volatility:</strong> real-world volatility isn't a constant at all — it moves around, and it tends to move opposite to stock returns.</li>
 </ol>
-<p><strong>FX smile:</strong> Currency options often show a true smile — both OTM puts and calls trade at elevated IV relative to ATM. This reflects the possibility of large moves in either direction (currencies can appreciate or depreciate sharply).</p>
+<p><strong>FX smile:</strong> currency options tend to show something closer to a real, symmetric smile — both OTM puts and OTM calls trade rich relative to ATM. That fits currencies, which can spike sharply in either direction with roughly equal plausibility.</p>
 
 <h2>VIX: The Fear Index</h2>
-<p>The CBOE Volatility Index (VIX) is perhaps the most important single number in financial markets. It measures the market's expectation for S&P 500 volatility over the next 30 days, derived from a portfolio of SPX options across many strikes.</p>
-<p>VIX is expressed as an annualized volatility percentage. A VIX of 20 means the market expects roughly 20% annualized volatility, which translates to daily moves of about 20%/√252 ≈ 1.26% per day.</p>
-<p>Historical VIX context:</p>
+<p>The CBOE Volatility Index — the VIX — is arguably the single most-watched number in markets. It captures what the market expects S&P 500 volatility to be over the next 30 days, built from a basket of SPX options spanning many strikes.</p>
+<p>It's quoted as an annualized volatility percentage. A VIX of 20 says the market expects roughly 20% annualized volatility, which works out to daily moves around 20%/√252 ≈ 1.26%.</p>
+<p>Some context for where VIX has actually landed historically:</p>
 <ul>
-  <li><strong>2017:</strong> VIX averaged 11.1 — the calmest year in recorded history. Options were historically cheap.</li>
-  <li><strong>2008 (Lehman crisis):</strong> VIX hit 89.5 in October 2008. Options became extraordinarily expensive.</li>
-  <li><strong>March 2020 (COVID crash):</strong> VIX peaked at 85.5 on March 18, 2020 — the second-highest reading ever.</li>
-  <li><strong>Normal range:</strong> 12–25 in calm markets, 25–40 in stressed markets, 40+ in crises.</li>
+  <li><strong>2017:</strong> VIX averaged 11.1 — the calmest year on record. Options were historically cheap all year.</li>
+  <li><strong>2008 (Lehman crisis):</strong> VIX hit 89.5 in October 2008. Options got extraordinarily expensive.</li>
+  <li><strong>March 2020 (COVID crash):</strong> VIX peaked at 85.5 on March 18, 2020 — the second-highest reading ever recorded.</li>
+  <li><strong>Normal range:</strong> roughly 12–25 in calm markets, 25–40 under stress, 40+ during outright crises.</li>
 </ul>
-<p>VIX is often called the "fear index" because it spikes when investors are buying protective puts aggressively. A rising VIX means the options market is pricing in more uncertainty — regardless of whether the stock market itself is up or down.</p>
+<p>It's nicknamed the "fear index" because it spikes exactly when investors are scrambling to buy protective puts. A rising VIX simply means the options market is pricing in more uncertainty — that reading says nothing on its own about whether stocks are actually going up or down.</p>
 
 <h2>Vega in Portfolio Management</h2>
-<p>A large options portfolio has a net vega — the sensitivity of its total value to a parallel shift in the vol surface. A portfolio that is <em>long vega</em> gains when IV rises (benefits from fear/uncertainty). A portfolio that is <em>short vega</em> — like a fund that systematically sells options for premium — gains when IV falls and loses when it spikes.</p>
-<p>The 2018 "Volmageddon" event illustrates the risk. Several funds were short VIX (short vega) using instruments tied to VIX futures. On February 5, 2018, VIX doubled in a single day — an unprecedented move. One product (XIV) lost 96% of its value overnight and was liquidated. Understanding vega, and the risk of sudden vol spikes, is not academic — it is survival.</p>
+<p>Any sizable options book has a net vega — how sensitive its total value is to a broad shift up or down in the volatility surface. A portfolio that's <em>long vega</em> gains when IV rises, benefiting from fear and uncertainty. One that's <em>short vega</em> — a fund that systematically sells options to collect premium, say — gains when IV falls and gets hurt when it spikes.</p>
+<p>The 2018 "Volmageddon" episode is the cautionary tale everyone in the industry knows. Several funds were running short-VIX, short-vega strategies through instruments tied to VIX futures. On February 5, 2018, VIX doubled in a single day, a move nobody had modeled for. One product, XIV, lost 96% of its value overnight and was forcibly liquidated. Understanding vega — and respecting how fast volatility can spike — isn't an academic exercise. For anyone actually trading options, it's closer to a survival requirement.</p>
     `,
+    sandboxes: [
+      {
+        afterSectionId: "the-formula",
+        title: "Vega",
+        formula: "ν = S·n(d₁)·√T / 100",
+        variables: [
+          { key: "stock", label: "Stock price (S)", unit: "$", defaultValue: 100, min: 20, max: 300, step: 1 },
+          { key: "strike", label: "Strike price (K)", unit: "$", defaultValue: 100, min: 20, max: 300, step: 1 },
+          { key: "time", label: "Time to expiry (T)", unit: "yrs", defaultValue: 1, min: 0.05, max: 3, step: 0.05 },
+          { key: "rate", label: "Risk-free rate (r)", unit: "%", defaultValue: 5, min: 0, max: 10, step: 0.25 },
+          { key: "vol", label: "Volatility (σ)", unit: "%", defaultValue: 20, min: 5, max: 80, step: 1 },
+        ],
+        computeId: "vegaCall",
+        resultLabel: "Vega (per 1% vol move)",
+        resultPrefix: "$",
+        decimals: 3,
+      },
+    ],
     exercise: {
       prompt: "Implement `compute_vega(S, K, T, r, sigma)` returning vega per 1% vol move.",
       starterCode: `import math
@@ -841,56 +929,56 @@ print("Tests passed!")
     duration: "18 min",
     content: `
 <h2>Inverting the Formula</h2>
-<p>Black-Scholes takes five inputs — S, K, T, r, and σ — and produces an option price. But in real markets, you observe prices, not volatilities. Every day, options trade at market prices that are set by supply and demand. The question becomes: what value of σ makes the Black-Scholes formula match the observed market price?</p>
-<p>That σ is called <strong>implied volatility (IV)</strong>. It is the volatility "implied" by the market price. If an option is trading at $5.80 and Black-Scholes with σ = 0.20 produces $5.80, then the implied vol is 20%.</p>
-<p>This inversion cannot be done analytically — there is no closed-form formula for σ given C. Instead, we use a numerical root-finding method. We want to find the zero of:</p>
+<p>Feed Black-Scholes its five usual inputs — S, K, T, r, and σ — and it hands back an option price. But that's backwards from how the real market actually works. What you actually observe every day is a price, set by whoever's willing to buy and sell at that level — nobody hands you σ directly. So the real question traders ask is the mirror image of the formula: what value of σ, plugged in, would make Black-Scholes reproduce the price the market is already quoting?</p>
+<p>That backed-out σ is <strong>implied volatility (IV)</strong> — literally the volatility implied by the price. An option trading at $5.80 that Black-Scholes matches exactly at σ = 0.20 has an implied vol of 20%, full stop.</p>
+<p>There's no algebraic shortcut for this inversion — no closed-form way to solve for σ given C. Instead you need a numerical root-finder, hunting for where this hits zero:</p>
 <blockquote>f(σ) = BS(S, K, T, r, σ) − C<sub>market</sub> = 0</blockquote>
-<p>The two most common methods are <strong>bisection</strong> (reliable, slow) and <strong>Newton-Raphson</strong> (fast, occasionally brittle). Professionals use Newton-Raphson because it converges in 4–6 iterations for typical option inputs.</p>
+<p>The two standard tools are <strong>bisection</strong> — reliable but slow — and <strong>Newton-Raphson</strong> — fast, if occasionally finicky. Professionals lean on Newton-Raphson because for typical options it converges in just 4 to 6 iterations.</p>
 
 <h2>Newton-Raphson: The Fast Way</h2>
-<p>Newton-Raphson iteratively improves an estimate of the root using the derivative of the function:</p>
+<p>Newton-Raphson refines a guess using the function's own derivative:</p>
 <blockquote>σ<sub>n+1</sub> = σ<sub>n</sub> − f(σ<sub>n</sub>) / f′(σ<sub>n</sub>)</blockquote>
-<p>Here f(σ) = BS_price(σ) − C_market, and f′(σ) = ∂BS/∂σ = vega (divided by 100, in the same units). Specifically:</p>
+<p>Here f(σ) = BS_price(σ) − C_market, and f′(σ) is nothing other than vega — specifically the raw, unscaled vega, S · n(d₁) · √T, not the per-1% version from Lesson 7. Written out fully:</p>
 <blockquote>σ<sub>n+1</sub> = σ<sub>n</sub> − (BS(σ<sub>n</sub>) − C<sub>market</sub>) / Vega(σ<sub>n</sub>)</blockquote>
-<p>where Vega is the raw vega (S · n(d₁) · √T), not the per-1% version we computed in Lesson 7. Starting from σ₀ = 0.20 (20%) and iterating 5–10 times typically gives convergence to 6+ decimal places for standard options.</p>
-<p>The method can fail when vega is near zero (deep OTM or very short-dated options), so good implementations add a fallback to bisection when vega is too small.</p>
+<p>Start from a reasonable guess like σ₀ = 0.20 and 5–10 iterations usually get you 6+ decimal places of precision for a typical option.</p>
+<p>The one place this breaks is when vega itself is close to zero — deep OTM or very short-dated options — where the update step can blow up or bounce around. Solid implementations fall back to bisection whenever vega gets too small to trust.</p>
 
 <h2>IV as the Market's Price of Uncertainty</h2>
-<p>Implied vol is not a forecast of realized volatility — it is the market's <em>price</em> for uncertainty. Several things follow from this:</p>
+<p>It's worth repeating: implied vol isn't a forecast of how volatile the stock will actually turn out to be. It's the market's <em>asking price</em> for uncertainty, and a few things follow from that framing:</p>
 <ul>
-  <li><strong>IV ≠ realized vol:</strong> On average across history, IV has been about 1–3 percentage points above subsequently realized volatility. This gap is the <strong>variance risk premium</strong> — compensation for the risk of providing vol insurance. It's why systematic option selling has historically been profitable on average.</li>
-  <li><strong>IV can be wrong in both directions:</strong> In quiet markets, IV undershoots realized vol (options are cheap). Before major events (Fed decisions, earnings), IV overshoots — the premium for the known uncertainty.</li>
-  <li><strong>IV is forward-looking:</strong> Realized vol looks backward (what has happened). IV looks forward (what the market fears may happen). They can diverge dramatically around events.</li>
+  <li><strong>IV ≠ realized vol:</strong> across history, IV has averaged roughly 1–3 percentage points above the volatility that actually ended up materializing. That gap is the <strong>variance risk premium</strong>, and it's essentially why systematically selling options has been profitable on average over long stretches — you're being paid for underwriting an insurance policy.</li>
+  <li><strong>IV can miss in either direction:</strong> in quiet stretches it tends to undershoot what actually happens, making options look cheap in hindsight. Ahead of known events — Fed meetings, earnings — it typically overshoots, pricing in a known dose of uncertainty in advance.</li>
+  <li><strong>IV looks forward, realized vol looks back:</strong> one tells you what already happened, the other tells you what the market's currently afraid might happen. Around big events, the two can diverge sharply.</li>
 </ul>
 
 <h2>The Volatility Surface</h2>
-<p>If Black-Scholes were literally true, every option on the same underlying and expiry would have the same IV. In practice, IVs vary across both <em>strike</em> and <em>time to expiry</em>, forming a two-dimensional <strong>volatility surface</strong>.</p>
-<p><strong>Term structure:</strong> IV typically increases with time to expiry (the market fears more as time horizon lengthens), but can invert during crises (short-dated IV spikes more than long-dated IV when fear is acute).</p>
-<p><strong>Skew / smile:</strong> For equity index options (SPX, SPY), OTM puts consistently trade at higher IV than ATM options, which trade at higher IV than OTM calls. The shape is called the <strong>volatility skew</strong>. It reflects:</p>
+<p>In a world where Black-Scholes held exactly, every option on the same underlying and expiry would share one IV. Real markets don't cooperate — IV varies by both <em>strike</em> and <em>time to expiry</em> at once, tracing out a full two-dimensional <strong>volatility surface</strong>.</p>
+<p><strong>Term structure:</strong> IV generally rises with time to expiry — more time, more room for the market to worry — though this can flip during a crisis, when short-dated IV spikes above long-dated IV as acute fear takes over.</p>
+<p><strong>Skew / smile:</strong> on equity index options like SPX and SPY, OTM puts consistently price at higher IV than ATM options, which in turn price higher than OTM calls — this lopsided shape is the <strong>volatility skew</strong>, and it comes from a few compounding effects:</p>
 <ol>
-  <li><strong>Demand for downside protection:</strong> Investors buy OTM puts as portfolio insurance. High demand → high price → high IV.</li>
-  <li><strong>The leverage effect:</strong> When stocks fall, equity volatility rises (empirically well-documented). OTM puts protect against this correlated scenario, so they're especially valuable.</li>
-  <li><strong>Crash risk premium:</strong> Markets can crash much faster than they can rise (asymmetric tails), so OTM puts command an asymmetric premium.</li>
+  <li><strong>Demand for downside protection:</strong> investors buy OTM puts as insurance, and that steady demand pushes their price, and therefore their IV, up.</li>
+  <li><strong>The leverage effect:</strong> falling stock prices reliably coincide with rising volatility — it's well documented empirically — so OTM puts are protecting against exactly the scenario where vol is spiking too, making them extra valuable.</li>
+  <li><strong>Crash risk premium:</strong> markets tend to fall much faster than they climb, an asymmetry in the tails, and OTM puts get priced with that asymmetry baked in.</li>
 </ol>
-<p>For FX options, you often see a true symmetric smile — OTM puts and calls both trade above ATM — because currencies can move sharply in both directions.</p>
+<p>FX options usually show something closer to a true, symmetric smile instead — both OTM puts and OTM calls trade rich to ATM — because a currency can plausibly spike hard in either direction, not just down.</p>
 
 <h2>Practical IV Numbers</h2>
-<p>Some intuition-building reference points:</p>
+<p>A few reference points to build intuition:</p>
 <ul>
-  <li>SPY 30-day ATM IV: normally 12–18% in calm markets, 25–40% during stress</li>
-  <li>Individual stocks: often 25–60% for large-caps, 60–150%+ for small-caps and biotechs</li>
-  <li>VIX (SPX 30-day IV index): 11–15 = extreme calm, 20–25 = normal, 30–40 = stressed, 40+ = crisis</li>
+  <li>SPY 30-day ATM IV: typically 12–18% in calm markets, 25–40% under stress</li>
+  <li>Individual stocks: often 25–60% for large-caps, 60–150%+ for small-caps and biotech names</li>
+  <li>VIX (the SPX 30-day IV index): 11–15 is extreme calm, 20–25 normal, 30–40 stressed, 40+ crisis territory</li>
 </ul>
-<p>High IV means options are expensive. Low IV means options are cheap. Options traders say they are "buying vol" (going long options) or "selling vol" (going short options) to describe their exposure to IV changes, independent of any directional view.</p>
+<p>High IV means options are pricey; low IV means they're cheap. Traders describe positioning around this as "buying vol" (going long options) or "selling vol" (going short options) — language that captures pure exposure to IV moving, independent of any view on stock direction.</p>
 
 <h2>IV and the Greeks</h2>
-<p>Because IV is the key input that traders control, the Greeks take on a vol-centric interpretation:</p>
+<p>Because IV is the input traders are most actively fighting over, the Greeks all take on a vol-flavored reading once you look at them this way:</p>
 <ul>
-  <li><strong>Vega:</strong> Direct IV exposure. If you buy a straddle and IV rises, vega profits regardless of where the stock went.</li>
-  <li><strong>Gamma:</strong> The "realized vol" Greek. If actual daily moves are larger than implied, gamma scalping profits exceed theta cost — you win. This is why people say gamma is "long realized vol."</li>
-  <li><strong>Theta:</strong> The cost of owning the IV insurance. You're paying the variance risk premium in real time.</li>
+  <li><strong>Vega:</strong> pure IV exposure. Buy a straddle and if IV rises, vega books a profit no matter which way the stock actually went.</li>
+  <li><strong>Gamma:</strong> the "realized vol" Greek. If the stock's actual daily moves outrun what was priced in, gamma scalping profits beat the theta bill — you come out ahead. That's the sense in which gamma is "long realized vol."</li>
+  <li><strong>Theta:</strong> what you pay to hold that IV insurance. It's the variance risk premium being deducted from your account, in real time, day by day.</li>
 </ul>
-<p>The core question every options trader asks is: <em>Is IV cheap or expensive relative to what the stock will actually do?</em> If IV = 25% and you think the stock will realize 35% vol, buy options. If IV = 25% and you think the stock will barely move (5% realized vol), sell options. Everything else is details.</p>
+<p>Underneath all of it, every options trader is really asking one question: <em>is IV cheap or expensive relative to what this stock is actually going to do?</em> Think IV of 25% is too low for a stock about to realize 35% vol — buy options. Think that same 25% is wildly overpriced for a stock that's going to sit still at 5% realized vol — sell them. Everything else in this lesson is detail in service of answering that one question.</p>
     `,
     exercise: {
       prompt: "Implement `implied_vol(C_market, S, K, T, r, option_type)` using Newton-Raphson iteration.",
@@ -1006,65 +1094,65 @@ print("Tests passed!")
     duration: "20 min",
     content: `
 <h2>From Single Options to Strategies</h2>
-<p>Real options trading is almost never about buying or selling a single option in isolation. Instead, traders combine options (and sometimes the underlying stock) into <strong>strategies</strong> — multi-leg structures that target specific payoff profiles, risk/reward ratios, and Greek exposures. Understanding why each strategy exists, and when to use it, is the difference between speculation and precision.</p>
-<p>Every strategy can be analyzed in two dimensions: its <strong>payoff at expiration</strong> (a function of the stock price) and its <strong>Greeks profile</strong> (how it responds to moves in S, σ, and t right now). Both dimensions matter. The payoff diagram tells you where you make money at expiration; the Greeks tell you how you feel getting there.</p>
+<p>Almost nobody trading options professionally is just buying or selling one contract in isolation. Real trading combines options — and sometimes the underlying stock itself — into <strong>strategies</strong>: multi-leg structures built to target a specific payoff shape, a specific risk-to-reward ratio, and a specific set of Greek exposures. Knowing why a given strategy exists, and exactly when it's the right tool, is what separates deliberate positioning from just placing a bet and hoping.</p>
+<p>Every strategy is worth analyzing on two separate axes: its <strong>payoff at expiration</strong> — a function purely of where the stock ends up — and its <strong>Greeks profile</strong> — how it behaves right now as S, σ, and t shift underneath it. You need both. The payoff diagram tells you where the money is at the finish line; the Greeks tell you what the ride there actually feels like.</p>
 
 <h2>Covered Call: Selling Upside for Income</h2>
-<p>The covered call is the most common options strategy used by equity investors. You own the underlying stock and sell a call option against it:</p>
+<p>The covered call is the single most common strategy among equity investors who dabble in options. You already own the stock, and you sell a call against it:</p>
 <blockquote>Long 100 shares + Short 1 call (K = strike above current price)</blockquote>
-<p><strong>Payoff at expiration:</strong> If S<sub>T</sub> &lt; K: you keep the stock (worth S<sub>T</sub>) plus the call premium. If S<sub>T</sub> &gt; K: you keep the premium plus K (you're forced to sell at K, capping your upside).</p>
-<p><strong>Why use it?</strong> You're long the stock anyway and don't expect a large move. The call premium provides income and reduces your effective cost basis. The risk: if the stock surges past K, you miss the extra gains. The trade is explicitly giving up upside for current income.</p>
-<p><strong>Greek profile:</strong> Net delta ≈ (1 − Δ_call) per share. Short vega (you want volatility to drop — it makes the short call cheaper to close). Positive theta (you earn time decay on the short call).</p>
+<p><strong>Payoff at expiration:</strong> if S<sub>T</sub> &lt; K, you keep the stock at its current value plus the premium you collected. If S<sub>T</sub> &gt; K, you're forced to sell at K, but you keep both the premium and the sale proceeds — your upside is simply capped there.</p>
+<p><strong>Why bother?</strong> You were holding the stock anyway and don't expect a huge move soon, so collecting premium against it lowers your effective cost basis. The tradeoff is explicit: if the stock rips well past K, you leave real money on the table. You're deliberately trading some upside for income today.</p>
+<p><strong>Greek profile:</strong> net delta lands around (1 − Δ_call) per share. Short vega — you want implied vol to fall, since that makes buying back the short call cheaper. Positive theta — time decay on that short call works in your favor every day.</p>
 
 <h2>Vertical Spreads: Defined Risk, Defined Reward</h2>
-<p>A vertical spread buys one option and sells another option at a different strike with the same expiry and underlying. The spread limits both risk and reward, making it ideal when you have a directional view but want to reduce the cost and avoid unlimited naked short risk.</p>
+<p>A vertical spread buys one option and sells another at a different strike, same expiry, same underlying. Structuring it this way caps both your risk and your reward — exactly what you want when you have a directional view but don't want to pay full price for a naked option, or take on its unlimited downside.</p>
 
-<p><strong>Bull Call Spread:</strong> Buy a call at K₁, sell a call at K₂ &gt; K₁. Both same expiry.</p>
+<p><strong>Bull Call Spread:</strong> buy a call at K₁, sell a call at K₂ &gt; K₁, same expiration on both.</p>
 <ul>
-  <li>Max profit: (K₂ − K₁) − net premium paid. Achieved when S<sub>T</sub> ≥ K₂.</li>
-  <li>Max loss: net premium paid. Achieved when S<sub>T</sub> ≤ K₁.</li>
-  <li>Breakeven: K₁ + net premium paid.</li>
+  <li>Max profit: (K₂ − K₁) − net premium paid, reached once S<sub>T</sub> ≥ K₂</li>
+  <li>Max loss: just the net premium paid, if S<sub>T</sub> ≤ K₁</li>
+  <li>Breakeven: K₁ + net premium paid</li>
 </ul>
-<p>You pay less than buying a naked call (the short call subsidizes the long), but you cap your upside at K₂. Use when you're moderately bullish — you don't need a home run, just a move above K₂.</p>
+<p>You pay less up front than a naked call — the short leg subsidizes the long one — but you give up anything above K₂. Reach for this when you're moderately bullish and don't need a home run, just a move past K₂.</p>
 
-<p><strong>Bear Put Spread:</strong> Buy a put at K₂, sell a put at K₁ &lt; K₂. Both same expiry.</p>
+<p><strong>Bear Put Spread:</strong> buy a put at K₂, sell a put at K₁ &lt; K₂, same expiry.</p>
 <ul>
-  <li>Max profit: (K₂ − K₁) − net premium paid. Achieved when S<sub>T</sub> ≤ K₁.</li>
-  <li>Max loss: net premium paid. Achieved when S<sub>T</sub> ≥ K₂.</li>
+  <li>Max profit: (K₂ − K₁) − net premium paid, reached once S<sub>T</sub> ≤ K₁</li>
+  <li>Max loss: the net premium paid, if S<sub>T</sub> ≥ K₂</li>
 </ul>
-<p>Use when you're moderately bearish. The short lower-strike put subsidizes the higher-strike long put.</p>
+<p>The mirror image, for when you're moderately bearish — the cheaper lower-strike short put subsidizes the higher-strike long put you actually want.</p>
 
 <h2>Straddle: Trading Pure Volatility</h2>
 <p>A long straddle buys a call and a put at the same strike and expiry:</p>
 <blockquote>Long call (K, T) + Long put (K, T) — same strike and expiry</blockquote>
-<p>The straddle profits from large moves in either direction. If the stock shoots up, the call profits. If it crashes, the put profits. The only scenario that hurts is the stock staying near K — in which case both options expire near-worthless and you lose the combined premium.</p>
-<p><strong>Break-even points:</strong> K ± total premium paid. A straddle with K = 100 and total premium of $8 has break-evens at $92 and $108.</p>
-<p><strong>Greek profile:</strong> Delta ≈ 0 at initiation (the call's positive delta and the put's negative delta cancel). Long gamma (profits from any large move). Short theta (pays time decay on two options). Long vega (profits when IV rises — the straddle is a bet on IV being too low right now).</p>
-<p>Traders buy straddles before events (earnings, Fed decisions) when they expect a large move but are unsure of direction. They sell straddles when they believe IV is too high and the stock will stay quiet.</p>
+<p>This position profits from a big move in either direction — the call catches the upside, the put catches the downside. The one scenario that actually hurts is the stock going nowhere: both legs expire close to worthless and you lose the combined premium you paid for both.</p>
+<p><strong>Break-even points:</strong> K ± total premium paid. A straddle at K = 100 with $8 total premium breaks even at $92 and $108.</p>
+<p><strong>Greek profile:</strong> delta starts near zero — the call's positive delta and put's negative delta cancel out at initiation. Long gamma, since any large move helps. Short theta, since you're paying decay on two options simultaneously. Long vega — the whole position is fundamentally a bet that implied vol is currently priced too low.</p>
+<p>Traders reach for long straddles ahead of known catalysts — earnings, Fed meetings — when they expect a big move but have no edge on direction. They sell straddles instead when they think IV is overpriced and the stock is going to sit still.</p>
 
 <h2>Strangle: A Cheaper Straddle</h2>
-<p>A strangle is like a straddle but uses OTM strikes instead of ATM:</p>
+<p>A strangle is the same idea as a straddle, just built with OTM strikes instead of ATM ones:</p>
 <blockquote>Long OTM put (K₁ &lt; S) + Long OTM call (K₂ &gt; S)</blockquote>
-<p>Because both options are OTM, the premium paid is lower than a straddle. But the stock must move even further to reach the break-even points. Strangles are cheaper but require larger moves to profit.</p>
+<p>Since both legs start out-of-the-money, the total premium is lower than an equivalent straddle — but the stock has to travel further to reach either break-even point. Cheaper entry, bigger move required.</p>
 
 <h2>Iron Condor: Selling the Tails</h2>
-<p>An iron condor combines a bull put spread and a bear call spread:</p>
+<p>An iron condor stitches together a bull put spread and a bear call spread:</p>
 <blockquote>Short put at K₂ + Long put at K₁ (K₁ &lt; K₂) + Short call at K₃ + Long call at K₄ (K₃ &lt; K₄)</blockquote>
-<p>where K₁ &lt; K₂ &lt; S &lt; K₃ &lt; K₄. The position collects premium and profits as long as the stock stays between K₂ and K₃ at expiration — the "condor body." The long options at K₁ and K₄ cap losses if the stock makes a large move.</p>
-<p><strong>Max profit:</strong> Net premium collected. Achieved when K₂ ≤ S<sub>T</sub> ≤ K₃.</p>
-<p><strong>Max loss:</strong> Width of one spread − net premium. Achieved when S<sub>T</sub> ≤ K₁ or S<sub>T</sub> ≥ K₄.</p>
-<p><strong>Greek profile:</strong> Short vega (profits from IV decrease), positive theta (time decay works for you). Net delta ≈ 0 if structured symmetrically. The iron condor is a pure volatility-selling strategy — you're betting the stock won't make a large move before expiry.</p>
+<p>with K₁ &lt; K₂ &lt; S &lt; K₃ &lt; K₄. The position collects premium up front and stays profitable as long as the stock finishes between K₂ and K₃ — the "condor body." The long options out at K₁ and K₄ exist purely to cap the damage if the stock makes a genuinely large move.</p>
+<p><strong>Max profit:</strong> the net premium collected, if K₂ ≤ S<sub>T</sub> ≤ K₃.</p>
+<p><strong>Max loss:</strong> the width of one spread minus that premium, if S<sub>T</sub> ≤ K₁ or S<sub>T</sub> ≥ K₄.</p>
+<p><strong>Greek profile:</strong> short vega, so falling IV helps you. Positive theta, so time passing helps you too. Net delta sits close to zero if you build it symmetrically. In short, the iron condor is a pure volatility-selling play — you're betting the stock stays inside its range through expiration.</p>
 
 <h2>Choosing the Right Strategy</h2>
-<p>Each strategy expresses a specific market view:</p>
+<p>Every strategy above is, at bottom, a specific market view wearing a different outfit:</p>
 <ul>
-  <li><strong>Moderately bullish:</strong> Bull call spread</li>
-  <li><strong>Moderately bearish:</strong> Bear put spread</li>
-  <li><strong>Big move, unclear direction:</strong> Straddle or strangle (long)</li>
-  <li><strong>Stock stays flat, IV too high:</strong> Short straddle, strangle, or iron condor</li>
-  <li><strong>Own stock, want income:</strong> Covered call</li>
+  <li><strong>Moderately bullish:</strong> bull call spread</li>
+  <li><strong>Moderately bearish:</strong> bear put spread</li>
+  <li><strong>Big move coming, direction unclear:</strong> long straddle or strangle</li>
+  <li><strong>Stock likely flat, IV feels too high:</strong> short straddle, strangle, or iron condor</li>
+  <li><strong>Already own the stock, want income:</strong> covered call</li>
 </ul>
-<p>The Greek profile should match your time horizon and risk tolerance. Buying straddles bleeds theta daily — you need your event to happen quickly. Selling iron condors collects theta slowly — you benefit from the passage of time and punish by tail moves. Understanding this alignment is what separates systematic options trading from gambling.</p>
+<p>Whichever you pick, its Greek profile needs to actually match your time horizon and risk appetite. Long straddles bleed theta every single day, so you need your catalyst to actually arrive on schedule. Short iron condors collect theta slowly and steadily, rewarding patience but punishing you hard if the stock breaks out of its range. Matching the position to the view — not just the view to the trade idea — is what separates systematic options trading from gambling with extra steps.</p>
 <div class="lesson-callout">
   <span class="lesson-callout-label">Try it</span>
   <p>Build any of the strategies above with the tool below and watch its payoff shape change in real time.</p>
@@ -1135,49 +1223,49 @@ print("Tests passed!")
     duration: "18 min",
     content: `
 <h2>Why Binomial Trees?</h2>
-<p>Black-Scholes is elegant but brittle. It assumes continuous trading, no jumps, constant volatility, and — critically — European exercise (the option can only be exercised at expiration). For <strong>American options</strong>, which can be exercised at any time before expiry, there is no closed-form formula. Binomial trees handle American options naturally and provide the foundation for modern numerical options pricing.</p>
-<p>The key idea: instead of modeling stock prices as continuous Brownian motion, approximate the process as a discrete tree. At each time step, the stock can move up by factor u or down by factor d. With enough steps, the discrete tree converges to the continuous Black-Scholes model. But at each node, you can check whether early exercise is optimal — something Black-Scholes cannot do.</p>
+<p>Black-Scholes is elegant, but it's also brittle in a specific way: it assumes continuous trading, no price jumps, constant volatility, and — the important one here — European-style exercise, meaning the option can only ever be exercised right at expiration. <strong>American options</strong>, which can be exercised any time before that, have no closed-form Black-Scholes-style formula at all. Binomial trees fill that gap, and they're also the conceptual foundation nearly every numerical options-pricing method builds on.</p>
+<p>The core idea is to trade continuous randomness for something you can actually compute: instead of modeling the stock as continuous Brownian motion, chop time into discrete steps. At each step the stock either moves up by factor u or down by factor d. Take enough steps and this discrete tree converges right back to the same continuous Black-Scholes model — but along the way, at every single node, you get to ask a question Black-Scholes structurally can't answer: would exercising right now beat waiting?</p>
 
 <h2>The One-Period Model</h2>
-<p>Start with the simplest case: one time step of length T. The stock is at S today and moves to either Su (up) or Sd (down) at expiration. We want to price a call option with strike K.</p>
+<p>Start as simple as possible: one time step of length T. The stock sits at S today and lands at either Su or Sd by expiration. We want to price a call at strike K.</p>
 <p>Define:</p>
 <ul>
-  <li>u = up factor (e.g., u = e<sup>σ√T</sup> in the Cox-Ross-Rubinstein model)</li>
-  <li>d = down factor (e.g., d = 1/u = e<sup>−σ√T</sup>)</li>
-  <li>C<sub>u</sub> = max(Su − K, 0) = option value if stock goes up</li>
-  <li>C<sub>d</sub> = max(Sd − K, 0) = option value if stock goes down</li>
+  <li>u = the up factor (e.g., u = e<sup>σ√T</sup> in the Cox-Ross-Rubinstein setup)</li>
+  <li>d = the down factor (e.g., d = 1/u = e<sup>−σ√T</sup>)</li>
+  <li>C<sub>u</sub> = max(Su − K, 0), the option's value if the stock goes up</li>
+  <li>C<sub>d</sub> = max(Sd − K, 0), the option's value if it goes down</li>
 </ul>
-<p>The option price is the expected payoff under the <strong>risk-neutral measure</strong>, discounted at the risk-free rate:</p>
+<p>The option's price today is the expected payoff under the <strong>risk-neutral measure</strong>, discounted back at the risk-free rate:</p>
 <blockquote>C = e<sup>−rT</sup> · [p · C<sub>u</sub> + (1 − p) · C<sub>d</sub>]</blockquote>
-<p>where the risk-neutral probability p is chosen so the stock earns the risk-free rate:</p>
+<p>with the risk-neutral probability p chosen specifically so the stock's expected return works out to exactly the risk-free rate:</p>
 <blockquote>p = (e<sup>rT</sup> − d) / (u − d)</blockquote>
-<p>This is not the real-world probability of an up move — it's the probability that makes the expected return equal to r. The same risk-neutral substitution we saw in Black-Scholes.</p>
+<p>Worth being clear about: p is not anyone's real-world estimate of the odds of an up move. It's a constructed probability that makes the math come out to risk-free — the exact same risk-neutral trick from the Black-Scholes lesson, just in discrete form.</p>
 
 <h2>The Cox-Ross-Rubinstein (CRR) Parameterization</h2>
-<p>The most common choice of u and d, introduced by Cox, Ross, and Rubinstein in 1979, is:</p>
+<p>The standard choice for u and d, from Cox, Ross, and Rubinstein's 1979 paper:</p>
 <blockquote>u = e<sup>σ√(T/N)</sup>, &nbsp; d = e<sup>−σ√(T/N)</sup> = 1/u</blockquote>
-<p>where N is the number of time steps and Δt = T/N. With this parameterization, as N → ∞, the binomial tree converges to the geometric Brownian motion of Black-Scholes. For N = 100 steps, binomial prices typically match Black-Scholes to 3–4 decimal places.</p>
+<p>with N the number of steps and Δt = T/N. As N grows toward infinity, this tree converges exactly onto the geometric Brownian motion underlying Black-Scholes — in practice, N = 100 steps already matches Black-Scholes to 3–4 decimal places.</p>
 <p>The risk-neutral probability becomes:</p>
 <blockquote>p = (e<sup>rΔt</sup> − d) / (u − d)</blockquote>
 
 <h2>Multi-Step Backward Induction</h2>
-<p>With N steps, the stock has 2<sup>N</sup> terminal values — but because the tree recombines (an up-move followed by a down-move reaches the same node as down then up), there are only N+1 distinct terminal prices:</p>
+<p>With N steps, the stock technically has 2<sup>N</sup> possible paths — but the tree recombines, since an up-then-down move ends up at the same node as down-then-up, so there are only N+1 distinct terminal prices to worry about:</p>
 <blockquote>S<sub>j</sub> = S · u<sup>j</sup> · d<sup>N−j</sup>, for j = 0, 1, ..., N</blockquote>
-<p>The algorithm is <strong>backward induction</strong>:</p>
+<p>From there, the algorithm — <strong>backward induction</strong> — walks the tree from the future back to today:</p>
 <ol>
-  <li><strong>Terminal layer:</strong> Compute option values at expiry for all N+1 nodes: V<sub>j</sub><sup>N</sup> = max(S<sub>j</sub> − K, 0) for a call.</li>
-  <li><strong>Backward step:</strong> For each earlier layer n = N−1, N−2, ..., 0, compute the "continuation value" (expected discounted future value) at each node.</li>
-  <li><strong>American check:</strong> At each node, compare the continuation value to the immediate exercise value. Take the maximum. For a call: V<sub>j</sub><sup>n</sup> = max(S<sub>j</sub><sup>n</sup> − K, continuation).</li>
-  <li><strong>Root:</strong> V<sub>0</sub><sup>0</sup> is the option price today.</li>
+  <li><strong>Terminal layer:</strong> compute the option's value at every one of the N+1 nodes at expiry: V<sub>j</sub><sup>N</sup> = max(S<sub>j</sub> − K, 0) for a call.</li>
+  <li><strong>Backward step:</strong> walk back one layer at a time, n = N−1, N−2, ..., 0, computing each node's "continuation value" — the expected, discounted value of holding rather than exercising.</li>
+  <li><strong>American check:</strong> at every node, compare that continuation value against the payoff of exercising right now, and keep whichever is bigger. For a call: V<sub>j</sub><sup>n</sup> = max(S<sub>j</sub><sup>n</sup> − K, continuation).</li>
+  <li><strong>Root:</strong> V<sub>0</sub><sup>0</sup> — the value sitting at the very start of the tree — is today's option price.</li>
 </ol>
-<p>Step 3 is what makes binomial trees powerful for American options. At each node you ask: "Is it better to exercise now or wait?" Black-Scholes cannot answer this question.</p>
+<p>Step 3 is the whole reason this method exists for American options. At every single node you're explicitly asking "exercise now, or wait?" — a question Black-Scholes has no mechanism to even pose.</p>
 
 <h2>When Is Early Exercise Optimal?</h2>
-<p>A key result from binomial tree analysis:</p>
+<p>Run this analysis enough times and a few consistent patterns fall out:</p>
 <ul>
-  <li><strong>American calls on non-dividend stocks:</strong> Never optimal to exercise early. An American call has the same price as a European call when there are no dividends. Reason: selling the call in the market always yields more than exercising it early (you lose the remaining time value).</li>
-  <li><strong>American calls on dividend-paying stocks:</strong> Sometimes optimal to exercise just before the ex-dividend date, to capture the dividend. Binomial trees handle this automatically.</li>
-  <li><strong>American puts:</strong> Deep ITM puts can be worth exercising early, especially when interest rates are high. Holding the put instead of exercising means you forgo the interest on K. When the interest earned on K exceeds the remaining time value, early exercise is optimal. This is a uniquely American option feature.</li>
+  <li><strong>American calls on non-dividend stocks:</strong> exercising early is never optimal. An American call on a stock with no dividends is worth exactly the same as its European counterpart — selling the call in the market always beats exercising it, since exercising throws away whatever time value is left.</li>
+  <li><strong>American calls on dividend-paying stocks:</strong> here it can actually make sense to exercise right before the ex-dividend date, purely to capture that dividend. Binomial trees handle this case automatically, without any special-casing.</li>
+  <li><strong>American puts:</strong> deep in-the-money puts can genuinely be worth exercising early, especially when rates are high — holding onto the put instead of exercising means giving up the interest you'd earn on K in the meantime. Once that forgone interest outweighs the remaining time value, early exercise wins. This is a feature entirely unique to American-style options.</li>
 </ul>
 <div class="lesson-callout">
   <span class="lesson-callout-label">Try it</span>
@@ -1185,16 +1273,16 @@ print("Tests passed!")
 </div>
 
 <h2>Convergence to Black-Scholes</h2>
-<p>For a European option (no early exercise), the binomial tree price converges to the Black-Scholes formula as N → ∞. In practice:</p>
+<p>For a European option, with no early-exercise decision to make, the binomial price converges cleanly onto Black-Scholes as N grows. Roughly:</p>
 <ul>
-  <li>N = 10: rough approximation (~1–2% error)</li>
-  <li>N = 50: good approximation (~0.1–0.3% error)</li>
-  <li>N = 200: excellent (~0.01% error, often sub-penny)</li>
+  <li>N = 10: a rough approximation, roughly 1–2% error</li>
+  <li>N = 50: solidly good, roughly 0.1–0.3% error</li>
+  <li>N = 200: excellent, often accurate to well under a penny</li>
 </ul>
-<p>The convergence is not perfectly monotone — it oscillates as N increases. This is because the odd/even step structure of the tree alternately puts the strike between nodes and exactly on a node. Techniques like the "smooth" binomial or using N and N+1 averaged results eliminate this oscillation.</p>
+<p>That convergence isn't perfectly smooth, though — it oscillates as N increases, because the tree's odd/even step structure alternately lands the strike exactly on a node or squarely between two nodes. Techniques like "smoothed" binomial trees, or simply averaging results from N and N+1 steps, iron out that oscillation.</p>
 
 <h2>Beyond Binomial: Monte Carlo and Finite Difference</h2>
-<p>For more complex payoffs (barrier options, Asian options, multi-asset options), other numerical methods take over. <strong>Monte Carlo simulation</strong> simulates thousands of stock price paths and averages the payoffs — it scales well to high dimensions but is slow for American options (which require knowing the optimal exercise boundary). <strong>Finite difference methods</strong> (like Crank-Nicolson) solve the Black-Scholes PDE on a grid — highly accurate, fast, and the method of choice for most derivatives desks. Binomial trees are the conceptual foundation for all of these.</p>
+<p>For trickier payoffs — barrier options, Asian options, anything with multiple underlying assets — other numerical methods take over where binomial trees start to strain. <strong>Monte Carlo simulation</strong> runs thousands of simulated price paths and averages the resulting payoffs; it scales gracefully to high-dimensional problems but struggles with American options, since those need you to actually know the optimal exercise boundary in advance. <strong>Finite difference methods</strong>, like Crank-Nicolson, instead solve the Black-Scholes PDE directly on a grid — fast, highly accurate, and the go-to choice on most real derivatives desks. Every one of these methods, though, borrows its core logic straight from the binomial tree.</p>
     `,
     visuals: [{ afterSectionId: "when-is-early-exercise-optimal", type: "binomialTree" }],
     exercise: {

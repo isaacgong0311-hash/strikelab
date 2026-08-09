@@ -15,57 +15,57 @@ export const INVESTING_LESSONS: Lesson[] = [
     duration: "12 min",
     content: `
 <h2>Owning a Piece of a Business</h2>
-<p>When a company needs capital to grow, to build factories, hire engineers, or expand into new markets, it can raise money in two ways: borrow it (debt) or sell ownership stakes (equity). A <strong>stock</strong> (also called a <strong>share</strong> or <strong>equity</strong>) represents a fractional ownership interest in a corporation.</p>
-<p>If Apple has 15.3 billion shares outstanding and you own 100 shares, you own about 0.0000007% of Apple. A tiny slice, but a real one. As a shareholder, you own a proportional claim on Apple's assets and earnings. If Apple earns $100 billion in profit, your 100 shares entitle you to a proportional share of those earnings (either paid out as dividends, or reinvested in the company on your behalf).</p>
+<p>Say a company needs money. Maybe it wants to build a factory, hire a hundred engineers, or open stores in a new country. It has two options: borrow the money, or sell off little pieces of itself to people willing to fund it. A <strong>stock</strong> is one of those pieces — a share of ownership in the company, no different in principle from owning a slice of a pizza you split with friends, except the pizza is a business and the slices can be bought and sold to strangers on the internet at 9:31am every weekday.</p>
+<p>Apple has about 15.3 billion shares outstanding. Own 100 of them and you own roughly 0.0000007% of Apple — a number so small it's almost a joke, except it isn't. It's real ownership. When Apple earns $100 billion in a year, your 100 shares are legally entitled to their proportional cut, whether that shows up as a dividend check or as the company reinvesting it on your behalf and (hopefully) making your slice worth more.</p>
 
-<h2>IPOs: Going Public</h2>
-<p>Companies start private, owned by founders, employees, and early investors. When they decide to sell shares to the general public for the first time, they conduct an <strong>Initial Public Offering (IPO)</strong>.</p>
-<p>In an IPO, the company works with investment banks (underwriters) who help set the initial share price, market the offering to institutional investors, and list the shares on an exchange (NYSE or NASDAQ). The company receives cash from the primary sale. After that, investors trade shares among themselves in the <strong>secondary market</strong>, which is what you see on stock market apps.</p>
-<p>A few famous IPOs: Google in 2004 at $85/share, Facebook in 2012 at $38/share, Airbnb in 2020 at $68/share. Each was a moment when private wealth became publicly tradeable.</p>
+<h2>Going Public</h2>
+<p>Every company starts private. A founder owns it, maybe some early employees and investors get a piece too, and that's the whole cap table. At some point, if the company wants a lot more money than a few investors can provide, it can sell shares to the entire public for the first time — an <strong>IPO</strong>, or Initial Public Offering.</p>
+<p>Getting there involves investment banks (the underwriters), who help set the opening price, pitch the offering to big institutional investors, and get the stock listed on an exchange like the NYSE or NASDAQ. The company only actually receives cash from that first sale. Everything after — every trade you see on your phone — is investors buying and selling shares to each other in what's called the secondary market. The company doesn't see a cent of it.</p>
+<p>A few IPOs worth knowing: Google went public in 2004 at $85 a share. Facebook in 2012 at $38. Airbnb in 2020 at $68. Each one was the moment a company's ownership stopped being a private arrangement and became something anyone with a brokerage account could buy.</p>
 
 <h2>Common vs. Preferred Stock</h2>
-<p>Not all stock is equal. Most individual investors buy <strong>common stock</strong>; a smaller, more bond-like slice of the market is <strong>preferred stock</strong>.</p>
+<p>Not all shares are the same shape. What almost everyone buys is <strong>common stock</strong>. There's a second, less-talked-about kind called <strong>preferred stock</strong> that behaves more like a bond wearing a stock costume.</p>
 <div class="lesson-compare">
   <div>
     <span class="lesson-compare-label">Common stock</span>
     <ul>
-      <li><strong>Voting rights:</strong> typically one vote per share on major decisions (electing the board, approving mergers)</li>
-      <li><strong>Dividends:</strong> periodic cash payments from profits, if the board declares them</li>
-      <li><strong>Residual claim:</strong> gets what's left after creditors and preferred holders are paid in a liquidation, often nothing in bankruptcies</li>
+      <li>One vote per share on things like electing the board or approving a merger</li>
+      <li>Dividends if — and only if — the board decides to pay them</li>
+      <li>Last in line if the company goes under, after creditors and preferred holders. Often nothing left at all</li>
     </ul>
   </div>
   <div>
     <span class="lesson-compare-label">Preferred stock</span>
     <ul>
-      <li><strong>No voting rights</strong> in most cases</li>
-      <li><strong>Fixed dividend</strong> paid before common holders get anything</li>
-      <li><strong>Priority in liquidation</strong>, ahead of common stock, behind debt</li>
-      <li><strong>Limited upside:</strong> doesn't participate much if the company succeeds big</li>
+      <li>Usually no vote at all</li>
+      <li>A fixed dividend, paid before common holders see anything</li>
+      <li>Ahead of common stock in a liquidation — but still behind debt</li>
+      <li>Capped upside: doesn't get much richer even if the company takes off</li>
     </ul>
   </div>
 </div>
-<p>In short: preferred stock sits between bonds and common stock on the risk-reward spectrum, trading upside for a steadier payout and a better claim if things go wrong.</p>
+<p>Think of it as a spectrum with bonds on one end and common stock on the other. Preferred sits in the middle: you give up the chance at a big win in exchange for getting paid first and more reliably.</p>
 
 <h2>How Stock Prices Are Set</h2>
-<p>Stock prices are set by supply and demand among buyers and sellers on exchanges. There's no formula: the price is wherever a willing buyer and a willing seller agree to transact right now.</p>
-<p>But prices aren't arbitrary. Over time, prices reflect expectations about future cash flows. A stock trading at $100 with earnings of $5/share has a Price-to-Earnings (P/E) ratio of 20, meaning investors are willing to pay 20 years' worth of current earnings today because they expect the company to keep growing. We'll go deep on valuation in Lesson 4.</p>
+<p>There's no formula that spits out "the" price of a stock. It's whatever a willing buyer and a willing seller agree on, right now, on an exchange. That's it. That's the whole mechanism.</p>
+<p>What keeps that from being totally random is that both sides are trying to guess the same thing: what the company's future cash is worth today. A stock at $100 with $5 of annual earnings per share has a P/E ratio of 20 — investors are effectively paying 20 years of today's earnings up front, betting the company grows into that price. We'll spend a full lesson on valuation later (Lesson 4), but it's worth planting now: price and value are not the same question.</p>
 
 <h2>Market Capitalization</h2>
-<p><strong>Market capitalization</strong> (market cap) is the total dollar value of all outstanding shares:</p>
+<p>The simplest number for "how big is this company" is <strong>market capitalization</strong>, or market cap — just share price times shares outstanding.</p>
 <blockquote>Market Cap = Share Price × Shares Outstanding</blockquote>
-<p>It's the market's current opinion of what the entire company is worth. Companies are categorized by market cap:</p>
+<p>It's the market's current, collective, constantly-changing opinion of what the whole business is worth. Companies get bucketed by size:</p>
 <ul>
-  <li><strong>Mega-cap:</strong> $200B+ (Apple, Microsoft, Nvidia)</li>
-  <li><strong>Large-cap:</strong> $10B–$200B (Walmart, Nike)</li>
+  <li><strong>Mega-cap:</strong> $200B+ — Apple, Microsoft, Nvidia</li>
+  <li><strong>Large-cap:</strong> $10B–$200B — Walmart, Nike</li>
   <li><strong>Mid-cap:</strong> $2B–$10B</li>
   <li><strong>Small-cap:</strong> $300M–$2B</li>
-  <li><strong>Micro-cap:</strong> below $300M</li>
+  <li><strong>Micro-cap:</strong> under $300M</li>
 </ul>
-<p>Market cap differs from <em>enterprise value</em> (EV), which includes debt and subtracts cash: the real "acquisition price" of a company. We'll use EV in Lesson 4.</p>
+<p>One thing market cap doesn't capture: debt. For that you want <em>enterprise value</em>, which adds debt back in and subtracts cash — closer to what it'd actually cost to buy the whole company outright. More on that in Lesson 4 too.</p>
 
 <h2>Why Does the Stock Price Change?</h2>
-<p>Prices change when new information arrives that shifts investors' expectations about future cash flows. Earnings beats, new products, management changes, macroeconomic data, interest rate changes: all of it moves prices by updating the market's collective forecast.</p>
-<p>Markets are surprisingly quick at absorbing public information. Professional traders with supercomputers and satellite data are racing to be first. That's why it's hard to beat the market consistently: prices already reflect most of what's knowable.</p>
+<p>Every price move is the market updating its guess about future cash flows. An earnings beat, a new product, a CEO stepping down, an inflation report, a surprise rate hike — none of these change what the company owns today, but all of them change what people expect it to earn tomorrow, and the price moves to match.</p>
+<p>What's genuinely surprising is how fast this happens. Professional trading firms run supercomputers and, in some cases, literally rent satellite time to count cars in Walmart parking lots before earnings season. By the time you read a headline, the price has usually already moved. That's the honest reason beating the market consistently is so hard: the price you're looking at already has almost everything knowable baked into it.</p>
     `,
     sandboxes: [
       {
@@ -141,53 +141,53 @@ print("Tests passed!")
     duration: "14 min",
     content: `
 <h2>Exchanges and Brokers</h2>
-<p>Stock exchanges are regulated marketplaces where buyers and sellers meet to trade securities. The two main U.S. equity exchanges are the <strong>NYSE</strong> (New York Stock Exchange, founded 1792) and <strong>NASDAQ</strong> (founded 1971 as the first electronic exchange).</p>
-<p>Individual investors access exchanges through <strong>brokers</strong> (Fidelity, Charles Schwab, Robinhood, Interactive Brokers). When you submit an order through a broker app, your order routes to an exchange or market maker who finds a counterparty. The broker earns a commission (often $0 for retail, but earns "payment for order flow" from market makers for routing trades to them).</p>
+<p>An exchange is just a regulated place for buyers and sellers to meet. In the U.S. that mostly means the <strong>NYSE</strong> (founded 1792 — older than the country's currency) and the <strong>NASDAQ</strong> (1971, the first fully electronic one).</p>
+<p>You don't trade on an exchange directly. You go through a broker — Fidelity, Schwab, Robinhood, whoever's app is on your phone. Submit an order there and it gets routed to an exchange or a market maker who finds someone to take the other side. Most retail brokers charge $0 commission now, which sounds generous until you learn they're often paid instead by the market makers they route your order to — a practice called payment for order flow. Nobody's doing this for free; you're just not the one paying directly.</p>
 
 <h2>The Bid-Ask Spread</h2>
-<p>At any moment, a stock has two prices:</p>
+<p>A stock never has just one price. At any instant it has two:</p>
 <ul>
-  <li><strong>Bid:</strong> the highest price any buyer is currently willing to pay</li>
-  <li><strong>Ask (offer):</strong> the lowest price any seller is currently willing to accept</li>
+  <li><strong>Bid</strong> — the highest price any buyer is currently offering</li>
+  <li><strong>Ask</strong> (or offer) — the lowest price any seller will accept</li>
 </ul>
-<p>The <strong>spread</strong> = Ask − Bid. This is the transaction cost for immediate execution. For large-cap stocks like Apple, the spread might be $0.01 (one cent). For illiquid small-caps, spreads can be $0.50 or more.</p>
-<p>If you submit a <strong>market order</strong> to buy, you pay the ask. If you submit a market order to sell, you receive the bid. The market maker keeps the spread as payment for providing liquidity: standing ready to buy or sell on demand.</p>
+<p>The gap between them is the <strong>spread</strong>, and it's effectively the toll you pay for trading right now instead of waiting. On something liquid like Apple, that toll might be a single cent. On a thinly-traded small-cap, it can run fifty cents or more.</p>
+<p>Buy with a market order and you pay the ask. Sell with one and you get the bid. Whoever's on the other side — usually a market maker — pockets the difference as payment for standing ready to trade with you at any moment.</p>
 
 <h2>Order Types</h2>
-<p>Knowing your order types prevents costly mistakes:</p>
+<p>Most costly beginner mistakes come down to using the wrong order type:</p>
 <ul>
-  <li><strong>Market order:</strong> Execute immediately at whatever the current price is. Guarantees execution, not price. Never use market orders on illiquid stocks; you might pay far more than expected.</li>
-  <li><strong>Limit order:</strong> Execute only at your specified price or better. Buy limit at $100 means you buy only if someone will sell at $100 or less. Guarantees price, not execution.</li>
-  <li><strong>Stop order (stop-loss):</strong> Becomes a market order once the price hits your stop price. Used to limit losses: "sell if price falls to $90."</li>
-  <li><strong>Stop-limit order:</strong> Becomes a limit order at your stop price. Avoids the gap-down problem of a pure stop order.</li>
+  <li><strong>Market order</strong> — fill it now, at whatever the going price is. Guarantees you get filled, not what you pay. Dangerous on anything illiquid.</li>
+  <li><strong>Limit order</strong> — fill it only at your price or better. A buy limit at $100 fills only if someone's selling at $100 or less. Guarantees your price, not that you'll get filled at all.</li>
+  <li><strong>Stop order</strong> — sits dormant until the price hits your trigger, then converts to a market order. "Sell if it drops to $90" is a stop order.</li>
+  <li><strong>Stop-limit order</strong> — same trigger, but converts to a limit order instead, so you don't get blindsided by a price that gapped straight through your stop overnight.</li>
 </ul>
-<p>For most investors making deliberate purchases, <strong>limit orders are almost always better than market orders</strong>.</p>
+<p>For anything you're not in a screaming hurry to trade, a limit order is almost always the better call.</p>
 <div class="lesson-stat">
   <span class="lesson-stat-value">$10–50</span>
-  <span class="lesson-stat-label">Difference in execution quality on a single $10,000 trade, just from choosing a limit order over a market order.</span>
+  <span class="lesson-stat-label">What a limit order can save you over a market order on a single $10,000 trade — just from not paying whatever price the market happens to throw at you.</span>
 </div>
 
 <h2>The Order Book</h2>
-<p>Every exchange maintains an <strong>order book</strong>, a real-time list of all outstanding limit orders. The best bid and best ask (the top of the book) form the National Best Bid and Offer (NBBO).</p>
+<p>Every exchange keeps a running list of every outstanding limit order — the <strong>order book</strong>. Whatever sits at the very top, the best bid and best ask across every exchange at once, is called the NBBO.</p>
 <div class="lesson-callout">
   <span class="lesson-callout-label">Definition</span>
-  <p><strong>NBBO (National Best Bid and Offer):</strong> the single best bid and best ask price across every U.S. exchange at once. Brokers are legally required to route your order at a price at least as good as the NBBO, no matter which exchange actually fills it.</p>
+  <p><strong>NBBO</strong> — National Best Bid and Offer. Brokers are legally required to fill your order at a price at least as good as this, no matter which exchange actually executes the trade.</p>
 </div>
-<p>Below the best bid are lower bids (buyers willing to pay less). Above the best ask are higher asks (sellers wanting more). The order book shows the depth of liquidity: how much you could buy or sell without moving the price.</p>
-<p>High-frequency trading firms (HFTs) operate at microsecond timescales, continuously posting and canceling orders in the book to capture the spread and react to news faster than any human.</p>
+<p>Below the best bid sit lower bids from buyers willing to pay less; above the best ask sit higher asks from sellers wanting more. Stack it all up and you get a picture of liquidity — how much you could actually buy or sell before you started moving the price yourself.</p>
+<p>High-frequency trading firms live in this order book at microsecond timescales, constantly posting and pulling orders to catch the spread and react to news faster than any person possibly could.</p>
 
-<h2>Price Impact and Market Impact</h2>
-<p>When a large order hits the market, it "walks up" (or down) the order book, consuming multiple price levels. This is called <strong>market impact</strong>. A retail investor buying $5,000 of Apple (a $3 trillion company) has essentially zero market impact. A hedge fund buying $500 million of Apple in a single day will move the price. Traders who handle those orders minimize the cost through algorithmic execution (VWAP, TWAP algorithms) instead of placing one giant market order.</p>
+<h2>Price Impact</h2>
+<p>A big enough order doesn't just fill at the current price — it eats through the book, level by level, pushing the price as it goes. That's called market impact. Your $5,000 Apple purchase is a rounding error against a $3 trillion company; a hedge fund buying $500 million in a day will absolutely move it. That's why big desks break large orders into thousands of small ones (algorithms with names like VWAP and TWAP) instead of just slamming one giant market order through.</p>
 
-<h2>Indices: The Market's Report Card</h2>
-<p>Stock market indices aggregate price movements across many companies into a single number:</p>
+<h2>Indices</h2>
+<p>An index takes hundreds or thousands of individual stock prices and boils them down to a single number you can watch:</p>
 <ul>
-  <li><strong>S&P 500:</strong> 500 large U.S. companies, weighted by market cap. The most important benchmark for U.S. equities.</li>
-  <li><strong>Dow Jones Industrial Average (DJIA):</strong> 30 large U.S. companies, price-weighted (higher-priced stocks have more influence). Old-fashioned and less representative than S&P 500.</li>
-  <li><strong>NASDAQ-100:</strong> 100 largest non-financial NASDAQ companies, heavily tilted toward tech.</li>
-  <li><strong>Russell 2000:</strong> 2,000 small-cap U.S. companies. Measures the health of smaller businesses.</li>
+  <li><strong>S&P 500</strong> — 500 large U.S. companies, weighted by market cap. The default benchmark for "the market."</li>
+  <li><strong>Dow Jones (DJIA)</strong> — just 30 companies, and oddly weighted by raw share price rather than size. Famous, but a weaker read on the actual economy than the S&P 500.</li>
+  <li><strong>NASDAQ-100</strong> — the 100 biggest non-financial NASDAQ names, tilted hard toward tech.</li>
+  <li><strong>Russell 2000</strong> — 2,000 small-cap companies, a better gauge of how smaller businesses are actually doing.</li>
 </ul>
-<p>Index funds and ETFs track these indices, giving investors instant diversification at extremely low cost.</p>
+<p>Index funds and ETFs simply hold everything in a given index, which is how you end up owning a slice of 500 companies for a few dollars instead of picking one and hoping.</p>
     `,
     sandboxes: [
       {
@@ -259,58 +259,49 @@ print("Tests passed!")
     duration: "18 min",
     content: `
 <h2>The Three Core Statements</h2>
-<p>Every public company files quarterly (10-Q) and annual (10-K) reports with the SEC. Inside are three interconnected financial statements that together tell the complete story of a company's financial health. Learning to read them is the single most useful skill in fundamental investing.</p>
+<p>Every public company is legally required to file a report with the SEC every quarter (the 10-Q) and every year (the 10-K). Buried inside are three documents that, read together, tell you almost everything about whether a business is actually healthy. This is the single most useful skill in this whole track — more useful than any formula later on — because every valuation model in Lesson 4 is just an opinion built on top of these three statements.</p>
 
 <h2>1. Income Statement (P&L)</h2>
-<p>The income statement shows how much money a company made and spent over a period. Key line items:</p>
+<p>This one answers the question everyone actually cares about first: did the company make money? It's a ladder, and each rung subtracts a different bucket of costs.</p>
 <ul>
-  <li><strong>Revenue (Sales):</strong> Total money received from customers before any deductions</li>
-  <li><strong>Cost of Goods Sold (COGS):</strong> Direct costs of producing what was sold</li>
-  <li><strong>Gross Profit = Revenue − COGS</strong></li>
-  <li><strong>Operating Expenses (OpEx):</strong> R&D, sales, marketing, G&A: the costs of running the business</li>
-  <li><strong>EBIT (Operating Income) = Gross Profit − OpEx</strong></li>
-  <li><strong>EBITDA</strong> = EBIT + Depreciation + Amortization. Widely used because it removes non-cash charges and shows "cash earnings" from operations.</li>
-  <li><strong>Net Income = Revenue − all expenses − taxes − interest</strong></li>
+  <li><strong>Revenue</strong> — everything customers paid, before any costs are subtracted</li>
+  <li><strong>Cost of Goods Sold (COGS)</strong> — the direct cost of producing what got sold</li>
+  <li>Gross Profit = Revenue − COGS</li>
+  <li><strong>Operating Expenses</strong> — R&D, sales, marketing, the overhead of just running the place</li>
+  <li>EBIT (Operating Income) = Gross Profit − Operating Expenses</li>
+  <li><strong>EBITDA</strong> = EBIT + Depreciation + Amortization — a rough stand-in for "cash earnings," since D&A is an accounting charge, not money actually leaving the building</li>
+  <li>Net Income = Revenue − everything: costs, taxes, interest, all of it</li>
 </ul>
-<p><strong>Gross margin</strong> = Gross Profit / Revenue. A software company might have 70%+ gross margins (near-zero COGS per additional user). A grocery chain might have 25% gross margins. Margins reveal business model quality.</p>
+<p>One ratio worth memorizing here is gross margin — Gross Profit divided by Revenue. A software company can clear 70%+ because serving one more user costs almost nothing. A grocery chain might live at 25%. That gap isn't an accident; it's telling you something structural about how each business actually makes money.</p>
 
 <h2>2. Balance Sheet</h2>
-<p>The balance sheet is a snapshot of what a company owns (assets) and owes (liabilities) at a single point in time. The fundamental equation:</p>
-<blockquote><strong>Assets = Liabilities + Shareholders' Equity</strong></blockquote>
-<p><strong>Assets</strong> include:</p>
-<ul>
-  <li>Current assets: cash, accounts receivable, inventory (can be converted to cash within a year)</li>
-  <li>Long-term assets: property, plant & equipment (PP&E), goodwill, intangibles</li>
-</ul>
-<p><strong>Liabilities</strong> include:</p>
-<ul>
-  <li>Current liabilities: accounts payable, short-term debt, accrued expenses</li>
-  <li>Long-term liabilities: long-term debt, deferred revenue, pension obligations</li>
-</ul>
-<p><strong>Shareholders' equity</strong> is what's left for shareholders after subtracting all liabilities from assets. It includes retained earnings (cumulative profits kept in the business) and paid-in capital (from stock issuances).</p>
+<p>Where the income statement covers a period of time, the balance sheet is a photograph — what the company owns and owes at one specific moment. Everything on it has to balance around one equation:</p>
+<blockquote>Assets = Liabilities + Shareholders' Equity</blockquote>
+<p>Assets split into current (cash, receivables, inventory — things that turn into cash within a year) and long-term (buildings, equipment, goodwill, patents). Liabilities split the same way: current (bills coming due soon, short-term debt) and long-term (debt that's years out, pension obligations, deferred revenue).</p>
+<p>Whatever's left after subtracting liabilities from assets belongs to shareholders — retained profits the company chose to keep rather than pay out, plus whatever cash came in from selling stock in the first place.</p>
 
 <h2>3. Cash Flow Statement</h2>
-<p>Net income can be manipulated through accounting choices. Cash is harder to fake. The cash flow statement tracks actual cash in and out:</p>
+<p>Net income is an opinion. It depends on accounting choices — when revenue gets recognized, how depreciation gets scheduled — that a company has real discretion over. Cash is much harder to fake, which is exactly why this third statement exists: it tracks money that actually moved.</p>
 <ul>
-  <li><strong>Operating Cash Flow (OCF):</strong> Cash from core business operations. Start here; it's the most important section. Good businesses generate consistently positive OCF.</li>
-  <li><strong>Investing Cash Flow:</strong> Cash spent on capital expenditures (buying equipment, buildings), acquisitions, or investments. Usually negative for growing companies.</li>
-  <li><strong>Financing Cash Flow:</strong> Cash from issuing/repaying debt, issuing stock, or paying dividends/buybacks.</li>
+  <li><strong>Operating cash flow</strong> — cash generated by the actual business. This is the section to read first. A healthy company produces this consistently, quarter after quarter.</li>
+  <li><strong>Investing cash flow</strong> — money spent on equipment, buildings, acquisitions. Usually negative for a company that's still growing, which is normal, not alarming.</li>
+  <li><strong>Financing cash flow</strong> — debt issued or repaid, stock issued, dividends and buybacks paid out.</li>
 </ul>
 <div class="lesson-callout">
   <span class="lesson-callout-label">Key idea</span>
-  <p><strong>Free Cash Flow (FCF) = Operating Cash Flow − Capital Expenditures.</strong> It's the cash actually available to return to shareholders or reinvest in the business, after paying for the equipment and buildings needed to keep operating. Many professional investors treat FCF as the single best measure of business quality, more than net income.</p>
+  <p><strong>Free cash flow</strong> = Operating Cash Flow − Capital Expenditures. It's what's actually left over to hand back to shareholders or reinvest, after paying for the equipment the business needs just to keep running. A lot of professional investors trust this number more than net income, and for good reason — it's much harder to dress up.</p>
 </div>
 
 <h2>How the Statements Connect</h2>
-<p>The three statements are deeply interlinked. Net income flows into retained earnings on the balance sheet. Depreciation is added back in OCF (it's a non-cash expense). Capital expenditures appear in investing activities and reduce FCF. Changes in working capital (inventory, receivables) show up in operating cash flow. Understanding these connections prevents you from being fooled by companies that report profits but burn cash.</p>
+<p>These three aren't independent — they're the same business described three different ways, and they check each other. Net income flows into retained earnings on the balance sheet. Depreciation gets subtracted on the income statement but added back on the cash flow statement, because it never actually left the bank account. Capex shows up as an outflow in investing activities and directly reduces free cash flow. A company reporting a healthy profit while its cash flow statement tells a completely different story is exactly the kind of thing these connections are built to expose.</p>
 
-<h2>Red Flags to Watch For</h2>
+<h2>Red Flags</h2>
 <ul>
-  <li>Net income growing faster than operating cash flow (possible earnings manipulation)</li>
-  <li>Accounts receivable growing faster than revenue (collecting money slower)</li>
-  <li>Inventory growing faster than COGS (demand may be weaker than reported)</li>
-  <li>Rising debt without corresponding revenue growth</li>
-  <li>Goodwill that's large relative to total assets (often from overpriced acquisitions)</li>
+  <li>Net income rising faster than operating cash flow — a classic tell for earnings that were massaged rather than earned</li>
+  <li>Receivables growing faster than revenue — customers are paying slower than they used to</li>
+  <li>Inventory piling up faster than COGS — maybe demand isn't what the headline numbers claim</li>
+  <li>Debt climbing with no matching growth in revenue</li>
+  <li>Goodwill that dwarfs the rest of the balance sheet — often the fingerprint of an overpriced acquisition</li>
 </ul>
     `,
     sandboxes: [
@@ -418,53 +409,39 @@ print("Tests passed!")
     duration: "18 min",
     content: `
 <h2>Intrinsic Value vs. Market Price</h2>
-<p>The central question in investing: is this stock cheap or expensive? To answer this, you need both the market price (easy, it's on your phone) and an estimate of <strong>intrinsic value</strong>: what the business is fundamentally worth based on its future cash flows. Valuation is the art and science of estimating that number.</p>
-<p>Benjamin Graham put it simply: "Price is what you pay. Value is what you get." When market price is well below intrinsic value, you have a <strong>margin of safety</strong>, room to be wrong and still not lose money. That's the core idea of value investing.</p>
+<p>Every investing decision eventually comes down to one question: is this stock cheap, expensive, or about right? The market price is trivial to find — it's on your phone. The hard half is estimating <strong>intrinsic value</strong>: what the business is actually worth based on the cash it'll generate over its lifetime. Valuation is just the name for the process of guessing that second number as carefully as you can.</p>
+<p>Benjamin Graham's line on this has survived nearly a century for a reason: "Price is what you pay. Value is what you get." When the price sits well below your estimate of value, you've got what Graham called a margin of safety — room for your estimate to be wrong and still come out fine. That single idea is basically the whole philosophy of value investing.</p>
 
 <h2>Relative Valuation: Multiples</h2>
-<p>The fastest way to value a company is to compare it to similar companies using valuation multiples: ratios that normalize price relative to some fundamental measure.</p>
-
-<p><strong>Price-to-Earnings (P/E):</strong></p>
-<blockquote>P/E = Stock Price / Earnings Per Share (EPS)</blockquote>
-<p>A P/E of 20 means investors are paying $20 for every $1 of current annual earnings. Higher P/E implies the market expects faster growth. S&P 500 historical average P/E is ~15–16; during tech booms it's reached 30+. Growth stocks (Amazon, NVIDIA) trade at 40–100× earnings; "value stocks" trade at 8–12×.</p>
-<p>Limitations: EPS can be manipulated. Negative earnings make P/E meaningless. Compare P/E only within the same industry, since tech and utilities have very different structural growth rates.</p>
-
-<p><strong>Enterprise Value to EBITDA (EV/EBITDA):</strong></p>
+<p>The fast way to value something is to compare it to its peers using multiples — ratios that scale price against some measure of the underlying business, so companies of wildly different sizes become comparable.</p>
+<p><strong>Price-to-Earnings (P/E)</strong> is the one you'll see most:</p>
+<blockquote>P/E = Stock Price / Earnings Per Share</blockquote>
+<p>A P/E of 20 means you're paying $20 today for every $1 the company earned this year. The higher the number, the more growth the market expects. The S&P 500 has historically averaged around 15–16×; during genuine tech booms it's pushed past 30×. A hot growth name like NVIDIA might trade at 60–100× earnings, while a slow, mature "value" stock sits at 8–12×. It's not that one is right and one is wrong — they're pricing in different futures.</p>
+<p>The catch: EPS is an accounting number, and accounting numbers can be nudged. Negative earnings make P/E meaningless outright. And comparing a tech company's P/E to a utility's tells you almost nothing, since the two industries have completely different structural growth rates baked in.</p>
+<p><strong>EV/EBITDA</strong> is the multiple professionals reach for more often:</p>
 <blockquote>EV = Market Cap + Total Debt − Cash<br/>EV/EBITDA = Enterprise Value / EBITDA</blockquote>
-<p>EV/EBITDA is preferred by professionals because it's capital-structure-neutral (works regardless of how much debt the company has) and pre-tax (comparable across tax jurisdictions). Typical ranges: 6–10× for mature industries, 15–25× for high-growth tech, 3–6× for capital-intensive businesses.</p>
+<p>It doesn't care how a company is financed (debt-heavy or debt-free, the comparison still works) and it's measured before taxes, which makes it usable across countries with different tax codes. Typical ranges run 6–10× for mature industries, 3–6× for capital-heavy businesses like manufacturing, and 15–25× for high-growth tech.</p>
+<p>Two more worth knowing: <strong>Price-to-Sales</strong>, used for companies that don't have profits yet (tech startups routinely trade at 5–20× revenue), and <strong>Price-to-Book</strong>, which compares price to net assets. A P/B under 1 means the stock trades below its own liquidation value — sometimes a real bargain, sometimes a warning sign that the market knows something you don't.</p>
 
-<p><strong>Price-to-Sales (P/S):</strong> Used for companies with no profits yet. Tech startups are often valued at 5–20× revenue.</p>
-<p><strong>Price-to-Book (P/B):</strong> Price relative to net assets (book value). Banks and financial companies are often analyzed this way. P/B below 1 means the stock is trading below its liquidation value, which often signals distress or, occasionally, a real bargain.</p>
-
-<h2>Discounted Cash Flow (DCF): The Gold Standard</h2>
-<p>Multiples tell you relative valuation. DCF tells you absolute value. A DCF values a company by projecting its future free cash flows and discounting them back to today at a rate that reflects risk.</p>
-<p>The core formula:</p>
+<h2>Discounted Cash Flow</h2>
+<p>Multiples only tell you relative value — cheap or expensive compared to something else. A DCF tries to answer the harder question directly: project the company's future free cash flows, then discount each one back to what it's worth in today's dollars.</p>
 <blockquote>Intrinsic Value = Σ [FCF_t / (1 + r)^t] + Terminal Value</blockquote>
-<p>Where:</p>
-<ul>
-  <li>FCF_t is free cash flow in year t</li>
-  <li>r is the discount rate (typically the Weighted Average Cost of Capital, WACC)</li>
-  <li>Terminal value captures all cash flows beyond your forecast horizon (usually 5–10 years)</li>
-</ul>
-<p><strong>Terminal value</strong> is typically estimated using the Gordon Growth Model:</p>
+<p>FCF_t is the free cash flow expected in year t, r is your discount rate (usually the weighted average cost of capital), and terminal value stands in for every dollar of cash flow beyond your forecast window — typically 5 to 10 years out. It's usually estimated with the Gordon Growth Model:</p>
 <blockquote>Terminal Value = FCF_final × (1 + g) / (r − g)</blockquote>
-<p>where g is the long-term growth rate (usually 2–3%, roughly GDP growth).</p>
+<p>where g is a conservative long-run growth rate, often pegged around 2–3% — roughly GDP growth, since no company can outgrow the economy forever.</p>
 <div class="lesson-stat">
   <span class="lesson-stat-value">60–80%</span>
-  <span class="lesson-stat-label">Share of a typical DCF's total value that comes from the terminal value alone, not the forecast years. That's why small changes in assumptions can swing a valuation dramatically.</span>
+  <span class="lesson-stat-label">How much of a typical DCF's total value comes from the terminal value alone, not the years you actually forecast in detail. Which is exactly why a tiny tweak to your assumptions can swing the answer wildly.</span>
 </div>
+<p>That sensitivity is the honest weakness of the whole method. Nudge the discount rate from 10% to 12%, or the terminal growth rate from 3% down to 2%, and your output can move 30–50%. There's an old Wall Street joke that DCF really stands for "Don't Count on Figures" — analysts are at least as likely to use it to justify a number they already believed as to actually discover one. The right way to use it is alongside multiples, not instead of them: stress-test your assumptions and think in ranges, not a single confident point estimate.</p>
 
-<h2>The Problem With DCF</h2>
-<p>DCF sounds precise but is extremely sensitive to inputs. Changing the discount rate from 10% to 12%, or changing the terminal growth rate from 3% to 2%, can change the output by 30–50%. As the joke goes, "DCF stands for 'Don't Count on Figures.'" Wall Street analysts use DCF to justify conclusions they'd already reached at least as often as to discover new ones.</p>
-<p>Good practice: use DCF alongside multiples, stress-test your assumptions, and focus on the <em>range</em> of possible values rather than a single point estimate.</p>
-
-<h2>A Simple Valuation Framework</h2>
+<h2>A Simple Framework</h2>
 <ol>
-  <li><strong>Understand the business:</strong> How does it make money? How durable are its competitive advantages (moat)?</li>
-  <li><strong>Check growth trajectory:</strong> Is revenue growing? Are margins expanding or contracting?</li>
-  <li><strong>Assess the balance sheet:</strong> Can the company survive a downturn? Is debt manageable?</li>
-  <li><strong>Compare multiples to peers:</strong> Is it trading at a premium or discount? Why?</li>
-  <li><strong>Sanity-check with DCF:</strong> Do the multiples imply reasonable long-term growth assumptions?</li>
+  <li>Understand the business — how does it actually make money, and how defensible is that?</li>
+  <li>Check the trajectory — is revenue growing, and are margins expanding or shrinking?</li>
+  <li>Look at the balance sheet — could this company survive a bad year? Is the debt load manageable?</li>
+  <li>Compare multiples to peers — trading at a premium or a discount, and can you explain why?</li>
+  <li>Sanity-check with DCF — do those multiples imply a growth rate you'd actually bet on?</li>
 </ol>
     `,
     sandboxes: [
@@ -566,45 +543,45 @@ print("Tests passed!")
     duration: "16 min",
     content: `
 <h2>The Risk-Return Tradeoff</h2>
-<p>One of finance's most fundamental principles: in efficient markets, higher expected returns come with higher risk. There's no free lunch. Treasury bills (U.S. government 3-month debt) return ~5% with near-zero risk. The S&P 500 has returned ~10% historically, but with years like 2008 (−37%) and 2022 (−18%). Startup equity might return 50%+, or 0%.</p>
-<p>Risk in finance is typically measured by <strong>volatility</strong>, the standard deviation of returns. A stock with annual return volatility of 25% will typically see its price fluctuate within a range of ±25% around its expected return in two-thirds of years (one standard deviation interval).</p>
+<p>Markets don't hand out free returns. If something offers a higher expected payoff, it comes bundled with more risk — that trade is basically the whole discipline of finance in one sentence. Three-month U.S. Treasury bills pay around 5% and are about as close to risk-free as money gets. The S&P 500 has averaged closer to 10% historically, but "historically" is doing a lot of work in that sentence — it includes 2008 (−37%) and 2022 (−18%). Put money into early-stage startup equity and you might see 50%+ returns, or you might see zero. All of it, forever.</p>
+<p>The standard way to measure risk is <strong>volatility</strong> — the standard deviation of returns. A stock with 25% annual volatility will typically wander within about ±25% of its expected return in roughly two years out of three. That's not a guarantee, just what "one standard deviation" means in practice.</p>
 
 <h2>Measuring Volatility</h2>
-<p>For a stock with daily returns r₁, r₂, …, rₙ:</p>
+<p>Given a series of daily returns r₁, r₂, …, rₙ, here's the actual recipe:</p>
 <blockquote>
   Mean return: μ = (1/n) Σ rᵢ<br/>
   Variance: σ² = (1/(n−1)) Σ (rᵢ − μ)²<br/>
   Daily volatility: σ_daily = √(variance)<br/>
   Annualized volatility: σ_annual = σ_daily × √252
 </blockquote>
-<p>The √252 annualization uses 252 as the number of trading days per year. This is a standard convention across all of finance.</p>
+<p>That 252 is the number of trading days in a typical year, and the square-root scaling is a convention you'll see used everywhere in finance, not something specific to this lesson.</p>
 
-<h2>The Magic of Diversification</h2>
-<p>Here's one of finance's few true free lunches: diversification reduces risk <em>without</em> sacrificing expected return. When you hold multiple assets, their random fluctuations partially cancel out, as long as they don't move in perfect lockstep.</p>
-<p>The correlation ρ between two assets ranges from −1 (perfectly opposite) to +1 (perfectly same). For a two-asset portfolio:</p>
+<h2>Diversification</h2>
+<p>Here's one of the only genuinely free lunches finance has to offer: spreading money across multiple assets lowers your risk without lowering your expected return. It works because each asset's random ups and downs partially cancel each other out, as long as they're not moving in perfect lockstep.</p>
+<p>The correlation between two assets, ρ, runs from −1 (perfectly opposite) to +1 (perfectly identical). For a two-asset portfolio:</p>
 <blockquote>σ²_portfolio = w₁²σ₁² + w₂²σ₂² + 2·w₁·w₂·σ₁·σ₂·ρ</blockquote>
-<p>When ρ &lt; 1, the portfolio volatility is less than the weighted average of individual volatilities. When ρ = −1, you can theoretically build a zero-variance portfolio: a perfect hedge. In practice, correlations between stocks are positive (0.3–0.7) but not perfect, so diversification always helps.</p>
-<p>Nobel Prize winner Harry Markowitz formalized this in 1952 as <strong>Modern Portfolio Theory</strong>. The key insight: risk that can be diversified away (idiosyncratic risk) doesn't require additional expected return. Only undiversifiable risk (market risk, or systematic risk) is compensated.</p>
+<p>Any time ρ is less than 1, the combined portfolio ends up less volatile than a simple weighted average of its two pieces would suggest. Push ρ all the way to −1 and you could, in theory, build a portfolio with zero variance — a perfect hedge. Real stocks don't cooperate that well; correlations usually sit somewhere between 0.3 and 0.7. Still positive, but far from 1, which is exactly why diversifying always helps at least a little.</p>
+<p>Harry Markowitz turned this into a Nobel Prize in 1952 by formalizing it as Modern Portfolio Theory. His core claim: risk you can diversify away shouldn't earn you anything extra for holding it. Only the risk you're stuck with no matter how many stocks you own — systematic, market-wide risk — actually deserves to be compensated.</p>
 
-<h2>The Sharpe Ratio: Risk-Adjusted Return</h2>
-<p>Comparing raw returns is misleading. A fund returning 20%/year taking extreme risk is not necessarily better than one returning 12%/year with steady performance. The <strong>Sharpe ratio</strong> adjusts for risk:</p>
+<h2>The Sharpe Ratio</h2>
+<p>Raw return numbers alone are a trap. A fund that returned 20% last year by taking on huge risk isn't obviously better than one that returned a steadier 12%. The Sharpe ratio fixes that by dividing out the risk:</p>
 <blockquote>Sharpe = (Return_portfolio − Return_risk_free) / σ_portfolio</blockquote>
-<p>A Sharpe ratio of 1.0 means you're earning 1 unit of excess return per unit of risk, considered good. Above 2.0 is excellent and rare. Below 0.5 is poor. Buffett's Berkshire Hathaway has maintained a Sharpe ratio of ~0.7 over decades. That sounds modest until you factor in the scale and how long it's held up.</p>
+<p>A Sharpe of 1.0 is generally considered solid — one unit of extra return per unit of risk taken. Above 2.0 is rare and excellent. Below 0.5 is weak. Warren Buffett's Berkshire Hathaway has run around a 0.7 Sharpe ratio across decades — which sounds unremarkable until you remember it's been sustained at enormous scale for longer than most investors have been alive.</p>
 
 <h2>Systematic vs. Idiosyncratic Risk</h2>
-<p>Total stock risk decomposes into two components:</p>
+<p>All of a stock's risk splits into two buckets:</p>
 <ul>
-  <li><strong>Systematic (market) risk:</strong> Driven by economy-wide factors like recessions, interest rate changes, and pandemics. All stocks are affected. Cannot be diversified away. Measured by <strong>beta</strong> (covered in the Quant track).</li>
-  <li><strong>Idiosyncratic (specific) risk:</strong> Company-specific events like a product failure, a CEO scandal, accounting fraud. This is the free lunch: it can be diversified away almost entirely.</li>
+  <li><strong>Systematic risk</strong> — recessions, rate hikes, pandemics. Economy-wide forces that touch every stock at once. You can't diversify your way out of this one; it's measured by beta, which the Quant track covers.</li>
+  <li><strong>Idiosyncratic risk</strong> — a bad product launch, a CEO scandal, one company's specific accounting fraud. This is the free-lunch part: own enough different companies and this risk mostly cancels itself out.</li>
 </ul>
 <div class="lesson-stat">
   <span class="lesson-stat-value">~90%</span>
-  <span class="lesson-stat-label">Reduction in idiosyncratic risk from holding just 20–30 uncorrelated stocks instead of one. Academic research (Fama-French) found that 20–50 randomly chosen stocks captures most of the benefit; beyond 50, it's marginal.</span>
+  <span class="lesson-stat-label">How much idiosyncratic risk disappears just by holding 20–30 uncorrelated stocks instead of one. Fama and French found most of that benefit shows up by around 20–50 stocks — past that, adding more barely moves the needle.</span>
 </div>
     `,
     sandboxes: [
       {
-        afterSectionId: "the-sharpe-ratio-risk-adjusted-return",
+        afterSectionId: "the-sharpe-ratio",
         title: "Sharpe Ratio",
         formula: "Sharpe = (Return − Risk-Free Rate) / Volatility",
         variables: [
@@ -704,25 +681,25 @@ print("Tests passed!")
     subtitle: "Asset allocation, index funds, and long-term wealth",
     duration: "14 min",
     content: `
-<h2>Asset Allocation: The Most Important Decision</h2>
-<p>A famous 1986 study by Brinson, Hood, and Beebower found that <strong>asset allocation</strong> (how you divide your portfolio among different asset classes) explains about 90% of long-term portfolio performance. Whether you pick Apple or Microsoft matters far less than whether you're 80% equities vs. 50% equities.</p>
-<p>The main asset classes:</p>
+<h2>The Decision That Matters Most</h2>
+<p>In 1986, three researchers named Brinson, Hood, and Beebower dug into what actually drives portfolio performance over time, and the answer surprised a lot of people: roughly 90% of it comes down to <strong>asset allocation</strong> — how you split your money across stocks, bonds, cash, and everything else. Not stock picking. Not timing the market. Just the split. Whether you happened to buy Apple or Microsoft matters far less than whether you were 80% in stocks or 50%.</p>
+<p>The main buckets you're splitting between:</p>
 <ul>
-  <li><strong>Equities (stocks):</strong> Highest long-term return (~10%/year historically), highest volatility (~15–20%/year). Primary wealth-building engine.</li>
-  <li><strong>Fixed income (bonds):</strong> Lower return (~4–6%), lower volatility. Provides stability and income. U.S. Treasuries are virtually risk-free. Corporate bonds offer more yield with credit risk.</li>
-  <li><strong>Cash &amp; cash equivalents:</strong> Money market funds, T-bills. Virtually zero risk, low return. Store of value.</li>
-  <li><strong>Alternatives:</strong> Real estate (REITs), commodities, private equity, hedge funds. Diversification and inflation hedging.</li>
+  <li><strong>Equities (stocks):</strong> The engine. Highest long-term return, historically around 10%/year, but also the most volatile — expect swings of 15–20% in a given year.</li>
+  <li><strong>Fixed income (bonds):</strong> Lower return, usually 4–6%, and a lot calmer. U.S. Treasuries are about as close to risk-free as investing gets; corporate bonds pay more but carry the risk the company doesn't pay you back.</li>
+  <li><strong>Cash and cash equivalents:</strong> Money market funds, T-bills. Barely any risk, barely any return. This is where money goes to sit still.</li>
+  <li><strong>Alternatives:</strong> Real estate, commodities, private equity, hedge funds. Mostly useful for diversification and as a hedge against inflation, less so as a core holding.</li>
 </ul>
-<p>A classic rule of thumb: hold your age in bonds (60-year-old → 60% bonds, 40% stocks). Modern advice skews more aggressive for young investors: a 20-year-old with a 40-year investment horizon can ride out volatility and should be mostly in equities.</p>
+<p>The old rule of thumb was to hold your age in bonds — a 60-year-old at 60% bonds, 40% stocks. Modern advice has drifted more aggressive for anyone young: a 20-year-old with 40 years ahead of them can afford to ride out a bad decade or two, so the advice now skews toward staying mostly in equities for a lot longer than your grandparents did.</p>
 
-<h2>The Case for Index Funds</h2>
-<p>Most professional fund managers underperform their benchmark index over 10+ years after fees. S&P Dow Jones data shows that over 15 years, 85–90% of actively managed large-cap funds underperform the S&P 500. Why?</p>
+<h2>Why Index Funds Keep Winning</h2>
+<p>Here's an uncomfortable fact for anyone who dreams of picking stocks for a living: most professional fund managers lose to their own benchmark. S&P Dow Jones tracks this every year, and over 15-year stretches, somewhere between 85% and 90% of actively managed large-cap funds underperform the S&P 500 itself. A few reasons that keeps happening:</p>
 <ul>
-  <li>Markets are semi-efficient: professional analysts already know most of what's in public filings</li>
-  <li>Management fees (1–2%/year for active funds vs. 0.03–0.05% for index funds) compound dramatically over time</li>
-  <li>Transaction costs from frequent trading erode returns</li>
+  <li>Markets are semi-efficient — the professional analysts trying to find an edge are mostly reading the same public filings you could read</li>
+  <li>Active funds charge 1–2% a year in fees versus 0.03–0.05% for an index fund, and that gap compounds into real money over decades</li>
+  <li>Frequent trading racks up transaction costs that quietly eat into returns</li>
 </ul>
-<p>Warren Buffett's 2007 bet: he wagered $1 million that a simple S&P 500 index fund would outperform any basket of hedge funds over 10 years. He won easily.</p>
+<p>In 2007, Warren Buffett put a number on this. He bet $1 million that a plain S&P 500 index fund would beat a hand-picked basket of hedge funds over the following 10 years. It wasn't close.</p>
 <div class="lesson-compare">
   <div>
     <span class="lesson-compare-label">Basket of hedge funds</span>
@@ -735,33 +712,33 @@ print("Tests passed!")
     <p style="margin-top:0.3rem;font-size:0.85rem;color:var(--ink-3);">Cumulative return, 10 years</p>
   </div>
 </div>
-<p>For most investors, especially high schoolers just starting out, a simple portfolio of two or three low-cost index ETFs is likely to outperform everything more complicated.</p>
+<p>For most people — especially a high schooler just getting started — two or three low-cost index ETFs will quietly outperform almost anything more complicated you could build instead.</p>
 
-<h2>A Simple Three-Fund Portfolio</h2>
-<p>The "Bogleheads three-fund portfolio" (popularized by Vanguard founder Jack Bogle) has decades of evidence behind it, and it's about as simple as investing gets:</p>
+<h2>A Portfolio in Three Funds</h2>
+<p>The "Bogleheads three-fund portfolio," named for the community that grew up around Vanguard founder Jack Bogle's ideas, has decades of evidence behind it and is about as simple as investing gets:</p>
 <ol>
-  <li><strong>U.S. Total Stock Market:</strong> VTI (0.03% fee). Captures ~4,000 U.S. companies.</li>
-  <li><strong>International Stock Market:</strong> VXUS (0.07% fee). Diversifies beyond U.S. stocks.</li>
-  <li><strong>U.S. Bond Market:</strong> BND (0.03% fee). Reduces volatility.</li>
+  <li><strong>U.S. Total Stock Market:</strong> VTI, a 0.03% fee, roughly 4,000 U.S. companies in one ticker.</li>
+  <li><strong>International Stock Market:</strong> VXUS, 0.07% fee, everything outside the U.S.</li>
+  <li><strong>U.S. Bond Market:</strong> BND, 0.03% fee, the ballast that smooths out the ride.</li>
 </ol>
-<p>A 22-year-old might hold 80% VTI / 10% VXUS / 10% BND and rebalance annually. This three-fund portfolio provides broad diversification, minimal fees, and requires about 1 hour per year to maintain.</p>
+<p>A 22-year-old might run 80% VTI / 10% VXUS / 10% BND and check in once a year to rebalance. That's it — broad diversification, fees so low they barely register, and about an hour of upkeep annually.</p>
 
-<h2>The Power of Compounding</h2>
-<p>Time is the most powerful variable in investing. $10,000 invested at 10%/year:</p>
+<h2>Why Time Beats Almost Everything</h2>
+<p>Nothing in investing does more work for you than time. Take $10,000 growing at 10% a year and just let it sit:</p>
 <ul>
   <li>After 10 years: $25,937</li>
   <li>After 20 years: $67,275</li>
   <li>After 30 years: $174,494</li>
   <li>After 40 years: $452,593</li>
 </ul>
-<p>Albert Einstein allegedly called compound interest "the eighth wonder of the world" (he probably didn't, but the numbers above make a decent case for him). Starting at 18 instead of 28, just 10 extra years, roughly doubles your ending wealth.</p>
+<p>Einstein is often credited with calling compound interest "the eighth wonder of the world." He almost certainly never said it, but look at those numbers again and it's easy to see why people keep attributing it to him anyway. Start at 18 instead of 28 — just ten extra years — and your ending balance roughly doubles. Nothing else in this lesson moves the needle that much for that little effort.</p>
 
 <h2>Rebalancing</h2>
-<p>As assets grow at different rates, your allocation drifts. If equities surge, you might end up 90% stocks when you wanted 70%. Annual rebalancing, selling what grew and buying what lagged, keeps you at target and forces you to "buy low, sell high" mechanically, without emotional decisions.</p>
+<p>Your target allocation doesn't hold still on its own. If stocks have a great run, you might look up and find yourself at 90% equities when you meant to be at 70%. Rebalancing once a year — selling a bit of whatever grew, buying a bit of whatever lagged — pulls you back to target. It also does something psychologically useful: it forces "buy low, sell high" as a mechanical habit, instead of a decision you have to make in the moment with your emotions involved.</p>
     `,
     sandboxes: [
       {
-        afterSectionId: "the-power-of-compounding",
+        afterSectionId: "why-time-beats-almost-everything",
         title: "Compound Growth",
         formula: "FV = Initial × (1 + Rate)^Years",
         variables: [

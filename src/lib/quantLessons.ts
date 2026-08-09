@@ -8,15 +8,15 @@ export const QUANT_LESSONS: Lesson[] = [
     duration: "16 min",
     content: `
 <h2>The Capital Asset Pricing Model</h2>
-<p>The Capital Asset Pricing Model (CAPM), developed by William Sharpe in 1964, is one of the most important — and most criticized — models in finance. It answers a fundamental question: if investors can diversify away idiosyncratic risk for free, what risk should be compensated with higher expected returns?</p>
-<p>CAPM says: only <strong>market risk</strong> (also called systematic risk or undiversifiable risk) is rewarded. The expected return of any asset is:</p>
+<p>William Sharpe published CAPM in 1964, and depending who you ask in finance, it's either the most important model ever built or the most overrated one. Probably both. It's trying to answer a hard question: if investors can diversify away company-specific risk for free (Lesson 5 of Investing Fundamentals covers why), what risk is left over that actually deserves to be paid for?</p>
+<p>CAPM's answer: only <strong>market risk</strong> — the risk you're stuck with no matter how diversified you are — gets compensated. Everything else is just noise you can eliminate by holding more stocks. The formula for expected return on any asset is:</p>
 <blockquote>E[R_i] = R_f + β_i × (E[R_m] − R_f)</blockquote>
-<p>Where:</p>
+<p>Breaking that down:</p>
 <ul>
-  <li>R_f = risk-free rate (e.g., 5.25% on 3-month T-bills)</li>
-  <li>E[R_m] = expected market return (~10% historically for S&P 500)</li>
-  <li>E[R_m] − R_f = <strong>equity risk premium</strong> — the extra return for taking equity risk (~5–6%)</li>
-  <li>β_i = <strong>beta</strong> — a stock's sensitivity to market movements</li>
+  <li>R_f is the risk-free rate — think 3-month T-bills, currently around 5.25%</li>
+  <li>E[R_m] is what the market's expected to return, historically close to 10% a year for the S&P 500</li>
+  <li>E[R_m] − R_f is the <strong>equity risk premium</strong>, the extra return you're paid for taking on stock risk instead of just holding T-bills — usually 5–6%</li>
+  <li>β_i is <strong>beta</strong>, how sensitive this particular stock is to the market's swings</li>
 </ul>
 <div class="lesson-callout">
   <span class="lesson-callout-label">Try the sandbox below</span>
@@ -24,36 +24,36 @@ export const QUANT_LESSONS: Lesson[] = [
 </div>
 
 <h2>Beta: Market Sensitivity</h2>
-<p>Beta measures how much a stock moves for a 1% move in the market:</p>
+<p>Beta answers one question: for every 1% the market moves, how much does this stock move?</p>
 <blockquote>β = Cov(R_i, R_m) / Var(R_m)</blockquote>
 <ul>
-  <li><strong>β = 1.0:</strong> Moves exactly with the market. Average S&P 500 stock.</li>
-  <li><strong>β &gt; 1.0:</strong> Amplified market sensitivity. Tech stocks often have β = 1.3–1.8. When the market rises 10%, the stock rises ~15%. But also falls more.</li>
-  <li><strong>β &lt; 1.0:</strong> Defensive — less sensitive to market swings. Utilities, consumer staples often have β = 0.4–0.7.</li>
-  <li><strong>β &lt; 0:</strong> Moves opposite the market. Gold, some volatility products. Rare for stocks.</li>
+  <li><strong>β = 1.0:</strong> moves in lockstep with the market — the profile of an average S&P 500 stock</li>
+  <li><strong>β &gt; 1.0:</strong> amplifies the market. Tech stocks often sit at 1.3–1.8, so a 10% market rally turns into roughly a 15% move for the stock — and the same amplification applies on the way down</li>
+  <li><strong>β &lt; 1.0:</strong> a defensive stock, one that barely flinches when the market does. Utilities and consumer staples often run 0.4–0.7</li>
+  <li><strong>β &lt; 0:</strong> moves opposite the market entirely — gold and some volatility products behave this way, but it's rare for an actual stock</li>
 </ul>
-<p>You can estimate beta by regressing a stock's returns against market returns over 1–5 years of daily or weekly data. This is ordinary least squares (OLS) linear regression — the slope is beta, the intercept is alpha.</p>
+<p>You can estimate beta yourself by regressing a stock's returns against the market's returns over a few years of daily or weekly data. That's just ordinary least squares regression under the hood — the slope you get out is beta, and the intercept is something else worth knowing about: alpha.</p>
 
 <h2>Alpha: The Holy Grail</h2>
-<p>In the CAPM regression:</p>
+<p>Look at that same regression written out in full:</p>
 <blockquote>R_i = α + β × R_m + ε</blockquote>
-<p><strong>Alpha (α)</strong> is the intercept — the return unexplained by market exposure. In CAPM theory, alpha should be zero in an efficient market: all excess returns are just compensation for beta. In practice, investors hunt for positive alpha — returns above what beta predicts.</p>
-<p>Genuine alpha is rare and hard to sustain. Most of what looks like alpha (a fund beating the S&P 500 for 3 years) is often just factor exposure (small-cap tilt, value tilt), luck, or fee-driven illusions. Academic research suggests persistent alpha exists only for a small fraction of managers, and it's hard to identify in advance.</p>
+<p><strong>Alpha (α)</strong> is the intercept — whatever return is left over once you've accounted for the stock's market exposure. In a perfectly efficient market, CAPM says alpha should be zero: every dollar of excess return is just payment for beta, nothing more. In practice, this is what every active investor is hunting for — a persistent edge that beta alone can't explain.</p>
+<p>Alpha that's rare and sustainable is much harder to find than most performance charts suggest. A fund that beats the S&P 500 for three years running usually isn't holding some hidden edge — it's more likely riding a factor tilt (small-cap, value), catching a lucky streak, or benefiting from how fees get reported. Research on this keeps landing in the same place: persistent alpha exists for a small slice of managers, and there's no reliable way to spot who they are in advance.</p>
 
 <h2>Limitations of CAPM</h2>
-<p>CAPM makes heroic assumptions: all investors have the same beliefs, can borrow at the risk-free rate, hold diversified portfolios, and only care about mean and variance. None of these are true. Empirical tests have found that:</p>
+<p>CAPM only works if you accept some fairly heroic assumptions: every investor shares the same beliefs, everyone can borrow at the risk-free rate, everyone holds a fully diversified portfolio, and nobody cares about anything except mean and variance. None of that describes real markets. Sure enough, decades of empirical testing have poked real holes in it:</p>
 <ul>
-  <li>Low-beta stocks have historically outperformed what CAPM predicts ("low-volatility anomaly")</li>
-  <li>Value stocks (low price-to-book) and small-cap stocks earn higher returns than CAPM predicts — the Fama-French factors</li>
-  <li>Momentum (stocks that went up continue going up for 3–12 months) is a persistent anomaly</li>
+  <li>Low-beta stocks have quietly outperformed what CAPM predicts they should — the so-called "low-volatility anomaly"</li>
+  <li>Cheap stocks (low price-to-book) and small-cap stocks both earn more than CAPM accounts for — this is where the Fama-French factors come from</li>
+  <li>Momentum — stocks that have gone up keep going up for another 3 to 12 months — shows up persistently and CAPM has no explanation for it</li>
 </ul>
-<p>These empirical failures led to multi-factor models (Fama-French 3-factor, Carhart 4-factor, Fama-French 5-factor) that extend CAPM. But CAPM remains the starting point for thinking about risk and return.</p>
+<p>These cracks are exactly what pushed researchers toward multi-factor models — Fama-French's 3-factor and 5-factor versions, Carhart's 4-factor model — that bolt more explanatory power onto CAPM's skeleton. Even so, CAPM stays the starting point every finance student learns first, because the core idea underneath it (only undiversifiable risk gets paid) is still basically right.</p>
 
 <h2>Practical Uses of Beta</h2>
 <ul>
-  <li><strong>Portfolio construction:</strong> A portfolio of high-beta stocks will amplify market swings. During bull markets, great. During bear markets, devastating. Knowing your portfolio's beta lets you predict drawdowns.</li>
-  <li><strong>Hedging:</strong> To reduce market exposure, short futures on the S&P 500 equal to your portfolio's dollar beta.</li>
-  <li><strong>Cost of capital:</strong> Companies use CAPM to estimate their cost of equity for capital budgeting (should we invest in this project?)</li>
+  <li><strong>Portfolio construction:</strong> Load up on high-beta stocks and you amplify whatever the market does — a great trait in a bull run, a brutal one in a bear market. Knowing your portfolio's overall beta gives you a rough preview of how bad a downturn could get.</li>
+  <li><strong>Hedging:</strong> Want less market exposure without selling anything? Short S&P 500 futures in an amount equal to your portfolio's dollar beta and you've largely neutralized it.</li>
+  <li><strong>Cost of capital:</strong> Companies lean on CAPM to estimate their cost of equity when deciding whether a new project is worth funding.</li>
 </ul>
     `,
     sandboxes: [
@@ -140,45 +140,45 @@ print("Tests passed!")
     duration: "17 min",
     content: `
 <h2>Why Factors?</h2>
-<p>In the 1990s, Eugene Fama and Kenneth French discovered that two characteristics predicted stock returns better than CAPM: company <em>size</em> (small-cap stocks outperformed large-cap) and company <em>value</em> (cheap stocks — low price-to-book — outperformed expensive stocks). These persistent, systematic return differences are called <strong>factors</strong>.</p>
-<p>The Fama-French 3-factor model extended CAPM:</p>
+<p>Back in the 1990s, Eugene Fama and Kenneth French went looking for what CAPM was missing, and found two characteristics that predicted returns better than beta ever did: <em>size</em> (small companies beat large ones) and <em>value</em> (cheap stocks, measured by low price-to-book, beat expensive ones). These weren't one-off findings — they held up as persistent, systematic patterns. Finance settled on calling them <strong>factors</strong>.</p>
+<p>Bolt those onto CAPM and you get the Fama-French 3-factor model:</p>
 <blockquote>E[R_i] = R_f + β × MKT + s × SMB + h × HML</blockquote>
 <ul>
-  <li><strong>MKT:</strong> Market factor (as in CAPM)</li>
-  <li><strong>SMB (Small Minus Big):</strong> Return of small-cap stocks minus large-cap stocks</li>
-  <li><strong>HML (High Minus Low):</strong> Return of high book-to-market (value) stocks minus low book-to-market (growth) stocks</li>
+  <li><strong>MKT:</strong> the same market factor from CAPM</li>
+  <li><strong>SMB (Small Minus Big):</strong> the return of small-cap stocks minus large-cap stocks</li>
+  <li><strong>HML (High Minus Low):</strong> the return of value stocks (high book-to-market) minus growth stocks (low book-to-market)</li>
 </ul>
 
 <h2>The Major Factors</h2>
-<p><strong>1. Value:</strong> Cheap stocks (high earnings yield, high book/price, low P/E) historically outperform expensive (growth) stocks. The intuition: cheap stocks are often out-of-favor businesses that are undervalued. Investors overpay for growth and underpay for recovery stories.</p>
-<p><strong>2. Momentum:</strong> Stocks that performed well over the past 3–12 months tend to continue outperforming for the next 3–12 months. Jegadeesh and Titman (1993) documented this. The intuition: investors underreact to news; prices trend as information is gradually priced in. Note: momentum reverses over very short (1-month) and very long (3–5 year) horizons.</p>
-<p><strong>3. Quality:</strong> Companies with high profitability, low debt, stable earnings, and strong free cash flow generation tend to outperform. Buffett's investing style is largely quality investing — "wonderful companies at fair prices."</p>
-<p><strong>4. Low Volatility:</strong> Lower-risk stocks have historically produced competitive risk-adjusted returns despite having lower raw returns. This "low-vol anomaly" contradicts CAPM and is attributed to investor preference for lottery-like high-beta stocks, creating mispricing on the low-risk end.</p>
-<p><strong>5. Size:</strong> Small-cap stocks have outperformed large-cap historically, but this premium has been elusive in recent decades and may partly reflect higher transaction costs and liquidity risk rather than true mispricing.</p>
+<p><strong>1. Value:</strong> Cheap stocks — high earnings yield, high book-to-price, low P/E — have historically beaten expensive growth stocks. The intuition is almost behavioral: cheap stocks are often unloved, out-of-favor businesses that the market has overcorrected against. Investors chronically overpay for exciting growth stories and underpay for boring recoveries.</p>
+<p><strong>2. Momentum:</strong> Stocks that did well over the last 3–12 months tend to keep doing well for the next 3–12 months. Jegadeesh and Titman documented this back in 1993, and it's held up remarkably well since. The likely cause: investors underreact to news at first, so information gets priced in gradually instead of all at once, and the stock trends while that catch-up happens. One wrinkle worth knowing — momentum flips into reversal at very short (1-month) and very long (3–5 year) horizons.</p>
+<p><strong>3. Quality:</strong> Companies with strong profitability, low debt, stable earnings, and healthy free cash flow tend to beat the market. This is more or less Warren Buffett's whole style in one factor — "wonderful companies at fair prices," rather than mediocre companies at bargain prices.</p>
+<p><strong>4. Low Volatility:</strong> Counterintuitively, the calmest stocks have historically delivered competitive risk-adjusted returns despite lower raw returns — a direct contradiction of what CAPM predicts. One theory for why: investors are drawn to lottery-like, high-beta names the same way people are drawn to lottery tickets, bidding those up and leaving the boring, low-risk stocks a little underpriced.</p>
+<p><strong>5. Size:</strong> Small-caps have beaten large-caps historically, but this one's gotten shakier in recent decades. Some of what looks like a size premium may just be compensation for higher trading costs and thinner liquidity, not genuine mispricing.</p>
 
 <h2>Factor Portfolios: Long-Short Construction</h2>
-<p>A factor portfolio is typically constructed as a <strong>long-short</strong> portfolio: go long the stocks with the highest factor scores and short the stocks with the lowest factor scores. This isolates the factor return independently of market direction.</p>
-<p>For a momentum factor portfolio:</p>
+<p>The standard way to build a factor portfolio is <strong>long-short</strong>: buy the stocks with the highest factor scores, short the ones with the lowest. That structure is deliberate — it isolates the factor's return and cancels out the market's overall direction.</p>
+<p>Building a momentum factor portfolio, step by step:</p>
 <ol>
-  <li>Rank all S&P 500 stocks by 12-1 momentum (12-month return excluding the most recent month)</li>
-  <li>Go long the top quintile (20%) — the winners</li>
-  <li>Go short the bottom quintile — the losers</li>
-  <li>Equal-weight within each quintile</li>
+  <li>Rank every S&P 500 stock by 12-1 momentum (the 12-month return, excluding the most recent month)</li>
+  <li>Go long the top quintile — the 20% of winners</li>
+  <li>Go short the bottom quintile — the 20% of losers</li>
+  <li>Equal-weight within each side</li>
   <li>Rebalance monthly</li>
 </ol>
-<p>The return of this portfolio is the "momentum factor premium." Factor premia can be earned without a directional bet on the market — they have low beta to MKT.</p>
+<p>Whatever that portfolio returns is the "momentum factor premium." Because it's long-short, you're earning that premium without a directional bet on the market at all — the position has close to zero beta to MKT.</p>
 
-<h2>Factor Decay and "Factor Zoo"</h2>
-<p>A cautionary note: researchers have published hundreds of "factors" that appear to predict returns. Most don't survive out-of-sample testing, post-publication decay, or simple data-mining corrections. Harvey, Liu, and Zhu (2016) argue that due to multiple-testing bias, a t-statistic of 3.0 (not the usual 2.0) should be the bar for factor publication.</p>
-<p>After controlling for data mining and transaction costs, robust factors likely number fewer than ten. The ones with the strongest theoretical and empirical support: market beta, value, momentum, profitability/quality, and low volatility.</p>
+<h2>Factor Decay and the "Factor Zoo"</h2>
+<p>A word of caution: academics have published literally hundreds of "factors" claiming to predict returns. Most of them quietly fail once you test them out-of-sample, or decay the moment they're published and everyone starts trading on them, or simply don't survive basic corrections for data mining. Harvey, Liu, and Zhu made the case in 2016 that given how many factors get tested, the usual statistical bar (a t-statistic of 2.0) is far too low — they argue for 3.0 instead.</p>
+<p>Strip out the data-mined noise and account for real trading costs, and the number of genuinely robust factors is probably under ten. The short list with real staying power: market beta, value, momentum, quality/profitability, and low volatility.</p>
 
 <h2>Smart Beta ETFs: Factor Investing for Everyone</h2>
-<p>Factor investing was once available only to institutional investors. Today, "smart beta" or "factor ETFs" provide low-cost factor exposure:</p>
+<p>Factor investing used to be something only institutions could access. Now "smart beta" ETFs put the same exposure a few clicks away for anyone:</p>
 <ul>
-  <li>VLUE (iShares MSCI USA Value Factor): Value exposure</li>
-  <li>MTUM (iShares MSCI USA Momentum Factor): Momentum exposure</li>
-  <li>QUAL (iShares MSCI USA Quality Factor): Quality exposure</li>
-  <li>USMV (iShares MSCI USA Min Vol): Low volatility exposure</li>
+  <li>VLUE (iShares MSCI USA Value Factor) — value exposure</li>
+  <li>MTUM (iShares MSCI USA Momentum Factor) — momentum exposure</li>
+  <li>QUAL (iShares MSCI USA Quality Factor) — quality exposure</li>
+  <li>USMV (iShares MSCI USA Min Vol) — low volatility exposure</li>
 </ul>
     `,
     exercise: {
@@ -262,44 +262,44 @@ print("Tests passed!")
     duration: "18 min",
     content: `
 <h2>What Is Backtesting?</h2>
-<p>A <strong>backtest</strong> simulates what would have happened if you had applied an investment strategy to historical data. It's the primary tool for evaluating systematic (rules-based) investment strategies before risking real money.</p>
-<p>The core question a backtest answers: "Given the rules of this strategy, what would my return and risk have been over the historical period?" But there are countless ways to fool yourself with backtests, and professional quantitative researchers spend enormous effort avoiding these pitfalls.</p>
+<p>A <strong>backtest</strong> is a simulation: what would have happened if you'd run this strategy on historical data instead of just having the idea? It's the main tool quants use to vet a systematic, rules-based strategy before putting real money behind it.</p>
+<p>The question a backtest is really answering is "given these exact rules, what return and risk would I have gotten over this historical stretch?" Simple enough in theory. In practice there are a startling number of ways to accidentally fool yourself, and a huge chunk of a professional quant's job is just staying paranoid about all of them.</p>
 
 <h2>A Simple Backtest Framework</h2>
-<p>Every backtest needs:</p>
+<p>Every backtest needs to nail down the same handful of things:</p>
 <ol>
-  <li><strong>Universe:</strong> Which stocks/assets can the strategy trade?</li>
-  <li><strong>Signal generation:</strong> When does the strategy buy or sell? (e.g., when 50-day MA crosses above 200-day MA)</li>
-  <li><strong>Position sizing:</strong> How much capital to allocate to each position?</li>
-  <li><strong>Execution assumptions:</strong> What price do you assume you get? (Next-day open is realistic; same-day close often cheats.)</li>
-  <li><strong>Transaction costs:</strong> Commissions, bid-ask spread, market impact.</li>
-  <li><strong>Performance metrics:</strong> Total return, Sharpe ratio, max drawdown, etc.</li>
+  <li><strong>Universe:</strong> which stocks or assets is the strategy even allowed to trade?</li>
+  <li><strong>Signal generation:</strong> what triggers a buy or sell — say, the 50-day moving average crossing above the 200-day?</li>
+  <li><strong>Position sizing:</strong> how much capital goes into each position?</li>
+  <li><strong>Execution assumptions:</strong> what price do you assume you actually get? Next-day open is realistic; assuming you traded at the same-day close is a classic way to quietly cheat.</li>
+  <li><strong>Transaction costs:</strong> commissions, the bid-ask spread, market impact — all of it eats into returns.</li>
+  <li><strong>Performance metrics:</strong> total return, Sharpe ratio, max drawdown, and so on.</li>
 </ol>
 
 <h2>The Holy Trinity of Backtest Metrics</h2>
-<p><strong>Total Return:</strong> How much did the strategy make? Important but meaningless without risk context.</p>
-<p><strong>Sharpe Ratio:</strong> Risk-adjusted return. Sharpe = (Strategy Return − Risk-Free Rate) / Strategy Volatility. A good strategy targets Sharpe &gt; 1.0 before costs.</p>
-<p><strong>Maximum Drawdown:</strong> The largest peak-to-trough decline in portfolio value during the test period. A strategy that returns 20%/year but occasionally loses 60% is psychologically and practically very hard to implement — you'd likely panic and stop at the worst moment.</p>
+<p><strong>Total Return:</strong> the headline number — how much did the strategy make? Useful, but close to meaningless without knowing the risk taken to get there.</p>
+<p><strong>Sharpe Ratio:</strong> return adjusted for that risk. Sharpe = (Strategy Return − Risk-Free Rate) / Strategy Volatility. A strategy worth taking seriously usually targets a Sharpe above 1.0 before costs.</p>
+<p><strong>Maximum Drawdown:</strong> the worst peak-to-trough decline the portfolio suffered during the test. A strategy that compounds at 20% a year but occasionally craters 60% is far harder to actually stick with than the headline return suggests — most people would panic-sell at exactly the wrong moment.</p>
 <blockquote>Max Drawdown = max(Peak − Trough) / Peak</blockquote>
-<p>In practice, professionals care deeply about the <strong>Sharpe-to-max-drawdown</strong> relationship (Calmar ratio = Annual Return / Max Drawdown). A Calmar ratio above 1 is respectable.</p>
+<p>Professionals track the relationship between the two closely — the Calmar ratio (Annual Return / Max Drawdown) captures it in one number. Anything above 1 is considered respectable.</p>
 <div class="lesson-callout">
   <span class="lesson-callout-label">Try the sandbox below</span>
   <p>A strategy that quietly compounds at 15%/year but once dropped 55% from peak to trough is a much harder hold than the return alone suggests. Play with the numbers and see how fast drawdown scales.</p>
 </div>
 
 <h2>The Deadly Sins of Backtesting</h2>
-<p><strong>1. Look-ahead bias:</strong> Using data in your signal that wasn't available at the time. Using today's closing price to generate today's trading signal means you'd need a time machine. Always ensure signals use data available <em>before</em> the trade executes.</p>
-<p><strong>2. Survivorship bias:</strong> Testing only on stocks that still exist today. Most databases exclude companies that went bankrupt or were delisted. This creates a massive upward bias — you're testing on the survivors, ignoring the losers.</p>
-<p><strong>3. Overfitting (data mining):</strong> Running thousands of parameter combinations and reporting the best-performing one. If you run enough tests, something will look amazing by pure chance. True edge should be robust across a range of parameters, not just a single "magic" setting.</p>
-<p><strong>4. Transaction cost underestimation:</strong> High-frequency strategies can appear profitable on paper but wipe out all gains from bid-ask spreads and market impact in practice.</p>
-<p><strong>5. Regime dependence:</strong> A strategy that worked perfectly in 2010–2020 may fail in 2022–2023 when interest rate conditions changed dramatically. Test across multiple market regimes.</p>
+<p><strong>1. Look-ahead bias:</strong> letting your signal see data it wouldn't actually have had yet. Generating today's trading signal off today's closing price only works if you own a time machine. Every signal has to use only what was genuinely available before the trade fired.</p>
+<p><strong>2. Survivorship bias:</strong> testing only on companies that are still around today. Most historical databases quietly drop names that went bankrupt or got delisted, which skews everything upward — you're only ever grading the survivors, never the failures.</p>
+<p><strong>3. Overfitting (data mining):</strong> running thousands of parameter combinations and reporting whichever one happened to win. Test enough variations and something will look brilliant purely by chance. A real edge holds up across a range of nearby parameters — it shouldn't collapse the instant you nudge one number.</p>
+<p><strong>4. Transaction cost underestimation:</strong> a high-frequency strategy can look wildly profitable on paper and then get entirely eaten alive by bid-ask spreads and market impact once it meets reality.</p>
+<p><strong>5. Regime dependence:</strong> a strategy tuned to 2010–2020 conditions can quietly stop working once interest rates or market structure shift, as many did in 2022–2023. Always test across more than one market regime before trusting the result.</p>
 
 <h2>Walk-Forward Testing</h2>
-<p>The gold standard for avoiding overfitting: divide your data into an in-sample period (for developing the strategy) and an out-of-sample period (for testing). Never touch the out-of-sample data until you're satisfied with the in-sample strategy — otherwise you're unconsciously fitting to it too.</p>
-<p><strong>Walk-forward optimization</strong> goes further: train on a rolling window of history, make one period of trades with those parameters, then roll forward and repeat. This mimics live trading and provides the most realistic performance estimate.</p>
+<p>The standard defense against overfitting: split your data into an in-sample period, where you build and tune the strategy, and an out-of-sample period you don't touch until you're already satisfied with what you built. Peek at the out-of-sample data even once while tuning, and you've unconsciously started fitting to it too — the whole point of the split quietly evaporates.</p>
+<p><strong>Walk-forward optimization</strong> takes this further: train on a rolling window of history, trade forward one period with those parameters, then slide the window ahead and repeat. It's closer to how live trading actually works, which makes it the more honest estimate of real performance.</p>
 
 <h2>When a Backtest Is "Too Good"</h2>
-<p>Sharpe above 3 in a backtest almost always means overfitting, look-ahead bias, or transaction cost ignorance. Real live-trading strategies by elite hedge funds target Sharpe of 1–2 after costs. Be very suspicious of any backtest claiming 5+ Sharpe before real-world verification.</p>
+<p>A Sharpe ratio above 3 in a backtest is almost never real — it's usually overfitting, look-ahead bias, or costs that got left out. Even elite hedge funds are typically targeting a Sharpe of 1–2 after real trading costs in live markets. Treat any backtest claiming 5+ with real suspicion until it's survived contact with the real world.</p>
     `,
     sandboxes: [
       {
@@ -415,42 +415,42 @@ print("Tests passed!")
     duration: "20 min",
     content: `
 <h2>Markowitz's Mean-Variance Optimization</h2>
-<p>In 1952, Harry Markowitz published "Portfolio Selection" — the paper that launched modern portfolio theory and eventually earned him the Nobel Prize. His key insight: investors care about both expected return <em>and</em> risk (variance), and the composition of the portfolio determines both.</p>
-<p>The <strong>efficient frontier</strong> is the set of portfolios that maximize expected return for a given level of risk, or equivalently, minimize risk for a given expected return. Any portfolio below the frontier is "dominated" — you could get more return for the same risk by moving to the frontier.</p>
+<p>Harry Markowitz published "Portfolio Selection" in 1952 — a paper short enough to read in one sitting that ended up kicking off modern portfolio theory and, decades later, a Nobel Prize. His core insight sounds almost too simple to have been worth a Nobel: investors care about expected return <em>and</em> risk together, and it's the mix of assets in a portfolio, not any single holding, that determines both.</p>
+<p>That leads directly to the <strong>efficient frontier</strong> — the set of portfolios that squeeze out the most expected return for a given level of risk, or equivalently, the least risk for a given return. Any portfolio sitting below that frontier is "dominated": there's a better portfolio available at the exact same risk level, so there's no reason to hold it.</p>
 
 <h2>The Math</h2>
-<p>Given n assets with expected returns μ = [μ₁, μ₂, ..., μₙ] and covariance matrix Σ (an n×n matrix of return covariances), the portfolio with weights w = [w₁, ..., wₙ] has:</p>
+<p>Say you have n assets, with expected returns μ = [μ₁, μ₂, ..., μₙ] and a covariance matrix Σ describing how every pair of assets moves together. A portfolio with weights w = [w₁, ..., wₙ] then has:</p>
 <blockquote>
   Expected return: E[R_p] = wᵀ · μ = Σᵢ wᵢ × μᵢ<br/>
   Variance: σ²_p = wᵀ · Σ · w = Σᵢ Σⱼ wᵢ wⱼ σᵢⱼ
 </blockquote>
-<p>The optimization problem: given a target return μ*, find weights w that minimize variance subject to wᵀμ = μ* and Σwᵢ = 1 (fully invested). With a short-selling constraint, add wᵢ ≥ 0.</p>
+<p>The optimization itself is: pick a target return μ*, then find the weights w that minimize variance subject to wᵀμ = μ* and everything summing to 1 (fully invested, no cash sitting idle). Rule out short-selling and you just add wᵢ ≥ 0 to the constraints.</p>
 
 <h2>The Maximum Sharpe Portfolio</h2>
-<p>Among all efficient portfolios, the one with the highest Sharpe ratio — maximum excess return per unit of risk — is called the <strong>tangency portfolio</strong>. It lies at the tangent point between the efficient frontier and a line from the risk-free rate. In the CAPM framework, the tangency portfolio is the market portfolio.</p>
-<p>In practice, finding the tangency portfolio requires numerical optimization. The most common approach: parameterize by risk aversion λ and solve the unconstrained problem:</p>
+<p>Somewhere along that efficient frontier sits the one portfolio with the best Sharpe ratio of all — the most excess return per unit of risk. That's the <strong>tangency portfolio</strong>, so named because it sits exactly where a line from the risk-free rate touches the frontier tangentially. Under CAPM's assumptions, this tangency portfolio is literally the market portfolio.</p>
+<p>Finding it in practice takes numerical optimization. The usual trick is to introduce a risk-aversion parameter λ and solve the unconstrained version of the problem:</p>
 <blockquote>max: wᵀμ − λ/2 × wᵀΣw</blockquote>
-<p>Sweeping λ from high (risk averse → low-vol portfolio) to low (risk tolerant → high-return portfolio) traces out the efficient frontier.</p>
+<p>Sweep λ from high (very risk-averse, favoring a low-vol portfolio) down to low (risk-tolerant, chasing return), and you trace out the entire efficient frontier one point at a time.</p>
 
 <h2>The Covariance Matrix: The Hard Part</h2>
-<p>The covariance matrix Σ has n(n+1)/2 parameters. For a 50-stock portfolio, that's 1,275 parameters to estimate — but you typically have only 252 daily return observations per year. With more parameters than observations, the estimated covariance matrix becomes unstable and "over-fit" to historical noise.</p>
-<p>Professionals use regularization techniques to stabilize Σ:</p>
+<p>Here's the part that trips up everyone who tries this for real: Σ has n(n+1)/2 parameters to estimate. For a modest 50-stock portfolio that's 1,275 numbers — and you're probably working with only around 252 daily return observations per year to estimate all of them. More parameters than data points is a recipe for an unstable matrix that's really just fitting historical noise, not any real underlying structure.</p>
+<p>Quants lean on a few tricks to keep Σ from falling apart:</p>
 <ul>
-  <li><strong>Shrinkage (Ledoit-Wolf):</strong> Shrink the sample covariance matrix toward a structured target (like identity or a single-factor model covariance). This dramatically improves out-of-sample performance.</li>
-  <li><strong>Factor models:</strong> Model covariance through factor exposures: Σ = B·F·Bᵀ + D, where B is a factor loading matrix, F is factor covariance, and D is diagonal idiosyncratic variance. This uses far fewer parameters.</li>
-  <li><strong>Equal-weight heuristic:</strong> The famous "1/N" portfolio (equal weights) often beats optimized portfolios out-of-sample because it avoids estimation error entirely.</li>
+  <li><strong>Shrinkage (Ledoit-Wolf):</strong> pull the raw sample covariance matrix toward a simpler, more structured target — like the identity matrix or a single-factor model. It sounds like a small tweak, but it noticeably improves how the portfolio performs on data it wasn't fit to.</li>
+  <li><strong>Factor models:</strong> express covariance through a small set of factor exposures instead — Σ = B·F·Bᵀ + D, where B is factor loadings, F is factor covariance, and D captures each asset's own idiosyncratic variance. Far fewer parameters to estimate, and far more stable as a result.</li>
+  <li><strong>Equal-weight heuristic:</strong> the famously dumb-sounding "1/N" portfolio — just split evenly across everything — regularly beats fully optimized portfolios out-of-sample, purely because it sidesteps estimation error entirely.</li>
 </ul>
 
 <h2>Implementation in Python</h2>
-<p>For a small portfolio, you can implement basic mean-variance optimization using only NumPy. The key steps:</p>
+<p>For a small enough portfolio, you can build basic mean-variance optimization with nothing more exotic than NumPy. The general recipe:</p>
 <ol>
-  <li>Estimate expected returns (or use equal returns as a naive assumption)</li>
-  <li>Compute the sample covariance matrix from return histories</li>
-  <li>Set up the optimization problem with constraints</li>
-  <li>Solve numerically (scipy.optimize.minimize for general cases)</li>
-  <li>Plot the efficient frontier by solving at multiple target return levels</li>
+  <li>Estimate expected returns (or, if you'd rather not pretend to predict the future, just assume equal returns as a naive baseline)</li>
+  <li>Compute the sample covariance matrix from historical return data</li>
+  <li>Set up the optimization problem with its constraints</li>
+  <li>Solve it numerically — scipy.optimize.minimize handles most general cases</li>
+  <li>Repeat at several target return levels to trace out the efficient frontier and plot it</li>
 </ol>
-<p>In the exercise, we'll build the core portfolio math from scratch using only Python standard library tools.</p>
+<p>In the exercise below, we'll build the core portfolio math from scratch using nothing but the Python standard library, so you can see exactly what's happening under the hood before you ever reach for a library that does it for you.</p>
     `,
     exercise: {
       prompt: "Implement `portfolio_return`, `portfolio_variance`, and `min_variance_weights` for a 2-asset portfolio.",
@@ -547,43 +547,43 @@ print("Tests passed!")
     duration: "17 min",
     content: `
 <h2>What Is Statistical Arbitrage?</h2>
-<p>Statistical arbitrage (stat arb) is a family of strategies that exploit <em>statistical relationships</em> between asset prices — rather than fundamental value or macroeconomic views. Unlike pure arbitrage (which exploits risk-free mispricings), stat arb involves statistical regularities that are highly likely but not guaranteed to hold.</p>
-<p>The most famous stat arb strategy is <strong>pairs trading</strong>, popularized by Morgan Stanley's quant group in the 1980s. The idea: find two stocks whose prices historically move together (high correlation). When they diverge unusually far, bet on the spread returning to its historical mean.</p>
+<p>Statistical arbitrage — stat arb, if you want to sound like you work on a trading desk — is a family of strategies built on <em>statistical relationships</em> between prices, not on any opinion about what a company is fundamentally worth or where the economy is headed. It's not arbitrage in the strict, risk-free sense of the word. What it actually exploits is a statistical regularity that's likely to hold, not guaranteed to.</p>
+<p>The most famous version is <strong>pairs trading</strong>, which Morgan Stanley's quant desk made famous in the 1980s. The core idea: find two stocks whose prices have historically moved together. When they suddenly diverge further than usual, bet on that gap closing back up.</p>
 
 <h2>The Pairs Trading Mechanics</h2>
-<p>Consider Coca-Cola (KO) and PepsiCo (PEP). They're both consumer staples, compete in the same market, have similar business profiles, and their stock prices tend to move together. If KO suddenly jumps 5% while PEP stays flat (for no apparent fundamental reason), a pairs trader would:</p>
+<p>Take Coca-Cola (KO) and PepsiCo (PEP) — same industry, same customers, similar businesses, and their stock prices tend to track each other pretty closely. Say KO jumps 5% one day while PEP just sits there, with no real news explaining the gap. A pairs trader reads that as noise, not information, and would:</p>
 <ol>
-  <li><strong>Short KO</strong> (bet it falls back toward its historical relationship with PEP)</li>
-  <li><strong>Long PEP</strong> (bet it rises toward KO, or at least doesn't fall)</li>
+  <li><strong>Short KO</strong> — betting it drifts back down toward its usual relationship with PEP</li>
+  <li><strong>Long PEP</strong> — betting it either catches up or at least doesn't fall</li>
 </ol>
-<p>The position is hedged against market direction — if the whole market sells off, both stocks fall, and the long-short position stays approximately flat. Profit comes only from the KO-PEP spread reverting.</p>
+<p>What makes this attractive is that the position is hedged against the market itself. If stocks broadly sell off, both KO and PEP fall together and the long-short position barely moves — any profit here comes specifically from the KO-PEP gap closing, not from guessing market direction.</p>
 
 <h2>Finding Cointegrated Pairs</h2>
-<p>Two price series that move together in the long run are called <strong>cointegrated</strong>. Cointegration is stronger than correlation: two series can be highly correlated yet drift apart indefinitely. Cointegration implies they share a common stochastic trend — they can diverge temporarily but must revert.</p>
-<p>Mathematically: if P₁ and P₂ are cointegrated with coefficient β, then the spread:</p>
+<p>When two price series track each other over the long run, statisticians call that <strong>cointegration</strong>, and it's a stronger claim than correlation. Two series can be highly correlated day-to-day and still drift apart forever — correlation says nothing about the long run. Cointegration means they share an underlying common trend: they can wander apart temporarily, but something is anchoring them back together.</p>
+<p>If P₁ and P₂ are cointegrated with coefficient β, the spread between them:</p>
 <blockquote>S = P₁ − β × P₂</blockquote>
-<p>is <strong>stationary</strong> — it has a stable long-run mean and variance. Stationarity is detectable with the Augmented Dickey-Fuller (ADF) test.</p>
-<p>Step to find β (the hedge ratio): regress P₁ on P₂ using OLS. The slope coefficient is β. This tells you how many shares of P₂ to hold for each share of P₁ to make the spread stationary.</p>
+<p>turns out to be <strong>stationary</strong> — it settles around a stable long-run mean and variance instead of wandering off unpredictably. You can test for that stationarity with the Augmented Dickey-Fuller (ADF) test.</p>
+<p>To find β — the hedge ratio — regress P₁ on P₂ with ordinary least squares. The slope you get back is β, and it tells you exactly how many shares of P₂ to hold against each share of P₁ to make that spread stationary in the first place.</p>
 
 <h2>Trading the Spread</h2>
-<p>Once you have a cointegrated pair and a stationary spread S with mean μ_S and standard deviation σ_S:</p>
+<p>Once you've got a cointegrated pair and a stationary spread S with mean μ_S and standard deviation σ_S, everything reduces to one number:</p>
 <blockquote>z-score = (S − μ_S) / σ_S</blockquote>
 <ul>
-  <li>When z-score &gt; +2: spread is unusually wide → <strong>sell P₁, buy P₂</strong> (short the spread)</li>
-  <li>When z-score &lt; −2: spread is unusually narrow → <strong>buy P₁, sell P₂</strong> (long the spread)</li>
-  <li>When z-score → 0: spread has mean-reverted → <strong>close position</strong></li>
+  <li>z-score above +2: the spread is unusually wide → <strong>sell P₁, buy P₂</strong> (short the spread)</li>
+  <li>z-score below −2: the spread is unusually narrow → <strong>buy P₁, sell P₂</strong> (long the spread)</li>
+  <li>z-score drifting back to 0: the spread has reverted → <strong>close the position</strong></li>
 </ul>
-<p>The ±2 sigma threshold is a common choice, but optimal thresholds depend on the speed of reversion, transaction costs, and signal half-life.</p>
+<p>±2 standard deviations is the common default threshold, but the right number really depends on how fast the spread tends to revert, how much trading costs eat into the trade, and how long the signal typically persists before decaying.</p>
 <div class="lesson-callout">
   <span class="lesson-callout-label">Try the sandbox below</span>
   <p>Push the spread past 2 standard deviations from its mean and watch the z-score cross the ±2 threshold traders actually watch for.</p>
 </div>
 
 <h2>Risks and Limitations</h2>
-<p><strong>Relationship breakdown:</strong> Pairs can stop cointegrating. Coke and Pepsi move together because they compete in the same market — but if Coke acquires a tech company and pivots its strategy, the relationship breaks permanently. No statistical test can tell you in advance if today's divergence is a temporary blip or a regime change.</p>
-<p><strong>Crowding:</strong> When many funds run the same pairs trade, the positions unwind simultaneously when markets stress. The August 2007 "quant quake" was exactly this: dozens of stat arb funds holding similar pairs all began unwinding simultaneously, causing cascading losses across strategies that had never lost money historically.</p>
-<p><strong>Execution:</strong> Requires simultaneously entering both legs. Any delay between legs creates gap risk — the spread might move further before the second leg executes.</p>
-<p><strong>Borrow availability:</strong> Short selling requires borrowing shares. For popular short targets, borrow costs can be substantial and eat into returns.</p>
+<p><strong>Relationship breakdown:</strong> a pair that's been cointegrated for years can simply stop being cointegrated. KO and PEP track each other because they compete head-to-head — but if Coke pivoted its whole business tomorrow, that relationship could break for good. No statistical test can tell you in real time whether today's divergence is a normal blip or the relationship quietly ending.</p>
+<p><strong>Crowding:</strong> when a lot of funds are running the same pairs trade, they tend to unwind at the same time under stress. The August 2007 "quant quake" is the textbook example — dozens of stat arb funds holding overlapping pairs all started deleveraging simultaneously, and strategies that had never lost money before suddenly all lost money together.</p>
+<p><strong>Execution:</strong> both legs need to go on essentially at once. Any lag between them creates gap risk — the spread can move further before the second leg even fills.</p>
+<p><strong>Borrow availability:</strong> shorting requires borrowing shares in the first place, and for popular short targets that borrow cost can be steep enough to eat meaningfully into the strategy's returns.</p>
     `,
     sandboxes: [
       {
