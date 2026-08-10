@@ -5,6 +5,7 @@ import { useProgress } from "@/lib/useProgress";
 import FlameIcon from "@/components/FlameIcon";
 import TrophyIcon from "@/components/TrophyIcon";
 import ConstructionIcon from "@/components/ConstructionIcon";
+import PathScenery, { sceneryForIndex } from "@/components/PathScenery";
 
 const OFFSETS = [0, 44, 62, 44, 0, -44, -62, -44];
 
@@ -95,6 +96,7 @@ export default function LessonsClient() {
                 const isActive = !done && lesson.id === activeId;
                 const off = OFFSETS[i % OFFSETS.length];
                 const state = done ? "done" : isActive ? "active" : "open";
+                const scenery = sceneryForIndex(i);
 
                 return (
                   <div
@@ -105,22 +107,34 @@ export default function LessonsClient() {
                       "--node-color": levelColor,
                     } as React.CSSProperties}
                   >
-                    {isActive && <span className="dnode-start">START</span>}
-                    <Link
-                      href={`/lesson/${lesson.id}`}
-                      className="dnode-btn"
-                      style={
-                        state === "done"
-                          ? { background: levelColor, boxShadow: `0 6px 0 color-mix(in srgb, ${levelColor} 70%, #000)` }
-                          : state === "active"
-                          ? { background: "#fff", color: levelColor, border: `3px solid ${levelColor}`, boxShadow: `0 6px 0 color-mix(in srgb, ${levelColor} 20%, #fff)` }
-                          : { background: "#fff", color: levelColor, border: `2px solid ${levelColor}44`, boxShadow: `0 2px 0 #e7e5e4` }
-                      }
-                      aria-label={lesson.title}
+                    {scenery && (
+                      <PathScenery
+                        kind={scenery}
+                        side={i % 2 === 0 ? "right" : "left"}
+                        color={levelColor}
+                      />
+                    )}
+                    <div
+                      className="dnode-rise"
+                      style={{ animationDelay: `${Math.min(i, 8) * 60}ms`, display: "flex", flexDirection: "column", alignItems: "center" }}
                     >
-                      {state === "done" ? "✓" : i + 1}
-                    </Link>
-                    <div className="dnode-label">{lesson.title}</div>
+                      {isActive && <span className="dnode-start">START</span>}
+                      <Link
+                        href={`/lesson/${lesson.id}`}
+                        className="dnode-btn"
+                        style={
+                          state === "done"
+                            ? { background: levelColor, boxShadow: `0 6px 0 color-mix(in srgb, ${levelColor} 70%, #000)` }
+                            : state === "active"
+                            ? { background: "#fff", color: levelColor, border: `3px solid ${levelColor}`, boxShadow: `0 6px 0 color-mix(in srgb, ${levelColor} 20%, #fff)` }
+                            : { background: "#fff", color: levelColor, border: `2px solid ${levelColor}44`, boxShadow: `0 2px 0 #e7e5e4` }
+                        }
+                        aria-label={lesson.title}
+                      >
+                        {state === "done" ? "✓" : i + 1}
+                      </Link>
+                      <div className="dnode-label">{lesson.title}</div>
+                    </div>
                   </div>
                 );
               })}

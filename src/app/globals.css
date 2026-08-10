@@ -1385,7 +1385,39 @@ body:has(.sk-home) .v2-bg-vignette { display: none; }
   background: repeating-linear-gradient(var(--line-2) 0 8px, transparent 8px 17px);
   transform: translateX(-50%); z-index: 0;
 }
-.dnode { position: relative; z-index: 1; display: flex; flex-direction: column; align-items: center; }
+.dnode {
+  position: relative; z-index: 1; display: flex; flex-direction: column; align-items: center;
+}
+/* Entrance fade only — .dnode's own `transform` is already the winding-path
+   offset (set inline per node), so the mount animation lives on a wrapper
+   around the button+label instead of fighting that transform. */
+.dnode-rise { animation: dnode-in .5s cubic-bezier(.2,.7,.3,1) both; }
+@keyframes dnode-in {
+  from { opacity: 0; transform: translateY(10px) scale(.94); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .dnode-rise { animation: none; }
+}
+
+/* Decorative scenery beside the path — trees, bushes, the occasional rock.
+   Only shown where there's genuinely room for it beside the 660px-wide
+   path without colliding on tablet/mobile. */
+.dpath-scenery {
+  display: none;
+  animation: scenery-sway 4.5s ease-in-out infinite;
+  transform-origin: bottom center;
+}
+@media (min-width: 940px) {
+  .dpath-scenery { display: block; }
+}
+@keyframes scenery-sway {
+  0%, 100% { transform: rotate(-2deg); }
+  50%      { transform: rotate(2deg); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .dpath-scenery { animation: none; }
+}
 .dnode-btn {
   width: 74px; height: 66px; border-radius: 50%;
   display: grid; place-items: center;
