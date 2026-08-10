@@ -116,7 +116,7 @@ export default function PricingClient() {
   return (
     <div className="max-w-6xl mx-auto px-6 py-14">
       {/* Header */}
-      <div className="text-center mb-12">
+      <div className="text-center mb-12 v2-page-head" data-v2-head>
         <Eyebrow>Pricing</Eyebrow>
         <h1 className="text-4xl font-semibold mb-3"
           style={{ fontFamily: "var(--font-display)", color: "var(--ink)" }}>
@@ -134,9 +134,9 @@ export default function PricingClient() {
       </div>
 
       {/* Tier grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-5 mb-16">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-5 mb-16" data-v2-stagger>
         {TIERS.map((t) => (
-          <div key={t.name} className="relative p-6 rounded-2xl border flex flex-col"
+          <div key={t.name} className="v2-rise relative p-6 rounded-2xl border flex flex-col"
             style={{
               borderColor: t.popular ? t.accent : "var(--line-2)",
               background: t.popular ? "var(--grass-tint)" : "var(--paper-2)",
@@ -211,9 +211,9 @@ export default function PricingClient() {
           style={{ fontFamily: "var(--font-display)", color: "var(--ink)" }}>
           Pricing FAQ
         </h2>
-        <div className="flex flex-col gap-3">
+        <div className="flex flex-col gap-3" data-v2-stagger>
           {FAQ.map((f) => (
-            <div key={f.q} className="p-4 rounded-xl border"
+            <div key={f.q} className="v2-rise p-4 rounded-xl border"
               style={{ borderColor: "var(--line-2)", background: "var(--paper-2)" }}>
               <div className="text-sm font-semibold mb-1.5"
                 style={{ fontFamily: "var(--font-display)", color: "var(--ink)" }}>

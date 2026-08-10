@@ -457,6 +457,17 @@ main { animation: v2pageIn 0.5s cubic-bezier(.2,.7,.3,1) both; }
 }
 .v2-rise.in { opacity: 1; transform: translateY(0); }
 
+/* Without JS (or with it disabled), .in never gets added — nothing should
+   stay permanently invisible for crawlers or no-JS visitors. Motion-reduced
+   users skip the animation outright rather than waiting it out. */
+@media (scripting: none) {
+  .v2-rise, .v2-page-head { opacity: 1; transform: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .v2-rise, .v2-page-head { transition: none; }
+  .v2-rise:not(.in), .v2-page-head:not(.in) { opacity: 1; transform: none; }
+}
+
 /* ── Playground entrance animations ─────────────────────────────────── */
 @keyframes pg-slide-left {
   from { opacity: 0; transform: translateX(-18px); }
@@ -1066,7 +1077,14 @@ body:has(.sk-home) .v2-bg-vignette { display: none; }
   position: absolute; left: 0; right: 0; bottom: -0.22em; width: 100%; height: 0.34em; color: var(--grass);
 }
 .sk-hero-sub { font-size: 18px; line-height: 1.62; color: rgba(255,255,255,0.66); max-width: 500px; margin-bottom: 30px; }
-.sk-hero-cta { display: flex; gap: 14px; flex-wrap: wrap; margin-bottom: 34px; }
+.sk-hero-cta { display: flex; gap: 14px; flex-wrap: wrap; margin-bottom: 14px; }
+.sk-hero-trust {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  color: rgba(255,255,255,0.42);
+  margin-bottom: 34px;
+}
 /* Full-width band under both hero columns. Distributed rather than packed
    left, with a hairline above, so it reads as the base of the hero instead of
    a trailing item in the text column. */
@@ -1442,7 +1460,10 @@ body:has(.sk-home) .v2-bg-vignette { display: none; }
   position: sticky;
   top: 0;
   z-index: 50;
+  box-shadow: 0 1px 0 transparent;
+  transition: box-shadow .2s ease;
 }
+.nav-bar.is-scrolled { box-shadow: 0 1px 0 var(--border), 0 6px 16px -12px rgba(0,0,0,0.25); }
 
 /* Logo */
 .nav-left { display: flex; align-items: center; gap: 32px; }
@@ -1666,6 +1687,7 @@ body:has(.sk-home) .v2-bg-vignette { display: none; }
   top: 60px;
   background: rgba(15,20,17,0.35);
   z-index: 49;
+  animation: nav-overlay-in .18s ease both;
 }
 @media (min-width: 1360px) { .nav-mobile-overlay { display: none; } }
 .nav-mobile-panel {
@@ -1677,6 +1699,15 @@ body:has(.sk-home) .v2-bg-vignette { display: none; }
   gap: 2px;
   max-height: calc(100vh - 60px);
   overflow-y: auto;
+  animation: nav-panel-in .22s cubic-bezier(.2,.7,.3,1) both;
+}
+@keyframes nav-overlay-in { from { opacity: 0; } to { opacity: 1; } }
+@keyframes nav-panel-in {
+  from { opacity: 0; transform: translateY(-8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .nav-mobile-overlay, .nav-mobile-panel { animation: none; }
 }
 .nav-mobile-links { display: flex; flex-direction: column; }
 .nav-mobile-link {
@@ -3246,6 +3277,7 @@ h1, h2, h3, h4 {
 .sk-hero-h { animation: sk-fade-up .55s cubic-bezier(.2,.7,.3,1) .08s both; }
 .sk-hero-sub   { animation: sk-fade-up .55s cubic-bezier(.2,.7,.3,1) .16s both; }
 .sk-hero-cta   { animation: sk-fade-up .55s cubic-bezier(.2,.7,.3,1) .24s both; }
+.sk-hero-trust { animation: sk-fade-up .5s  cubic-bezier(.2,.7,.3,1) .3s  both; }
 .sk-facts      { animation: sk-fade-up .55s cubic-bezier(.2,.7,.3,1) .32s both; }
 .sk-codecard   { animation: sk-fade-up .6s  cubic-bezier(.2,.7,.3,1) .18s both; }
 
@@ -3274,7 +3306,7 @@ h1, h2, h3, h4 {
 @media (prefers-reduced-motion: reduce) {
   .cp.correct, .cp.wrong, .cp-opt.is-correct, .cp-explain,
   .sk-hero .sk-tag, .sk-hero-h, .sk-hero-sub,
-  .sk-hero-cta, .sk-facts, .sk-codecard {
+  .sk-hero-cta, .sk-hero-trust, .sk-facts, .sk-codecard {
     animation: none !important;
   }
   .lt-item:hover { transform: none; }
