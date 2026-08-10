@@ -70,7 +70,7 @@ export default function RoadmapPage() {
       <JsonLd data={breadcrumbJsonLd([{ name: "Roadmap", path: "/roadmap" }])} />
 
       {/* Header */}
-      <div className="mb-10">
+      <div className="mb-10 v2-page-head" data-v2-head>
         <Eyebrow>Roadmap</Eyebrow>
         <h1
           className="text-4xl font-semibold mb-3 leading-tight"
@@ -136,13 +136,13 @@ export default function RoadmapPage() {
               />
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3" data-v2-stagger>
               {q.items.map((item) => {
                 const ss = STATE_STYLES[item.state as keyof typeof STATE_STYLES];
                 return (
                   <div
                     key={item.title}
-                    className="p-4 rounded-xl border"
+                    className="v2-rise p-4 rounded-xl border"
                     style={{ borderColor: "var(--border2)", background: "var(--card)" }}
                   >
                     <div className="flex items-start justify-between gap-3 mb-1.5">

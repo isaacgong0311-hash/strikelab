@@ -97,6 +97,25 @@ export default function Nav() {
   const hasProgress = xp > 0 || streak > 0;
   const [menuOpen, setMenuOpen] = useState(false);
 
+  // Cheap scroll-past-hero shadow — no backdrop-filter (see nav-bar comment,
+  // it's dead weight per frame), just a class toggle read once per animation
+  // frame via a passive listener.
+  const [scrolled, setScrolled] = useState(false);
+  useEffect(() => {
+    let ticking = false;
+    function onScroll() {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(() => {
+        setScrolled(window.scrollY > 8);
+        ticking = false;
+      });
+    }
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
   // Close the mobile menu whenever the route changes (adjust state during
   // render rather than in an effect — see https://react.dev/learn/you-might-not-need-an-effect).
   const [lastPath, setLastPath] = useState(path);
@@ -137,7 +156,7 @@ export default function Nav() {
       </div>
 
       {/* ─── Main nav ──────────────────────────────────────────────────────── */}
-      <nav className="nav-bar">
+      <nav className={`nav-bar${scrolled ? " is-scrolled" : ""}`}>
 
         {/* Left: logo + primary links */}
         <div className="nav-left">

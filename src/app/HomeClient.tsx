@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { TRACKS, type Track } from "@/lib/tracks";
 
 // ─── Hero notebook card ──────────────────────────────────────────────────────
@@ -25,6 +25,47 @@ const GREEKS = [
 ];
 
 const TOTAL_LESSONS = TRACKS.reduce((s, t) => s + t.lessons.length, 0);
+
+/**
+ * Counts a numeric stat up from 0 once it scrolls into view. Non-numeric
+ * badges ("$0") just render as-is — counting up to a dollar sign is silly.
+ */
+function CountUpFact({ value }: { value: string }) {
+  const n = Number.parseInt(value, 10);
+  const ref = useRef<HTMLElement>(null);
+  const [display, setDisplay] = useState(Number.isFinite(n) ? 0 : value);
+
+  useEffect(() => {
+    if (!Number.isFinite(n)) return;
+    const el = ref.current;
+    if (!el) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      setDisplay(n);
+      return;
+    }
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry.isIntersecting) return;
+        io.disconnect();
+        const start = performance.now();
+        const dur = 700;
+        function tick(now: number) {
+          const p = Math.min(1, (now - start) / dur);
+          const eased = 1 - (1 - p) * (1 - p);
+          setDisplay(Math.round(eased * n));
+          if (p < 1) requestAnimationFrame(tick);
+        }
+        requestAnimationFrame(tick);
+      },
+      { threshold: 0.6 },
+    );
+    io.observe(el);
+    return () => io.disconnect();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  return <b ref={ref}>{display}</b>;
+}
 
 const FACTS = [
   { b: "3",                     s: "Tracks" },
@@ -179,6 +220,7 @@ export default function Home() {
               <Link href="/lesson/inv-1" className="sk-btn">Start investing track <span className="arr">→</span></Link>
               <Link href="/lessons" className="sk-btn ghost dark">See all tracks</Link>
             </div>
+            <p className="sk-hero-trust">No signup required to start · No credit card · Runs in your browser</p>
           </div>
 
           <div className="sk-hero-visual">
@@ -212,7 +254,7 @@ export default function Home() {
         <div className="sk-facts">
           {FACTS.map((f) => (
             <div key={f.s} className="sk-fact">
-              <b>{f.b}</b>
+              <CountUpFact value={f.b} />
               <span>{f.s}</span>
             </div>
           ))}
@@ -223,7 +265,7 @@ export default function Home() {
       {/* ── CURRICULUM (light) ──────────────────────────────────────────── */}
       <section className="sk-section">
         <div className="sk-container">
-          <div className="sk-center" style={{ marginBottom: 56 }}>
+          <div className="sk-center v2-page-head" data-v2-head style={{ marginBottom: 56 }}>
             <div className="sk-eyebrow"><span className="sk-kicker">The curriculum</span></div>
             <h2 className="sk-h2">Three tracks.<br /><em>Start anywhere.</em></h2>
             <p className="sk-lead" style={{ margin: "18px auto 0" }}>
@@ -233,9 +275,11 @@ export default function Home() {
             </p>
           </div>
 
-          <div className="sk-tracks">
+          <div className="sk-tracks" data-v2-stagger>
             {TRACKS.map((track, ti) => (
-              <TrackCard key={track.id} track={track} defaultOpen={ti === 0} />
+              <div key={track.id} className="v2-rise">
+                <TrackCard track={track} defaultOpen={ti === 0} />
+              </div>
             ))}
           </div>
 
@@ -247,8 +291,8 @@ export default function Home() {
 
       {/* ── GREEKS (light) ──────────────────────────────────────────────── */}
       <section className="sk-section sk-section-alt">
-        <div className="sk-container sk-greeks">
-          <div className="sk-ticket">
+        <div className="sk-container sk-greeks" data-v2-stagger>
+          <div className="sk-ticket v2-rise">
             <div className="sk-ticket-head">
               <span>SPY · $525 CALL · 30d</span>
               <span className="px">price <b>$3.47</b></span>
@@ -267,7 +311,7 @@ export default function Home() {
             </div>
           </div>
 
-          <div className="sk-greeks-copy">
+          <div className="sk-greeks-copy v2-rise">
             <div className="sk-eyebrow"><span className="sk-kicker">The Greeks</span></div>
             <h2 className="sk-h2">Five numbers that<br /><em>run the trade.</em></h2>
             <p style={{ marginTop: 18 }}>
@@ -292,7 +336,7 @@ export default function Home() {
       {/* ── TOOLS (light) ───────────────────────────────────────────────── */}
       <section className="sk-section">
         <div className="sk-container">
-          <div className="sk-center">
+          <div className="sk-center v2-page-head" data-v2-head>
             <div className="sk-eyebrow"><span className="sk-kicker">The platform</span></div>
             <h2 className="sk-h2">Don&apos;t just read it. <em>Run it.</em></h2>
             <p className="sk-lead">
@@ -301,8 +345,8 @@ export default function Home() {
             </p>
           </div>
 
-          <div className="sk-tools">
-            <div className="sk-tool">
+          <div className="sk-tools" data-v2-stagger>
+            <div className="sk-tool v2-rise">
               <div className="sk-tool-icon">λ</div>
               <h3>A real Python notebook</h3>
               <p>
@@ -310,7 +354,7 @@ export default function Home() {
                 pricer preloaded. Every lesson has exercises with tests that run as you type.
               </p>
             </div>
-            <div className="sk-tool">
+            <div className="sk-tool v2-rise">
               <div className="sk-tool-icon">ƒ</div>
               <h3>A live Greek visualizer</h3>
               <p>
@@ -318,7 +362,7 @@ export default function Home() {
                 time. <Link href="/playground">Open the Playground →</Link>
               </p>
             </div>
-            <div className="sk-tool">
+            <div className="sk-tool v2-rise">
               <div className="sk-tool-icon">∂</div>
               <h3>An open-source engine</h3>
               <p>
@@ -333,7 +377,7 @@ export default function Home() {
       {/* ── CTA (dark) ──────────────────────────────────────────────────── */}
       <section className="sk-cta">
         <div className="sk-container">
-          <div className="sk-cta-card">
+          <div className="sk-cta-card v2-page-head" data-v2-head>
             <div className="sk-cta-inner">
               <p className="sk-cta-kicker">∂Education / ∂Zip Code = 0</p>
               <h2 className="sk-cta-h">Start tonight.<br /><em>It&apos;s free.</em></h2>
