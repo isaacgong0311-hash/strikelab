@@ -20,6 +20,7 @@ const TIMELINE = [
   { date: "Jul 2026", event: "Real per-student leaderboard tracking ships.", state: "done" },
   { date: "Aug 2026", event: "Paper-trading sandbox ships — $100,000 in simulated cash, options priced live with the same Black-Scholes engine from the lessons.", state: "done" },
   { date: "Aug 2026", event: "Rho lesson ships — the fifth Greek. Options Pricing is now an 11-lesson track, 22 lessons total across the curriculum.", state: "done" },
+  { date: "Aug 2026", event: "Curriculum rebalanced toward investing: 3 new Investing Fundamentals lessons (bonds, retirement accounts, common mistakes), Quant Investing trimmed to its 3 clearest lessons, and every lesson now opens with a \"before this lesson\" prereq box. 23 lessons total.", state: "done" },
   { date: "Aug 2026", event: "Interactive payoff diagrams and a clickable binomial tree lattice ship in the Option Strategies and Binomial Trees lessons.", state: "done" },
   { date: "Q4 2026", event: "School dashboard, certificates, Discord integration.", state: "planned" },
 ];

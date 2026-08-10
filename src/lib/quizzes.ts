@@ -578,6 +578,123 @@ export const QUIZZES: Record<string, QuizQuestion[]> = {
     },
   ],
 
+  "inv-7": [
+    {
+      question: "When market interest rates rise, the price of an existing fixed-rate bond:",
+      options: [
+        "Rises, since higher rates mean the issuer earns more",
+        "Falls, since new bonds now pay more and the old bond's fixed coupon is less attractive by comparison",
+        "Stays the same — only newly issued bonds are affected",
+        "Falls to zero immediately",
+      ],
+      correct: 1,
+      explanation:
+        "A bond's price adjusts so its yield stays competitive with what's newly available. If rates rise and your bond still pays its old, lower coupon, its price has to drop until the yield a new buyer would get catches up.",
+    },
+    {
+      question: "A 30-year Treasury bond is more sensitive to a change in interest rates than a 6-month T-bill because:",
+      options: [
+        "Longer-maturity bonds have more future coupon payments getting repriced by the rate change",
+        "The 30-year bond has a lower credit rating",
+        "T-bills are not affected by interest rates at all",
+        "The 30-year bond pays no coupon",
+      ],
+      correct: 0,
+      explanation:
+        "This is duration: the longer the time to maturity, the more future cash flows there are to discount at the new rate, so the price swings further for the same change in yield.",
+    },
+    {
+      question: "A bond trading below its face value (a \"discount\") most likely means:",
+      options: [
+        "The issuer has already defaulted",
+        "The bond's coupon rate is below the current market yield",
+        "The bond has no maturity date",
+        "The face value was miscalculated",
+      ],
+      correct: 1,
+      explanation:
+        "If the market yield is higher than the bond's fixed coupon, buyers won't pay full face value for those below-market payments — the price falls until the yield an new buyer earns matches the market.",
+    },
+  ],
+
+  "inv-8": [
+    {
+      question: "The main difference between a Traditional and a Roth retirement account is:",
+      options: [
+        "Traditional accounts have no contribution limits",
+        "Roth accounts only allow bond investments",
+        "Whether you pay income tax before contributing (Roth) or when you withdraw in retirement (Traditional)",
+        "Roth accounts can only be opened after age 30",
+      ],
+      correct: 2,
+      explanation:
+        "Traditional accounts give a tax deduction now and tax withdrawals later; Roth accounts skip the deduction now so that withdrawals — growth included — are entirely tax-free in retirement.",
+    },
+    {
+      question: "A high schooler is often a good candidate for a Roth account because:",
+      options: [
+        "Roth accounts guarantee a higher return than Traditional accounts",
+        "They're likely in the lowest tax bracket they'll ever be in, so paying tax now is comparatively cheap",
+        "Minors are legally required to use Roth accounts",
+        "Roth accounts have no investment risk",
+      ],
+      correct: 1,
+      explanation:
+        "Roth tends to win when your tax bracket later is higher than it is today. A first job's income usually sits in the lowest bracket someone will ever be in, making the \"pay tax once, cheaply, now\" trade favorable.",
+    },
+    {
+      question: "An employer 401(k) match is often called the best guaranteed return in investing because:",
+      options: [
+        "It's the only investment with zero risk of any kind",
+        "The match adds free money the instant you contribute, before the funds are even invested",
+        "Employer contributions grow faster than personal ones",
+        "It's not actually guaranteed — it's a marketing term",
+      ],
+      correct: 1,
+      explanation:
+        "A 50% match, for example, means every dollar contributed instantly becomes $1.50 before any market return is even involved — an immediate, guaranteed gain no stock pick or strategy can match.",
+    },
+  ],
+
+  "inv-9": [
+    {
+      question: "Research on market timing generally shows that investors who try to dodge downturns by moving to cash:",
+      options: [
+        "Reliably improve their long-run returns",
+        "Often miss the market's best days, which tend to cluster near its worst ones, damaging long-run returns",
+        "Have no measurable difference in outcome versus staying invested",
+        "Always time it correctly if they use technical analysis",
+      ],
+      correct: 1,
+      explanation:
+        "A large share of the market's long-run return comes from a small number of days each year, and those days often arrive amid the same volatility that scares people into selling — so missing them while trying to avoid a crash can cost more than the crash itself.",
+    },
+    {
+      question: "A 1% annual expense ratio, compared to a 0.03% index fund, mainly matters because:",
+      options: [
+        "It's illegal to charge more than 0.05% in most states",
+        "Compounded over decades, even a small fee gap creates a large dollar gap in ending wealth",
+        "Funds with higher fees are always fraudulent",
+        "It only affects returns in the fund's first year",
+      ],
+      correct: 1,
+      explanation:
+        "The same compounding math that grows wealth also compounds a fee against you. A 1-point annual gap, held for decades, routinely adds up to tens of thousands of dollars on an otherwise identical investment.",
+    },
+    {
+      question: "\"This is a great company\" and \"this is a good investment\" are different questions because:",
+      options: [
+        "Great companies never go public",
+        "A company's quality can already be fully priced in, making it a poor investment at today's price despite being an excellent business",
+        "Only bad companies can be good investments",
+        "Investment quality has nothing to do with the price paid",
+      ],
+      correct: 1,
+      explanation:
+        "Valuation exists precisely to separate these two questions. A wonderful business bought at too high a price can still be a bad investment — the price you pay determines the return you get, regardless of how good the underlying company is.",
+    },
+  ],
+
   // ─── Quant Investing track ─────────────────────────────────────────────────
 
   "q1": [
@@ -616,45 +733,6 @@ export const QUIZZES: Record<string, QuizQuestion[]> = {
       correct: 1,
       explanation:
         "Alpha is the y-intercept: returns unexplained by market exposure. CAPM theory says alpha should be zero in efficient markets. In practice, investors hunt for persistent positive alpha — but genuine alpha is rare and hard to distinguish from luck over typical timeframes.",
-    },
-  ],
-
-  "q2": [
-    {
-      question: "In the Fama-French 3-factor model, HML (High Minus Low) captures:",
-      options: [
-        "The momentum factor — recent winners minus recent losers",
-        "The value premium — high book-to-market (cheap) stocks minus low book-to-market (expensive) stocks",
-        "The size premium — small-cap returns minus large-cap returns",
-        "The quality factor — high-profit firms minus low-profit firms",
-      ],
-      correct: 1,
-      explanation:
-        "HML captures the value premium: historically, cheap stocks (high book/price ratio) have outperformed expensive growth stocks. The intuition: investors overpay for glamour growth and underpay for unglamorous recovery stories.",
-    },
-    {
-      question: "The momentum factor (Jegadeesh & Titman, 1993) says stocks that performed well over the past 3–12 months tend to:",
-      options: [
-        "Immediately mean-revert — sell your winners and buy your losers",
-        "Continue outperforming for the next 3–12 months",
-        "Have lower volatility going forward",
-        "Underperform by exactly the same magnitude as their prior gain",
-      ],
-      correct: 1,
-      explanation:
-        "Momentum is one of the most robust factors empirically: past 3–12 month winners tend to keep winning for another 3–12 months. The likely explanation: investors underreact to news, causing prices to trend as information is gradually absorbed.",
-    },
-    {
-      question: "Most published academic 'factors' fail out-of-sample primarily because of:",
-      options: [
-        "Factor data is too difficult to download and analyze correctly",
-        "Multiple-testing bias — running enough tests will inevitably surface false positives that look significant",
-        "Factor premia only work during bull markets, not recessions",
-        "Regulators banned factor-based systematic strategies after 2010",
-      ],
-      correct: 1,
-      explanation:
-        "Harvey, Liu & Zhu (2016): with hundreds of researchers testing thousands of factor combinations, some will appear significant purely by chance. A proper t-statistic threshold of 3.0 (not the usual 2.0) should be required. Most published factors don't survive this bar, real transaction costs, or post-publication decay.",
     },
   ],
 
@@ -736,81 +814,4 @@ export const QUIZZES: Record<string, QuizQuestion[]> = {
     },
   ],
 
-  "q5": [
-    {
-      question: "Two stocks are said to be 'cointegrated' if:",
-      options: [
-        "They have the same price-to-earnings ratio",
-        "They share a common long-run stochastic trend — their spread is stationary and mean-reverts",
-        "They are in the same industry and have high daily return correlation",
-        "Their daily returns are perfectly correlated (ρ = 1)",
-      ],
-      correct: 1,
-      explanation:
-        "Cointegration is stronger than correlation. Two cointegrated series can temporarily diverge but are mathematically bound to revert. The spread S = P1 − β×P2 is stationary: it has a stable mean and variance, making it tradeable via pairs trading.",
-    },
-    {
-      question: "In pairs trading, when the spread z-score rises above +2 standard deviations, you:",
-      options: [
-        "Buy both stocks — the entire sector is breaking out",
-        "Short the spread: sell the relatively expensive stock (P1) and buy the relatively cheap one (P2)",
-        "Long the spread: buy P1 and sell P2",
-        "Close all existing positions immediately",
-      ],
-      correct: 1,
-      explanation:
-        "Z > +2 means P1 is unusually expensive relative to its historical relationship with P2. You short P1 and buy P2, betting the spread narrows back to its mean. The position is market-neutral — it profits from relative mispricing, not market direction.",
-    },
-    {
-      question: "The August 2007 'quant quake' illustrated the risk of:",
-      options: [
-        "Rising interest rates destroying bond-heavy portfolios",
-        "Strategy crowding — many funds held near-identical stat arb positions and were forced to unwind simultaneously",
-        "Excessive leverage in subprime mortgage securities",
-        "Regulatory changes banning short-selling",
-      ],
-      correct: 1,
-      explanation:
-        "Dozens of quantitative funds ran nearly identical pairs strategies. When one fund began forced liquidation (due to losses elsewhere), it moved the spread against every other fund holding the same trades, triggering a cascade. Strategies that had never lost money historically suffered massive simultaneous drawdowns.",
-    },
-  ],
-
-  "11": [
-    {
-      question: "Rho (ρ) measures an option's sensitivity to:",
-      options: [
-        "The passage of time",
-        "Changes in implied volatility",
-        "Changes in the risk-free interest rate",
-        "Changes in the underlying stock price",
-      ],
-      correct: 2,
-      explanation:
-        "Rho = ∂V/∂r. It's usually the smallest-magnitude Greek for short-dated options, which is why it gets the least attention day to day — but it isn't zero, and it grows with time to expiry.",
-    },
-    {
-      question: "How does rho differ between calls and puts?",
-      options: [
-        "It's identical for calls and puts, like vega",
-        "Call rho is positive; put rho is negative",
-        "Call rho is negative; put rho is positive",
-        "Both are always positive, but calls are larger",
-      ],
-      correct: 1,
-      explanation:
-        "Rising rates help call holders (a call behaves like a deferred, leveraged long position — deferring payment becomes more valuable as rates rise) and hurt put holders (a put behaves like a deferred short sale, which becomes less attractive as rates rise).",
-    },
-    {
-      question: "Why did rho suddenly matter more to options traders in 2022–2023?",
-      options: [
-        "The CBOE changed how options are quoted",
-        "The Federal Reserve raised rates from near 0% to over 5% in about 16 months — the fastest hiking cycle in decades",
-        "Implied volatility fell to record lows",
-        "Congress passed new options-trading regulations",
-      ],
-      correct: 1,
-      explanation:
-        "Rho's day-to-day contribution is usually tiny because the risk-free rate barely moves. During the 2022–2023 hiking cycle, the rate itself moved several percentage points over about a year, which stopped being a rounding error for anyone holding long-dated options.",
-    },
-  ],
 };

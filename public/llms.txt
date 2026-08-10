@@ -1,15 +1,15 @@
 # StrikeLab
 
-> StrikeLab is a free, open-source, browser-based quant finance curriculum built for high schoolers. Students work through 22 lessons across three tracks — Investing Fundamentals, Options Pricing, and Quant Investing — implementing real pricing functions (Black-Scholes, the Greeks, CAPM) in an in-browser Python playground (Pyodide/WebAssembly, no install), with live chart visualizers and a $100,000 paper-trading sandbox to apply what they learn.
+> StrikeLab is a free, open-source, browser-based investing and quant finance curriculum built for high schoolers. Students work through 23 lessons across three tracks — Investing Fundamentals, Options Pricing, and Quant Investing — implementing real pricing functions (Black-Scholes, the Greeks, CAPM) in an in-browser Python playground (Pyodide/WebAssembly, no install), with live chart visualizers and a $100,000 paper-trading sandbox to apply what they learn.
 
-StrikeLab exists because quant finance is typically gatekept behind elite university networks and expensive courses. It teaches the same math — Black-Scholes, Delta/Gamma/Theta/Vega/Rho, implied volatility, binomial trees, CAPM, factor investing, backtesting — for free, starting from "what is a stock?" with no assumed finance background. Built and maintained by a solo high school student.
+StrikeLab exists because quant finance is typically gatekept behind elite university networks and expensive courses. It teaches practical investing first — stocks, financial statements, valuation, bonds, retirement accounts — then the same options-pricing math professionals use — Black-Scholes, Delta/Gamma/Theta/Vega/Rho, implied volatility, binomial trees — for free, starting from "what is a stock?" with no assumed finance background. Quant Investing (CAPM, backtesting, portfolio optimization) is a short optional track for students who want to go further. Built and maintained by a solo high school student.
 
 ## Curriculum
 
-- [All lessons](https://strikelab.dev/lessons): The full 22-lesson curriculum across three tracks.
-- Investing Fundamentals (beginner, 6 lessons): stocks, markets, financial statements, valuation, risk, portfolio building.
+- [All lessons](https://strikelab.dev/lessons): The full 23-lesson curriculum across three tracks.
+- Investing Fundamentals (beginner, 9 lessons): stocks, markets, financial statements, valuation, risk, portfolio building, bonds, retirement accounts, common investing mistakes.
 - Options Pricing (intermediate, 11 lessons): what options are, put-call parity, the Black-Scholes formula, all five Greeks (Delta, Gamma, Theta, Vega, Rho), implied volatility, option strategies, binomial trees.
-- Quant Investing (advanced, 5 lessons): CAPM and beta, factor investing, backtesting, portfolio optimization, statistical arbitrage.
+- Quant Investing (advanced, 3 lessons, optional): CAPM and beta, backtesting, portfolio optimization.
 
 ## Platform
 

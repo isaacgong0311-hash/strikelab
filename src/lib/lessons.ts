@@ -43,12 +43,25 @@ export interface LessonVisual {
   type: "payoffDiagram" | "binomialTree";
 }
 
+/**
+ * "Before this lesson" box — what background it assumes, plus somewhere to
+ * go if you don't have it yet. Optional: earlier lessons in a track can lean
+ * on the lesson before them instead of repeating a prereq note every time.
+ */
+export interface LessonPrereqs {
+  /** One line: the background this lesson assumes. Plain language, not a topic list. */
+  summary: string;
+  /** 1-2 outside resources for anyone missing that background. Keep it short. */
+  resources?: { label: string; url: string }[];
+}
+
 export interface Lesson {
   id: string;
   title: string;
   subtitle: string;
   duration: string;
   content: string; // markdown-like HTML string
+  prereqs?: LessonPrereqs;
   sandboxes?: FormulaSandboxConfig[];
   visuals?: LessonVisual[];
   exercise: {
@@ -65,6 +78,12 @@ export const LESSONS: Lesson[] = [
     title: "What Is an Option?",
     subtitle: "Calls, puts, and why they exist",
     duration: "15 min",
+    prereqs: {
+      summary: "Comfortable with the stock basics from Investing Fundamentals (what a share is, how prices move) — no options background assumed.",
+      resources: [
+        { label: "Investopedia — Options Basics", url: "https://www.investopedia.com/options-basics-tutorial-4583012" },
+      ],
+    },
     content: `
 <h2>A 2,600-Year-Old Idea</h2>
 <p>Options feel like a modern financial invention, but they're not. Around 600 BCE, the Greek philosopher Thales of Miletus studied the stars, decided a bumper olive harvest was coming, and acted on it — except he didn't have the money to buy up olive presses outright. So he paid a small deposit for the right to rent them at a fixed price once harvest season arrived. His prediction turned out right, demand for presses spiked, and Thales exercised that right, rented the presses at the price he'd locked in, and sublet them at the much higher going rate. The spread was his profit. Without knowing it, he'd just traded the first option on record.</p>
@@ -182,6 +201,9 @@ print("Tests passed!")
     title: "Put-Call Parity",
     subtitle: "The iron law of options pricing",
     duration: "15 min",
+    prereqs: {
+      summary: "Builds directly on Lesson 1's call and put definitions. Comfortable rearranging a simple algebraic equation.",
+    },
     content: `
 <h2>The Most Important Relationship in Options</h2>
 <p>Put-call parity is a no-arbitrage rule linking the price of a European call, a European put, the underlying stock, and a risk-free bond. What makes it powerful is what it doesn't require: no assumption about which way the stock is headed, how volatile it is, or anything about the future at all. It falls straight out of one idea — that free money doesn't just sit around waiting to be picked up. Spend the time to really understand this relationship and you'll walk away knowing more about how options pricing actually works than you would from memorizing a dozen formulas.</p>
@@ -295,6 +317,13 @@ print("Tests passed!")
     title: "Black-Scholes Formula",
     subtitle: "The equation that changed markets",
     duration: "20 min",
+    prereqs: {
+      summary: "Comfortable with exponents and natural logs, and willing to treat the normal distribution N(d) as a lookup at first — it's explained here, not assumed.",
+      resources: [
+        { label: "Khan Academy — Exponential & logarithmic functions", url: "https://www.khanacademy.org/math/algebra2/x2ec2f6f830c9fb89:exp-log" },
+        { label: "Khan Academy — Normal distributions", url: "https://www.khanacademy.org/math/statistics-probability/modeling-distributions-of-data/normal-distributions-library" },
+      ],
+    },
     content: `
 <h2>The Nobel Prize Formula</h2>
 <p>On May 1, 1973 — just five days after the CBOE opened for trading — the <em>Journal of Political Economy</em> published "The Pricing of Options and Corporate Liabilities" by Fischer Black and Myron Scholes. Two journals had already rejected it. In 1997, Scholes and Robert Merton shared the Nobel Prize in Economics for the work (Black had passed away in 1995 and Nobels aren't awarded posthumously), with the committee calling it "a major contribution to economic sciences" — which undersells it a bit, honestly.</p>
@@ -431,6 +460,9 @@ print("Tests passed!")
     title: "Delta: Directional Exposure",
     subtitle: "The most important Greek",
     duration: "15 min",
+    prereqs: {
+      summary: "Builds directly on the Black-Scholes formula from Lesson 3 — Delta is just one of its terms, isolated and explained.",
+    },
     content: `
 <h2>The First Derivative</h2>
 <p>The "Greeks" are just partial derivatives — how much the option's price shifts as you nudge each input to Black-Scholes. Delta (Δ) is the one traders reach for first, because it measures the option's sensitivity to the thing that matters most: the <em>stock price</em>.</p>
@@ -550,6 +582,9 @@ print("Tests passed!")
     title: "Theta: Time Decay",
     subtitle: "Why options are a race against the clock",
     duration: "15 min",
+    prereqs: {
+      summary: "Builds on Delta (Lesson 4) — same Black-Scholes formula, a different partial derivative.",
+    },
     content: `
 <h2>Options Are Wasting Assets</h2>
 <p>Every option carries an expiration date, and that changes its whole character compared to just owning the stock. Every day that passes without the underlying moving in your favor, the option loses a little value — not because anything bad happened, but simply because there's now less time left for things to go your way. That erosion has a name, <strong>time decay</strong>, and a Greek letter attached to it: theta (Θ).</p>
@@ -680,6 +715,9 @@ print("Tests passed!")
     title: "Gamma: Rate of Change of Delta",
     subtitle: "Why delta hedging requires constant rebalancing",
     duration: "15 min",
+    prereqs: {
+      summary: "Builds directly on Delta (Lesson 4) — Gamma is defined as Delta's own rate of change.",
+    },
     content: `
 <h2>The Second Derivative</h2>
 <p>Delta tells you how much an option's price moves for a small move in the stock. But delta doesn't hold still either — it shifts as the stock moves, and gamma measures exactly how fast:</p>
@@ -796,6 +834,9 @@ print("Tests passed!")
     title: "Vega: Volatility Sensitivity",
     subtitle: "How option prices respond to changes in implied vol",
     duration: "15 min",
+    prereqs: {
+      summary: "Builds on the Greeks introduced in Lessons 4–6 (Delta, Theta, Gamma) — same formula family, one more term.",
+    },
     content: `
 <h2>The Volatility Greek</h2>
 <p>Vega (ν) measures how much an option's price shifts for a one-percentage-point change in implied volatility. It might be the single most important Greek for a professional, because professional options trading is, at its core, mostly about <em>trading volatility itself</em> — not about guessing which way a stock is headed.</p>
@@ -927,6 +968,12 @@ print("Tests passed!")
     title: "Implied Volatility",
     subtitle: "What the market thinks about uncertainty",
     duration: "18 min",
+    prereqs: {
+      summary: "Builds on Black-Scholes (Lesson 3) and Vega (Lesson 7). The numerical solving method (Newton-Raphson) is taught from scratch — no prior exposure needed.",
+      resources: [
+        { label: "Khan Academy — Newton's method", url: "https://www.khanacademy.org/math/ap-calculus-ab/ab-differential-equations-new/ab-7-8/a/newtons-method-review" },
+      ],
+    },
     content: `
 <h2>Inverting the Formula</h2>
 <p>Feed Black-Scholes its five usual inputs — S, K, T, r, and σ — and it hands back an option price. But that's backwards from how the real market actually works. What you actually observe every day is a price, set by whoever's willing to buy and sell at that level — nobody hands you σ directly. So the real question traders ask is the mirror image of the formula: what value of σ, plugged in, would make Black-Scholes reproduce the price the market is already quoting?</p>
@@ -1092,6 +1139,9 @@ print("Tests passed!")
     title: "Option Strategies",
     subtitle: "Spreads, straddles, and how to use the Greeks",
     duration: "20 min",
+    prereqs: {
+      summary: "Builds on calls and puts (Lesson 1) and payoff thinking — no new math beyond what's already covered.",
+    },
     content: `
 <h2>From Single Options to Strategies</h2>
 <p>Almost nobody trading options professionally is just buying or selling one contract in isolation. Real trading combines options — and sometimes the underlying stock itself — into <strong>strategies</strong>: multi-leg structures built to target a specific payoff shape, a specific risk-to-reward ratio, and a specific set of Greek exposures. Knowing why a given strategy exists, and exactly when it's the right tool, is what separates deliberate positioning from just placing a bet and hoping.</p>
@@ -1221,6 +1271,12 @@ print("Tests passed!")
     title: "Binomial Trees",
     subtitle: "The discrete-time approach to option pricing",
     duration: "18 min",
+    prereqs: {
+      summary: "Builds on Black-Scholes (Lesson 3); comfortable with basic probability (expected value of a coin-flip-style outcome).",
+      resources: [
+        { label: "Khan Academy — Expected value", url: "https://www.khanacademy.org/math/statistics-probability/random-variables-stats-library/random-variables-discrete/v/expected-value-of-a-discrete-random-variable" },
+      ],
+    },
     content: `
 <h2>Why Binomial Trees?</h2>
 <p>Black-Scholes is elegant, but it's also brittle in a specific way: it assumes continuous trading, no price jumps, constant volatility, and — the important one here — European-style exercise, meaning the option can only ever be exercised right at expiration. <strong>American options</strong>, which can be exercised any time before that, have no closed-form Black-Scholes-style formula at all. Binomial trees fill that gap, and they're also the conceptual foundation nearly every numerical options-pricing method builds on.</p>
@@ -1381,6 +1437,9 @@ print("Tests passed!")
     title: "Rho: Interest Rate Sensitivity",
     subtitle: "The forgotten Greek that matters most when rates move",
     duration: "13 min",
+    prereqs: {
+      summary: "Builds on the Greeks from Lessons 4–7 — same formula family, the last of the five.",
+    },
     content: `
 <h2>The Fifth Greek</h2>
 <p>Rho (ρ) measures how much an option's price changes for a one percentage-point move in the risk-free rate. It's the least-discussed of the five Greeks traders track day to day, and for a good reason: on any given trading day, the risk-free rate barely moves, so rho's contribution to a short-dated option's P&L is usually tiny compared to delta or gamma. But "usually small" is not "always irrelevant" — and the years when it isn't small are exactly the years that catch unprepared traders off guard.</p>

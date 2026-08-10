@@ -7,6 +7,7 @@ import dynamic from "next/dynamic";
 import { useProgress } from "@/lib/useProgress";
 import { trackLessonStart, trackTestsPassed, trackLessonComplete, trackQuizAnswer } from "@/lib/analytics";
 import Eyebrow from "@/components/Eyebrow";
+import PrereqBox from "@/components/PrereqBox";
 import AiTutor from "@/components/AiTutor";
 import LessonToc from "@/components/LessonToc";
 import AiReview from "@/components/AiReview";
@@ -445,6 +446,8 @@ export default function LessonClient({ lesson, sections, chunks, prev, next, tra
             </p>
           )}
         </div>
+
+        {lesson.prereqs && <PrereqBox prereqs={lesson.prereqs} />}
 
         {/* Lesson content, with checkpoints interleaved between sections.
             The questions used to sit in one block at the end, so you could
