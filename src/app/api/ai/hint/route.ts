@@ -60,10 +60,8 @@ const LESSON_CONTEXT: Record<string, string> = {
   "inv-5": "Portfolio theory — diversification, correlation, risk/return trade-off",
   "inv-6": "Efficient market hypothesis — weak/semi-strong/strong form",
   "q1":    "CAPM — Beta, systematic risk, Security Market Line",
-  "q2":    "Factor investing — Fama-French 3-factor model, value, size, momentum",
-  "q3":    "Backtesting — vectorized backtests in Python, Sharpe ratio, drawdown",
-  "q4":    "Statistical arbitrage — pairs trading, cointegration, z-score entry/exit",
-  "q5":    "Risk management — VaR, CVaR, position sizing, Kelly criterion",
+  "q3":    "Backtesting — vectorized backtests in Python, Sharpe ratio, max drawdown",
+  "q4":    "Portfolio optimization — mean-variance optimization, efficient frontier, covariance matrix",
 };
 
 // ─── Mock hints for demo mode ─────────────────────────────────────────────────

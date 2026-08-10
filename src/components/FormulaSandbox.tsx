@@ -43,6 +43,15 @@ const COMPUTE: Record<string, (v: Record<string, number>) => number> = {
   putCallParity: (v) => v.stock - v.strike * Math.exp((-v.rate / 100) * v.time),
   capm: (v) => v.rf + v.beta * (v.rm - v.rf),
   maxDrawdown: (v) => (v.peak === 0 ? 0 : ((v.peak - v.trough) / v.peak) * 100),
+  // Annual-pay bond price: sum of discounted coupons + discounted face value.
+  bondPrice: (v) => {
+    const face = v.face, couponRate = v.coupon / 100, y = v.yield / 100, n = v.years;
+    const coupon = face * couponRate;
+    if (y === 0) return coupon * n + face;
+    const pvCoupons = coupon * (1 - Math.pow(1 + y, -n)) / y;
+    const pvFace = face / Math.pow(1 + y, n);
+    return pvCoupons + pvFace;
+  },
   zscore: (v) => (v.std === 0 ? 0 : (v.spread - v.mean) / v.std),
   rhoCall: (v) => {
     const { K, T, r, d2 } = bsD1D2(v);

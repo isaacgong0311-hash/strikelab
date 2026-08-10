@@ -15,7 +15,7 @@ interface Problem {
 /**
  * Generate-and-solve extra practice on the current lesson's concept.
  *
- * The curriculum is 22 fixed exercises, so a student who finishes one without
+ * The curriculum is 23 fixed exercises, so a student who finishes one without
  * it clicking has nowhere to drill. This reuses the Pyodide runtime already
  * loaded on the lesson page, so running a generated exercise costs no extra
  * download.

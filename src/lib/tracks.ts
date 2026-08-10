@@ -47,13 +47,13 @@ export const TRACKS: Track[] = [
   {
     id: "quant",
     title: "Quant Investing",
-    subtitle: "CAPM, factors, backtesting, and optimization",
-    description: "The math behind institutional investing. Learn CAPM and beta, factor models (value, momentum, quality), how to backtest strategies without fooling yourself, and how to optimize a portfolio on the efficient frontier.",
+    subtitle: "CAPM, backtesting, and portfolio optimization",
+    description: "An optional deep end for once the fundamentals feel easy. Learn CAPM and beta, how to backtest strategies without fooling yourself, and how to optimize a portfolio on the efficient frontier — three lessons, not a whole second major.",
     level: "Advanced",
     color: "var(--coral)",
     icon: "β",
     lessons: QUANT_LESSONS,
-    contentUpdated: "2026-06-04",
+    contentUpdated: "2026-08-10",
   },
 ];
 

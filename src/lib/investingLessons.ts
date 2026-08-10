@@ -13,6 +13,9 @@ export const INVESTING_LESSONS: Lesson[] = [
     title: "What Is a Stock?",
     subtitle: "Ownership, equity, and why companies go public",
     duration: "12 min",
+    prereqs: {
+      summary: "None — this is the starting point of the curriculum. Just curiosity and comfort with basic arithmetic.",
+    },
     content: `
 <h2>Owning a Piece of a Business</h2>
 <p>Say a company needs money. Maybe it wants to build a factory, hire a hundred engineers, or open stores in a new country. It has two options: borrow the money, or sell off little pieces of itself to people willing to fund it. A <strong>stock</strong> is one of those pieces — a share of ownership in the company, no different in principle from owning a slice of a pizza you split with friends, except the pizza is a business and the slices can be bought and sold to strangers on the internet at 9:31am every weekday.</p>
@@ -139,6 +142,9 @@ print("Tests passed!")
     title: "How Markets Work",
     subtitle: "Exchanges, order types, and the bid-ask spread",
     duration: "14 min",
+    prereqs: {
+      summary: "Builds on Lesson 1's idea of stock ownership — no new math.",
+    },
     content: `
 <h2>Exchanges and Brokers</h2>
 <p>An exchange is just a regulated place for buyers and sellers to meet. In the U.S. that mostly means the <strong>NYSE</strong> (founded 1792 — older than the country's currency) and the <strong>NASDAQ</strong> (1971, the first fully electronic one).</p>
@@ -257,6 +263,12 @@ print("Tests passed!")
     title: "Reading Financial Statements",
     subtitle: "How to understand a company's P&L, balance sheet, and cash flow",
     duration: "18 min",
+    prereqs: {
+      summary: "Comfortable with basic arithmetic and percentages. No accounting background assumed — every term is defined here.",
+      resources: [
+        { label: "Investopedia — How to Read a Balance Sheet", url: "https://www.investopedia.com/terms/b/balancesheet.asp" },
+      ],
+    },
     content: `
 <h2>The Three Core Statements</h2>
 <p>Every public company is legally required to file a report with the SEC every quarter (the 10-Q) and every year (the 10-K). Buried inside are three documents that, read together, tell you almost everything about whether a business is actually healthy. This is the single most useful skill in this whole track — more useful than any formula later on — because every valuation model in Lesson 4 is just an opinion built on top of these three statements.</p>
@@ -407,6 +419,9 @@ print("Tests passed!")
     title: "Valuation: How Much Is a Company Worth?",
     subtitle: "P/E, EV/EBITDA, and discounted cash flow basics",
     duration: "18 min",
+    prereqs: {
+      summary: "Builds directly on Lesson 3 — know what revenue, earnings, and free cash flow mean before this one.",
+    },
     content: `
 <h2>Intrinsic Value vs. Market Price</h2>
 <p>Every investing decision eventually comes down to one question: is this stock cheap, expensive, or about right? The market price is trivial to find — it's on your phone. The hard half is estimating <strong>intrinsic value</strong>: what the business is actually worth based on the cash it'll generate over its lifetime. Valuation is just the name for the process of guessing that second number as carefully as you can.</p>
@@ -541,6 +556,12 @@ print("Tests passed!")
     title: "Risk, Return, and Diversification",
     subtitle: "The math of building a portfolio that survives",
     duration: "16 min",
+    prereqs: {
+      summary: "Comfortable with averages; standard deviation is explained from scratch, so no statistics background is required.",
+      resources: [
+        { label: "Khan Academy — Standard deviation", url: "https://www.khanacademy.org/math/statistics-probability/summarizing-quantitative-data/variance-standard-deviation-population/v/statistics-standard-deviation" },
+      ],
+    },
     content: `
 <h2>The Risk-Return Tradeoff</h2>
 <p>Markets don't hand out free returns. If something offers a higher expected payoff, it comes bundled with more risk — that trade is basically the whole discipline of finance in one sentence. Three-month U.S. Treasury bills pay around 5% and are about as close to risk-free as money gets. The S&P 500 has averaged closer to 10% historically, but "historically" is doing a lot of work in that sentence — it includes 2008 (−37%) and 2022 (−18%). Put money into early-stage startup equity and you might see 50%+ returns, or you might see zero. All of it, forever.</p>
@@ -680,6 +701,9 @@ print("Tests passed!")
     title: "Building Your Portfolio",
     subtitle: "Asset allocation, index funds, and long-term wealth",
     duration: "14 min",
+    prereqs: {
+      summary: "Builds directly on Lesson 5's diversification concept — this is where it becomes an actual portfolio.",
+    },
     content: `
 <h2>The Decision That Matters Most</h2>
 <p>In 1986, three researchers named Brinson, Hood, and Beebower dug into what actually drives portfolio performance over time, and the answer surprised a lot of people: roughly 90% of it comes down to <strong>asset allocation</strong> — how you split your money across stocks, bonds, cash, and everything else. Not stock picking. Not timing the market. Just the split. Whether you happened to buy Apple or Microsoft matters far less than whether you were 80% in stocks or 50%.</p>
@@ -810,6 +834,315 @@ c3 = [80000, 10000, 10000]
 t3 = [0.80, 0.10, 0.10]
 t3_trades = rebalance_weights(c3, t3)
 assert all(abs(t) < 1e-6 for t in t3_trades), "Already at target, no trades needed"
+
+print("Tests passed!")
+`,
+    },
+  },
+  {
+    id: "inv-7",
+    title: "Bonds and Fixed Income",
+    subtitle: "Why bond prices fall when rates rise, and how to read a yield",
+    duration: "15 min",
+    prereqs: {
+      summary: "Comfortable with percentages and the compound-growth idea from Lesson 6 — no new math beyond that.",
+      resources: [
+        { label: "Investopedia — Bond Basics", url: "https://www.investopedia.com/terms/b/bond.asp" },
+        { label: "Khan Academy — Bonds", url: "https://www.khanacademy.org/economics-finance-domain/core-finance/stock-and-bonds" },
+      ],
+    },
+    content: `
+<h2>You're the Bank Now</h2>
+<p>Buy a stock and you own a sliver of a company. Buy a <strong>bond</strong> and you've done something different — you've lent someone money. Governments and corporations both need to borrow, and instead of walking into a bank, they issue bonds directly to investors: you hand over cash today, and in exchange they promise to pay you back later, with interest along the way. The U.S. government has leaned on this exact tool since before it was the U.S. government — the Continental Congress sold bonds to finance the Revolutionary War, and "war bonds" funded both World Wars a century and a half later.</p>
+<p>Bonds don't get talked about nearly as much as stocks, but the bond market is actually larger — more money sits in fixed income globally than in equities. Every pension fund, every insurance company, every "safe" portion of a target-date retirement fund leans on bonds to do a job stocks can't: pay a predictable amount, on a predictable schedule.</p>
+
+<h2>The Anatomy of a Bond</h2>
+<p>Every bond, no matter who issued it, is described by the same four numbers:</p>
+<ul>
+  <li><strong>Face value (par value):</strong> what the bond pays back at maturity — usually $1,000 for an individual bond.</li>
+  <li><strong>Coupon rate:</strong> the fixed interest rate paid on the face value, almost always annually or semi-annually. A $1,000 bond with a 5% coupon pays $50 a year.</li>
+  <li><strong>Maturity:</strong> the date the issuer pays back the face value and the loan ends. Bonds range from a few months (T-bills) to 30 years (long bonds).</li>
+  <li><strong>Yield:</strong> the return you'd actually get buying the bond today — which is <em>not</em> the same as the coupon rate the moment the bond trades for anything other than its face value.</li>
+</ul>
+
+<h2>Why Bond Prices Move Opposite Rates</h2>
+<p>This is the one idea that makes the rest of fixed income click: <strong>when interest rates rise, existing bond prices fall — and when rates fall, existing bond prices rise.</strong> The mechanism is simpler than it sounds. Say you own a bond paying a fixed 3% coupon, and then rates in the broader market jump to 5%. Nobody wants to pay full price for your 3% bond anymore when brand-new bonds are paying 5% — so the price of your bond has to drop until its yield (what a buyer would actually earn from here) catches up to what's available elsewhere.</p>
+<blockquote>Bond price = PV(all future coupon payments) + PV(face value at maturity)</blockquote>
+<div class="lesson-callout">
+  <span class="lesson-callout-label">Try the sandbox below</span>
+  <p>Push the market yield above the coupon rate and watch the bond's price fall below its $1,000 face value — that's a bond trading "at a discount." Pull yield below the coupon and it trades "at a premium," above face value.</p>
+</div>
+<p>This is exactly why 2022 was one of the worst years on record for bond funds: the Fed raised rates aggressively to fight inflation, and every existing lower-coupon bond in the market got repriced downward all at once.</p>
+
+<h2>Types of Bonds, Ranked by Risk</h2>
+<ul>
+  <li><strong>U.S. Treasuries:</strong> issued by the federal government, backed by its ability to tax and print money. About as close to "risk-free" as investing gets — which is exactly why the risk-free rate in CAPM (Lesson 1 of Quant Investing) is a Treasury rate.</li>
+  <li><strong>Municipal bonds ("munis"):</strong> issued by states and cities to fund roads, schools, hospitals. Often exempt from federal (and sometimes state) income tax, which matters more the higher your tax bracket.</li>
+  <li><strong>Investment-grade corporate bonds:</strong> issued by financially healthy companies. Higher yield than Treasuries to compensate for the (small) chance the company doesn't pay you back.</li>
+  <li><strong>High-yield ("junk") bonds:</strong> issued by companies with weaker credit. Meaningfully higher yield, meaningfully higher default risk. Credit rating agencies — Moody's, S&amp;P, Fitch — grade every bond from AAA down to junk so investors can gauge that risk at a glance.</li>
+</ul>
+
+<h2>Duration: How Sensitive Is Your Bond?</h2>
+<p><strong>Duration</strong> is a rough measure of how much a bond's price moves for a 1% change in rates — and the single biggest driver of it is time to maturity. A 30-year Treasury swings far more violently on a rate move than a 6-month T-bill does, because there are decades of future coupon payments getting repriced instead of just a few months' worth. If you're worried about rates rising, shorter-duration bonds are the more conservative place to hide; if you think rates are about to fall, longer duration is where the bigger gains sit.</p>
+
+<h2>Where Bonds Fit In Your Portfolio</h2>
+<p>Back in Lesson 6, the three-fund portfolio held a slice of BND — the U.S. bond market fund. Bonds aren't there to make you rich; stocks do that job better over the long run. They're there because bonds and stocks don't usually crash at the same time for the same reason, so holding both smooths out the ride. That's also exactly why the "hold your age in bonds" heuristic exists — the closer you are to needing the money, the less you can afford a stock-market gut punch right before you need to spend it.</p>
+    `,
+    sandboxes: [
+      {
+        afterSectionId: "why-bond-prices-move-opposite-rates",
+        title: "Bond Price",
+        formula: "Price = PV(coupons) + PV(face value)",
+        variables: [
+          { key: "face", label: "Face value", unit: "$", defaultValue: 1000, min: 100, max: 10000, step: 100 },
+          { key: "coupon", label: "Coupon rate", unit: "%", defaultValue: 4, min: 0, max: 10, step: 0.25 },
+          { key: "years", label: "Years to maturity", defaultValue: 10, min: 1, max: 30, step: 1 },
+          { key: "yield", label: "Market yield", unit: "%", defaultValue: 5, min: 0, max: 12, step: 0.25 },
+        ],
+        computeId: "bondPrice",
+        resultLabel: "Bond price",
+        resultPrefix: "$",
+        decimals: 2,
+      },
+    ],
+    exercise: {
+      prompt: "Implement `bond_price` (present value of an annual-pay bond) and `current_yield`.",
+      starterCode: `def bond_price(face_value, coupon_rate, years, market_yield):
+    """
+    Price of an annual-pay bond:
+    Price = coupon * (1 - (1+y)^-n) / y + face_value / (1+y)^n
+    where coupon = face_value * coupon_rate, y = market_yield, n = years.
+
+    If market_yield == 0, price = coupon * years + face_value.
+    """
+    # YOUR CODE HERE
+    pass
+
+def current_yield(annual_coupon, price):
+    """
+    Current yield = annual coupon payment / current price.
+    Returns a fraction (e.g. 0.05 = 5%), not a percentage.
+    """
+    # YOUR CODE HERE
+    pass
+`,
+      solution: `def bond_price(face_value, coupon_rate, years, market_yield):
+    coupon = face_value * coupon_rate
+    if market_yield == 0:
+        return coupon * years + face_value
+    pv_coupons = coupon * (1 - (1 + market_yield) ** -years) / market_yield
+    pv_face = face_value / (1 + market_yield) ** years
+    return pv_coupons + pv_face
+
+def current_yield(annual_coupon, price):
+    return annual_coupon / price
+`,
+      testFn: `
+# At par: coupon rate == market yield -> price == face value
+p = bond_price(1000, 0.05, 10, 0.05)
+assert abs(p - 1000) < 0.5, f"Should price near par: {p}"
+
+# Yield above coupon -> discount (price below face value)
+p_discount = bond_price(1000, 0.03, 10, 0.05)
+assert p_discount < 1000, f"Should be a discount bond: {p_discount}"
+
+# Yield below coupon -> premium (price above face value)
+p_premium = bond_price(1000, 0.06, 10, 0.04)
+assert p_premium > 1000, f"Should be a premium bond: {p_premium}"
+
+# Current yield
+cy = current_yield(50, 1000)
+assert abs(cy - 0.05) < 1e-9, f"Current yield: {cy}"
+
+cy2 = current_yield(50, 900)
+assert cy2 > 0.05, "Lower price -> higher current yield"
+
+print("Tests passed!")
+`,
+    },
+  },
+  {
+    id: "inv-8",
+    title: "Retirement Accounts and Tax Drag",
+    subtitle: "401(k)s, IRAs, and why the account you use matters as much as what's in it",
+    duration: "14 min",
+    prereqs: {
+      summary: "Builds directly on the compound-growth math from Lesson 6 — same formula, applied to a tax question instead.",
+      resources: [
+        { label: "Investopedia — Roth vs. Traditional IRA", url: "https://www.investopedia.com/roth-vs-traditional-ira-4770920" },
+        { label: "IRS — Retirement Topics: IRA Contribution Limits", url: "https://www.irs.gov/retirement-plans/plan-participant-employee/retirement-topics-ira-contribution-limits" },
+      ],
+    },
+    content: `
+<h2>The Wrapper Matters as Much as What's Inside It</h2>
+<p>Two students each invest $6,000 a year in the exact same index fund for 40 years, earning the exact same return. One of them ends up with meaningfully more money — not because they picked better investments, but because of the <em>account</em> they used. That's the part of investing nobody teaches until it's almost too late to fully use: the tax treatment of the account you invest through can matter as much as what you put in it.</p>
+<p>Most brokerage accounts are <strong>taxable</strong> by default — you owe capital gains tax when you sell, and tax on dividends every year even if you never sell anything. Retirement accounts exist specifically to change that deal.</p>
+
+<h2>Traditional vs. Roth: Pay Taxes Now or Later</h2>
+<p>The two main flavors of retirement account differ in exactly one place: <em>when</em> the IRS gets paid.</p>
+<ul>
+  <li><strong>Traditional (401(k) or IRA):</strong> contributions go in <em>before</em> tax — they lower your taxable income the year you make them. The money then grows completely untaxed, and you pay ordinary income tax only when you withdraw it in retirement.</li>
+  <li><strong>Roth (401(k) or IRA):</strong> contributions go in <em>after</em> tax — no deduction today. But the money then grows completely untaxed, and withdrawals in retirement are entirely tax-free, growth included.</li>
+</ul>
+<p>The rule of thumb: Roth tends to win if you expect to be in a <em>higher</em> tax bracket later than you are today — which describes almost every high schooler with a summer job. You're very likely in the lowest tax bracket you'll ever be in right now, which makes paying tax today, while it's cheap, and never again, the better trade for a lot of young investors. A custodial Roth IRA can be opened for a minor with earned income (a job, not allowance) well before you'd ever open a normal brokerage account.</p>
+
+<h2>Tax Drag: The Cost of the Wrong Wrapper</h2>
+<p>"Tax drag" is what happens to a taxable account's return every year the IRS takes a cut of dividends and realized gains — money that, in a retirement account, would have kept compounding instead. It doesn't feel dramatic in any single year. Over 40 years, it adds up to a real gap.</p>
+<div class="lesson-callout">
+  <span class="lesson-callout-label">Try the sandbox below</span>
+  <p>Reuse the compound-growth formula from Lesson 6 with two different rates: the full return in a tax-advantaged account, and a slightly lower "after-drag" return in a taxable one. Even a 1-point-a-year difference compounds into a large gap by year 40.</p>
+</div>
+
+<h2>Employer Matching: The Only Guaranteed Return in Investing</h2>
+<p>If a job offers a 401(k) match — say, the employer adds 50 cents for every dollar you contribute, up to 6% of your salary — that match is an instant, guaranteed 50% return the moment it lands, before the money has even been invested in anything. No stock, no strategy, nothing else in this entire curriculum offers a guaranteed return like that. Contributing at least enough to capture the full match, before optimizing anything else, is close to universal advice among people who study this for a living.</p>
+
+<h2>Contribution Limits Exist for a Reason</h2>
+<p>Because these accounts are so tax-advantaged, the IRS caps how much can go in each year — the limits change periodically and are worth checking directly rather than memorizing, since this lesson would go stale the moment they update. The caps matter less at your first job than the habit does: contributing consistently, even in small amounts, for the extra decade a high schooler has over someone starting at 28 is worth more than almost any later catch-up contribution could recover.</p>
+    `,
+    sandboxes: [
+      {
+        afterSectionId: "tax-drag-the-cost-of-the-wrong-wrapper",
+        title: "Compound Growth",
+        formula: "FV = Contribution × (1 + Rate)^Years",
+        variables: [
+          { key: "initial", label: "Amount invested", unit: "$", defaultValue: 6000, min: 500, max: 50000, step: 500 },
+          { key: "rate", label: "Annual return", unit: "%", defaultValue: 9, min: 0, max: 15, step: 0.5 },
+          { key: "years", label: "Years", defaultValue: 40, min: 1, max: 50, step: 1 },
+        ],
+        computeId: "compoundGrowth",
+        resultLabel: "Future value",
+        resultPrefix: "$",
+        decimals: 0,
+      },
+    ],
+    exercise: {
+      prompt: "Implement `tax_drag_gap` — the long-run cost of investing the same amount in a taxable account instead of a tax-advantaged one.",
+      starterCode: `def future_value(amount, annual_return, years):
+    """
+    FV = amount * (1 + annual_return)^years
+    """
+    # YOUR CODE HERE
+    pass
+
+def tax_drag_gap(amount, pretax_return, tax_drag, years):
+    """
+    Compare a tax-advantaged account (full pretax_return) to a taxable
+    account (pretax_return - tax_drag, since taxes on dividends/gains
+    are paid along the way).
+
+    Returns the dollar gap: FV(tax-advantaged) - FV(taxable).
+    Both start with the same 'amount' and compound for 'years'.
+    """
+    # YOUR CODE HERE
+    pass
+`,
+      solution: `def future_value(amount, annual_return, years):
+    return amount * (1 + annual_return) ** years
+
+def tax_drag_gap(amount, pretax_return, tax_drag, years):
+    fv_advantaged = future_value(amount, pretax_return, years)
+    fv_taxable = future_value(amount, pretax_return - tax_drag, years)
+    return fv_advantaged - fv_taxable
+`,
+      testFn: `
+# No tax drag -> no gap
+gap_zero = tax_drag_gap(6000, 0.09, 0.0, 40)
+assert abs(gap_zero) < 1e-6, f"Zero drag should mean zero gap: {gap_zero}"
+
+# Positive drag -> tax-advantaged account wins
+gap = tax_drag_gap(6000, 0.09, 0.01, 40)
+assert gap > 0, f"Tax-advantaged should end up ahead: {gap}"
+
+# More years -> bigger gap (compounding effect grows)
+gap_20 = tax_drag_gap(6000, 0.09, 0.01, 20)
+gap_40 = tax_drag_gap(6000, 0.09, 0.01, 40)
+assert gap_40 > gap_20, "Longer horizon should widen the gap"
+
+# Future value sanity check
+fv = future_value(1000, 0.10, 10)
+assert abs(fv - 2593.74) < 1.0, f"FV: {fv}"
+
+print("Tests passed!")
+`,
+    },
+  },
+  {
+    id: "inv-9",
+    title: "Common Investing Mistakes",
+    subtitle: "The behavioral traps that cost more than picking the wrong stock",
+    duration: "13 min",
+    prereqs: {
+      summary: "No new math here — just the concepts from Lessons 1–6, especially diversification and index funds.",
+      resources: [
+        { label: "Investopedia — Behavioral Finance", url: "https://www.investopedia.com/terms/b/behavioralfinance.asp" },
+      ],
+    },
+    content: `
+<h2>The Biggest Risk Is Often You</h2>
+<p>Dalbar, a research firm, has tracked the gap between what the S&amp;P 500 actually returns and what the <em>average investor</em> in stock funds actually earns, for decades. The average investor consistently underperforms the index they're invested in — not because their funds are bad, but because of when they buy and sell. This lesson isn't about a formula. It's about the handful of predictable, well-documented mistakes that quietly cost investors more than almost anything covered so far.</p>
+
+<h2>Mistake 1: Trying to Time the Market</h2>
+<p>The instinct feels obvious: sell before it drops, buy back in before it rises. The problem is that the market's best days cluster right around its worst ones — a huge share of the S&amp;P 500's long-run return has historically come from just a handful of days a year, and they tend to arrive in the middle of the volatility that scares people into selling in the first place. Miss even a few of those days trying to dodge a downturn, and you can permanently damage a multi-decade return, even if you were right that a crash was coming.</p>
+
+<h2>Mistake 2: Chasing Last Year's Winner</h2>
+<p>Whatever sector or stock had the best headlines last year attracts the most new money this year — and that money often arrives right as the trend is running out of room. This is performance-chasing, and it's the mirror image of the buy-low-sell-high goal: buying after a big run-up and selling after a big drop is buying high and selling low, done unintentionally, one emotional decision at a time.</p>
+
+<h2>Mistake 3: Under-Diversifying</h2>
+<p>Lesson 5 covered why diversification is close to a free lunch — company-specific risk can be diversified away at close to zero cost. Plenty of investors skip it anyway, loading up on a favorite stock, their own employer's stock, or whatever's trending, because concentration feels more exciting than a boring index fund. It also means a single company's bad quarter can undo years of otherwise-solid decisions.</p>
+
+<h2>Mistake 4: Letting Fees Quietly Compound Against You</h2>
+<p>A 1% annual fee sounds trivial. Compounded against you for 40 years, it isn't — Lesson 6's math runs the same direction whether the extra return is working for you or a fee is working against you. Two funds tracking the same index, one charging 0.03% and the other 1%, can end up tens of thousands of dollars apart on a moderate long-term portfolio, for identical underlying investments.</p>
+<div class="lesson-callout">
+  <span class="lesson-callout-label">Worth checking</span>
+  <p>Every fund publishes an expense ratio. It's one number, and it's the single easiest "mistake" on this list to simply avoid — compare it before you buy, not after.</p>
+</div>
+
+<h2>Mistake 5: Confusing a Good Company with a Good Investment</h2>
+<p>A company can be genuinely excellent — great product, great management, growing fast — and still be a bad investment if the price already assumes all of that. Valuation (Lesson 4) exists precisely because "this is a great company" and "this is a good price to buy it at" are two separate questions, and conflating them is one of the most common ways enthusiasm turns into a loss.</p>
+
+<h2>The Actual Fix: A Plan You Don't Have to Feel Good About</h2>
+<p>Every mistake on this list has the same root cause: a decision made in the moment, under emotion, instead of ahead of time by a rule. The three-fund portfolio and annual rebalancing from Lesson 6 exist for exactly this reason — a plan set in advance takes the in-the-moment decision out of your hands on the days you're least equipped to make it well.</p>
+    `,
+    exercise: {
+      prompt: "Implement `fee_drag_cost` — how much a higher expense ratio costs over time, using the same compounding idea as Lesson 6.",
+      starterCode: `def future_value(amount, annual_return, years):
+    """
+    FV = amount * (1 + annual_return)^years
+    """
+    # YOUR CODE HERE
+    pass
+
+def fee_drag_cost(amount, gross_return, expense_ratio, years):
+    """
+    Cost of a fund's expense ratio over time: the difference between
+    growing at gross_return and growing at (gross_return - expense_ratio).
+
+    Returns the dollar cost (a positive number).
+    """
+    # YOUR CODE HERE
+    pass
+`,
+      solution: `def future_value(amount, annual_return, years):
+    return amount * (1 + annual_return) ** years
+
+def fee_drag_cost(amount, gross_return, expense_ratio, years):
+    fv_no_fee = future_value(amount, gross_return, years)
+    fv_with_fee = future_value(amount, gross_return - expense_ratio, years)
+    return fv_no_fee - fv_with_fee
+`,
+      testFn: `
+# Zero fee -> zero cost
+cost_zero = fee_drag_cost(10000, 0.08, 0.0, 30)
+assert abs(cost_zero) < 1e-6, f"No fee should mean no cost: {cost_zero}"
+
+# A 1% fee over 30 years should cost real money
+cost = fee_drag_cost(10000, 0.08, 0.01, 30)
+assert cost > 1000, f"1% fee over 30 years should be a meaningful cost: {cost}"
+
+# Higher fee -> higher cost
+cost_low = fee_drag_cost(10000, 0.08, 0.005, 30)
+cost_high = fee_drag_cost(10000, 0.08, 0.015, 30)
+assert cost_high > cost_low, "Higher expense ratio should cost more"
 
 print("Tests passed!")
 `,

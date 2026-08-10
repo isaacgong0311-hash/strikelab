@@ -14,7 +14,7 @@ export const FAQ_GROUPS: FAQGroup[] = [
     items: [
       {
         q: "What is StrikeLab?",
-        a: "A free, browser-based quant finance curriculum, taught the way quant desks actually learn it — by writing code. 22 lessons across three tracks — Investing Fundamentals, Options Pricing, and Quant Investing — take you from \"what is a stock?\" to a working Black-Scholes engine with all five Greeks to CAPM and backtesting.",
+        a: "A free, browser-based investing and quant finance curriculum, taught by writing real code instead of reading slides. 23 lessons across three tracks — Investing Fundamentals, Options Pricing, and Quant Investing — take you from \"what is a stock?\" to reading a balance sheet to a working Black-Scholes engine with all five Greeks. Quant Investing is there once you want to go deeper, not a requirement to get there.",
       },
       {
         q: "Who is it for?",
@@ -35,11 +35,11 @@ export const FAQ_GROUPS: FAQGroup[] = [
     items: [
       {
         q: "How long does it take?",
-        a: "Each lesson is 10–20 minutes of reading + a 5–15 minute coding exercise. Most students finish all 22 in a few weeks, spread over evenings — the tracks are independent, so there's no requirement to binge one before starting another.",
+        a: "Each lesson is 10–20 minutes of reading + a 5–15 minute coding exercise. Most students finish all 23 in a few weeks, spread over evenings — the tracks are independent, so there's no requirement to binge one before starting another.",
       },
       {
         q: "Do I have to start with options?",
-        a: "No — start wherever fits you. Investing Fundamentals (stocks, markets, valuation) is the on-ramp if you're new to finance entirely; Options Pricing is where the quantitative thinking really starts, and Quant Investing (CAPM, factor models, backtesting) is the advanced track. All three are free and independent.",
+        a: "No — start wherever fits you, though most people start with Investing Fundamentals (stocks, markets, valuation, bonds, retirement accounts) since it's the on-ramp if you're new to finance entirely. Options Pricing is where the quantitative thinking really starts, and Quant Investing (CAPM, backtesting, portfolio optimization) is a short, optional advanced track once the rest feels easy. All three are free and independent.",
       },
       {
         q: "Will there be more advanced content?",
@@ -77,7 +77,7 @@ export const FAQ_GROUPS: FAQGroup[] = [
     items: [
       {
         q: "Is StrikeLab really free?",
-        a: "The full curriculum (all 22 lessons), the playground, the Greek visualizer, and the paper-trading sandbox are free forever — nothing there is gated. The Pro tier ($9/mo) adds weekly coding challenges, achievements, office hours, and a certificate of completion. School licenses fund the platform.",
+        a: "The full curriculum (all 23 lessons), the playground, the Greek visualizer, and the paper-trading sandbox are free forever — nothing there is gated. The Pro tier ($9/mo) adds weekly coding challenges, achievements, office hours, and a certificate of completion. School licenses fund the platform.",
       },
       {
         q: "Is this safe to use as a minor?",
