@@ -6,7 +6,7 @@ import { pageMetadata, breadcrumbJsonLd } from "@/lib/seo";
 export const metadata = pageMetadata({
   path: "/privacy",
   title: "Privacy Policy",
-  description: "What StrikeLab collects, why, and how to get your data deleted.",
+  description: "What StrikeLab collects, why it's collected, and how to request access or deletion of your data.",
 });
 
 const SECTIONS: { title: string; body: React.ReactNode }[] = [

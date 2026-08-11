@@ -252,7 +252,9 @@ export default function PlaygroundClient() {
       <div className="pg-header">
         <div className="pg-header-left">
           <span className="pg-header-eyebrow">Interactive</span>
-          <h1 className="pg-header-title">Greek Visualizer</h1>
+          {/* h2, not h1 — the page's real H1 is the server-rendered intro in
+              page.tsx, which is always present even before this tool boots. */}
+          <h2 className="pg-header-title">Greek Visualizer</h2>
           <p className="pg-header-sub">Implement Δ, Γ, Θ, ν in Python — charts update live as you code</p>
         </div>
         <div className="pg-header-right">

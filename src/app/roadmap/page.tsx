@@ -117,24 +117,24 @@ export default function RoadmapPage() {
       <div className="flex flex-col gap-10">
         {ROADMAP.map((q) => (
           <div key={q.quarter}>
-            <div className="flex items-baseline gap-4 mb-4">
-              <div
+            <h2 className="flex items-baseline gap-4 mb-4 font-normal m-0">
+              <span
                 className="text-2xl font-bold"
                 style={{ fontFamily: "var(--font-mono)", color: q.color }}
               >
                 {q.quarter}
-              </div>
+              </span>
               <span
                 className="text-xs uppercase tracking-widest"
                 style={{ color: q.color, fontFamily: "var(--font-mono)", opacity: 0.75 }}
               >
                 {q.label}
               </span>
-              <div
+              <span
                 className="flex-1 h-px"
                 style={{ background: "var(--border)" }}
               />
-            </div>
+            </h2>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3" data-v2-stagger>
               {q.items.map((item) => {

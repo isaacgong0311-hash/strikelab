@@ -8,7 +8,7 @@ export const metadata = pageMetadata({
   path: "/lessons",
   title: "Options Pricing & Quant Finance Lessons",
   description:
-    "The full StrikeLab curriculum: investing fundamentals, options pricing (Black-Scholes & the Greeks), and quant investing (CAPM, factors, backtesting) — each lesson taught through a real Python notebook in your browser.",
+    "23 free lessons: investing fundamentals, options pricing (Black-Scholes, the Greeks), and quant investing (CAPM, backtesting) in a live Python notebook.",
 });
 
 // One Course per track. `Course` is what makes this page eligible for Google's
