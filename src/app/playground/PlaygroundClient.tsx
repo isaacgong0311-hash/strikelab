@@ -150,12 +150,18 @@ function ParamSlider({
       </div>
       {/* Full name underneath */}
       <div className="pg-param-name">{label}</div>
-      {/* Slider — accent-color is reliable cross-browser for thumb + track */}
+      {/* Slider — accent-color is reliable cross-browser for thumb + track.
+          aria-label/aria-valuetext: this is a bare input with sibling divs,
+          not a <label htmlFor>, so without these a screen reader announced
+          it as an unlabeled slider reading only the raw numeric value —
+          "63" instead of "Volatility, 20 percent." */}
       <input
         type="range" min={min} max={max} step={step} value={val}
         onChange={e => set(Number(e.target.value))}
         className="pg-slider"
         style={{ accentColor: color }}
+        aria-label={label}
+        aria-valuetext={fmt(val)}
       />
       <div className="pg-param-desc">{desc}</div>
     </div>
