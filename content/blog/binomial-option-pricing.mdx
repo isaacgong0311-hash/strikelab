@@ -1,0 +1,118 @@
+---
+title: "Binomial Option Pricing: The Discrete Alternative to Black-Scholes"
+description: "How the binomial tree model prices options by stepping through discrete up/down moves, why it converges to Black-Scholes, and why it's the only method that handles American exercise cleanly."
+date: "2026-08-04"
+author: "Isaac Gong"
+tags: ["options", "binomial-trees"]
+targetKeyword: "binomial option pricing"
+relatedLesson: "10"
+---
+
+Black-Scholes assumes the stock's price evolves continuously, through
+infinitely many infinitesimally small moves. The binomial model throws that
+assumption out and replaces it with something much simpler to reason about:
+at each discrete time step, the stock does exactly one of two things — moves
+up by a factor u, or down by a factor d. Build enough of those steps into a
+tree, and the result converges to the same price Black-Scholes gives — while
+also handling a case Black-Scholes can't: American-style early exercise.
+
+## Building one step of the tree
+
+Split the option's life into N discrete steps of length `Δt = T/N`. At each
+step, the stock either goes up (×u) or down (×d), where:
+
+```
+u = e^(σ·√Δt)
+d = 1/u
+```
+
+The size of the up/down move is calibrated directly from volatility — more
+volatility means a wider u/d spread at each step, which is how the tree
+reproduces the same variance in outcomes that Black-Scholes assumes
+continuously.
+
+The key trick that makes this work without needing to know the stock's real
+probability of going up: use a **risk-neutral probability**, p, chosen so that
+the tree is arbitrage-free — the expected stock return under p exactly equals
+the risk-free rate.
+
+```
+p = (e^(r·Δt) − d) / (u − d)
+```
+
+This isn't the real-world probability of the stock going up — it's a
+mathematical construction that makes pricing work, the same "risk-neutral"
+trick that underlies Black-Scholes too. You never need to forecast the actual
+stock; you only need p to make the no-arbitrage math close.
+
+## Pricing by working backward
+
+Once the tree is built forward (every possible stock price at every step),
+pricing works backward from expiration:
+
+1. At the final step, the option's value at each node is just its payoff:
+   `max(S − K, 0)` for a call.
+2. At every earlier step, each node's value is the discounted, probability-
+   weighted average of the two nodes it leads to:
+   `value = e^(−r·Δt) · [p · value_up + (1−p) · value_down]`
+3. Repeat back to the root. The value at the root is the option's price today.
+
+## Why it converges to Black-Scholes
+
+As N (the number of steps) grows large, `Δt` shrinks, and the discrete up/down
+moves at each step get smaller and more frequent — approaching the continuous
+random walk Black-Scholes assumes. With enough steps (a few hundred is
+usually more than sufficient for two decimal places of precision), a European
+binomial price and a Black-Scholes price agree almost exactly. That
+convergence isn't a coincidence; it's a proof that Black-Scholes is the
+continuous-time limit of this same discrete logic.
+
+## Where binomial pricing actually earns its place: American options
+
+Black-Scholes has no clean way to handle American options — the right to
+exercise *any time* before expiration, not just at expiration. The binomial
+tree handles it almost for free: at every node, compare the value of holding
+the option (the discounted backward-induction value) against the value of
+exercising immediately (the intrinsic value at that node), and take whichever
+is larger.
+
+```
+value_at_node = max(intrinsic_value, discounted_continuation_value)
+```
+
+That one extra `max()` at every node is the entire difference between pricing
+European and American options in this framework — which is why the binomial
+model, not Black-Scholes, is the standard tool whenever early exercise is on
+the table (most individual stock options in the U.S. are American-style).
+
+## Building it in Python
+
+```python
+import math
+
+def binomial_call(S, K, T, r, sigma, N=200, american=False):
+    dt = T / N
+    u = math.exp(sigma * math.sqrt(dt))
+    d = 1 / u
+    p = (math.exp(r * dt) - d) / (u - d)
+    disc = math.exp(-r * dt)
+
+    # Stock prices at the final step
+    prices = [S * u**j * d**(N - j) for j in range(N + 1)]
+    values = [max(price - K, 0) for price in prices]
+
+    # Work backward
+    for i in range(N - 1, -1, -1):
+        for j in range(i + 1):
+            values[j] = disc * (p * values[j + 1] + (1 - p) * values[j])
+            if american:
+                stock_price = S * u**j * d**(i - j)
+                values[j] = max(values[j], stock_price - K)
+
+    return values[0]
+
+price = binomial_call(100, 100, 1, 0.05, 0.20, N=200)
+print(round(price, 4))  # converges close to the Black-Scholes value, ≈ 10.45
+```
+
+<TryItCTA href="/lesson/10" lessonTitle="Binomial Trees" />

@@ -1,0 +1,97 @@
+---
+title: "Theta Decay: Why Options Lose Value Every Day"
+description: "What theta measures, why it accelerates as expiration nears, and why 'time decay' is a cost buyers pay and sellers collect — with the formula and Python."
+date: "2026-08-08"
+author: "Isaac Gong"
+tags: ["options", "greeks", "theta"]
+targetKeyword: "theta decay"
+relatedLesson: "5"
+---
+
+If you've heard one piece of options folklore, it's probably "options are a
+wasting asset" — buy one and, all else equal, it's worth a little less
+tomorrow than today, just from time passing. Theta is the Greek that measures
+exactly how much less.
+
+## What theta measures
+
+Theta is the rate of change of an option's price with respect to time —
+`∂C/∂T` — but with a sign flip, since T (time to expiration) is counted down as
+time passes, not up. It's usually quoted as the dollar amount an option's price
+is expected to drop by, per day, holding everything else (stock price,
+volatility, rates) fixed. A theta of −0.05 means: if nothing else changes,
+tomorrow this option is worth about 5 cents less than today.
+
+For a call:
+
+```
+Θ = −(S·n(d1)·σ) / (2√T) − r·K·e^(−rT)·N(d2)
+```
+
+where `n(d1)` (lowercase n) is the *normal probability density function* at
+d1 — not the cumulative one — and the rest of the terms are the familiar
+Black-Scholes inputs. The formula looks dense, but the two terms have a clean
+reading: the first is decay from the option's time value eroding, and the
+second is a smaller adjustment from the cost of carrying the discounted strike.
+
+## Why time value erodes, intuitively
+
+An option's price is made of two pieces: **intrinsic value** (what it'd be
+worth if exercised right now — `max(S − K, 0)` for a call) and **time value**
+(everything above that, reflecting the chance the stock still moves further in
+your favor before expiration). Intrinsic value doesn't decay from time passing
+alone. Time value does — because every day that passes is one fewer day for the
+stock to make a favorable move, and "fewer days remaining" mechanically shrinks
+the probability-weighted range of outcomes the option's price reflects.
+
+## Why decay accelerates near expiration
+
+Theta isn't linear — an option loses value slowly with months to go and fast in
+its final days. The `1/√T` term in the formula is the reason: as T shrinks
+toward zero, `1/√T` grows without bound, so the same fixed amount of time value
+gets compressed into an ever-shrinking window. A rough way to feel this: an
+at-the-money option with 90 days left might lose a few cents a day; the same
+option with 3 days left can lose that same few cents in an hour. This is why
+"theta gang" option sellers specifically target short-dated, near-the-money
+options — that's where decay is fastest and most collectible.
+
+## Who's on which side
+
+Every option has a buyer and a seller, and theta is symmetric but opposite for
+each: the buyer's position loses value from decay (they're long theta-negative
+exposure), and the seller's position gains from it (they're short the option,
+so decay works in their favor, collecting what the buyer loses). This is why
+"selling premium" strategies — covered calls, cash-secured puts, credit
+spreads — are often framed as "getting paid for time passing." They're not free
+money; they're compensation for taking on the risk the buyer is paying to
+offload, priced through the option's premium.
+
+## Computing theta in Python
+
+```python
+import math
+
+def norm_cdf(x):
+    return 0.5 * math.erfc(-x / math.sqrt(2))
+
+def norm_pdf(x):
+    return math.exp(-0.5 * x**2) / math.sqrt(2 * math.pi)
+
+def call_theta(S, K, T, r, sigma):
+    d1 = (math.log(S / K) + (r + 0.5 * sigma**2) * T) / (sigma * math.sqrt(T))
+    d2 = d1 - sigma * math.sqrt(T)
+    term1 = -(S * norm_pdf(d1) * sigma) / (2 * math.sqrt(T))
+    term2 = -r * K * math.exp(-r * T) * norm_cdf(d2)
+    annual_theta = term1 + term2
+    return annual_theta / 365  # convert to a per-day figure
+
+S, K, T, r, sigma = 100, 100, 1, 0.05, 0.20
+print(round(call_theta(S, K, T, r, sigma), 4))  # ≈ -0.0176 per day
+```
+
+Dividing by 365 at the end matters — the raw formula gives theta in "per year of
+T," and nobody thinks in per-year decay for an instrument that expires in
+weeks. Converting to per-day is what actually matches how theta gets quoted on
+a broker's options chain.
+
+<TryItCTA href="/lesson/5" lessonTitle="Theta: Time Decay" />

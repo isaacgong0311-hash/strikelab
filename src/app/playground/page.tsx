@@ -2,6 +2,7 @@ import { Suspense } from "react";
 import PlaygroundClient from "./PlaygroundClient";
 import JsonLd from "@/components/JsonLd";
 import Eyebrow from "@/components/Eyebrow";
+import Breadcrumbs from "@/components/Breadcrumbs";
 import { pageMetadata, breadcrumbJsonLd } from "@/lib/seo";
 
 export const metadata = pageMetadata({
@@ -20,6 +21,7 @@ export default function PlaygroundPage() {
           HTML (or catches this page mid-boot) used to see no H1 and near-empty
           content here. This block is always present regardless of load state. */}
       <div className="mb-8 v2-page-head" data-v2-head>
+        <Breadcrumbs trail={[{ name: "Playground", path: "/playground" }]} />
         <Eyebrow>Playground</Eyebrow>
         <h1
           className="text-4xl font-semibold mb-3 leading-tight"

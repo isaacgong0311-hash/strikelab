@@ -1,0 +1,102 @@
+---
+title: "Monte Carlo Option Pricing, From Scratch"
+description: "How Monte Carlo simulation prices options by simulating thousands of random stock paths under geometric Brownian motion, and why it's the tool of choice once Black-Scholes stops applying."
+date: "2026-07-31"
+author: "Isaac Gong"
+tags: ["options", "simulation"]
+targetKeyword: "monte carlo option pricing"
+relatedLesson: "3"
+---
+
+Black-Scholes prices an option with one closed-form formula, evaluated once.
+Monte Carlo pricing throws the formula away and replaces it with brute force:
+simulate the stock's price thousands or millions of times over the option's
+life, compute the option's payoff on each simulated path, and average the
+results. It's slower and noisier than Black-Scholes for the cases Black-Scholes
+already handles — but it generalizes to a huge range of payoffs the closed-form
+formula can't touch at all.
+
+## The idea in one sentence
+
+An option's fair price is the expected value of its payoff at expiration,
+discounted back to today. Black-Scholes computes that expectation
+analytically, in closed form. Monte Carlo computes the same expectation by
+brute-force averaging: generate a large number of plausible future stock
+paths, evaluate the payoff on each, average them, and discount.
+
+```
+Price ≈ e^(−rT) · average(payoff across all simulated paths)
+```
+
+The more paths you simulate, the closer that average converges to the true
+expected value — a direct consequence of the law of large numbers.
+
+## Simulating a stock path
+
+The model underneath both Black-Scholes and Monte Carlo pricing is the same:
+**geometric Brownian motion**, where the stock's price evolves as
+
+```
+S_T = S₀ · e^((r − σ²/2)·T + σ·√T·Z)
+```
+
+where `Z` is a single draw from a standard normal distribution. This isn't an
+approximation of the stock's path over time — it's the exact distribution of
+`S_T` under the model's assumptions, so for a plain European option (where
+only the final price matters, not the path taken to get there), you don't
+need to simulate every intermediate day — one random draw of `Z` per
+simulated path is enough to land on a correct final price.
+
+## Pricing a call with Monte Carlo in Python
+
+```python
+import math
+import random
+
+def monte_carlo_call(S, K, T, r, sigma, n_sims=100_000):
+    payoffs = []
+    for _ in range(n_sims):
+        z = random.gauss(0, 1)
+        S_T = S * math.exp((r - 0.5 * sigma**2) * T + sigma * math.sqrt(T) * z)
+        payoff = max(S_T - K, 0)
+        payoffs.append(payoff)
+
+    average_payoff = sum(payoffs) / n_sims
+    return math.exp(-r * T) * average_payoff
+
+price = monte_carlo_call(S=100, K=100, T=1, r=0.05, sigma=0.20, n_sims=200_000)
+print(round(price, 4))  # converges toward the Black-Scholes value, ≈ 10.45
+```
+
+Run this a few times and you'll notice the price isn't identical each time —
+it's a random estimate, not an exact answer, and it jitters around the true
+value by an amount that shrinks (slowly — proportional to `1/√n_sims`) as you
+simulate more paths. That slow convergence is the real cost of Monte Carlo
+compared to a closed-form formula: getting one more decimal place of accuracy
+means roughly 100x more simulations.
+
+## Why bother, when Black-Scholes already works?
+
+For a plain European call, it doesn't make sense to reach for Monte Carlo —
+Black-Scholes gives the exact answer instantly. Monte Carlo earns its place
+for exactly the payoffs Black-Scholes can't handle in closed form:
+
+- **Path-dependent options** — an Asian option (paying off on the *average*
+  price over the option's life, not just the final price) or a barrier option
+  (which knocks in or out if the stock crosses some level along the way)
+  depend on the entire path, not just the endpoint. Simulating full paths,
+  step by step, is the natural way to price these.
+- **Multiple correlated underlyings** — an option on the spread between two
+  stocks, or a basket of several, needs correlated random draws across
+  assets, which Monte Carlo handles by simulating jointly with a correlation
+  structure baked into the random draws.
+- **Complex, non-standard payoffs** — anything a trading desk dreams up that
+  doesn't fit a textbook payoff shape can still be priced, as long as you can
+  write a function that computes its payoff from a simulated path.
+
+The tradeoff is always the same: Monte Carlo trades speed and exactness for
+generality. When a closed-form formula exists, use it. When it doesn't, Monte
+Carlo is usually the first tool reached for — not because it's elegant, but
+because it almost always works.
+
+<TryItCTA href="/lesson/3" lessonTitle="Black-Scholes Formula" />

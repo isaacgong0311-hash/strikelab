@@ -1,0 +1,106 @@
+---
+title: "Put-Call Parity, Explained"
+description: "The no-arbitrage identity that links call price, put price, stock price, and strike — derived from first principles, no assumptions about direction or volatility."
+date: "2026-08-10"
+author: "Isaac Gong"
+tags: ["options", "arbitrage"]
+targetKeyword: "put call parity explained"
+relatedLesson: "2"
+---
+
+Put-call parity is the rule that most other options intuition sits on top of, and
+it's unusual among finance formulas in that it requires almost nothing to be
+true. Not a volatility assumption. Not a view on which way the stock is headed.
+Just one idea: **you can't get free money by rearranging cash flows that pay off
+identically.**
+
+## The identity
+
+```
+C − P = S − K · e^(−rT)
+```
+
+- **C** — price of a European call, strike K, expiring at T
+- **P** — price of a European put, same strike, same expiration
+- **S** — current stock price
+- **K · e^(−rT)** — the present value of the strike, discounted at the risk-free rate r
+
+That's it. Given any three of C, P, S, and K's present value, the fourth is
+determined — not approximately, exactly, or there's a risk-free arbitrage.
+
+## Why it has to be true
+
+The cleanest way to see this is to build two portfolios today and compare their
+payoffs at expiration, without knowing what the stock does.
+
+**Portfolio A:** Buy one call, sell one put (both strike K, same expiration).
+
+**Portfolio B:** Buy one share of stock, borrow K·e^(−rT) (i.e., short a
+zero-coupon bond that pays back exactly K at expiration).
+
+At expiration, if the stock price ends at some value `S_T`:
+
+- Portfolio A pays off `max(S_T − K, 0) − max(K − S_T, 0)`, which simplifies
+  algebraically to `S_T − K` in every case — whether the option finished in the
+  money or not, the two terms combine to the same linear payoff.
+- Portfolio B pays off `S_T − K` — you own the stock worth `S_T`, and you owe
+  exactly K on the loan.
+
+Same payoff, in every possible future, with certainty. Two things that pay off
+identically in every state of the world *must* cost the same today — if they
+didn't, you could sell the expensive one, buy the cheap one, pocket the
+difference immediately, and the payoffs would cancel out at expiration. That's
+the arbitrage the identity rules out, and it's the entire proof: no stochastic
+calculus needed, just the fact that identical payoffs need identical prices.
+
+## What it's actually useful for
+
+Put-call parity isn't primarily a pricing formula you use to find C or P from
+scratch — Black-Scholes does that. What it's actually used for:
+
+1. **Cross-checking a pricing model.** If your Black-Scholes call and put
+   prices don't satisfy this identity to within rounding error, you have a bug,
+   not a market inefficiency.
+2. **Synthetic positions.** Rearranging the identity tells you how to build any
+   one of long stock, short stock, long call, or long put out of the other three.
+   A "synthetic call," for instance, is long stock + long put — same payoff
+   shape as an outright call, built from different pieces, useful when the
+   actual call is illiquid or expensive to trade directly.
+3. **Spotting real arbitrage.** In practice the identity can drift slightly out
+   of line — usually from dividends the simple formula doesn't account for, or
+   from borrowing costs and short-sale constraints that aren't perfectly
+   frictionless in real markets. When it drifts further than those frictions
+   explain, that gap is a genuine, if usually tiny and fast-closing, arbitrage.
+
+## Checking it in Python
+
+```python
+import math
+
+def norm_cdf(x):
+    return 0.5 * math.erfc(-x / math.sqrt(2))
+
+def bs_call(S, K, T, r, sigma):
+    d1 = (math.log(S / K) + (r + 0.5 * sigma**2) * T) / (sigma * math.sqrt(T))
+    d2 = d1 - sigma * math.sqrt(T)
+    return S * norm_cdf(d1) - K * math.exp(-r * T) * norm_cdf(d2)
+
+def bs_put(S, K, T, r, sigma):
+    d1 = (math.log(S / K) + (r + 0.5 * sigma**2) * T) / (sigma * math.sqrt(T))
+    d2 = d1 - sigma * math.sqrt(T)
+    return K * math.exp(-r * T) * norm_cdf(-d2) - S * norm_cdf(-d1)
+
+S, K, T, r, sigma = 100, 100, 1, 0.05, 0.20
+call, put = bs_call(S, K, T, r, sigma), bs_put(S, K, T, r, sigma)
+
+lhs = call - put
+rhs = S - K * math.exp(-r * T)
+print(round(lhs, 6), round(rhs, 6))  # should match to within float error
+```
+
+If you implement `bs_put` independently (its own d1/d2, its own formula) and it
+still satisfies this check against `bs_call`, that's strong evidence both are
+right — the identity doesn't care how you derived C and P, only that they're
+internally consistent.
+
+<TryItCTA href="/lesson/2" lessonTitle="Put-Call Parity" />

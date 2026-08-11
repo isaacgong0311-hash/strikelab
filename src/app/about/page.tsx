@@ -1,4 +1,5 @@
 import Eyebrow from "@/components/Eyebrow";
+import Breadcrumbs from "@/components/Breadcrumbs";
 import JsonLd from "@/components/JsonLd";
 import { pageMetadata, breadcrumbJsonLd } from "@/lib/seo";
 
@@ -8,6 +9,21 @@ export const metadata = pageMetadata({
   description:
     "Why a high school freshman and AIME qualifier built a quant finance platform for high schoolers — and how StrikeLab has grown since the first commit.",
 });
+
+// sameAs is deliberately just the GitHub repo owner profile — the one
+// externally-verifiable identity link that actually exists in the codebase.
+// Not padding this out with AoPS/social URLs that aren't confirmed; a wrong
+// sameAs is worse than a short one, since it misattributes the entity.
+const FOUNDER_JSON_LD = {
+  "@context": "https://schema.org",
+  "@type": "Person",
+  name: "Isaac Gong",
+  jobTitle: "Founder",
+  description: "High school freshman and AIME qualifier; founder and sole developer of StrikeLab.",
+  url: "https://strikelab.dev/about",
+  sameAs: ["https://github.com/isaacgong0311-hash"],
+  worksFor: { "@id": "https://strikelab.dev/#organization" },
+};
 
 const TIMELINE = [
   { date: "Nov 2025", event: "First commit. Black-Scholes engine in Python.", state: "done" },
@@ -56,6 +72,8 @@ export default function AboutPage() {
   return (
     <div className="max-w-4xl mx-auto px-6 py-14">
       <JsonLd data={breadcrumbJsonLd([{ name: "About", path: "/about" }])} />
+      <JsonLd data={FOUNDER_JSON_LD} />
+      <Breadcrumbs trail={[{ name: "About", path: "/about" }]} />
 
       {/* Hero */}
       <div className="v2-page-head mb-14" data-v2-head style={{ padding: 0, border: 0 }}>

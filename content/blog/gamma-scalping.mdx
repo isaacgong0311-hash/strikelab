@@ -1,0 +1,97 @@
+---
+title: "Gamma Scalping: Trading the Curvature of Delta"
+description: "What gamma measures, why it's highest at-the-money near expiration, and how gamma scalping turns constant delta-rehedging into a repeatable source of profit."
+date: "2026-08-05"
+author: "Isaac Gong"
+tags: ["options", "greeks", "gamma"]
+targetKeyword: "gamma scalping"
+relatedLesson: "6"
+---
+
+Delta hedging cancels out an option position's directional exposure — but only
+for an instant. The moment the stock moves, delta itself has already changed,
+and the hedge is stale. Gamma is the Greek that measures exactly how fast that
+happens, and gamma scalping is the trading strategy built entirely around
+exploiting it.
+
+## What gamma measures
+
+Gamma is the rate of change of delta with respect to the stock price —
+`∂²C/∂S²`, the second derivative of the option's price, or equivalently, the
+first derivative of delta. For a call:
+
+```
+Γ = n(d1) / (S · σ · √T)
+```
+
+where `n(d1)` is again the standard normal density at d1. Gamma is the same for
+calls and puts with identical strike and expiration — unlike delta, which
+flips sign between the two, gamma doesn't care about direction, only about how
+fast delta is changing.
+
+A gamma of 0.04 means: for a $1 move in the stock, delta itself changes by
+about 0.04. So an option with delta 0.50 and gamma 0.04, after the stock rises
+$1, has a new delta of roughly 0.54 — the hedge you set up ($50 of stock
+against 100 shares of option exposure) is now short about 4 shares of the
+correct hedge, purely from that one move.
+
+## Why gamma peaks at-the-money, near expiration
+
+Gamma follows almost the same shape as vega — highest at-the-money, decaying
+for strikes far from the current price — but behaves *oppositely* with time:
+short-dated at-the-money options have the *highest* gamma, not the lowest.
+That's the opposite of vega's pattern, and it's worth sitting with why.
+
+Near expiration, an at-the-money option is genuinely on a knife's edge — a
+small move in the stock is the difference between expiring worthless and
+expiring deep in the money, so delta swings from near 0 to near 1 over a very
+small range of stock prices. That's exactly what high gamma means: delta
+changing fast over a small move. With months left, the same option has more
+time to "figure itself out," so delta doesn't swing as violently for the same
+size of stock move — gamma is lower.
+
+## What gamma scalping actually is
+
+A gamma scalper deliberately holds a *long* gamma position — typically long
+options, hedged delta-neutral with stock — and profits from continuously
+rebalancing that hedge as the stock moves, regardless of direction.
+
+Walk through it: start delta-neutral. The stock rises. Because gamma is
+positive, delta rises too — the position is now net long delta (it'll gain if
+the stock keeps rising). To rehedge back to neutral, you *sell* some stock
+at this new, higher price. Now the stock falls back to where it started.
+Delta falls back too, back toward neutral in the other direction — so you
+*buy back* the stock, now at a lower price than you sold it. You sold high and
+bought low, purely from following the hedge, with no view on direction at all.
+That round trip is the "scalp," and it repeats every time the stock moves and
+gets rehedged.
+
+The catch: this isn't free money. Being long gamma means being long the
+option, which means paying theta — time decay — every single day, whether the
+stock moves or not. Gamma scalping is a bet that the stock will move *enough*,
+*often* enough, that the accumulated scalping profit exceeds the theta paid to
+hold the position. It's a volatility trade dressed up as a hedging technique:
+profitable when realized volatility comes in higher than what you paid for
+(implied volatility, baked into the option's price), unprofitable when it
+comes in lower.
+
+## Computing gamma in Python
+
+```python
+import math
+
+def norm_pdf(x):
+    return math.exp(-0.5 * x**2) / math.sqrt(2 * math.pi)
+
+def gamma(S, K, T, r, sigma):
+    d1 = (math.log(S / K) + (r + 0.5 * sigma**2) * T) / (sigma * math.sqrt(T))
+    return norm_pdf(d1) / (S * sigma * math.sqrt(T))
+
+# At-the-money, 1 month left — high gamma
+print(round(gamma(100, 100, 30/365, 0.05, 0.20), 5))
+
+# At-the-money, 1 year left — noticeably lower gamma
+print(round(gamma(100, 100, 1, 0.05, 0.20), 5))
+```
+
+<TryItCTA href="/lesson/6" lessonTitle="Gamma: Rate of Change of Delta" />

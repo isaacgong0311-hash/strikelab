@@ -1,5 +1,6 @@
 import Link from "next/link";
 import Eyebrow from "@/components/Eyebrow";
+import Breadcrumbs from "@/components/Breadcrumbs";
 import JsonLd from "@/components/JsonLd";
 import { pageMetadata, breadcrumbJsonLd } from "@/lib/seo";
 
@@ -68,6 +69,7 @@ export default function RoadmapPage() {
   return (
     <div className="max-w-4xl mx-auto px-6 py-14">
       <JsonLd data={breadcrumbJsonLd([{ name: "Roadmap", path: "/roadmap" }])} />
+      <Breadcrumbs trail={[{ name: "Roadmap", path: "/roadmap" }]} />
 
       {/* Header */}
       <div className="mb-10 v2-page-head" data-v2-head>

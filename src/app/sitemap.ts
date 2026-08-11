@@ -1,6 +1,7 @@
 import type { MetadataRoute } from "next";
 import { SITE_URL } from "@/lib/site";
 import { getAllLessons } from "@/lib/tracks";
+import { getAllBlogPosts } from "@/lib/blog";
 
 /**
  * `lastModified` must reflect when the page's content actually changed.
@@ -29,6 +30,9 @@ const STATIC_PAGES: {
   { path: "/about", updated: "2026-07-27", priority: 0.6, freq: "monthly" },
   { path: "/faq", updated: "2026-07-24", priority: 0.6, freq: "monthly" },
   { path: "/roadmap", updated: "2026-07-27", priority: 0.5, freq: "monthly" },
+  { path: "/blog", updated: "2026-08-11", priority: 0.7, freq: "weekly" },
+  { path: "/for-teachers", updated: "2026-08-11", priority: 0.6, freq: "monthly" },
+  { path: "/for-schools", updated: "2026-08-11", priority: 0.6, freq: "monthly" },
   { path: "/privacy", updated: "2026-08-04", priority: 0.3, freq: "yearly" },
   { path: "/terms", updated: "2026-08-04", priority: 0.3, freq: "yearly" },
 ];
@@ -49,5 +53,14 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.8,
   }));
 
-  return [...staticEntries, ...lessonEntries];
+  // One entry per blog post — picked up automatically as new .mdx files land
+  // in content/blog/, no separate registration step needed.
+  const blogEntries: MetadataRoute.Sitemap = getAllBlogPosts().map((p) => ({
+    url: `${SITE_URL}/blog/${p.slug}`,
+    lastModified: p.frontmatter.date,
+    changeFrequency: "monthly",
+    priority: 0.6,
+  }));
+
+  return [...staticEntries, ...lessonEntries, ...blogEntries];
 }

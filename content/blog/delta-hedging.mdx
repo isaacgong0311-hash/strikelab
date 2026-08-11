@@ -1,0 +1,94 @@
+---
+title: "Delta Hedging: What It Actually Means to Be Delta-Neutral"
+description: "How market makers use delta to cancel out directional risk from an option position, worked through with real numbers and Python."
+date: "2026-08-09"
+author: "Isaac Gong"
+tags: ["options", "greeks", "delta"]
+targetKeyword: "delta hedging"
+relatedLesson: "4"
+---
+
+Delta is the first Greek most people learn, and usually the one they understand
+least precisely — "delta tells you how much the option moves when the stock
+moves" is true but incomplete. What it actually enables is delta hedging: the
+technique that lets an options desk sell you an option without betting on
+which way the stock goes.
+
+## What delta actually is
+
+Delta is the rate of change of the option's price with respect to the stock
+price — the derivative `∂C/∂S`. For a call option:
+
+```
+Δ = N(d1)
+```
+
+where `d1` is the same term from the Black-Scholes formula and `N` is the
+standard normal CDF. Because `N(x)` always returns a value between 0 and 1,
+call delta is always between 0 and 1: an at-the-money call has delta around
+0.5, a deep in-the-money call approaches 1 (it starts moving almost
+one-for-one with the stock), and a deep out-of-the-money call approaches 0.
+
+A delta of 0.5 means: for a $1 move in the stock, the option's price moves
+about $0.50, *for a small move*. It's a local approximation, not an exact
+prediction over a big move — that curvature is what gamma measures.
+
+## Why a market maker cares
+
+Say a market maker sells you one call option with delta 0.60. If the stock
+rises $1, that option's value rises roughly $0.60 — and since the market maker
+is short the option, they lose roughly $0.60 per share of exposure. They didn't
+choose to make a bet on the stock going up or down; they just made a market and
+collected the bid-ask spread. The directional exposure is an unwanted side
+effect they now need to cancel.
+
+They cancel it by buying 60 shares of stock for every option contract sold (1
+contract = 100 shares of exposure, so delta 0.60 × 100 = 60 shares). Now:
+
+- Stock rises $1 → option position loses ≈ $60, but 60 shares gained ≈ $60. Net ≈ $0.
+- Stock falls $1 → option position gains ≈ $60, but 60 shares lost ≈ $60. Net ≈ $0.
+
+That combined position — short the option, long the offsetting shares — is
+**delta-neutral**: to a first approximation, insulated from small moves in the
+stock in either direction. The market maker still profits from the bid-ask
+spread they charged, without needing a directional view.
+
+## Why it's not "set and forget"
+
+Delta itself changes as the stock price moves — that's what gamma measures, the
+rate of change of delta. So a hedge that's neutral right now drifts out of
+neutral as soon as the stock moves at all, and has to be rebalanced —
+continuously in theory, at discrete intervals in practice (hourly, daily,
+whenever the desk's risk limits require it). This constant rebalancing is
+exactly what "gamma scalping" describes, and it's also where trading costs
+start to matter: rebalance too often and fees eat the spread you collected;
+rebalance too rarely and you're carrying real directional risk again.
+
+## Computing delta in Python
+
+```python
+import math
+
+def norm_cdf(x):
+    return 0.5 * math.erfc(-x / math.sqrt(2))
+
+def call_delta(S, K, T, r, sigma):
+    d1 = (math.log(S / K) + (r + 0.5 * sigma**2) * T) / (sigma * math.sqrt(T))
+    return norm_cdf(d1)
+
+def put_delta(S, K, T, r, sigma):
+    return call_delta(S, K, T, r, sigma) - 1  # from put-call parity
+
+S, K, T, r, sigma = 100, 100, 1, 0.05, 0.20
+delta = call_delta(S, K, T, r, sigma)
+print(round(delta, 4))          # ≈ 0.6368
+print(round(delta * 100))       # shares to buy per contract sold, ≈ 64
+```
+
+Put delta is always negative — a put gains value when the stock falls, so it
+moves opposite the stock — and it's a clean one-liner off call delta rather than
+a separate derivation, because put-call parity (`C − P = S − K·e^(−rT)`) holds
+for every value of S, so differentiating both sides with respect to S gives
+`Δ_call − Δ_put = 1` directly.
+
+<TryItCTA href="/lesson/4" lessonTitle="Delta: Directional Exposure" />

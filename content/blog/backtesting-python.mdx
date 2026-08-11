@@ -1,0 +1,123 @@
+---
+title: "How to Backtest a Trading Strategy in Python Without Fooling Yourself"
+description: "A working backtest framework, the metrics that actually matter (Sharpe, max drawdown), and the five biases that make backtests lie — with Python."
+date: "2026-08-01"
+author: "Isaac Gong"
+tags: ["quant", "backtesting"]
+targetKeyword: "backtesting python"
+relatedLesson: "q3"
+---
+
+A backtest is a simulation: what would have happened if you'd run this
+strategy on historical data instead of just having the idea? It's the main
+tool quants use to vet a systematic, rules-based strategy before risking real
+money on it — and it's also one of the easiest things in finance to
+accidentally rig in your own favor without realizing it.
+
+## What every backtest needs to define
+
+1. **Universe** — which assets is the strategy even allowed to trade?
+2. **Signal generation** — what triggers a buy or sell? (e.g., 50-day moving
+   average crossing above the 200-day)
+3. **Position sizing** — how much capital per position?
+4. **Execution assumptions** — what price do you assume you actually got?
+   Next-day open is realistic. Assuming you traded at the same-day close is a
+   classic, quiet way to cheat without meaning to.
+5. **Transaction costs** — commissions, bid-ask spread, market impact.
+6. **Performance metrics** — total return, Sharpe ratio, max drawdown.
+
+## The metrics that actually matter
+
+**Total return** is the headline number, and close to meaningless on its own —
+it says nothing about how much risk was taken to get there.
+
+**Sharpe ratio** fixes that: return adjusted for volatility.
+
+```
+Sharpe = (Strategy Return − Risk-Free Rate) / Strategy Volatility
+```
+
+A strategy worth taking seriously usually targets a Sharpe above 1.0 before
+costs. Elite hedge funds typically run 1–2 after real trading costs, in live
+markets — a backtest claiming a Sharpe above 3 is a red flag, not a green one.
+
+**Maximum drawdown** is the worst peak-to-trough decline during the test:
+
+```
+Max Drawdown = max(Peak − Trough) / Peak
+```
+
+A strategy compounding at 20%/year that occasionally craters 60% is far
+harder to actually hold through than the headline return suggests — most
+people panic-sell at exactly the wrong moment. The **Calmar ratio** (annual
+return ÷ max drawdown) captures the tradeoff between the two in a single
+number; anything above 1 is considered respectable.
+
+## The five ways backtests lie
+
+1. **Look-ahead bias** — letting a signal see data it wouldn't actually have
+   had yet. Generating today's signal off today's closing price only works if
+   you own a time machine.
+2. **Survivorship bias** — testing only on companies still around today. Most
+   historical databases quietly drop names that went bankrupt or got
+   delisted, which skews everything upward: you're only ever grading the
+   survivors.
+3. **Overfitting** — running thousands of parameter combinations and
+   reporting whichever won. Test enough variations and something looks
+   brilliant purely by chance. A real edge should survive nudging one
+   parameter slightly, not collapse the instant you do.
+4. **Transaction cost underestimation** — a high-frequency strategy can look
+   wildly profitable on paper and get entirely eaten by spread and market
+   impact once it meets reality.
+5. **Regime dependence** — a strategy tuned to one stretch of market history
+   (say, 2010–2020's near-zero rates) can quietly stop working once
+   conditions shift. Always test across more than one regime.
+
+## Walk-forward testing
+
+The standard defense against overfitting: split history into an in-sample
+period (build and tune the strategy) and an out-of-sample period you don't
+touch until you're already satisfied. Peek at the out-of-sample data even
+once while tuning and you've unconsciously started fitting to it too — the
+whole point of the split quietly evaporates. **Walk-forward optimization**
+takes it further: train on a rolling window, trade forward one period with
+those parameters, slide the window ahead, repeat — closer to how live trading
+actually works.
+
+## A minimal backtest in Python
+
+```python
+def backtest_sma_crossover(prices, short_window=10, long_window=30):
+    """Buy when the short SMA crosses above the long SMA, sell on the reverse."""
+    equity = [1.0]  # start with $1, track growth
+    position = 0    # 0 = flat, 1 = long
+
+    for i in range(long_window, len(prices)):
+        short_sma = sum(prices[i - short_window:i]) / short_window
+        long_sma = sum(prices[i - long_window:i]) / long_window
+
+        if short_sma > long_sma and position == 0:
+            position = 1
+        elif short_sma < long_sma and position == 1:
+            position = 0
+
+        daily_return = (prices[i] / prices[i - 1]) - 1
+        equity.append(equity[-1] * (1 + daily_return * position))
+
+    return equity
+
+def max_drawdown(equity):
+    peak = equity[0]
+    worst = 0
+    for value in equity:
+        peak = max(peak, value)
+        worst = min(worst, (value - peak) / peak)
+    return abs(worst)
+```
+
+This version deliberately only uses moving averages computed from prices
+*before* index `i` — never `prices[i]` itself in the signal — which is the
+concrete, line-of-code version of avoiding look-ahead bias, not just a rule
+to remember.
+
+<TryItCTA href="/lesson/q3" lessonTitle="Backtesting a Strategy" />

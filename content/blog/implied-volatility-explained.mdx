@@ -1,0 +1,101 @@
+---
+title: "Implied Volatility: What the Market Thinks Will Happen"
+description: "Why implied volatility is Black-Scholes run backwards, how it's actually solved for with Newton-Raphson, and what the volatility smile tells you about the model's blind spots."
+date: "2026-08-07"
+author: "Isaac Gong"
+tags: ["options", "volatility"]
+targetKeyword: "implied volatility"
+relatedLesson: "8"
+---
+
+Black-Scholes takes five inputs — stock price, strike, time, rate, and
+volatility — and produces one output: a price. Implied volatility runs that
+exact same machine backwards: you already know the price (it's quoted on the
+market, right now, for real), and you solve for the one input, volatility, that
+would make the formula produce that price. It's not a new formula. It's the
+same formula, used in reverse.
+
+## Why volatility is the input you solve for
+
+Of the five Black-Scholes inputs, four are directly observable: stock price and
+strike are quoted numbers, time to expiration is a date subtraction, and the
+risk-free rate is read off a Treasury curve. Volatility is the one input that
+isn't observable — it's a forecast of how much the stock will move, and nobody
+knows the future. So instead of guessing it and hoping the resulting price
+matches the market, implied volatility flips the logic: take the market's
+actual price as ground truth, and back out whatever volatility assumption is
+*consistent* with it. That number — the "implied" volatility — is effectively
+the market's collective forecast, priced in.
+
+## Why you can't just algebra it out
+
+You can't rearrange the Black-Scholes formula to solve for σ directly — it
+appears inside `N(d1)` and `N(d2)`, both of which are themselves functions of σ,
+in a way that has no closed-form inverse. So implied volatility is found
+numerically, and the standard tool for that is **Newton-Raphson**: start with a
+guess for σ, see how far the resulting price is from the market price, and use
+the option's *vega* (its sensitivity to volatility — literally `∂C/∂σ`) to take
+a calculated step toward the correct σ. Repeat a handful of times and it
+converges fast, because vega tells you exactly how much a change in σ moves the
+price, which is exactly the information Newton-Raphson's update step needs.
+
+```
+σ_new = σ_old − (BS_price(σ_old) − market_price) / vega(σ_old)
+```
+
+## Implied volatility in Python
+
+```python
+import math
+
+def norm_cdf(x):
+    return 0.5 * math.erfc(-x / math.sqrt(2))
+
+def norm_pdf(x):
+    return math.exp(-0.5 * x**2) / math.sqrt(2 * math.pi)
+
+def bs_call(S, K, T, r, sigma):
+    d1 = (math.log(S / K) + (r + 0.5 * sigma**2) * T) / (sigma * math.sqrt(T))
+    d2 = d1 - sigma * math.sqrt(T)
+    return S * norm_cdf(d1) - K * math.exp(-r * T) * norm_cdf(d2)
+
+def vega(S, K, T, r, sigma):
+    d1 = (math.log(S / K) + (r + 0.5 * sigma**2) * T) / (sigma * math.sqrt(T))
+    return S * norm_pdf(d1) * math.sqrt(T)
+
+def implied_vol(market_price, S, K, T, r, guess=0.3, tol=1e-6, max_iter=50):
+    sigma = guess
+    for _ in range(max_iter):
+        price = bs_call(S, K, T, r, sigma)
+        diff = price - market_price
+        if abs(diff) < tol:
+            return sigma
+        v = vega(S, K, T, r, sigma)
+        sigma -= diff / v
+    return sigma  # best effort after max_iter
+
+# A call trading at $12.50 in the market — what vol does that imply?
+iv = implied_vol(12.50, S=100, K=100, T=1, r=0.05)
+print(round(iv, 4))  # solves back to the sigma that reproduces $12.50
+```
+
+Five to ten iterations is typically enough for this to converge to six decimal
+places — vega-driven Newton-Raphson is one of the faster-converging root-finding
+methods precisely because vega is well-behaved (smooth, always positive for a
+standard option) across the range of σ you'd realistically search.
+
+## What the volatility smile reveals
+
+If markets really believed in the constant-volatility assumption baked into
+Black-Scholes, every option on the same stock with the same expiration —
+regardless of strike — would imply the same volatility. In practice, plotting
+implied volatility against strike produces a curve, not a flat line, usually
+higher at strikes far from the current price than at-the-money — a shape called
+the "volatility smile" (or "skew," when it's asymmetric, which it usually is
+for equity index options). That shape is the market pricing in something
+Black-Scholes doesn't model: fat tails, crash risk, and the fact that big moves
+are more common than a log-normal distribution predicts. Implied volatility
+isn't just a number — surveyed across every strike and expiration, it's a map
+of exactly where the market disagrees with the model's assumptions.
+
+<TryItCTA href="/lesson/8" lessonTitle="Implied Volatility" />

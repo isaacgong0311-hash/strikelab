@@ -1,0 +1,112 @@
+---
+title: "The Efficient Frontier in Python"
+description: "How Markowitz mean-variance optimization builds the efficient frontier, why the covariance matrix is the hard part, and how to trace the frontier yourself with basic Python."
+date: "2026-08-02"
+author: "Isaac Gong"
+tags: ["quant", "portfolio-theory"]
+targetKeyword: "efficient frontier python"
+relatedLesson: "q4"
+---
+
+Harry Markowitz's 1952 paper "Portfolio Selection" is short enough to read in
+one sitting, and its core claim sounds almost too obvious to have won a Nobel
+Prize: investors care about expected return *and* risk together, and it's the
+combination of assets in a portfolio — not any single holding on its own —
+that determines both. That claim leads directly to the efficient frontier.
+
+## What the frontier actually is
+
+For any target level of risk, there's some combination of assets that
+maximizes expected return at that risk level — and any portfolio that doesn't
+achieve that combination is "dominated": a strictly better portfolio exists at
+the same risk, so there's no reason to hold the worse one. Plot expected
+return against risk (standard deviation) for every possible portfolio weight
+combination, and the upper-left boundary of that cloud of points — the best
+return achievable at each risk level — is the efficient frontier.
+
+## The math
+
+With n assets, expected returns `μ = [μ1, ..., μn]`, a covariance matrix Σ
+describing how every pair of assets moves together, and portfolio weights
+`w = [w1, ..., wn]`:
+
+```
+Expected return:  E[Rp] = wᵀ·μ
+Variance:         σ²p = wᵀ·Σ·w
+```
+
+The optimization: pick a target return μ*, find the weights w that minimize
+variance subject to `wᵀμ = μ*` and `Σwi = 1` (fully invested). Add `wi ≥ 0` if
+short-selling isn't allowed. Sweep μ* across a range of values and solve at
+each one, and the resulting points trace out the frontier.
+
+## The maximum Sharpe portfolio
+
+Somewhere on that frontier sits the single portfolio with the best Sharpe
+ratio — the most excess return per unit of risk — called the tangency
+portfolio, because it's exactly where a line drawn from the risk-free rate
+touches the frontier tangentially. Under CAPM's assumptions, this tangency
+portfolio *is* the market portfolio — which is the deeper reason CAPM predicts
+everyone should hold some mix of the risk-free asset and "the market": the
+market itself is the efficient frontier's single best point.
+
+## Why the covariance matrix is the hard part
+
+Σ has `n(n+1)/2` parameters to estimate. For a modest 50-stock portfolio,
+that's 1,275 numbers — estimated from maybe 252 daily return observations in a
+year. More parameters than data points is close to a guarantee that the
+resulting matrix is mostly fitting historical noise, not real underlying
+structure. Three common fixes:
+
+- **Shrinkage (Ledoit-Wolf):** pull the raw sample covariance matrix toward a
+  simpler target (like the identity matrix), which measurably improves
+  out-of-sample performance despite sounding like a minor tweak.
+- **Factor models:** express Σ through a small set of factor exposures
+  (`Σ = B·F·Bᵀ + D`) instead of estimating every pairwise covariance directly —
+  far fewer parameters, far more stable.
+- **The 1/N heuristic:** just splitting evenly across every asset. It's
+  famously "dumb" and regularly beats fully optimized portfolios out-of-sample,
+  purely by sidestepping estimation error altogether.
+
+## Tracing the frontier in Python
+
+For a small portfolio, basic mean-variance optimization needs nothing more
+exotic than the standard library plus a simple grid search over weights (real
+implementations reach for `scipy.optimize`, but the core mechanics are visible
+without it):
+
+```python
+import itertools
+
+def portfolio_stats(weights, returns, cov):
+    exp_return = sum(w * r for w, r in zip(weights, returns))
+    variance = sum(
+        weights[i] * weights[j] * cov[i][j]
+        for i in range(len(weights)) for j in range(len(weights))
+    )
+    return exp_return, variance ** 0.5
+
+# Two toy assets: expected annual returns, and a 2x2 covariance matrix
+returns = [0.08, 0.12]
+cov = [[0.04, 0.01], [0.01, 0.09]]  # variances on the diagonal, covariance off it
+
+# Sweep every weight split from 0% to 100% in 5% steps
+best_sharpe, best_weights = -1, None
+rf = 0.03
+for w1 in [i / 20 for i in range(21)]:
+    w2 = 1 - w1
+    exp_ret, vol = portfolio_stats([w1, w2], returns, cov)
+    sharpe = (exp_ret - rf) / vol
+    if sharpe > best_sharpe:
+        best_sharpe, best_weights = sharpe, (w1, w2)
+
+print(best_weights, round(best_sharpe, 3))
+```
+
+This toy version sweeps one free parameter (`w1`, with `w2 = 1 - w1`), which
+is enough to see the whole frontier and its maximum-Sharpe point for two
+assets. The real optimization — n assets, a target-return constraint, and a
+proper quadratic solver — is the same idea scaled up, and it's what the
+lesson below walks through from scratch.
+
+<TryItCTA href="/lesson/q4" lessonTitle="Portfolio Optimization" />

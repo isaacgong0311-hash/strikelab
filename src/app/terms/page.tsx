@@ -1,5 +1,6 @@
 import Link from "next/link";
 import Eyebrow from "@/components/Eyebrow";
+import Breadcrumbs from "@/components/Breadcrumbs";
 import JsonLd from "@/components/JsonLd";
 import { pageMetadata, breadcrumbJsonLd } from "@/lib/seo";
 
@@ -133,6 +134,7 @@ export default function TermsPage() {
   return (
     <div className="max-w-3xl mx-auto px-6 py-14">
       <JsonLd data={breadcrumbJsonLd([{ name: "Terms of Service", path: "/terms" }])} />
+      <Breadcrumbs trail={[{ name: "Terms of Service", path: "/terms" }]} />
 
       <Eyebrow>Legal</Eyebrow>
       <h1
