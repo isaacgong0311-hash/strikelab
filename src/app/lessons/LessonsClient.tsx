@@ -5,7 +5,7 @@ import { useProgress } from "@/lib/useProgress";
 import FlameIcon from "@/components/FlameIcon";
 import TrophyIcon from "@/components/TrophyIcon";
 import ConstructionIcon from "@/components/ConstructionIcon";
-import PathScenery, { sceneryForIndex } from "@/components/PathScenery";
+import PathScenery, { sceneryForIndex, ChestIcon } from "@/components/PathScenery";
 
 const OFFSETS = [0, 44, 62, 44, 0, -44, -62, -44];
 
@@ -91,14 +91,14 @@ export default function LessonsClient() {
 
             {/* Winding path */}
             <div className="dpath-nodes">
-              {track.lessons.map((lesson, i) => {
+              {track.lessons.flatMap((lesson, i) => {
                 const done = hydrated && completed.has(lesson.id);
                 const isActive = !done && lesson.id === activeId;
                 const off = OFFSETS[i % OFFSETS.length];
                 const state = done ? "done" : isActive ? "active" : "open";
                 const scenery = sceneryForIndex(i);
 
-                return (
+                const node = (
                   <div
                     key={lesson.id}
                     className={`dnode ${state}`}
@@ -137,6 +137,19 @@ export default function LessonsClient() {
                     </div>
                   </div>
                 );
+
+                // A small reward beat every 4 lessons — skip right before the
+                // finish trophy, which already closes out the track.
+                const showChest = (i + 1) % 4 === 0 && i + 1 < track.lessons.length;
+                if (!showChest) return [node];
+
+                return [
+                  node,
+                  <div key={`${lesson.id}-chest`} className="dnode dchest" aria-hidden="true">
+                    <div className="dchest-btn"><ChestIcon /></div>
+                    <div className="dchest-label">Nice pace</div>
+                  </div>,
+                ];
               })}
 
               {/* Track-finish trophy */}
