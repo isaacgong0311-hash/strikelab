@@ -97,6 +97,20 @@ export default async function LessonPage({ params }: { params: Promise<{ id: str
     { name: ctx.lesson.title, path: `/lesson/${id}` },
   ]);
 
+  // Up to 4 other lessons from the same track, nearest-position-first (so a
+  // student on lesson 6 sees 5/7/4/8 rather than a fixed slice that's always
+  // "lessons 1-4" regardless of where they are). Excludes prev/next — those
+  // already have their own nav buttons — so this block adds genuinely new
+  // internal links rather than repeating ones already on the page.
+  const related = ctx.track.lessons
+    .filter((l) => l.id !== ctx.lesson.id && l.id !== ctx.prev?.id && l.id !== ctx.next?.id)
+    .sort((a, b) => {
+      const da = Math.abs(ctx.track.lessons.indexOf(a) - (ctx.positionInTrack - 1));
+      const db = Math.abs(ctx.track.lessons.indexOf(b) - (ctx.positionInTrack - 1));
+      return da - db;
+    })
+    .slice(0, 4);
+
   return (
     <>
       <JsonLd data={lessonJsonLd} />
@@ -112,6 +126,7 @@ export default async function LessonPage({ params }: { params: Promise<{ id: str
         trackTitle={ctx.track.title}
         positionInTrack={ctx.positionInTrack}
         trackLength={ctx.trackLength}
+        related={related}
       />
     </>
   );

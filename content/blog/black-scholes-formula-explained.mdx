@@ -1,0 +1,105 @@
+---
+title: "The Black-Scholes Formula, Explained From Scratch"
+description: "What each term in the Black-Scholes formula actually means, why d1 and d2 exist, and how to price a call option in nine lines of Python."
+date: "2026-08-11"
+author: "Isaac Gong"
+tags: ["options", "black-scholes"]
+targetKeyword: "black scholes formula"
+relatedLesson: "3"
+---
+
+Most explanations of Black-Scholes throw the formula at you first and the intuition
+second, if at all. That's backwards — the formula is just bookkeeping once you
+understand the two questions it's answering. Let's do it in the right order.
+
+## The problem the formula is solving
+
+A call option gives you the right to buy a stock at a fixed price (the strike, K)
+on a fixed date (expiration, T). Its value at expiration is simple: if the stock
+ends above K, the option is worth `stock price − K`. If it ends below K, it's
+worth nothing. The hard part is pricing it *today*, before you know which of
+those happens.
+
+Black-Scholes prices it by answering two questions:
+
+1. **What's the expected payoff, if it pays off?** — roughly, the stock price
+   times the probability the option finishes in the money.
+2. **What do you have to pay to guarantee that payoff, discounted to today?**
+   — roughly, the strike price times that same probability, discounted at the
+   risk-free rate.
+
+The call price is question 1 minus question 2.
+
+## The formula
+
+```
+C = S · N(d1) − K · e^(−rT) · N(d2)
+```
+
+- **S** — current stock price
+- **K** — strike price
+- **r** — risk-free interest rate (annualized)
+- **T** — time to expiration, in years
+- **σ (sigma)** — volatility, the annualized standard deviation of the stock's returns
+- **N(x)** — the standard normal cumulative distribution function: the probability
+  that a standard normal random variable is less than x
+
+`N(d1)` and `N(d2)` are both probabilities (values between 0 and 1), which is why
+the formula looks like "stock price times a probability, minus strike times a
+probability" — because that's exactly what it is.
+
+## Where d1 and d2 come from
+
+```
+d1 = [ln(S/K) + (r + σ²/2)·T] / (σ·√T)
+d2 = d1 - σ·√T
+```
+
+`d1` measures how far in-the-money the option is, in standard-deviation units,
+adjusted for drift and time. `ln(S/K)` is the log-moneyness — how far the current
+price is from the strike, on a log scale (log scale because stock returns are
+roughly log-normal, not normal). The `(r + σ²/2)·T` term adjusts for the fact
+that the stock is expected to drift upward at the risk-free rate under the
+no-arbitrage assumption the model makes, plus a volatility correction. Dividing
+by `σ·√T` converts that into standard deviations of the stock's expected move
+over the life of the option.
+
+`d2` is `d1` shifted down by one volatility-adjusted standard deviation — it's
+the term that actually corresponds to "probability the option finishes in the
+money," while `d1` is closer to "probability, weighted by how much it finishes
+in the money." That distinction is why the formula needs both instead of just one.
+
+## Pricing a call in Python
+
+```python
+import math
+
+def norm_cdf(x):
+    return 0.5 * math.erfc(-x / math.sqrt(2))
+
+def black_scholes_call(S, K, T, r, sigma):
+    d1 = (math.log(S / K) + (r + 0.5 * sigma**2) * T) / (sigma * math.sqrt(T))
+    d2 = d1 - sigma * math.sqrt(T)
+    return S * norm_cdf(d1) - K * math.exp(-r * T) * norm_cdf(d2)
+
+# A $100 stock, $100 strike, 1 year to expiry, 5% risk-free rate, 20% vol
+print(black_scholes_call(100, 100, 1, 0.05, 0.20))  # ≈ 10.45
+```
+
+`norm_cdf` uses `math.erfc` — the complementary error function — instead of
+scipy's `norm.cdf`, because it's one line of standard library math instead of a
+dependency, and it's exact, not an approximation. That's the same trick the
+Greeks all lean on: they're each a derivative of this same `C`, with respect to
+one of its five inputs (`S`, `K`, `T`, `r`, `σ`), and every one of them reuses
+`d1`/`d2`.
+
+## What the model assumes — and gets wrong
+
+Black-Scholes assumes constant volatility, no dividends, frictionless trading,
+and log-normal stock returns. Real markets violate all four, which is exactly
+why implied volatility exists: instead of trusting the model's volatility
+input, traders back-solve it *from* real option prices, effectively asking
+"what volatility would the market have to believe for this price to be
+correct?" That's a different lesson, but it only makes sense once this one does.
+
+<TryItCTA href="/lesson/3" lessonTitle="Black-Scholes Formula" />

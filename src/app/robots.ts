@@ -1,7 +1,19 @@
 import type { MetadataRoute } from "next";
 import { SITE_URL } from "@/lib/site";
 
+// Vercel sets VERCEL_ENV to "production" only for the deployment aliased to
+// the production domains (strikelab.dev + the git-master alias promoted to
+// prod); "preview" and "development" cover every PR/branch deploy. Without
+// this check, every *-git-*.vercel.app preview URL — one per pushed branch —
+// was fully crawlable and could get indexed as a separate, worse-ranking
+// duplicate of the real site.
+const isProduction = process.env.VERCEL_ENV === "production";
+
 export default function robots(): MetadataRoute.Robots {
+  if (!isProduction) {
+    return { rules: { userAgent: "*", disallow: "/" } };
+  }
+
   return {
     rules: {
       userAgent: "*",

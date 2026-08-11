@@ -7,6 +7,7 @@ import dynamic from "next/dynamic";
 import { useProgress } from "@/lib/useProgress";
 import { trackLessonStart, trackTestsPassed, trackLessonComplete, trackQuizAnswer } from "@/lib/analytics";
 import Eyebrow from "@/components/Eyebrow";
+import Breadcrumbs from "@/components/Breadcrumbs";
 import PrereqBox from "@/components/PrereqBox";
 import AiTutor from "@/components/AiTutor";
 import LessonToc from "@/components/LessonToc";
@@ -54,6 +55,7 @@ interface Props {
   trackTitle: string;
   positionInTrack: number;
   trackLength: number;
+  related: Pick<Lesson, "id" | "title" | "subtitle">[];
 }
 
 // ─── Tiny helpers ────────────────────────────────────────────────────────────
@@ -230,7 +232,7 @@ function CelebrationOverlay({
 
 // ─── Main lesson component ────────────────────────────────────────────────────
 
-export default function LessonClient({ lesson, sections, chunks, prev, next, trackId, trackTitle, positionInTrack, trackLength }: Props) {
+export default function LessonClient({ lesson, sections, chunks, prev, next, trackId, trackTitle, positionInTrack, trackLength, related }: Props) {
   // Investing Fundamentals has no coding exercise — the track's own pitch is
   // "no finance background required, just curiosity and pre-algebra," and
   // every one of its lessons already has a no-code drag-slider
@@ -396,12 +398,10 @@ export default function LessonClient({ lesson, sections, chunks, prev, next, tra
 
         <div className="min-w-0 max-w-3xl">
         {/* Breadcrumb */}
-        <div className="v2-rise in flex items-center gap-2 text-sm mb-5" style={{ color: "var(--muted)" }}>
-          <Link href="/lessons" className="transition-opacity hover:opacity-70" style={{ color: "var(--ink-2)" }}>
-            Lessons
-          </Link>
-          <span>/</span>
-          <span style={{ color: "var(--ink)" }}>{lesson.title}</span>
+        <div className="v2-rise in">
+          <Breadcrumbs
+            trail={[{ name: "Lessons", path: "/lessons" }, { name: lesson.title, path: `/lesson/${lesson.id}` }]}
+          />
         </div>
 
         {/* Header */}
@@ -674,6 +674,32 @@ export default function LessonClient({ lesson, sections, chunks, prev, next, tra
             the page (Options/Quant). Loading a WASM Python runtime for an
             Investing lesson that has no code editor was pure waste. */}
         {hasCodingExercise && <PyodideLoader />}
+
+        {/* Related lessons — same track, nearest-position-first, excluding
+            prev/next (those already have their own nav buttons below). */}
+        {related.length > 0 && (
+          <div className="v2-rise" style={{ marginBottom: 28 }}>
+            <div
+              className="text-xs uppercase tracking-widest mb-3"
+              style={{ color: "var(--muted)", fontFamily: "var(--font-mono)" }}
+            >
+              More in {trackTitle}
+            </div>
+            <div className="grid gap-2" style={{ gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))" }}>
+              {related.map((r) => (
+                <Link
+                  key={r.id}
+                  href={`/lesson/${r.id}`}
+                  className="text-sm p-3 rounded-lg border transition-opacity hover:opacity-70"
+                  style={{ borderColor: "var(--border)", color: "var(--ink-2)" }}
+                >
+                  <div style={{ color: "var(--ink)", fontWeight: 600, marginBottom: 2 }}>{r.title}</div>
+                  <div style={{ color: "var(--muted2)", fontSize: 12 }}>{r.subtitle}</div>
+                </Link>
+              ))}
+            </div>
+          </div>
+        )}
 
         {/* Navigation */}
         <div className="v2-rise flex justify-between items-center" style={{ transitionDelay: "240ms" }}>

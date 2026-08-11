@@ -4,9 +4,12 @@ const NAV_GROUPS = [
   {
     title: "Product",
     links: [
-      { href: "/lessons",     label: "Lessons" },
-      { href: "/playground",  label: "Playground" },
-      { href: "/dashboard",   label: "Dashboard" },
+      { href: "/lessons",      label: "Lessons" },
+      { href: "/playground",   label: "Playground" },
+      { href: "/dashboard",    label: "Dashboard" },
+      { href: "/blog",         label: "Blog" },
+      { href: "/for-teachers", label: "For Teachers" },
+      { href: "/for-schools",  label: "For Schools" },
     ],
   },
   {

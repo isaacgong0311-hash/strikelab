@@ -1,0 +1,95 @@
+---
+title: "Vega, the Option Greek for Volatility Risk"
+description: "Why vega is highest for at-the-money, longer-dated options, how it drives implied volatility solving, and how to compute it in Python."
+date: "2026-08-06"
+author: "Isaac Gong"
+tags: ["options", "greeks", "vega"]
+targetKeyword: "vega option greek"
+relatedLesson: "7"
+---
+
+Vega measures how much an option's price changes when volatility changes — and
+unlike delta, gamma, and theta, it isn't technically a Greek letter (there's no
+"vega" in the Greek alphabet; the name was picked because it starts with V, for
+volatility, and just sort of stuck). What it measures is real regardless of the
+naming quirk: it's the sensitivity every options trader watches when the
+market's *forecast* of future movement shifts, independent of whether the
+stock actually moves.
+
+## The formula
+
+```
+ν = S · n(d1) · √T
+```
+
+`n(d1)` (lowercase) is the standard normal *density* at d1, not the cumulative
+distribution — the same density function that shows up in the theta formula.
+Vega is usually quoted per 1 percentage-point change in volatility (i.e.,
+divided by 100), so a vega of 0.20 means the option's price moves about $0.20
+for each 1-point move in implied volatility (say, from 20% to 21%).
+
+Notice what's *not* in the formula: r doesn't appear, and the strike K only
+enters indirectly through d1. What does matter directly is S (stock price) and
+T (time) — which is the key to understanding vega's shape.
+
+## Why vega peaks at-the-money and with more time
+
+Vega is highest for options that are at-the-money and have the most time to
+expiration, and falls off in both directions — for strikes far from the current
+price, and for options close to expiring. Both make intuitive sense once you
+think about what volatility risk actually means:
+
+- **At-the-money vega is highest** because that's where the outcome is most
+  genuinely uncertain — a deep in-the-money or deep out-of-the-money option's
+  fate is already largely decided, so a change in expected volatility barely
+  moves its price. An at-the-money option could go either way, so how much
+  uncertainty the market expects (volatility) matters most exactly there.
+- **Longer-dated vega is higher** because more time means more opportunity for
+  a volatility change to compound into a bigger range of outcomes — the `√T`
+  term captures this directly, growing (slowly, since it's a square root) as T
+  grows.
+
+This is why vega is the Greek that decides which options a "volatility trade"
+should even use: if you have a view that implied volatility itself is
+mispriced (too high or too low, independent of which way the stock moves),
+you want to be in the highest-vega instrument you can find — at-the-money,
+furthest-dated — to maximize exposure to that specific bet.
+
+## The role vega plays in solving implied volatility
+
+Vega isn't just a risk measure traders watch directly — it's also the engine
+behind how implied volatility itself gets computed. Since Black-Scholes has no
+closed-form inverse for σ, implied volatility is solved with Newton-Raphson,
+and Newton-Raphson's update step needs to know exactly how much the price
+changes per unit change in σ — which is precisely what vega is. Every implied
+volatility solver is, under the hood, repeatedly computing vega to decide how
+big a step to take next.
+
+## Computing vega in Python
+
+```python
+import math
+
+def norm_pdf(x):
+    return math.exp(-0.5 * x**2) / math.sqrt(2 * math.pi)
+
+def vega(S, K, T, r, sigma):
+    d1 = (math.log(S / K) + (r + 0.5 * sigma**2) * T) / (sigma * math.sqrt(T))
+    return S * norm_pdf(d1) * math.sqrt(T) / 100  # per 1-point vol change
+
+# At-the-money, 1 year out
+print(round(vega(100, 100, 1, 0.05, 0.20), 4))   # highest vega case
+
+# Deep in-the-money, same time to expiry
+print(round(vega(100, 50, 1, 0.05, 0.20), 4))    # much smaller
+
+# At-the-money, but only a week left
+print(round(vega(100, 100, 7/365, 0.05, 0.20), 4))  # much smaller too
+```
+
+Running all three side by side is the fastest way to build intuition for
+vega's shape — the middle case (in-the-money) and the last case (short-dated)
+both come out noticeably smaller than the first, which is exactly the "peaks
+at-the-money, decays with less time" pattern the formula predicts.
+
+<TryItCTA href="/lesson/7" lessonTitle="Vega: Volatility Sensitivity" />

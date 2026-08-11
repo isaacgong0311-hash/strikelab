@@ -1,0 +1,104 @@
+---
+title: "CAPM and Beta: Why Some Risk Gets Paid and Some Doesn't"
+description: "The Capital Asset Pricing Model explained from the diversification argument up — why beta is the only risk the market compensates you for, worked with real Python."
+date: "2026-08-03"
+author: "Isaac Gong"
+tags: ["quant", "capm", "portfolio-theory"]
+targetKeyword: "capm beta"
+relatedLesson: "q1"
+---
+
+CAPM answers a question that sounds simple and isn't: what return *should* you
+expect from a risky asset, given how risky it is? The formula looks small, but
+the argument behind it — that not all risk deserves to be paid for — is one of
+the more counterintuitive ideas in finance.
+
+## The formula
+
+```
+E(R) = Rf + β · (E(Rm) − Rf)
+```
+
+- **E(R)** — expected return of the asset
+- **Rf** — the risk-free rate (Treasury yield)
+- **β (beta)** — the asset's sensitivity to the overall market
+- **E(Rm) − Rf** — the "market risk premium," how much more the market is
+  expected to return over the risk-free rate
+
+Read left to right: your expected return is the risk-free rate, plus your beta
+times the extra return the market as a whole is expected to earn over
+risk-free. A beta of 1 means "moves with the market, gets exactly the market's
+extra return." A beta of 2 means amplified market exposure, and a proportionally
+larger expected return. A beta of 0 — no correlation with the market at all —
+means CAPM predicts you should expect *only* the risk-free rate, no premium at
+all, regardless of how volatile that asset is on its own.
+
+That last case is the whole point of the model.
+
+## Why total risk isn't what gets paid
+
+It's tempting to assume riskier assets should always pay more, full stop. CAPM
+says that's wrong, and the argument is diversification. If an asset's
+volatility is entirely uncorrelated with the market — pure company-specific
+risk, like a lawsuit or a factory fire — a diversified investor can eliminate
+that risk almost completely just by holding many uncorrelated assets together;
+the idiosyncratic wobbles average out across the portfolio. Since that risk is
+avoidable for free (just diversify), the market doesn't need to pay you extra
+to bear it — and in an efficient market, it won't.
+
+What diversification *can't* eliminate is the risk that moves with everything
+else at once — a recession, a rate shock, a systemic crisis. That's
+**systematic risk**, and beta measures exactly how exposed a given asset is to
+it. CAPM's claim is that systematic risk is the *only* risk that earns a
+premium, because it's the only risk a rational, diversified investor is
+actually forced to bear.
+
+## Computing beta
+
+Beta is a regression coefficient — literally the slope you get from regressing
+an asset's returns against the market's returns:
+
+```
+β = Cov(R_asset, R_market) / Var(R_market)
+```
+
+```python
+import statistics
+
+def beta(asset_returns, market_returns):
+    n = len(asset_returns)
+    mean_a = statistics.mean(asset_returns)
+    mean_m = statistics.mean(market_returns)
+
+    cov = sum((a - mean_a) * (m - mean_m) for a, m in zip(asset_returns, market_returns)) / (n - 1)
+    var_m = statistics.variance(market_returns)
+
+    return cov / var_m
+
+# Toy weekly returns — asset moves roughly 1.5x the market
+market = [0.01, -0.02, 0.015, 0.005, -0.01, 0.02, -0.005]
+asset  = [0.018, -0.028, 0.021, 0.009, -0.017, 0.031, -0.006]
+
+b = beta(asset, market)
+print(round(b, 3))  # comes out close to 1.5
+```
+
+Once you have beta, plugging it into the CAPM formula gives the expected
+return — and comparing that expected return against an asset's *actual*
+average return is exactly how "alpha" gets defined: alpha is the return an
+asset earned above and beyond what CAPM says it should have, given its
+systematic risk. Positive alpha is what every active fund manager claims to
+generate and what CAPM predicts should, on average, be zero.
+
+## What CAPM gets wrong
+
+CAPM assumes markets are efficient, investors are rational and diversified,
+and that beta is a complete description of risk. Decades of empirical work
+have chipped at all three — small-cap stocks and value stocks have
+historically earned returns CAPM doesn't fully explain, which is exactly the
+gap multi-factor models (Fama-French and its descendants) were built to close.
+CAPM isn't the final word on asset pricing. It's the starting point every
+later model is a response to — which is exactly why it's still the first thing
+taught.
+
+<TryItCTA href="/lesson/q1" lessonTitle="CAPM and Beta" />

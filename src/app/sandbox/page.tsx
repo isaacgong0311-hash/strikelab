@@ -1,6 +1,7 @@
 import SandboxClient from "./SandboxClient";
 import JsonLd from "@/components/JsonLd";
 import Eyebrow from "@/components/Eyebrow";
+import Breadcrumbs from "@/components/Breadcrumbs";
 import { pageMetadata, breadcrumbJsonLd } from "@/lib/seo";
 
 export const metadata = pageMetadata({
@@ -20,6 +21,7 @@ export default function SandboxPage() {
           text here — identical in shape to the Playground page's own loading
           gate, which is why an auditor flagged the two as duplicate content. */}
       <div className="mb-8 v2-page-head" data-v2-head>
+        <Breadcrumbs trail={[{ name: "Sandbox", path: "/sandbox" }]} />
         <Eyebrow>Sandbox</Eyebrow>
         <h1
           className="text-4xl font-semibold mb-3 leading-tight"
