@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useProgress } from "@/lib/useProgress";
 import { useAuth } from "@/lib/auth/AuthProvider";
 
@@ -97,6 +97,24 @@ export default function Nav() {
   const hasProgress = xp > 0 || streak > 0;
   const [menuOpen, setMenuOpen] = useState(false);
 
+  // Account dropdown — replaces what used to be three separate elements
+  // (avatar circle, name link, sign-out button) with one trigger. Signed-in
+  // state was crowding the right edge to 7+ elements next to the streak/XP
+  // pills; a single account affordance is the pattern Linear/Mercury/Ramp
+  // use for exactly this reason.
+  const [accountOpen, setAccountOpen] = useState(false);
+  const accountRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    if (!accountOpen) return;
+    function onDown(e: MouseEvent) {
+      if (accountRef.current && !accountRef.current.contains(e.target as Node)) {
+        setAccountOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", onDown);
+    return () => document.removeEventListener("mousedown", onDown);
+  }, [accountOpen]);
+
   // Cheap scroll-past-hero shadow — no backdrop-filter (see nav-bar comment,
   // it's dead weight per frame), just a class toggle read once per animation
   // frame via a passive listener.
@@ -134,10 +152,13 @@ export default function Nav() {
 
   async function handleSignOut() {
     setMenuOpen(false);
+    setAccountOpen(false);
     await signOut();
     router.push("/");
     router.refresh();
   }
+
+  const initial = (displayName ?? user?.email ?? "").trim().charAt(0).toUpperCase() || null;
 
   const allLinks = [...PRIMARY, ...SECONDARY] as { href: string; label: string; pro?: boolean }[];
 
@@ -220,17 +241,6 @@ export default function Nav() {
             </>
           )}
 
-          {/* Profile avatar — signed-in users always get it; signed-out
-              visitors reach the dashboard via the nav link instead. */}
-          {(user || hasProgress) && (
-          <Link href="/dashboard" className="nav-avatar" title="Dashboard">
-            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
-              <circle cx="7" cy="5" r="3" stroke="currentColor" strokeWidth="1.5"/>
-              <path d="M1.5 13c0-2.76 2.462-5 5.5-5s5.5 2.24 5.5 5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
-            </svg>
-          </Link>
-          )}
-
           {/* GitHub */}
           <a
             href="https://github.com/isaacgong0311-hash/strikelab"
@@ -243,16 +253,35 @@ export default function Nav() {
           </a>
 
           {user ? (
-            <>
-              {displayName && (
-                <Link href="/dashboard" className="nav-signin" title={user.email ?? undefined}>
-                  {displayName}
-                </Link>
-              )}
-              <button type="button" onClick={handleSignOut} className="nav-cta">
-                Sign out
+            <div className="nav-account" ref={accountRef}>
+              <button
+                type="button"
+                className="nav-avatar"
+                aria-label="Account menu"
+                aria-expanded={accountOpen}
+                onClick={() => setAccountOpen((v) => !v)}
+              >
+                {initial ?? (
+                  <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+                    <circle cx="7" cy="5" r="3" stroke="currentColor" strokeWidth="1.5"/>
+                    <path d="M1.5 13c0-2.76 2.462-5 5.5-5s5.5 2.24 5.5 5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+                  </svg>
+                )}
               </button>
-            </>
+              {accountOpen && (
+                <div className="nav-account-menu" role="menu">
+                  {displayName && (
+                    <div className="nav-account-name" title={user.email ?? undefined}>{displayName}</div>
+                  )}
+                  <Link href="/dashboard" className="nav-account-item" role="menuitem" onClick={() => setAccountOpen(false)}>
+                    Dashboard
+                  </Link>
+                  <button type="button" onClick={handleSignOut} className="nav-account-item nav-account-item-signout" role="menuitem">
+                    Sign out
+                  </button>
+                </div>
+              )}
+            </div>
           ) : (
             <>
               <Link href="/sign-in" className="nav-signin">Sign in</Link>
@@ -317,7 +346,7 @@ export default function Nav() {
                     {displayName}
                   </Link>
                 )}
-                <button type="button" onClick={handleSignOut} className="nav-cta" style={{ marginTop: 8, justifyContent: "center" }}>
+                <button type="button" onClick={handleSignOut} className="nav-mobile-link nav-mobile-signout">
                   Sign out
                 </button>
               </>

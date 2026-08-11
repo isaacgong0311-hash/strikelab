@@ -1675,7 +1675,7 @@ body:has(.sk-home) .v2-bg-vignette { display: none; }
 .nav-stat-pill.streak-active { color: var(--coral); border-color: rgba(239,90,60,0.4); }
 .nav-stat-pill.xp { color: var(--amber); border-color: rgba(201,135,12,0.35); }
 
-/* Avatar circle */
+/* Avatar circle — also the account-menu trigger, so it's a <button> now */
 .nav-avatar {
   display: grid;
   place-items: center;
@@ -1689,8 +1689,58 @@ body:has(.sk-home) .v2-bg-vignette { display: none; }
   font-family: var(--font-mono);
   font-size: 12px;
   font-weight: 600;
+  cursor: pointer;
 }
 .nav-avatar:hover { border-color: var(--fg); color: var(--fg); }
+
+/* Account dropdown — single trigger replaces avatar + name + sign-out,
+   which used to sit as three separate elements at the busiest edge of the
+   bar. Flat surface, hairline border, no blur — matches the rest of the
+   site's card language. */
+.nav-account { position: relative; }
+.nav-account-menu {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  min-width: 160px;
+  padding: 6px;
+  background: var(--paper, #fafaf9);
+  border: 1px solid var(--border);
+  border-radius: var(--r-sm);
+  box-shadow: 0 8px 24px -12px rgba(0,0,0,0.25);
+  z-index: 60;
+  animation: nav-panel-in .16s ease both;
+}
+.nav-account-name {
+  padding: 8px 10px 6px;
+  font-family: var(--font-ui);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--fg);
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 4px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.nav-account-item {
+  display: block;
+  width: 100%;
+  text-align: left;
+  padding: 8px 10px;
+  font-family: var(--font-ui);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--fg-mute);
+  background: transparent;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background .1s, color .1s;
+}
+.nav-account-item:hover { background: var(--paper-2, rgba(22,32,28,0.05)); color: var(--fg); }
+.nav-account-item-signout { color: var(--coral); }
+.nav-account-item-signout:hover { color: var(--coral); background: var(--coral-tint, rgba(239,90,60,0.08)); }
 
 /* Ghost utility button */
 .nav-ghost-btn {
@@ -1836,6 +1886,17 @@ body:has(.sk-home) .v2-bg-vignette { display: none; }
 }
 .nav-mobile-link.active { color: var(--fg); font-weight: 700; }
 .nav-mobile-link:last-of-type { border-bottom: none; }
+/* Sign out reuses .nav-mobile-link's row styling but is a <button>, not an
+   <a> — reset the button defaults and keep it visually a plain row, not the
+   primary CTA. Signing out is a low-frequency action; it shouldn't wear the
+   brightest button on the page. */
+.nav-mobile-signout {
+  width: 100%;
+  text-align: left;
+  background: transparent;
+  cursor: pointer;
+  color: var(--coral);
+}
 .nav-mobile-divider { height: 1px; background: var(--border); margin: 10px 0; }
 .nav-mobile-stats { display: flex; gap: 8px; padding: 4px 6px 12px; }
 .nav-mobile-stats .nav-stat-pill { display: flex !important; }

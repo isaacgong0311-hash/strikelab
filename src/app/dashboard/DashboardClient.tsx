@@ -311,7 +311,7 @@ export default function DashboardClient() {
         {/* Featured up-next lesson */}
         <div className="db-feat">
           <div className="db-feat-label">Up next</div>
-          <h3 className="db-feat-title">{nextLesson?.title ?? "All done!"}</h3>
+          <h2 className="db-feat-title">{nextLesson?.title ?? "All done!"}</h2>
           <p className="db-feat-sub">{nextLesson?.subtitle}</p>
           <div className="db-feat-pills">
             {nextLesson && <>

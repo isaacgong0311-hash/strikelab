@@ -26,7 +26,12 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
   const closer = ctx.track.id === "investing"
     ? "with an interactive formula sandbox and knowledge checks."
     : "learn it by writing Python in your browser.";
-  const description = `${ctx.lesson.subtitle}. Lesson ${ctx.positionInTrack} of ${ctx.trackLength} in the ${ctx.track.title} track on StrikeLab — ${closer}`;
+  // Kept short deliberately: the "Lesson X of Y in the Z track" framing that
+  // used to open this pushed several lessons' descriptions past Google's
+  // ~160-char truncation point, so the actually useful part (what the lesson
+  // teaches) got cut off in results. The position/track context still shows
+  // up via the breadcrumb trail and OG title.
+  const description = `${ctx.lesson.subtitle} — ${closer}`;
   const canonical = `/lesson/${id}`;
   const ogTitle = `${ctx.lesson.title} — ${SITE_NAME}`;
 
