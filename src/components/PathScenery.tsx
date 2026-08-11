@@ -87,6 +87,23 @@ function Rock({ size }: { size: number }) {
   );
 }
 
+/** Treasure-chest milestone marker, dropped into the path itself (not
+ *  beside it) every few lessons — same filled-illustration language as the
+ *  scenery above, chunkier since it's a path element, not a backdrop. */
+export function ChestIcon({ size = 30 }: { size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 32 32" aria-hidden="true">
+      <ellipse cx="16" cy="27" rx="11" ry="2" fill="#000" opacity="0.1" />
+      <path d="M5 15h22v9a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2z" fill="#c98a3e" />
+      <path d="M5 15h22v3H5z" fill="#a86d2c" />
+      <path d="M4 10a3 3 0 0 1 3-3h18a3 3 0 0 1 3 3v5H4z" fill="#e2a355" />
+      <path d="M4 10a3 3 0 0 1 3-3h18a3 3 0 0 1 3 3v1.5H4z" fill="#f0bd7a" opacity="0.8" />
+      <circle cx="16" cy="13.5" r="2.6" fill="#f6c343" />
+      <rect x="14.8" y="13.5" width="2.4" height="3.5" rx="0.6" fill="#c9962c" />
+    </svg>
+  );
+}
+
 const KIND: Record<SceneryKind, (p: { size: number; color: string }) => React.JSX.Element> = {
   pine: Pine,
   roundTree: RoundTree,

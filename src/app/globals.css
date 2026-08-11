@@ -1419,13 +1419,23 @@ body:has(.sk-home) .v2-bg-vignette { display: none; }
   .dpath-scenery { animation: none; }
 }
 .dnode-btn {
+  position: relative; overflow: hidden;
   width: 74px; height: 66px; border-radius: 50%;
   display: grid; place-items: center;
   font-family: var(--font-display), Georgia, serif; font-weight: 600; font-size: 26px; color: #fff;
   background: var(--grass); box-shadow: 0 2px 0 var(--grass-d);
-  border: none; cursor: pointer; transition: transform .1s ease, box-shadow .1s ease, filter .15s ease;
+  border: none; cursor: pointer;
+  transition: transform .12s ease, box-shadow .12s ease, filter .15s ease;
 }
-.dnode-btn:hover { filter: brightness(1.05); }
+/* Glossy highlight — a fixed light-catch in the upper-left, independent of
+   whatever solid color the button's `background` inline style sets. Reads
+   clearly on filled (done/finish) buttons, harmlessly faint on white ones. */
+.dnode-btn::before, .dfinish-btn::before {
+  content: ''; position: absolute; inset: 0; border-radius: inherit;
+  background: radial-gradient(120% 120% at 30% 20%, rgba(255,255,255,0.65), transparent 48%);
+  pointer-events: none;
+}
+.dnode-btn:hover { filter: brightness(1.05); transform: translateY(-2px); }
 .dnode-btn:active { transform: translateY(4px); box-shadow: 0 2px 0 var(--grass-d); }
 .dnode.open .dnode-btn { background: #fff; color: var(--grass); border: 3px solid var(--grass); box-shadow: 0 6px 0 var(--grass-tint); }
 .dnode.locked .dnode-btn { background: #e2ddd0; color: #b3ac9c; box-shadow: 0 6px 0 #cfc8b8; cursor: default; font-size: 22px; }
@@ -1435,6 +1445,24 @@ body:has(.sk-home) .v2-bg-vignette { display: none; }
   pointer-events: none;
 }
 @keyframes dpulse { 0% { transform: scale(0.98); opacity: 0.5; } 100% { transform: scale(1.28); opacity: 0; } }
+/* Slow shine sweep across the active node — a second, subtler cue beyond
+   the pulse ring, so the "go here next" node reads as alive, not static. */
+.dnode.active .dnode-btn::after {
+  content: ''; position: absolute; inset: 0; border-radius: inherit;
+  background: linear-gradient(115deg, transparent 40%, rgba(255,255,255,0.55) 50%, transparent 60%);
+  background-size: 220% 220%;
+  animation: dshine 2.6s ease-in-out infinite;
+  pointer-events: none;
+}
+@keyframes dshine {
+  0%   { background-position: 130% 130%; }
+  55%  { background-position: -30% -30%; }
+  100% { background-position: -30% -30%; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .dnode.active .dnode-btn::after { animation: none; }
+  .dnode-btn:hover { transform: none; }
+}
 .dnode-start {
   position: absolute; top: -36px; z-index: 2;
   background: var(--ink); color: #fff; font-weight: 700; font-size: 11px; letter-spacing: 0.08em;
@@ -1456,12 +1484,33 @@ body:has(.sk-home) .v2-bg-vignette { display: none; }
 
 .dfinish { margin-top: 4px; }
 .dfinish-btn {
+  position: relative; overflow: hidden;
   width: 84px; height: 84px; border-radius: 50%;
   display: grid; place-items: center;
   transition: transform .1s ease, box-shadow .1s ease, filter .15s ease;
 }
 .dfinish:not(.won) .dnode-label { color: var(--ink-3); font-weight: 500; }
 .dfinish.won .dfinish-btn { animation: dfinish-pop .5s cubic-bezier(.2,.8,.3,1.2); }
+
+/* ── Chest milestone — a small non-interactive reward beat every few
+   lessons, purely decorative (no bonus is actually granted — it's a pacing
+   cue, not a promise). Same glossy-bubble language as the lesson nodes. */
+.dchest { display: flex; flex-direction: column; align-items: center; }
+.dchest-btn {
+  position: relative; overflow: visible;
+  width: 56px; height: 56px; border-radius: 50%;
+  display: grid; place-items: center;
+  background: #fdf6e3; border: 2px dashed #e0c66b;
+  animation: dchest-bob 2.8s ease-in-out infinite;
+}
+.dchest-label {
+  margin-top: 8px; font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.1em;
+  text-transform: uppercase; color: var(--ink-3);
+}
+@keyframes dchest-bob { 0%, 100% { transform: translateY(0) rotate(-2deg); } 50% { transform: translateY(-5px) rotate(2deg); } }
+@media (prefers-reduced-motion: reduce) {
+  .dchest-btn { animation: none; }
+}
 @keyframes dfinish-pop { 0% { transform: scale(0.85); } 60% { transform: scale(1.06); } 100% { transform: scale(1); } }
 
 /* ════════════════════════════════════════════════════════════════════════════
