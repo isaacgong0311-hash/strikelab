@@ -172,6 +172,10 @@ export default function PlaygroundClient() {
   const searchParams = useSearchParams();
   const isDemo = searchParams.get("demo") === "true";
   const [code, setCode] = useState(isDemo ? DEMO_CODE : STARTER_CODE);
+  // Tracks what's actually loaded in the editor right now, so the toggle
+  // button's label and behavior stay in sync after the user clicks it —
+  // `isDemo` above only reflects the URL at first render and never changes.
+  const [showingSolution, setShowingSolution] = useState(isDemo);
   const [output, setOutput] = useState("");
   const [status, setStatus] = useState<"idle" | "running" | "pass" | "fail">("idle");
   const [chartData, setChartData] = useState<Record<GreekName, ChartPoint[]>>({ delta: [], gamma: [], theta: [], vega: [] });
@@ -281,10 +285,13 @@ export default function PlaygroundClient() {
             </div>
           )}
           <button
-            onClick={() => setCode(isDemo ? STARTER_CODE : DEMO_CODE)}
+            onClick={() => {
+              setCode(showingSolution ? STARTER_CODE : DEMO_CODE);
+              setShowingSolution(!showingSolution);
+            }}
             className="pg-demo-btn"
           >
-            {isDemo ? "← Starter" : "Load solution"}
+            {showingSolution ? "← Starter" : "Load solution"}
           </button>
         </div>
       </div>

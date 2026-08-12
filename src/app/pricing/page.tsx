@@ -36,7 +36,7 @@ const PRICING_JSON_LD = [
     "@context": "https://schema.org",
     "@type": "Product",
     name: `${SITE_NAME} Pro`,
-    description: "Weekly coding challenges, achievements, and a certificate of completion, on top of the free curriculum.",
+    description: "Weekly coding challenges, achievements, and office hours with the founder, on top of the free curriculum.",
     brand: { "@type": "Brand", name: SITE_NAME },
     url: `${SITE_URL}/pricing`,
     offers: {

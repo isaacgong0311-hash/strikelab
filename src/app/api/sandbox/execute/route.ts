@@ -3,17 +3,9 @@
  * Body: { symbol, assetType, side, qty, strike?, expiry? }
  */
 import { NextRequest, NextResponse } from "next/server";
-import { getSupabaseServer } from "@/lib/supabase/server";
+import { requireUser } from "@/lib/supabase/requireUser";
 import { executeTrade, type ExecuteParams } from "@/lib/sandbox/db";
 import { WATCHLIST, type AssetType } from "@/lib/pricing";
-
-async function requireUser() {
-  const supabase = await getSupabaseServer();
-  if (!supabase) return { error: "Supabase not configured", status: 503 as const };
-  const { data, error } = await supabase.auth.getUser();
-  if (error || !data.user) return { error: "Not authenticated", status: 401 as const };
-  return { supabase, userId: data.user.id };
-}
 
 const VALID_ASSET_TYPES: AssetType[] = ["stock", "call", "put"];
 

@@ -33,16 +33,22 @@ const TOTAL_LESSONS = TRACKS.reduce((s, t) => s + t.lessons.length, 0);
 function CountUpFact({ value }: { value: string }) {
   const n = Number.parseInt(value, 10);
   const ref = useRef<HTMLElement>(null);
-  const [display, setDisplay] = useState(Number.isFinite(n) ? 0 : value);
+  const [display, setDisplay] = useState(() => {
+    if (!Number.isFinite(n)) return value;
+    if (
+      typeof window !== "undefined" &&
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches
+    ) {
+      return n;
+    }
+    return 0;
+  });
 
   useEffect(() => {
     if (!Number.isFinite(n)) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     const el = ref.current;
     if (!el) return;
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-      setDisplay(n);
-      return;
-    }
     const io = new IntersectionObserver(
       ([entry]) => {
         if (!entry.isIntersecting) return;

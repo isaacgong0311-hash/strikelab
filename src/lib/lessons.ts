@@ -1569,13 +1569,3 @@ print("Tests passed!")
 export function getLessonById(id: string): Lesson | undefined {
   return LESSONS.find((l) => l.id === id);
 }
-
-export interface ComingSoonLesson {
-  id: string;
-  title: string;
-  subtitle: string;
-  duration: string;
-  symbol: string;
-}
-
-export const COMING_SOON: ComingSoonLesson[] = [];

@@ -43,8 +43,8 @@ const TIERS = [
       "Everything in Student",
       "Weekly coding challenges + achievements",
       "Weekly office hours with the founder",
-      "Certificate of completion",
       "Priority email support",
+      "Certificate of completion — coming soon",
       "Real-time market data via Polygon.io — coming soon",
     ],
   },
@@ -78,7 +78,7 @@ const FAQ = [
   },
   {
     q: "What does the 7-day free trial include?",
-    a: "Full access to everything currently live in Pro — weekly coding challenges, achievements, and the certificate of completion. No charge until the trial ends. Cancel anytime from the billing portal.",
+    a: "Full access to everything currently live in Pro — weekly coding challenges, achievements, and office hours. No charge until the trial ends. Cancel anytime from the billing portal.",
   },
   {
     q: "What ages is StrikeLab for?",

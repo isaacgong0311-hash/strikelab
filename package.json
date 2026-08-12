@@ -40,8 +40,6 @@
     "electron-builder": "^26.8.1",
     "eslint": "^9",
     "eslint-config-next": "16.2.6",
-    "md-to-pdf": "^5.2.5",
-    "pptxgenjs": "^4.0.1",
     "tailwindcss": "^4",
     "typescript": "^5",
     "vite-tsconfig-paths": "^6.1.1",
