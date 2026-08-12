@@ -196,6 +196,25 @@ code, pre, .mono {
   border-radius: var(--r-xs);
   border: 1px solid var(--border);
 }
+/* Fenced code blocks (```python from MDX) — the inline `code` rule above only
+   covers backtick spans. Without this, a <pre><code> block has no wrap and
+   no scroll container, so a long line (e.g. an import + function signature)
+   blows out the page width on mobile instead of scrolling within itself. */
+.lesson-content pre {
+  overflow-x: auto;
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md, 10px);
+  padding: 0.9rem 1rem;
+  margin: 1.25rem 0;
+}
+.lesson-content pre code {
+  background: none;
+  border: none;
+  padding: 0;
+  font-size: 0.85em;
+  white-space: pre;
+}
 .lesson-content h2 { color: var(--ink); }
 .lesson-content table {
   width: 100%;

@@ -4,16 +4,8 @@
  * user. Backed by Supabase, RLS-scoped to auth.uid().
  */
 import { NextResponse } from "next/server";
-import { getSupabaseServer } from "@/lib/supabase/server";
+import { requireUser } from "@/lib/supabase/requireUser";
 import { getOrCreateAccount, listOpenPositions, listRecentTrades } from "@/lib/sandbox/db";
-
-async function requireUser() {
-  const supabase = await getSupabaseServer();
-  if (!supabase) return { error: "Supabase not configured", status: 503 as const };
-  const { data, error } = await supabase.auth.getUser();
-  if (error || !data.user) return { error: "Not authenticated", status: 401 as const };
-  return { supabase, userId: data.user.id };
-}
 
 export async function GET() {
   const auth = await requireUser();

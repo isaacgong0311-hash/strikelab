@@ -117,7 +117,7 @@ function SuccessContent() {
             }}>
               {[
                 "Weekly coding challenges with a live leaderboard",
-                "Certificate of completion",
+                "Weekly office hours with the founder",
                 "Priority email support",
               ].map((item) => (
                 <li key={item} style={{ display: "flex", gap: 10, fontSize: 14, color: "var(--ink-2)" }}>

@@ -77,7 +77,7 @@ export const FAQ_GROUPS: FAQGroup[] = [
     items: [
       {
         q: "Is StrikeLab really free?",
-        a: "The full curriculum (all 23 lessons), the playground, the Greek visualizer, and the paper-trading sandbox are free forever — nothing there is gated. The Pro tier ($9/mo) adds weekly coding challenges, achievements, office hours, and a certificate of completion. School licenses fund the platform.",
+        a: "The full curriculum (all 23 lessons), the playground, the Greek visualizer, and the paper-trading sandbox are free forever — nothing there is gated. The Pro tier ($9/mo) adds weekly coding challenges, achievements, and office hours with the founder. School licenses fund the platform.",
       },
       {
         q: "Is this safe to use as a minor?",
