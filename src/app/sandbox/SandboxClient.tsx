@@ -456,17 +456,12 @@ export default function SandboxClient() {
 
   return (
     <div className="sb-root">
-      <div className="sb-header">
-        <div>
-          <div className="sb-eyebrow">Sandbox</div>
-          {/* h2, not h1 — the page's real H1 is the server-rendered intro in
-              page.tsx, which is always present even signed out. */}
-          <h2 className="sb-title">Paper-Trading Sandbox</h2>
-          <p className="sb-sub">
-            Simulated market data, priced live with StrikeLab&rsquo;s own Black-Scholes engine — not real trades, real math.
-          </p>
-        </div>
-        {portfolio && (
+      {/* No repeated eyebrow/title/subtitle here — page.tsx already
+          server-renders that H1 block above (needed pre-auth for SEO/
+          crawlers), so echoing it again once signed in was pure duplicate
+          text. Just the live balance readout, which is genuinely new. */}
+      {portfolio && (
+        <div className="sb-header">
           <div className="sb-balance-chips">
             <div className="sb-chip">
               <span className="sb-chip-label">Cash</span>
@@ -477,8 +472,8 @@ export default function SandboxClient() {
               <span className="sb-chip-value">{money(portfolio.totalValue)}</span>
             </div>
           </div>
-        )}
-      </div>
+        </div>
+      )}
 
       {loadError && <div className="sb-banner error">{loadError}</div>}
 
