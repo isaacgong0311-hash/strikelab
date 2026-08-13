@@ -276,6 +276,9 @@ export default function Nav() {
                   <Link href="/dashboard" className="nav-account-item" role="menuitem" onClick={() => setAccountOpen(false)}>
                     Dashboard
                   </Link>
+                  <Link href="/settings" className="nav-account-item" role="menuitem" onClick={() => setAccountOpen(false)}>
+                    Settings
+                  </Link>
                   <button type="button" onClick={handleSignOut} className="nav-account-item nav-account-item-signout" role="menuitem">
                     Sign out
                   </button>

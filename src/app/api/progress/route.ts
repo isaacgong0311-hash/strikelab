@@ -15,6 +15,7 @@ import {
   EMPTY_PROGRESS,
   type ProgressPayload,
 } from "@/lib/progress/sync";
+import { notifyDiscordOfNewCompletions } from "@/lib/progress/discordNotify";
 
 // ─── GET /api/progress ────────────────────────────────────────────────────────
 export async function GET() {
@@ -51,6 +52,13 @@ export async function POST(req: NextRequest) {
   const existing = await fetchRemoteProgress(auth.supabase, auth.userId);
   const merged = existing ? mergeProgress(existing, incoming) : incoming;
   await upsertRemoteProgress(auth.supabase, auth.userId, merged);
+
+  // Best-effort — never let a Discord hiccup fail the actual progress save.
+  // Bounded to a couple seconds by notifyDiscordOfNewCompletions internally.
+  await notifyDiscordOfNewCompletions(auth.supabase, auth.userId, {
+    before: existing?.completed ?? [],
+    after: merged.completed,
+  }).catch((err) => console.error("[progress] Discord notify failed:", err));
 
   return NextResponse.json({ ok: true, data: merged });
 }

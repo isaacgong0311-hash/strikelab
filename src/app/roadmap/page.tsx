@@ -19,7 +19,6 @@ const ROADMAP = [
     items: [
       { title: "Lessons 8–10 shipped ✓", state: "done", desc: "Implied Volatility (Newton-Raphson IV solver), Option Strategies (spreads, straddles, iron condor), and Binomial Trees (CRR, American options) all live." },
       { title: "Weekly coding challenges ✓", state: "done", desc: "Time-boxed problems scored on correctness + elegance — quant interview prep, gamified. Live on the Challenges page." },
-      { title: "Mobile-responsive layout", state: "in-progress", desc: "All lessons + playground fully usable on phone." },
     ],
   },
   {
@@ -28,10 +27,13 @@ const ROADMAP = [
     color: "#147038",
     items: [
       { title: "Paper-trading sandbox ✓", state: "done", desc: "$100,000 in simulated cash, options priced live with the same Black-Scholes engine from the lessons. Real (delayed) market data via Polygon.io is still on the roadmap." },
+      { title: "Mobile-responsive layout", state: "in-progress", desc: "All lessons + playground fully usable on phone." },
       { title: "Rho lesson ✓", state: "done", desc: "The interest-rate Greek — how rate changes move long-dated options, and why it mattered so much during the 2022-2023 hiking cycle." },
       { title: "Achievement system ✓", state: "done", desc: "12 badges for completing tracks, perfect Greek scores, and streak milestones — live on the dashboard and at /achievements." },
       { title: "Interactive payoff diagrams ✓", state: "done", desc: "Strategy payoff charts live in the Option Strategies lesson — pick a strategy, drag the stock price, watch the P&L curve." },
       { title: "Binomial tree visualizer ✓", state: "done", desc: "Interactive lattice in the Binomial Trees lesson — click any node to see its early-exercise decision." },
+      { title: "Certificates of completion ✓", state: "done", desc: "Finish a track, claim a shareable certificate at /certificate/[id] — LinkedIn-ready card, verifiable by URL." },
+      { title: "Discord integration ✓", state: "done", desc: "Connect a webhook in Settings to auto-post lesson completions, track finishes, and achievements to a school club's channel." },
     ],
   },
   {
@@ -39,9 +41,7 @@ const ROADMAP = [
     label: "Next up",
     color: "#1d4ed8",
     items: [
-      { title: "Certificates of completion", state: "planned", desc: "Shareable on LinkedIn. Verifiable on-chain (optional)." },
       { title: "Teacher dashboard (School plan)", state: "planned", desc: "Class progress, assignment grading, curriculum alignment." },
-      { title: "Discord integration", state: "planned", desc: "Auto-post lesson completions and achievements to school CS/math clubs." },
       { title: "Lesson 9–11: VaR, GARCH, Monte Carlo", state: "planned", desc: "Bridge to quant research and risk." },
     ],
   },
