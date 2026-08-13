@@ -20,7 +20,7 @@ export default function SandboxPage() {
           crawler (which is never signed in) used to see no H1 and almost no
           text here — identical in shape to the Playground page's own loading
           gate, which is why an auditor flagged the two as duplicate content. */}
-      <div className="mb-2 v2-page-head v2-page-head--tool" data-v2-head>
+      <div className="mb-2 v2-page-head v2-page-head--tool v2-page-head--sandbox" data-v2-head>
         <Breadcrumbs trail={[{ name: "Sandbox", path: "/sandbox" }]} />
         <Eyebrow>Sandbox</Eyebrow>
         <h1
