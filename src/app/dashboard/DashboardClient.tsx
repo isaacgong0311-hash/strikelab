@@ -1,6 +1,7 @@
 "use client";
 import Link from "next/link";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
+import { useRouter } from "next/navigation";
 import { TRACKS, getAllLessons } from "@/lib/tracks";
 import { useProgress, getLevel, getXpToNextLevel, XP_LEVELS } from "@/lib/useProgress";
 import { useAuth } from "@/lib/auth/AuthProvider";
@@ -39,6 +40,55 @@ function MiniBar({ pct, color }: { pct: number; color: string }) {
   return (
     <div className="db-mini-bar">
       <div className="db-mini-bar-fill" style={{ width: `${pct}%`, background: color }} />
+    </div>
+  );
+}
+
+// ── Track-complete certificate CTA ───────────────────────────
+// Shown once every lesson in a track is done. Claiming is idempotent server
+// -side (see /api/certificates/issue), so there's no "already claimed"
+// pre-check here — clicking again just returns the same certificate id.
+function CertificateCTA({ trackId, color }: { trackId: string; color: string }) {
+  const router = useRouter();
+  const [state, setState] = useState<"idle" | "loading" | "error">("idle");
+
+  const claim = useCallback(async () => {
+    setState("loading");
+    try {
+      const res = await fetch("/api/certificates/issue", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ trackId }),
+      });
+      const data = await res.json();
+      if (!res.ok || !data.id) throw new Error(data.error ?? "Failed to issue certificate");
+      router.push(`/certificate/${data.id}`);
+    } catch {
+      setState("error");
+    }
+  }, [trackId, router]);
+
+  return (
+    <div
+      className="db-cert-cta"
+      style={{ borderColor: `${color}40`, background: `${color}10` }}
+    >
+      <div>
+        <div className="db-cert-cta-title" style={{ color }}>Track complete 🎓</div>
+        <div className="db-cert-cta-sub">
+          {state === "error"
+            ? "Something went wrong — try again."
+            : "Claim your certificate of completion, shareable on LinkedIn."}
+        </div>
+      </div>
+      <button
+        onClick={claim}
+        disabled={state === "loading"}
+        className="db-cert-cta-btn"
+        style={{ background: color }}
+      >
+        {state === "loading" ? "Claiming…" : "Claim certificate →"}
+      </button>
     </div>
   );
 }
@@ -266,6 +316,7 @@ export default function DashboardClient() {
               </div>
             </div>
             <MiniBar pct={pct} color={track.color} />
+            {pct === 100 && <CertificateCTA trackId={track.id} color={track.color} />}
             <div className="db-lesson-list">
               {track.lessons.map((l, li) => {
                 const isDone = hydrated && completed.has(l.id);

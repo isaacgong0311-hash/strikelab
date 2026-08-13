@@ -2371,6 +2371,40 @@ h1, h2, h3, h4 {
 .db-track-panel .db-mini-bar { margin: 0 0 18px; border-radius: var(--r-full); }
 .db-track-panel .db-mini-bar-fill { border-radius: var(--r-full); }
 
+/* certificate claim CTA — shown once a track hits 100% */
+.db-cert-cta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 14px 16px;
+  border: 1px solid;
+  border-radius: var(--r-lg);
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+.db-cert-cta-title {
+  font-family: var(--font-display), Georgia, serif;
+  font-weight: 700;
+  font-size: 14px;
+  margin-bottom: 2px;
+}
+.db-cert-cta-sub { font-size: 12px; color: var(--ink-2); }
+.db-cert-cta-btn {
+  flex-shrink: 0;
+  padding: 9px 16px;
+  border: none;
+  border-radius: var(--r-sm);
+  color: #ffffff;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.15s ease;
+}
+.db-cert-cta-btn:hover { opacity: 0.85; }
+.db-cert-cta-btn:disabled { opacity: 0.6; cursor: default; }
+
 /* lesson rows */
 .db-lesson-list { display: flex; flex-direction: column; gap: 5px; }
 .db-lesson-row {
