@@ -19,13 +19,22 @@ breaks in production while the keys are missing.
 
 ## 2. Run the database schema
 
-1. In the Supabase dashboard, open **SQL Editor → New query**.
-2. Paste the entire contents of [`supabase/migrations/0001_init.sql`](supabase/migrations/0001_init.sql).
-3. Click **Run**. This creates the `profiles` and `progress` tables, Row Level
-   Security policies, and a trigger that auto-creates a profile on signup.
-4. Run [`supabase/migrations/0002_subscriptions.sql`](supabase/migrations/0002_subscriptions.sql)
-   the same way. This adds `subscriptions` (Stripe entitlement state, written
-   only by the webhook) and `hint_usage` (daily AI-hint quota).
+In the Supabase dashboard, open **SQL Editor → New query**, and run each file
+in `supabase/migrations/` in order — paste the contents, click **Run**, repeat
+for the next file:
+
+1. [`0001_init.sql`](supabase/migrations/0001_init.sql) — `profiles` and
+   `progress` tables, Row Level Security policies, a trigger that
+   auto-creates a profile on signup.
+2. [`0002_subscriptions.sql`](supabase/migrations/0002_subscriptions.sql) —
+   `subscriptions` (Stripe entitlement state, written only by the webhook)
+   and `hint_usage` (daily AI-hint quota).
+3. [`0003_challenge_completions.sql`](supabase/migrations/0003_challenge_completions.sql) —
+   weekly-challenge leaderboard.
+4. [`0004_sandbox.sql`](supabase/migrations/0004_sandbox.sql) — paper-trading
+   sandbox (accounts, positions, trades).
+5. [`0005_certificates.sql`](supabase/migrations/0005_certificates.sql) —
+   certificates of completion, issued when a track hits 100%.
 
 ## 3. Grab your API keys
 
@@ -102,7 +111,8 @@ If you don't set this up, just use email/password — everything else works.
 | Progress sync (local ⇄ cloud) | `src/lib/useProgress.ts`, `src/lib/progress/sync.ts` |
 | Progress API (server) | `src/app/api/progress/route.ts` |
 | Subscription state (Stripe ⇄ Supabase) | `src/app/api/stripe/webhook/route.ts`, `subscriptions` table |
-| Schema + RLS + trigger | `supabase/migrations/0001_init.sql`, `0002_subscriptions.sql` |
+| Certificates of completion | `src/app/api/certificates/issue/route.ts`, `src/app/certificate/[id]/`, `certificates` table |
+| Schema + RLS + trigger | `supabase/migrations/0001_init.sql` .. `0005_certificates.sql` |
 
 Progress made while logged out is preserved and **merged up** to your account
 on first sign-in — no completions are lost.
