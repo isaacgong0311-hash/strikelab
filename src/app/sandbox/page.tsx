@@ -20,7 +20,7 @@ export default function SandboxPage() {
           crawler (which is never signed in) used to see no H1 and almost no
           text here — identical in shape to the Playground page's own loading
           gate, which is why an auditor flagged the two as duplicate content. */}
-      <div className="mb-8 v2-page-head" data-v2-head>
+      <div className="mb-2 v2-page-head v2-page-head--tool" data-v2-head>
         <Breadcrumbs trail={[{ name: "Sandbox", path: "/sandbox" }]} />
         <Eyebrow>Sandbox</Eyebrow>
         <h1
@@ -29,11 +29,16 @@ export default function SandboxPage() {
         >
           Paper-trading sandbox
         </h1>
+        {/* "applied to real market data" was wrong — src/lib/pricing.ts is
+            explicit that there's no real feed (deterministic simulated GBM,
+            reseeded daily). Also dropped the trailing "Sign in free to open
+            the desk" — the sign-in gate right below already has its own CTA,
+            saying it twice reads as filler. */}
         <p className="text-sm leading-relaxed max-w-2xl" style={{ color: "var(--muted2)" }}>
           Trade stocks and options with $100,000 in simulated cash. Every option is
           priced live by StrikeLab&rsquo;s own Black-Scholes engine — the same math
-          taught in the Options Pricing lessons, applied to real market data. Sign in
-          free to open the desk.
+          taught in the Options Pricing lessons — against simulated prices for about
+          90 tickers.
         </p>
       </div>
       <SandboxClient />

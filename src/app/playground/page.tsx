@@ -20,7 +20,7 @@ export default function PlaygroundPage() {
           once Pyodide finishes booting, so a crawler that reads the initial
           HTML (or catches this page mid-boot) used to see no H1 and near-empty
           content here. This block is always present regardless of load state. */}
-      <div className="mb-8 v2-page-head" data-v2-head>
+      <div className="mb-2 v2-page-head v2-page-head--tool" data-v2-head>
         <Breadcrumbs trail={[{ name: "Playground", path: "/playground" }]} />
         <Eyebrow>Playground</Eyebrow>
         <h1
@@ -29,11 +29,14 @@ export default function PlaygroundPage() {
         >
           Python options pricing playground
         </h1>
+        {/* Four Greeks, matching the interactive tool below exactly — it used
+            to also claim Rho, which this tool doesn't implement (Rho has its
+            own full lesson instead). Trimmed the rest since the tool's own
+            header repeats "implement live in Python" a few px down. */}
         <p className="text-sm leading-relaxed max-w-2xl" style={{ color: "var(--muted2)" }}>
-          Implement the Black-Scholes formula and its five Greeks — Delta, Gamma, Theta,
-          Vega, and Rho — in real Python, running entirely in your browser via Pyodide.
-          Every function you write redraws the payoff and Greek curves live. No install,
-          no account, free forever.
+          A free Python playground for the Options Pricing curriculum — implement
+          Black-Scholes and four of its Greeks (Delta, Gamma, Theta, Vega) running
+          entirely in your browser via Pyodide. No install, no account.
         </p>
       </div>
       <Suspense>
