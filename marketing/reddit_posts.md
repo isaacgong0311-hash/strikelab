@@ -7,7 +7,7 @@
 
 I'm a high school freshman. I got obsessed with quant finance last year and couldn't find anything that taught options pricing at my level — everything was either a grad textbook or a $50/mo adult MOOC.
 
-So I built it: **StrikeLab** — 22 lessons across three tracks (Investing Fundamentals → Options Pricing → Quant Investing) that take you from "what is a stock" to implementing Black-Scholes, all five Greeks, implied vol via Newton-Raphson, binomial trees for American options, and CAPM/factor investing/backtesting.
+So I built it: **StrikeLab** — 23 lessons across three tracks (Investing Fundamentals → Options Pricing → Quant Investing) that take you from "what is a stock" to implementing Black-Scholes, all five Greeks, implied vol via Newton-Raphson, binomial trees for American options, and CAPM/backtesting/portfolio optimization.
 
 The format: each lesson ends with a coding exercise where you implement missing functions in a real Python pricing engine. Tests run instantly in-browser via Pyodide (no install). There's a live Greek visualizer where you drag sliders and watch Δ, Γ, Θ, ν, ρ update in real time — and a $100k paper-trading sandbox if you want to actually use what you learned.
 
@@ -31,7 +31,7 @@ If you've done AMC/AIME, you already have the math for Black-Scholes:
 
 The problem is nothing connects that math to what quant traders actually do. **StrikeLab** is my attempt at that bridge.
 
-22 lessons across three tracks, each ending with a coding exercise (Python, runs in-browser via WebAssembly). Free, no install. There's also a $100k paper-trading sandbox once you're through the pricing lessons, so you can actually trade against the math instead of just reading about it.
+23 lessons across three tracks, each ending with a coding exercise (Python, runs in-browser via WebAssembly). Free, no install. There's also a $100k paper-trading sandbox once you're through the pricing lessons, so you can actually trade against the math instead of just reading about it.
 
 **strikelab.dev**
 
@@ -57,6 +57,6 @@ Built it because I wanted it to exist. Feedback welcome.
 
 Not pitching a strategy — pitching the tooling. StrikeLab's sandbox gives you $100k in simulated cash to trade stocks, calls, and puts across ~90 real tickers. Every option is priced live off a TypeScript port of the exact Black-Scholes formula the platform's lessons teach you to implement yourself in Python — so the pricing isn't a black box, you can go read the source.
 
-Built this on top of a free options-pricing curriculum I made for high schoolers (Black-Scholes, the Greeks, binomial trees, CAPM — 22 lessons total). The sandbox was the piece that was missing: somewhere to actually *use* the math with consequences, even simulated ones.
+Built this on top of a free options-pricing curriculum I made for high schoolers (Black-Scholes, the Greeks, binomial trees, CAPM — 23 lessons total). The sandbox was the piece that was missing: somewhere to actually *use* the math with consequences, even simulated ones.
 
-MIT-licensed, open source: strikelab.dev/sandbox — main site at strikelab.dev.
+Source is public on GitHub if you want to see how the pricing engine works: strikelab.dev/sandbox — main site at strikelab.dev.
