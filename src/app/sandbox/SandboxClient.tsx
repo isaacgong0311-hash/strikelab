@@ -225,7 +225,7 @@ function TradeInsight({ payload, disabled }: { payload: InsightPayload; disabled
   if (state === "idle") {
     return (
       <button type="button" className="sb-ai-btn" onClick={run} disabled={disabled}>
-        ✨ AI take on this trade
+        AI take on this trade
       </button>
     );
   }
@@ -285,7 +285,7 @@ function TradeIdeaGenerator({ onIdea }: { onIdea: (idea: TradeIdea) => void }) {
 
   return (
     <div className="sb-card sb-idea-card">
-      <div className="sb-card-title">✨ AI trade idea</div>
+      <div className="sb-card-title">AI trade idea</div>
       <p className="sb-idea-hint">
         Describe your market view — the AI turns it into a concrete trade and fills in the order below.
       </p>

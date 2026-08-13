@@ -507,8 +507,24 @@ main { animation: v2pageIn 0.5s cubic-bezier(.2,.7,.3,1) both; }
    hard-edged bands back to back. Same copy, a third of the whitespace, no
    competing border — the tool's own chrome supplies the visual boundary. */
 .v2-page-head--tool {
-  padding: 24px 0 16px;
+  padding: 24px 24px 16px;
   border-bottom: none;
+}
+/* Sandbox-specific: .sb-root (the actual trading UI right below this
+   header) is `max-width: 1180px; margin: 0 auto` — centered, with real
+   margins on anything wider than 1180px. This header had no max-width at
+   all, so on any screen wider than that it rendered flush against the raw
+   viewport edge while the content beneath it sat inset by however much
+   `(viewport - 1180) / 2` came out to — hundreds of pixels on a normal
+   monitor. Not a spacing-amount problem, a straight-up misalignment: the
+   title and the tool didn't share a left edge. Same max-width/centering
+   formula as .sb-root (border-box, so this is pixel-identical, not just
+   visually close) fixes it for any viewport width, not just the one this
+   was eyeballed against. */
+.v2-page-head--sandbox {
+  max-width: 1180px;
+  margin-left: auto;
+  margin-right: auto;
 }
 /* This H1/paragraph exist purely so crawlers and pre-JS visitors see real
    content (see the comment in playground/page.tsx and sandbox/page.tsx) —
