@@ -12,9 +12,9 @@ The problem: every resource I found was either a grad-school textbook (assumes s
 
 StrikeLab - strikelab.dev - free, browser-based, no install.
 
-What it covers (22 lessons across three tracks):
+What it covers (23 lessons across three tracks):
 
-**Investing Fundamentals** (6 lessons) - stocks, markets, reading financial statements, valuation, risk and diversification, building a portfolio.
+**Investing Fundamentals** (9 lessons) - what is a stock, how markets work, reading financial statements, valuation, risk/return/diversification, building a portfolio, bonds and fixed income, retirement accounts and tax drag, common investing mistakes.
 
 **Options Pricing** (11 lessons):
 1. Option fundamentals - calls, puts, strike, expiry
@@ -29,7 +29,7 @@ What it covers (22 lessons across three tracks):
 10. Binomial trees and American option pricing (CRR model - with a clickable lattice visualizer)
 11. Rho and the full Greek surface
 
-**Quant Investing** (5 lessons) - CAPM and beta, factor investing, backtesting, portfolio optimization, statistical arbitrage.
+**Quant Investing** (3 lessons, more on the way) - CAPM and beta, backtesting a strategy, portfolio optimization. VaR/GARCH/Monte Carlo is on the roadmap.
 
 The format:
 
@@ -43,6 +43,6 @@ If you've done AMC/AIME, you already have the math for this. Black-Scholes invol
 
 This is the fastest path I know from "what is a stock?" to implementing and understanding a full pricing engine, then trading against it.
 
-It's free and open source (MIT). Would love feedback from this community - you're basically my exact target user.
+It's free, and the source is public on GitHub if you want to see how the pricing engine works. Would love feedback from this community - you're basically my exact target user.
 
 strikelab.dev
