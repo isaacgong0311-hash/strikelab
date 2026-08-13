@@ -3,10 +3,24 @@
    PLAYGROUND v2 — polished IDE split view
    ═══════════════════════════════════════════════════════════ */
 
+/* 280px = Nav + the compact SEO header above this component
+   (.v2-page-head--tool + its mb-2 margin), measured via getBoundingClientRect.
+   This constant is stale by design (a plain CSS calc() can't measure its own
+   preceding siblings) — it used to be 92px, from before that SEO header
+   existed at all, which let this "fits in one screen" IDE layout silently
+   overflow the viewport by 200px+ and need page-scroll despite
+   overflow:hidden below intending otherwise. If playground/page.tsx's header
+   block changes height, remeasure pg-root's getBoundingClientRect().top and
+   update this number, or the same drift happens again.
+   min-height keeps the editor/chart panels usable on short viewports (fits
+   without scroll down to ~700px tall — 1366×768 laptop minus browser chrome
+   lands right around there) rather than shrinking them to nothing; shorter
+   than that scrolls, which is fine — better than illegible. */
 .pg-root {
   display: flex;
   flex-direction: column;
-  height: calc(100vh - 92px);
+  height: calc(100vh - 280px);
+  min-height: 400px;
   background: var(--bg);
   overflow: hidden;
 }
