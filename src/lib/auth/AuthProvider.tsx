@@ -8,6 +8,7 @@ import {
   useCallback,
 } from "react";
 import type { Session, User } from "@supabase/supabase-js";
+import * as Sentry from "@sentry/nextjs";
 import { getSupabaseBrowser } from "@/lib/supabase/client";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
 
@@ -51,12 +52,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setSession(data.session);
       setUser(data.session?.user ?? null);
       setLoading(false);
+      // Tags Sentry events with the account so a crash report can be traced
+      // back to a user (id + email, no other PII). No-op if DSN isn't set.
+      Sentry.setUser(data.session?.user ? { id: data.session.user.id, email: data.session.user.email } : null);
     });
 
     const { data: sub } = supabase.auth.onAuthStateChange((_event, newSession) => {
       setSession(newSession);
       setUser(newSession?.user ?? null);
       setLoading(false);
+      Sentry.setUser(newSession?.user ? { id: newSession.user.id, email: newSession.user.email } : null);
     });
 
     return () => {
