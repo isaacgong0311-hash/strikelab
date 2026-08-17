@@ -123,7 +123,15 @@ export interface ExecuteError {
   error: string;
 }
 
-/** Open a new position: validates cash, writes the position + trade rows, debits cash. */
+/**
+ * Open a new position: validates cash, writes the position + trade rows,
+ * debits cash — all atomically via the sandbox_open_position() Postgres
+ * function (supabase/migrations/0007_sandbox_atomic_trades.sql). Cash is
+ * checked and debited in the same statement inside that function, so two
+ * concurrent trades can't both read the same stale balance and both
+ * succeed (see the migration's header comment for the full race-condition
+ * writeup this replaced).
+ */
 export async function executeTrade(
   supabase: SupabaseClient,
   userId: string,
@@ -143,54 +151,40 @@ export async function executeTrade(
   const multiplier = contractMultiplier(params.assetType);
   const cost = fillPrice * params.qty * multiplier;
 
-  const { cashBalance } = await getOrCreateAccount(supabase, userId);
-  if (cost > cashBalance) {
-    return { ok: false, error: "Insufficient cash balance for this trade" };
-  }
-
-  const newBalance = cashBalance - cost;
-
-  const { data: position, error: posError } = await supabase
-    .from("sandbox_positions")
-    .insert({
-      user_id: userId,
-      symbol: params.symbol,
-      asset_type: params.assetType,
-      side: params.side,
-      qty: params.qty,
-      avg_cost: fillPrice,
-      strike: params.strike ?? null,
-      expiry: params.expiry ?? null,
+  const { data, error } = await supabase
+    .rpc("sandbox_open_position", {
+      p_user_id: userId,
+      p_symbol: params.symbol,
+      p_asset_type: params.assetType,
+      p_side: params.side,
+      p_qty: params.qty,
+      p_fill_price: fillPrice,
+      p_cost: cost,
+      p_strike: params.strike ?? null,
+      p_expiry: params.expiry ?? null,
     })
-    .select("id")
     .single();
 
-  if (posError || !position) {
+  if (error) {
+    if (error.message?.includes("insufficient_funds")) {
+      return { ok: false, error: "Insufficient cash balance for this trade" };
+    }
     return { ok: false, error: "Failed to open position" };
   }
 
-  await supabase.from("sandbox_trades").insert({
-    user_id: userId,
-    symbol: params.symbol,
-    asset_type: params.assetType,
-    direction: params.side === "long" ? "buy" : "sell",
-    qty: params.qty,
-    fill_price: fillPrice,
-    strike: params.strike ?? null,
-    expiry: params.expiry ?? null,
-  });
-
-  await supabase
-    .from("sandbox_accounts")
-    .upsert(
-      { user_id: userId, cash_balance: newBalance, updated_at: new Date().toISOString() },
-      { onConflict: "user_id" }
-    );
-
-  return { ok: true, cashBalance: newBalance, positionId: position.id };
+  const row = data as { position_id: string; cash_balance: number };
+  return { ok: true, cashBalance: Number(row.cash_balance), positionId: row.position_id };
 }
 
-/** Close an open position at the current mark price, booking realized P&L and crediting cash. */
+/**
+ * Close an open position at the current mark price, booking realized P&L
+ * and crediting cash — atomically via sandbox_close_position() (see
+ * supabase/migrations/0007_sandbox_atomic_trades.sql). The P&L/cash-delta
+ * math stays here in TypeScript (same formulas as before); the RPC's job is
+ * only to apply those already-computed numbers in one transaction, guarded
+ * by `closed_at IS NULL` so two concurrent close requests on the same
+ * position can't both succeed and double-credit cash.
+ */
 export async function closePosition(
   supabase: SupabaseClient,
   userId: string,
@@ -219,35 +213,23 @@ export async function closePosition(
   // Long: cash gets back the sale proceeds. Short: cash gets back the original margin plus/minus P&L.
   const cashDelta = position.side === "long" ? proceeds : returnedCapital + realizedPnl;
 
-  const { cashBalance } = await getOrCreateAccount(supabase, userId);
-  const newBalance = cashBalance + cashDelta;
-
-  await supabase
-    .from("sandbox_positions")
-    .update({
-      closed_at: new Date().toISOString(),
-      close_price: closePrice,
-      realized_pnl: realizedPnl,
+  const { data, error } = await supabase
+    .rpc("sandbox_close_position", {
+      p_user_id: userId,
+      p_position_id: positionId,
+      p_close_price: closePrice,
+      p_realized_pnl: realizedPnl,
+      p_cash_delta: cashDelta,
     })
-    .eq("id", positionId);
+    .single();
 
-  await supabase.from("sandbox_trades").insert({
-    user_id: userId,
-    symbol: position.symbol,
-    asset_type: position.asset_type,
-    direction: position.side === "long" ? "sell" : "buy",
-    qty: position.qty,
-    fill_price: closePrice,
-    strike: position.strike,
-    expiry: position.expiry,
-  });
+  if (error) {
+    // Covers the position having been closed by a concurrent request
+    // between our read above and this call — same message as the
+    // "already gone" case the initial SELECT above already returns.
+    return { ok: false, error: "Position not found or already closed" };
+  }
 
-  await supabase
-    .from("sandbox_accounts")
-    .upsert(
-      { user_id: userId, cash_balance: newBalance, updated_at: new Date().toISOString() },
-      { onConflict: "user_id" }
-    );
-
-  return { ok: true, cashBalance: newBalance, positionId };
+  const newRow = data as { cash_balance: number };
+  return { ok: true, cashBalance: Number(newRow.cash_balance), positionId };
 }
