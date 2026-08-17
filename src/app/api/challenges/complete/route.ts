@@ -5,9 +5,19 @@
  * only their own row. xp is looked up server-side from the challenge id
  * (never trusted from the client) and elapsed_seconds is clamped to a sane
  * range. Only the fastest recorded time per (user, challenge) is kept.
+ *
+ * Weekly challenges are a Pro-tier feature (see src/app/challenges/
+ * ChallengesClient.tsx — the Run button itself is replaced by an upgrade CTA
+ * for non-Pro users). That was previously a client-only restriction: this
+ * endpoint accepted a completion from any signed-in user regardless of
+ * plan, so a free user could bypass the UI entirely (call this route
+ * directly) and land on the paid leaderboard for free. isProUser() closes
+ * that — the actual entitlement check now lives server-side, where a client
+ * can't route around it.
  */
 import { NextRequest, NextResponse } from "next/server";
 import { requireUser } from "@/lib/supabase/requireUser";
+import { isProUser } from "@/lib/subscription/isPro";
 import { WEEKLY_CHALLENGES } from "@/lib/challenges";
 
 const MAX_ELAPSED_SECONDS = 24 * 60 * 60;
@@ -18,6 +28,10 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: auth.error }, { status: auth.status });
   }
   const { supabase, userId } = auth;
+
+  if (!(await isProUser(supabase, userId))) {
+    return NextResponse.json({ error: "Weekly challenges are a Pro feature" }, { status: 403 });
+  }
 
   let body: { challengeId?: string; elapsedSeconds?: number };
   try {

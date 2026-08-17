@@ -12,8 +12,7 @@
  */
 import { NextResponse } from "next/server";
 import { requireUser } from "@/lib/supabase/requireUser";
-
-const ACTIVE_STATUSES = new Set(["active", "trialing"]);
+import { ACTIVE_SUBSCRIPTION_STATUSES } from "@/lib/subscription/isPro";
 
 export async function GET() {
   const auth = await requireUser();
@@ -35,7 +34,7 @@ export async function GET() {
     return NextResponse.json({ isPro: false, plan: null, customerId: null, status: null });
   }
 
-  if (!data || !data.status || !ACTIVE_STATUSES.has(data.status)) {
+  if (!data || !data.status || !ACTIVE_SUBSCRIPTION_STATUSES.has(data.status)) {
     return NextResponse.json({
       isPro: false,
       plan: null,
