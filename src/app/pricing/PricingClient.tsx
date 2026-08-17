@@ -27,6 +27,8 @@ const TIERS = [
       "Progress tracking",
       "Open-source pricing engine",
       "Community Discord",
+      "Weekly coding challenges + achievements",
+      "Certificate of completion",
     ],
   },
   {
@@ -41,10 +43,8 @@ const TIERS = [
     accent: "#147038",
     features: [
       "Everything in Student",
-      "Weekly coding challenges + achievements",
       "Weekly office hours with the founder",
       "Priority email support",
-      "Certificate of completion — coming soon",
       "Real-time market data via Polygon.io — coming soon",
     ],
   },
@@ -78,7 +78,7 @@ const FAQ = [
   },
   {
     q: "What does the 7-day free trial include?",
-    a: "Full access to everything currently live in Pro — weekly coding challenges, achievements, and office hours. No charge until the trial ends. Cancel anytime from the billing portal.",
+    a: "Full access to everything currently live in Pro — weekly office hours with the founder and priority email support. No charge until the trial ends. Cancel anytime from the billing portal.",
   },
   {
     q: "What ages is StrikeLab for?",
