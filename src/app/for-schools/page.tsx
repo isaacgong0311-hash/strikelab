@@ -15,7 +15,7 @@ export const metadata = pageMetadata({
 const FAQS = [
   {
     q: "What does the School license actually include?",
-    a: "Everything in the free Student tier (which already includes weekly coding challenges, achievements, and certificates) plus everything in Pro (weekly office hours, priority support) for up to 30 student accounts, a curriculum alignment guide mapped to AP Stats and AP Calc, and monthly teacher training calls.",
+    a: "Everything in the free Student tier (which already includes achievements and certificates of completion) plus everything in Pro (weekly coding challenges, the leaderboard, office hours, priority support) for up to 30 student accounts, a curriculum alignment guide mapped to AP Stats and AP Calc, and monthly teacher training calls.",
   },
   {
     q: "How is it billed?",
