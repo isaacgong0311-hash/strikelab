@@ -35,6 +35,12 @@ for the next file:
    sandbox (accounts, positions, trades).
 5. [`0005_certificates.sql`](supabase/migrations/0005_certificates.sql) —
    certificates of completion, issued when a track hits 100%.
+6. [`0006_discord_webhook.sql`](supabase/migrations/0006_discord_webhook.sql) —
+   per-user Discord webhook URL for lesson/achievement auto-posting.
+7. [`0007_sandbox_atomic_trades.sql`](supabase/migrations/0007_sandbox_atomic_trades.sql) —
+   atomic open/close RPCs for the sandbox, fixing a cash-balance race
+   condition. **Required** — the sandbox will error on every trade until
+   this one is run.
 
 ## 3. Grab your API keys
 
