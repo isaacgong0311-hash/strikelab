@@ -54,7 +54,7 @@ It teaches the math behind how options are priced: Black-Scholes, the five Greek
 
 This is designed for students who've completed pre-calculus or AP Calculus and want to see the math applied to something real. It aligns naturally with AP Stats and AP Calc content.
 
-The core curriculum is free forever, for any student. We also offer a paid Pro tier ($9/mo) with weekly coding challenges and a certificate of completion — schools sometimes cover this for a class or club. A dedicated school license (site-wide, with a teacher dashboard) is on the roadmap but not built yet, so today the simplest path for a class is just having students sign up individually — it's free.
+The core curriculum — all 23 lessons, the Python playground, coding challenges, achievements, and certificates of completion — is free forever, for any student. We also offer a paid Pro tier ($9/mo, optional) with weekly office hours and priority support — schools sometimes cover this for a class or club. A dedicated school license (site-wide, with a teacher dashboard) is on the roadmap but not built yet, so today the simplest path for a class is just having students sign up individually — it's free.
 
 Would love to offer your math club or AP class free access. Can I send you a walkthrough?
 
