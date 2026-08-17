@@ -34,9 +34,16 @@ export interface QuotaResult {
 }
 
 /**
- * Checks and increments today's AI budget for a user.
+ * Checks and increments today's AI budget for a user, atomically, via the
+ * consume_ai_quota() Postgres function (supabase/migrations/
+ * 0008_separate_ai_quota_from_hints.sql). That function is also what keeps
+ * this budget in its own public.ai_usage table instead of accidentally
+ * sharing storage with the separate hint cap (see that migration's header
+ * comment for the full writeup) — the check-and-increment happens in one
+ * statement, so two concurrent requests can't both read the same
+ * pre-increment count and both get allowed through.
  *
- * Fails OPEN on a database error — a transient Supabase hiccup shouldn't block
+ * Fails OPEN on an RPC error — a transient Supabase hiccup shouldn't block
  * a student mid-lesson. The tradeoff is that a sustained DB outage also
  * disables the cap; that's deliberate, since the outage itself is the louder
  * problem and Groq spend is bounded by traffic in the meantime.
@@ -47,32 +54,16 @@ export async function consumeAiQuota(
   feature: AiFeature,
 ): Promise<QuotaResult> {
   const cost = AI_COST[feature];
-  const today = new Date().toISOString().slice(0, 10);
 
   const { data, error } = await supabase
-    .from("hint_usage")
-    .select("day, count")
-    .eq("user_id", userId)
-    .maybeSingle();
+    .rpc("consume_ai_quota", { p_user_id: userId, p_cost: cost, p_cap: DAILY_AI_ACTIONS })
+    .single();
 
-  if (error) {
-    console.error("[ai/quota] read failed:", error.message);
+  if (error || !data) {
+    console.error("[ai/quota] consume_ai_quota failed:", error?.message);
     return { allowed: true, used: 0, limit: DAILY_AI_ACTIONS };
   }
 
-  const isNewDay = !data || data.day !== today;
-  const used = isNewDay ? 0 : data.count;
-
-  if (used + cost > DAILY_AI_ACTIONS) {
-    return { allowed: false, used, limit: DAILY_AI_ACTIONS };
-  }
-
-  const nextCount = used + cost;
-  const { error: writeError } = await supabase
-    .from("hint_usage")
-    .upsert({ user_id: userId, day: today, count: nextCount }, { onConflict: "user_id" });
-
-  if (writeError) console.error("[ai/quota] write failed:", writeError.message);
-
-  return { allowed: true, used: nextCount, limit: DAILY_AI_ACTIONS };
+  const row = data as { new_count: number; allowed: boolean };
+  return { allowed: row.allowed, used: row.new_count, limit: DAILY_AI_ACTIONS };
 }
