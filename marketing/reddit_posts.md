@@ -11,6 +11,8 @@ So I built it: **StrikeLab** — 23 lessons across three tracks (Investing Funda
 
 The format: each lesson ends with a coding exercise where you implement missing functions in a real Python pricing engine. Tests run instantly in-browser via Pyodide (no install). There's a live Greek visualizer where you drag sliders and watch Δ, Γ, Θ, ν, ρ update in real time — and a $100k paper-trading sandbox if you want to actually use what you learned.
 
+Finish a track and you get a shareable certificate (verifiable by URL, decent as a LinkedIn/résumé line) — not why I built it, but nice to have proof you actually did the math.
+
 Math prereqs: pre-calc + basic stats. No finance background assumed.
 
 Free, open source, no install: **strikelab.dev**
@@ -33,6 +35,8 @@ The problem is nothing connects that math to what quant traders actually do. **S
 
 23 lessons across three tracks, each ending with a coding exercise (Python, runs in-browser via WebAssembly). Free, no install. There's also a $100k paper-trading sandbox once you're through the pricing lessons, so you can actually trade against the math instead of just reading about it.
 
+If your study group or math club has a Discord, there's a one-click webhook in settings that auto-posts to your server when someone finishes a lesson, track, or unlocks an achievement — built it because that's how I'd actually want to see my own group's progress.
+
 **strikelab.dev**
 
 Would genuinely love feedback from this community — you're my exact target user.
@@ -44,7 +48,7 @@ Would genuinely love feedback from this community — you're my exact target use
 
 If you've ever tried to actually understand how options are priced — not just "delta is how much the option moves" but *why* the formula is what it is — most resources are either textbooks or expensive adult courses.
 
-I built a free, browser-based curriculum that covers it properly: Black-Scholes derivation, all five Greeks with live visualizations, implied volatility, binomial trees, and — if you want to go further — CAPM and backtesting. Each lesson has a coding exercise where you implement the actual pricing functions, and there's a $100k paper-trading sandbox to try it for real (simulated money, real math).
+I built a free, browser-based curriculum that covers it properly: Black-Scholes derivation, all five Greeks with live visualizations, implied volatility, binomial trees, and — if you want to go further — CAPM and backtesting. Each lesson has a coding exercise where you implement the actual pricing functions, and there's a $100k paper-trading sandbox to try it for real (simulated money, real math). Finish a track and there's a verifiable certificate if you want a record of it.
 
 No install, no cost: **strikelab.dev**
 

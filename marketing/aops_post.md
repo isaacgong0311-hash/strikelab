@@ -37,6 +37,8 @@ Each lesson ends with a coding exercise. You get a partial Python pricing engine
 
 There's also a Greek visualizer - drag sliders for S, K, T, r, and sigma and watch delta, gamma, theta, vega, and rho update live. And once you're through the pricing lessons, there's a $100k paper-trading sandbox - real ~90-ticker watchlist, options priced with the same engine, so you can trade against your own understanding instead of just reading about it.
 
+Finish a track and you get a shareable, verifiable certificate - genuinely useful if you're building out a college application and want something concrete to point to. There's also a Discord webhook if your math club or study group wants lesson/track completions posted to your server automatically.
+
 Why this might interest you specifically:
 
 If you've done AMC/AIME, you already have the math for this. Black-Scholes involves log-normal distributions, partial derivatives, and the normal CDF - nothing you haven't seen. The implied vol solver is Newton-Raphson, which you probably know from calc. The binomial tree is just dynamic programming.
