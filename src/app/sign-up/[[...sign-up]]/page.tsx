@@ -1,11 +1,27 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { getSupabaseBrowser } from "@/lib/supabase/client";
 import { TRACKS } from "@/lib/tracks";
 
 const TOTAL_LESSONS = TRACKS.reduce((s, t) => s + t.lessons.length, 0);
+
+// Where did this signup come from? (?src=reddit, ?src=aops, ?src=discord, ...)
+// Read once on mount, threaded through the email/password path directly and
+// stashed in a short-lived cookie so the OAuth round-trip can recover it too
+// (Google auth doesn't carry arbitrary signup metadata the way email/password does).
+function useSignupSource() {
+  const [source] = useState<string | null>(() => {
+    if (typeof window === "undefined") return null;
+    return new URLSearchParams(window.location.search).get("src");
+  });
+  useEffect(() => {
+    if (!source) return;
+    document.cookie = `sl_src=${encodeURIComponent(source)}; path=/; max-age=3600; SameSite=Lax`;
+  }, [source]);
+  return source;
+}
 
 export default function SignUpPage() {
   const router = useRouter();
@@ -15,6 +31,7 @@ export default function SignUpPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [checkEmail, setCheckEmail] = useState(false);
+  const signupSource = useSignupSource();
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -34,7 +51,7 @@ export default function SignUpPage() {
       email,
       password,
       options: {
-        data: { display_name: name, full_name: name },
+        data: { display_name: name, full_name: name, signup_source: signupSource },
         emailRedirectTo: `${window.location.origin}/auth/callback?next=/dashboard`,
       },
     });
