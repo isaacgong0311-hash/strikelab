@@ -8,7 +8,7 @@ export const metadata = pageMetadata({
   path: "/roadmap",
   title: "Roadmap",
   description:
-    "What's shipping next on StrikeLab — school dashboards, certificates, and Discord integration.",
+    "What's shipping next on StrikeLab — assignment grading, VaR/GARCH/Monte Carlo lessons, and a live equity sandbox.",
 });
 
 const ROADMAP = [
@@ -34,6 +34,7 @@ const ROADMAP = [
       { title: "Binomial tree visualizer ✓", state: "done", desc: "Interactive lattice in the Binomial Trees lesson — click any node to see its early-exercise decision." },
       { title: "Certificates of completion ✓", state: "done", desc: "Finish a track, claim a shareable certificate at /certificate/[id] — LinkedIn-ready card, verifiable by URL." },
       { title: "Discord integration ✓", state: "done", desc: "Connect a webhook in Settings to auto-post lesson completions, track finishes, and achievements to a school club's channel." },
+      { title: "Classroom rosters ✓", state: "done", desc: "Teachers create a class in Settings, share a join code, and see every student's track/lesson progress at a glance — free for every account." },
     ],
   },
   {
@@ -41,7 +42,7 @@ const ROADMAP = [
     label: "Next up",
     color: "#1d4ed8",
     items: [
-      { title: "Teacher dashboard (School plan)", state: "planned", desc: "Class progress, assignment grading, curriculum alignment." },
+      { title: "Assignment grading", state: "planned", desc: "Assign specific lessons to a class and track per-assignment completion, not just aggregate progress." },
       { title: "Lesson 9–11: VaR, GARCH, Monte Carlo", state: "planned", desc: "Bridge to quant research and risk." },
     ],
   },
