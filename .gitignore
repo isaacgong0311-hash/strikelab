@@ -62,3 +62,8 @@ thumbnail.html
 thumbnail.png
 devpost.tex
 qa_slides/
+
+# demo video tooling
+demo-video/
+render_mp4.mjs
+thumb_render.mjs
