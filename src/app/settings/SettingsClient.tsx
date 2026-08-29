@@ -147,6 +147,178 @@ function DiscordSettings() {
   );
 }
 
+interface OwnedClass {
+  id: string;
+  name: string;
+  joinCode: string;
+  memberCount: number;
+}
+
+interface JoinedClass {
+  id: string;
+  name: string;
+}
+
+function ClassroomSettings() {
+  const [owned, setOwned] = useState<OwnedClass[]>([]);
+  const [joined, setJoined] = useState<JoinedClass[]>([]);
+  const [loaded, setLoaded] = useState(false);
+  const [newClassName, setNewClassName] = useState("");
+  const [joinCodeInput, setJoinCodeInput] = useState("");
+  const [creating, setCreating] = useState(false);
+  const [joining, setJoining] = useState(false);
+  const [message, setMessage] = useState<{ text: string; isError: boolean } | null>(null);
+
+  const refresh = useCallback(async () => {
+    try {
+      const [ownedRes, joinedRes] = await Promise.all([
+        fetch("/api/classes"),
+        fetch("/api/classes/joined"),
+      ]);
+      const ownedData = await ownedRes.json();
+      const joinedData = await joinedRes.json();
+      setOwned(ownedData.classes ?? []);
+      setJoined(joinedData.classes ?? []);
+    } finally {
+      setLoaded(true);
+    }
+  }, []);
+
+  useEffect(() => {
+    const id = window.setTimeout(() => { refresh(); }, 0);
+    return () => window.clearTimeout(id);
+  }, [refresh]);
+
+  async function createClass(e: React.FormEvent) {
+    e.preventDefault();
+    setMessage(null);
+    setCreating(true);
+    try {
+      const res = await fetch("/api/classes", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name: newClassName }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error ?? "Failed to create class");
+      setNewClassName("");
+      await refresh();
+    } catch (err) {
+      setMessage({ text: err instanceof Error ? err.message : "Failed to create class", isError: true });
+    } finally {
+      setCreating(false);
+    }
+  }
+
+  async function joinClass(e: React.FormEvent) {
+    e.preventDefault();
+    setMessage(null);
+    setJoining(true);
+    try {
+      const res = await fetch("/api/classes/join", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ code: joinCodeInput }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error ?? "Failed to join class");
+      setJoinCodeInput("");
+      setMessage({ text: `Joined ${data.name}.`, isError: false });
+      await refresh();
+    } catch (err) {
+      setMessage({ text: err instanceof Error ? err.message : "Failed to join class", isError: true });
+    } finally {
+      setJoining(false);
+    }
+  }
+
+  return (
+    <div className="db-panel" style={{ marginTop: 20 }}>
+      <div className="db-panel-head">
+        <span className="db-panel-title">Classroom</span>
+      </div>
+      <p className="text-xs leading-relaxed mb-4" style={{ color: "var(--muted2)" }}>
+        Teaching a class? Create one and share the join code with your students to see
+        their progress in one place. Taking a class? Enter the code your teacher gave you.
+      </p>
+
+      {!loaded ? (
+        <p className="text-xs" style={{ color: "var(--ink-3)" }}>Loading…</p>
+      ) : (
+        <div className="flex flex-col gap-5">
+          <div>
+            {owned.length > 0 && (
+              <div className="flex flex-col gap-2 mb-3">
+                {owned.map((c) => (
+                  <div key={c.id} className="flex items-center gap-3 flex-wrap text-xs">
+                    <Link href={`/dashboard/class/${c.id}`} style={{ color: "var(--ink)", fontWeight: 600 }}>
+                      {c.name}
+                    </Link>
+                    <span style={{ color: "var(--muted2)" }}>{c.memberCount} student{c.memberCount === 1 ? "" : "s"}</span>
+                    <span
+                      className="px-2 py-1 rounded"
+                      style={{ background: "var(--bg2)", color: "var(--ink-3)", fontFamily: "var(--font-mono)" }}
+                    >
+                      Code: {c.joinCode}
+                    </span>
+                    <Link href={`/dashboard/class/${c.id}`} className="v2-btn ghost sm">
+                      View roster →
+                    </Link>
+                  </div>
+                ))}
+              </div>
+            )}
+            <form onSubmit={createClass} className="flex gap-2 flex-wrap">
+              <input
+                className="auth-input"
+                style={{ flex: "1 1 220px" }}
+                type="text"
+                required
+                placeholder="Class name, e.g. 3rd Period AP Stats"
+                value={newClassName}
+                onChange={(e) => setNewClassName(e.target.value)}
+              />
+              <button type="submit" disabled={creating} className="v2-btn sm">
+                {creating ? "Creating…" : "Create class"}
+              </button>
+            </form>
+          </div>
+
+          <div>
+            {joined.length > 0 ? (
+              <p className="text-xs mb-2" style={{ color: "var(--muted2)" }}>
+                You&rsquo;re in: {joined.map((c) => c.name).join(", ")}
+              </p>
+            ) : (
+              <form onSubmit={joinClass} className="flex gap-2 flex-wrap">
+                <input
+                  className="auth-input"
+                  style={{ flex: "1 1 160px", textTransform: "uppercase" }}
+                  type="text"
+                  required
+                  maxLength={6}
+                  placeholder="Join code"
+                  value={joinCodeInput}
+                  onChange={(e) => setJoinCodeInput(e.target.value.toUpperCase())}
+                />
+                <button type="submit" disabled={joining} className="v2-btn ghost sm">
+                  {joining ? "Joining…" : "Join a class"}
+                </button>
+              </form>
+            )}
+          </div>
+        </div>
+      )}
+
+      {message && (
+        <p className="text-xs mt-3" style={{ color: message.isError ? "var(--coral)" : "var(--grass)" }}>
+          {message.text}
+        </p>
+      )}
+    </div>
+  );
+}
+
 export default function SettingsClient() {
   const { user, loading } = useAuth();
 
@@ -167,6 +339,7 @@ export default function SettingsClient() {
         </p>
       </div>
       <DiscordSettings />
+      <ClassroomSettings />
     </div>
   );
 }
