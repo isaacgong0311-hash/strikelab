@@ -122,16 +122,21 @@ export default function ForTeachersPage() {
 
       <div className="p-6 rounded-lg border text-center" style={{ borderColor: "var(--border)", background: "var(--bg2)" }}>
         <p className="text-sm mb-4" style={{ color: "var(--muted2)" }}>
-          Need a site license for a whole classroom — rostering, a curriculum guide, and
-          training calls included?
+          Create a free account, then head to Settings → Classroom to make a class and get
+          a join code — students see their roster progress at a glance, no site license
+          required.
         </p>
         <Link
-          href="/for-schools"
+          href="/sign-up"
           className="text-sm px-4 py-2 font-medium transition-colors hover:opacity-80"
           style={{ background: "var(--grass)", color: "#fff", fontFamily: "var(--font-mono)", borderRadius: 10, boxShadow: "0 3px 0 var(--grass-d)" }}
         >
-          See the School plan →
+          Start free →
         </Link>
+        <p className="text-xs mt-3" style={{ color: "var(--muted)" }}>
+          Need 30+ seats, a curriculum alignment guide, and training calls?{" "}
+          <Link href="/for-schools" style={{ color: "var(--grass)" }}>See the School plan →</Link>
+        </p>
       </div>
     </div>
   );
