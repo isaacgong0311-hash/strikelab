@@ -2710,6 +2710,98 @@ h1, h2, h3, h4 {
   .ach-page-grid { grid-template-columns: 1fr; }
 }
 
+/* ── Class roster (dashboard/class/[id]) ── */
+.roster-metrics {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-bottom: 20px;
+}
+.roster-head-row {
+  display: grid;
+  grid-template-columns: minmax(140px, 1.6fr) 130px 130px 150px;
+  gap: 16px;
+  padding: 0 14px 10px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  border-bottom: 1px solid var(--line);
+  margin-bottom: 6px;
+}
+.roster-row {
+  display: grid;
+  grid-template-columns: minmax(140px, 1.6fr) 130px 130px 150px;
+  align-items: center;
+  gap: 16px;
+  padding: 11px 14px;
+  border-radius: var(--r-md);
+  transition: background .15s;
+}
+.roster-row:hover { background: var(--bg2); }
+.roster-name { display: flex; align-items: center; gap: 10px; min-width: 0; }
+.roster-avatar {
+  width: 30px; height: 30px;
+  border-radius: var(--r-full);
+  display: grid; place-items: center;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 700;
+  flex-shrink: 0;
+  background: var(--grass-tint);
+  color: var(--grass);
+}
+.roster-name-text {
+  font-weight: 600;
+  color: var(--ink);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.roster-progress-cell { display: flex; flex-direction: column; gap: 5px; min-width: 0; }
+.roster-progress-cell .db-mini-bar { border-radius: var(--r-full); }
+.roster-progress-cell .db-mini-bar-fill { border-radius: var(--r-full); }
+.roster-stat { font-family: var(--font-mono); font-size: 11px; color: var(--ink-2); }
+.roster-cell-label { display: none; }
+.roster-activity {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--ink-3);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+@media (max-width: 640px) {
+  .roster-head-row { display: none; }
+  .roster-row {
+    grid-template-columns: 1fr;
+    gap: 10px;
+    border: 1px solid var(--line);
+    border-radius: var(--r-md);
+    padding: 14px;
+    margin-bottom: 8px;
+    background: var(--card);
+  }
+  .roster-row:hover { background: var(--card); }
+  .roster-progress-cell { flex-direction: row; align-items: center; gap: 10px; }
+  .roster-cell-label {
+    display: inline-block;
+    width: 52px;
+    flex-shrink: 0;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--ink-3);
+  }
+  .roster-progress-cell .db-mini-bar { flex: 1; }
+  .roster-activity { white-space: normal; }
+}
+@media (max-width: 480px) {
+  .roster-metrics { grid-template-columns: 1fr; }
+}
+
 /* ── Responsive ── */
 @media (max-width: 900px) {
   .db-ach-grid { grid-template-columns: repeat(3, 1fr); }

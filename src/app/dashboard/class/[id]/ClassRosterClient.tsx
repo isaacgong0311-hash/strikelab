@@ -83,6 +83,17 @@ export default function ClassRosterClient() {
     URL.revokeObjectURL(url);
   }
 
+  const avgProgressPct = roster.length && totals.lessons
+    ? Math.round(
+        (roster.reduce((sum, r) => sum + r.lessonsCompleted, 0) / (roster.length * totals.lessons)) * 100
+      )
+    : 0;
+  const activeThisWeek = roster.filter((r) => {
+    if (!r.lastActivityDate) return false;
+    const days = (Date.now() - new Date(r.lastActivityDate).getTime()) / 86_400_000;
+    return days <= 7;
+  }).length;
+
   if (loading) return null;
   if (!user) return <SignInPrompt />;
 
@@ -104,8 +115,8 @@ export default function ClassRosterClient() {
   }
 
   return (
-    <div className="max-w-3xl mx-auto px-6 py-14">
-      <div className="mb-8 flex items-start justify-between gap-4 flex-wrap">
+    <div className="max-w-4xl mx-auto px-6 py-14">
+      <div className="mb-6 flex items-start justify-between gap-4 flex-wrap">
         <div>
           <h1
             className="text-3xl font-semibold mb-2"
@@ -131,30 +142,67 @@ export default function ClassRosterClient() {
       )}
 
       {roster.length > 0 && (
-        <div className="db-panel">
-          <div className="flex flex-col gap-1">
-            {roster.map((r) => (
-              <div
-                key={r.studentId}
-                className="flex items-center gap-4 flex-wrap py-2 text-sm"
-                style={{ borderBottom: "1px solid var(--border)" }}
-              >
-                <span style={{ flex: "1 1 160px", color: "var(--ink)", fontWeight: 600 }}>
-                  {r.displayName}
-                </span>
-                <span style={{ color: "var(--muted2)" }}>
-                  {r.tracksCompleted}/{totals.tracks} tracks
-                </span>
-                <span style={{ color: "var(--muted2)" }}>
-                  {r.lessonsCompleted}/{totals.lessons} lessons
-                </span>
-                <span style={{ color: "var(--ink-3)", fontFamily: "var(--font-mono)", fontSize: 12 }}>
-                  {r.lastActivityDate ? `Last active ${r.lastActivityDate}` : "No activity yet"}
-                </span>
-              </div>
-            ))}
+        <>
+          <div className="roster-metrics">
+            <div className="db-metric">
+              <div className="db-metric-icon" style={{ background: "var(--grass-tint)", color: "var(--grass)" }}>◉</div>
+              <div className="db-metric-v" style={{ color: "var(--grass)" }}>{roster.length}</div>
+              <div className="db-metric-l">Students</div>
+            </div>
+            <div className="db-metric">
+              <div className="db-metric-icon" style={{ background: "rgba(251,191,36,0.12)", color: "var(--amber)" }}>◆</div>
+              <div className="db-metric-v" style={{ color: "var(--amber)" }}>{avgProgressPct}%</div>
+              <div className="db-metric-l">Avg. progress</div>
+            </div>
+            <div className="db-metric">
+              <div className="db-metric-icon" style={{ background: "var(--coral-tint)", color: "var(--coral)" }}>△</div>
+              <div className="db-metric-v" style={{ color: "var(--coral)" }}>{activeThisWeek}</div>
+              <div className="db-metric-l">Active this week</div>
+            </div>
           </div>
-        </div>
+
+          <div className="db-panel">
+            <div className="roster-head-row">
+              <span>Student</span>
+              <span>Tracks</span>
+              <span>Lessons</span>
+              <span>Last active</span>
+            </div>
+            <div className="flex flex-col">
+              {roster.map((r) => {
+                const initials = r.displayName
+                  .split(" ")
+                  .filter(Boolean)
+                  .slice(0, 2)
+                  .map((w) => w[0]?.toUpperCase())
+                  .join("") || "?";
+                const trackPct = totals.tracks ? Math.round((r.tracksCompleted / totals.tracks) * 100) : 0;
+                const lessonPct = totals.lessons ? Math.round((r.lessonsCompleted / totals.lessons) * 100) : 0;
+                return (
+                  <div key={r.studentId} className="roster-row">
+                    <div className="roster-name">
+                      <span className="roster-avatar">{initials}</span>
+                      <span className="roster-name-text">{r.displayName}</span>
+                    </div>
+                    <div className="roster-progress-cell">
+                      <span className="roster-cell-label">Tracks</span>
+                      <div className="db-mini-bar"><div className="db-mini-bar-fill" style={{ width: `${trackPct}%`, background: "var(--grass)" }} /></div>
+                      <span className="roster-stat">{r.tracksCompleted}/{totals.tracks}</span>
+                    </div>
+                    <div className="roster-progress-cell">
+                      <span className="roster-cell-label">Lessons</span>
+                      <div className="db-mini-bar"><div className="db-mini-bar-fill" style={{ width: `${lessonPct}%` }} /></div>
+                      <span className="roster-stat">{r.lessonsCompleted}/{totals.lessons}</span>
+                    </div>
+                    <span className="roster-activity">
+                      {r.lastActivityDate ? `Last active ${r.lastActivityDate}` : "No activity yet"}
+                    </span>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </>
       )}
     </div>
   );
