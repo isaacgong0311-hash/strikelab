@@ -71,6 +71,21 @@ export async function POST(req: NextRequest) {
     .select("id")
     .single();
 
+  if (error?.code === "23505") {
+    // Lost a race against a concurrent issue request (double-click, two
+    // tabs) — the UNIQUE (user_id, track_id) constraint on public.certificates
+    // already guaranteed only one row exists, so return that row's id
+    // instead of surfacing a 500 for what is, from the user's side, a
+    // successful issue.
+    const { data: raced } = await admin
+      .from("certificates")
+      .select("id")
+      .eq("user_id", auth.userId)
+      .eq("track_id", track.id)
+      .single();
+    if (raced) return NextResponse.json({ id: raced.id });
+  }
+
   if (error || !inserted) {
     console.error("[certificates/issue] Failed to insert:", error?.message);
     return NextResponse.json({ error: "Failed to issue certificate" }, { status: 500 });

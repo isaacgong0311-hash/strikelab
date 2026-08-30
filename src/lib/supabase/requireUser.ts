@@ -1,3 +1,4 @@
+import * as Sentry from "@sentry/nextjs";
 import { getSupabaseServer } from "./server";
 import type { SupabaseClient } from "@supabase/supabase-js";
 
@@ -15,5 +16,8 @@ export async function requireUser(): Promise<RequireUserResult> {
   if (!supabase) return { error: "Supabase not configured", status: 503 };
   const { data, error } = await supabase.auth.getUser();
   if (error || !data.user) return { error: "Not authenticated", status: 401 };
+  // Attribute any Sentry error raised for the rest of this request to this
+  // user, so server errors aren't all bucketed as anonymous.
+  Sentry.setUser({ id: data.user.id });
   return { supabase, userId: data.user.id };
 }
