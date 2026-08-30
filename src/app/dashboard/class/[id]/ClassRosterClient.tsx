@@ -61,6 +61,28 @@ export default function ClassRosterClient() {
     return () => window.clearTimeout(id);
   }, [user, load]);
 
+  function exportCsv() {
+    const header = ["Name", "Tracks completed", `of ${totals.tracks}`, "Lessons completed", `of ${totals.lessons}`, "Last active"];
+    const rows = roster.map((r) => [
+      r.displayName,
+      String(r.tracksCompleted),
+      String(totals.tracks),
+      String(r.lessonsCompleted),
+      String(totals.lessons),
+      r.lastActivityDate ?? "Never",
+    ]);
+    const csv = [header, ...rows]
+      .map((row) => row.map((cell) => `"${cell.replace(/"/g, '""')}"`).join(","))
+      .join("\n");
+    const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `${className || "class"}-roster.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+  }
+
   if (loading) return null;
   if (!user) return <SignInPrompt />;
 
@@ -83,16 +105,23 @@ export default function ClassRosterClient() {
 
   return (
     <div className="max-w-3xl mx-auto px-6 py-14">
-      <div className="mb-8">
-        <h1
-          className="text-3xl font-semibold mb-2"
-          style={{ fontFamily: "var(--font-display)", color: "var(--ink)" }}
-        >
-          {state === "loading" ? "Loading…" : className}
-        </h1>
-        <p className="text-sm" style={{ color: "var(--muted2)" }}>
-          {roster.length} student{roster.length === 1 ? "" : "s"}
-        </p>
+      <div className="mb-8 flex items-start justify-between gap-4 flex-wrap">
+        <div>
+          <h1
+            className="text-3xl font-semibold mb-2"
+            style={{ fontFamily: "var(--font-display)", color: "var(--ink)" }}
+          >
+            {state === "loading" ? "Loading…" : className}
+          </h1>
+          <p className="text-sm" style={{ color: "var(--muted2)" }}>
+            {roster.length} student{roster.length === 1 ? "" : "s"}
+          </p>
+        </div>
+        {roster.length > 0 && (
+          <button type="button" onClick={exportCsv} className="v2-btn ghost sm">
+            Export CSV →
+          </button>
+        )}
       </div>
 
       {state === "ready" && roster.length === 0 && (
