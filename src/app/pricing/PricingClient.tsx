@@ -124,7 +124,7 @@ export default function PricingClient() {
         </h1>
         <p className="text-sm max-w-xl mx-auto" style={{ color: "var(--ink-2)" }}>
           The core curriculum is and always will be free. Upgrade only if you want
-          live market data, cohort competition, or a license for your school.
+          weekly coding challenges, office hours with the founder, or a license for your school.
         </p>
         {error && (
           <p className="mt-4 text-sm font-medium" style={{ color: "var(--coral)" }}>
