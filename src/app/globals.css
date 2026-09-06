@@ -1212,7 +1212,11 @@ body:has(.sk-home) .v2-bg-vignette { display: none; }
    left the card at 233px against a 548px text column — a lot of dead air
    either side once centred. Larger type reads better and closes most of that
    gap; 13.5px keeps the longest line inside the column without wrapping. */
-.sk-code { padding: 24px 20px 28px; font-family: var(--font-mono); font-size: 13.5px; line-height: 1.95; color: var(--ink); }
+/* Lines like the bs_call(...) call run ~46 monospace chars — wider than a
+   375px phone once the line-number gutter and card padding are subtracted.
+   overflow-x lets it scroll horizontally instead of clipping or forcing the
+   whole card wider than its container. */
+.sk-code { padding: 24px 20px 28px; font-family: var(--font-mono); font-size: 13.5px; line-height: 1.95; color: var(--ink); overflow-x: auto; }
 .sk-code .row { display: flex; white-space: pre; }
 .sk-code .ln { color: var(--ink-3); width: 16px; flex-shrink: 0; text-align: right; margin-right: 14px; user-select: none; }
 .sk-code .k  { color: var(--coral); }
@@ -1390,18 +1394,6 @@ body:has(.sk-home) .v2-bg-vignette { display: none; }
 .sk-cta-p { font-size: 17px; line-height: 1.6; color: rgba(255,255,255,0.68); margin-bottom: 28px; }
 .sk-cta-btns { display: inline-flex; gap: 13px; flex-wrap: wrap; justify-content: center; }
 .sk-newsletter { margin-top: 38px; padding-top: 30px; border-top: 1px solid rgba(255,255,255,0.12); }
-.sk-nl-label { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(255,255,255,0.5); margin-bottom: 14px; }
-.sk-nl-form { display: flex; gap: 10px; max-width: 420px; margin: 0 auto; }
-.sk-nl-form input {
-  flex: 1; min-width: 0; padding: 13px 16px; border-radius: var(--r-md);
-  border: 1px solid rgba(255,255,255,0.2); background: rgba(255,255,255,0.06); color: #fff;
-  font-family: var(--font-ui); font-size: 14px; outline: none;
-  transition: border-color .15s ease;
-}
-.sk-nl-form input:focus { border-color: var(--grass); }
-.sk-nl-form input::placeholder { color: rgba(255,255,255,0.4); }
-.sk-nl-form .sk-btn { flex-shrink: 0; }
-.sk-nl-done { font-family: var(--font-ui), system-ui, sans-serif; font-weight: 600; font-size: 14px; color: #5fd39b; text-align: center; padding: 6px 0; }
 
 /* ── Responsive ────────────────────────────────────────────────────────── */
 @media (max-width: 920px) {
@@ -1409,6 +1401,18 @@ body:has(.sk-home) .v2-bg-vignette { display: none; }
   .sk-tools { grid-template-columns: 1fr; }
   .sk-hero-visual { max-width: 460px; }
   .sk-greeks .sk-ticket { order: 2; }
+}
+
+/* Phone-width pass: hero code card, result chip, and the CTA newsletter form
+   were sized for tablet-and-up and got cramped/clipped below ~400px. */
+@media (max-width: 480px) {
+  .sk-code { font-size: 12px; padding: 20px 16px 24px; }
+  /* The chip's right/bottom offsets pushed it past the card's edge once the
+     card itself shrank to fill a narrow screen — pull it fully inside. */
+  .sk-result-chip {
+    right: 8px; bottom: -14px; padding: 9px 12px; font-size: 11px; gap: 8px;
+  }
+  .sk-cta-card { padding: 44px 22px; }
 }
 
 /* ════════════════════════════════════════════════════════════════════════════

@@ -3,6 +3,7 @@ import Link from "next/link";
 import type { Metadata } from "next";
 import { getCertificateById } from "@/lib/certificates";
 import { SITE_URL, SITE_NAME } from "@/lib/site";
+import CertificateShare from "@/components/CertificateShare";
 
 // Root layout's <title> template appends " — StrikeLab" automatically —
 // see src/app/layout.tsx. Titles here must NOT append SITE_NAME themselves.
@@ -103,6 +104,8 @@ export default async function CertificatePage({
           </p>
         </div>
       </div>
+
+      <CertificateShare url={`${SITE_URL}/certificate/${cert.id}`} />
 
       <div className="mt-6 text-center">
         <Link href="/" className="text-sm underline underline-offset-2" style={{ color: "var(--muted2)" }}>

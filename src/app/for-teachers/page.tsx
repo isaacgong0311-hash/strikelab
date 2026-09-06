@@ -25,6 +25,39 @@ const CLASSROOM_NOTES: Record<string, string> = {
     "Best suited to a AMC/AIME-track student working independently, or a CS/stats elective with room for a short project — CAPM, backtesting, and portfolio optimization each stand alone and don't require finishing the other two.",
 };
 
+const FAQS = [
+  {
+    q: "How do I set up a class and get a join code?",
+    a: "Create a free account, go to Settings → Classroom, and create a class — you'll get a join code immediately. Share it with students and they self-enroll; you don't need to add anyone by hand.",
+  },
+  {
+    q: "Is there a cost for a single classroom?",
+    a: "No. The full student curriculum, achievements, and certificates are free for every student, with no seat limit for a single teacher's roster. The paid School plan is only for districts that want a curriculum alignment guide and training calls across multiple classrooms — see the School plan for that.",
+  },
+  {
+    q: "What student data do you collect?",
+    a: "Only what's needed to track lesson progress and roster membership — no more than the free student tier collects on its own. See the full breakdown on our Privacy page.",
+  },
+  {
+    q: "Does this align with AP Statistics or AP Calculus?",
+    a: "Yes — see the curriculum alignment section above. Probability and expected value map to AP Stats; the option Greeks are partial derivatives, mapping directly to AP Calc AB/BC.",
+  },
+  {
+    q: "Do students need to install anything?",
+    a: "No. Everything, including the Python exercises, runs in the browser via Pyodide. There's nothing to install on school-managed devices.",
+  },
+];
+
+const FAQ_JSON_LD = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: FAQS.map((item) => ({
+    "@type": "Question",
+    name: item.q,
+    acceptedAnswer: { "@type": "Answer", text: item.a },
+  })),
+};
+
 const AP_ALIGNMENT = [
   {
     course: "AP Statistics",
@@ -47,6 +80,7 @@ export default function ForTeachersPage() {
   return (
     <div className="max-w-4xl mx-auto px-6 py-14">
       <JsonLd data={breadcrumbJsonLd([{ name: "For Teachers", path: "/for-teachers" }])} />
+      <JsonLd data={FAQ_JSON_LD} />
       <Breadcrumbs trail={[{ name: "For Teachers", path: "/for-teachers" }]} />
 
       <div className="mb-10 v2-page-head" data-v2-head>
@@ -102,22 +136,45 @@ export default function ForTeachersPage() {
         ))}
       </div>
 
-      {/* Testimonials — placeholder copy, ready to swap for real quotes once
-          we have them. Structure (name, role, school) is set so this is a
-          content edit, not a rebuild, when quotes come in. */}
+      {/* Interim proof block — real stats and a founder note rather than an
+          apology for missing testimonials. Swap for real teacher quotes once
+          we have pilot-usage feedback to draw on. */}
+      <div className="grid gap-4 mb-12" style={{ gridTemplateColumns: "repeat(auto-fit, minmax(160px, 1fr))" }}>
+        {[
+          [String(TRACKS.reduce((s, t) => s + t.lessons.length, 0)), "lessons across 3 tracks"],
+          ["$0", "cost per student, ever"],
+          ["1", "line to enroll a class — a join code"],
+        ].map(([stat, label]) => (
+          <div key={label} className="p-4 rounded-lg border text-center" style={{ borderColor: "var(--border)" }}>
+            <div className="text-2xl font-bold mb-1" style={{ fontFamily: "var(--font-mono)", color: "var(--grass)" }}>{stat}</div>
+            <div className="text-xs" style={{ color: "var(--muted2)" }}>{label}</div>
+          </div>
+        ))}
+      </div>
+      <div
+        className="p-5 rounded-lg border mb-12 text-sm leading-relaxed"
+        style={{ borderColor: "var(--border)", color: "var(--muted2)" }}
+      >
+        StrikeLab is built and maintained by a high schooler, kept free and open-source so
+        cost is never a reason a student can&rsquo;t use it. We haven&rsquo;t published
+        teacher testimonials yet — if you&rsquo;ve assigned StrikeLab in a class, we&rsquo;d
+        genuinely like to hear how it went:{" "}
+        <a href="mailto:hello@strikelab.app" style={{ color: "var(--grass)" }}>hello@strikelab.app</a>.
+      </div>
+
       <h2
         className="text-xl font-semibold mb-4"
         style={{ fontFamily: "var(--font-display)", color: "var(--ink)" }}
       >
-        What teachers say
+        Frequently asked questions
       </h2>
-      <div
-        className="p-5 rounded-lg border mb-12 text-sm"
-        style={{ borderColor: "var(--border)", color: "var(--muted2)", fontStyle: "italic" }}
-      >
-        We haven&rsquo;t published teacher testimonials yet — this section is reserved for
-        them. If you&rsquo;ve used StrikeLab in a class, we&rsquo;d genuinely like to hear
-        about it: <a href="mailto:hello@strikelab.app" style={{ color: "var(--grass)", fontStyle: "normal" }}>hello@strikelab.app</a>.
+      <div className="flex flex-col gap-3 mb-12">
+        {FAQS.map((item) => (
+          <div key={item.q} className="p-4 rounded-lg border" style={{ borderColor: "var(--border)" }}>
+            <div className="text-sm font-semibold mb-1.5" style={{ color: "var(--ink)" }}>{item.q}</div>
+            <p className="text-sm leading-relaxed" style={{ color: "var(--muted2)" }}>{item.a}</p>
+          </div>
+        ))}
       </div>
 
       <div className="p-6 rounded-lg border text-center" style={{ borderColor: "var(--border)", background: "var(--bg2)" }}>

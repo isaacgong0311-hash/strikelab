@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { TRACKS, type Track } from "@/lib/tracks";
+import NewsletterSignup from "@/components/NewsletterSignup";
 
 // ─── Hero notebook card ──────────────────────────────────────────────────────
 const CODE_ROWS: { ln: string; src: string }[] = [
@@ -184,21 +185,6 @@ function TrackCard({ track, defaultOpen }: { track: Track; defaultOpen: boolean 
 }
 
 export default function Home() {
-  const [subEmail, setSubEmail] = useState("");
-  const [subbed, setSubbed] = useState(false);
-
-  function subscribe(e: React.FormEvent) {
-    e.preventDefault();
-    if (!subEmail.includes("@")) return;
-    try {
-      const k = "sl_newsletter";
-      const list = JSON.parse(localStorage.getItem(k) || "[]");
-      if (!list.includes(subEmail)) list.push(subEmail);
-      localStorage.setItem(k, JSON.stringify(list));
-    } catch {}
-    setSubbed(true);
-  }
-
   return (
     <div className="sk-home">
 
@@ -398,22 +384,7 @@ export default function Home() {
               </div>
 
               <div className="sk-newsletter">
-                <p className="sk-nl-label">Sunday Greeks — one derivation a week</p>
-                {subbed ? (
-                  <p className="sk-nl-done">✓ You&apos;re in — first issue lands Sunday.</p>
-                ) : (
-                  <form className="sk-nl-form" onSubmit={subscribe}>
-                    <input
-                      type="email"
-                      placeholder="you@school.edu"
-                      aria-label="Email address"
-                      required
-                      value={subEmail}
-                      onChange={(e) => setSubEmail(e.target.value)}
-                    />
-                    <button type="submit" className="sk-btn">Subscribe</button>
-                  </form>
-                )}
+                <NewsletterSignup />
               </div>
             </div>
           </div>

@@ -58,6 +58,11 @@ export function trackNewsletterSignup() {
   track("newsletter_signup", getAttribution());
 }
 
+/** User shares or copies a completion certificate link */
+export function trackCertificateShare(platform: "linkedin" | "copy_link") {
+  track("certificate_share", { platform, ...getAttribution() });
+}
+
 // ─── Engagement ───────────────────────────────────────────────────────────────
 
 /** User interacts with the Greek visualizer sliders */
