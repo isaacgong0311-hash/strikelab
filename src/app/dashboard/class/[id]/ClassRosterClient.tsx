@@ -3,6 +3,8 @@ import Link from "next/link";
 import { useState, useEffect, useCallback } from "react";
 import { useParams } from "next/navigation";
 import { useAuth } from "@/lib/auth/AuthProvider";
+import AssignLessonsPanel from "./AssignLessonsPanel";
+import AssignmentsPanel, { type AssignmentWithCompletion } from "./AssignmentsPanel";
 
 interface RosterEntry {
   studentId: string;
@@ -36,6 +38,7 @@ export default function ClassRosterClient() {
   const [state, setState] = useState<LoadState>("loading");
   const [className, setClassName] = useState("");
   const [roster, setRoster] = useState<RosterEntry[]>([]);
+  const [assignments, setAssignments] = useState<AssignmentWithCompletion[]>([]);
   const [totals, setTotals] = useState({ tracks: 0, lessons: 0 });
 
   const load = useCallback(async () => {
@@ -48,6 +51,7 @@ export default function ClassRosterClient() {
       const data = await res.json();
       setClassName(data.class?.name ?? "");
       setRoster(data.roster ?? []);
+      setAssignments(data.assignments ?? []);
       setTotals(data.totals ?? { tracks: 0, lessons: 0 });
       setState("ready");
     } catch {
@@ -62,7 +66,15 @@ export default function ClassRosterClient() {
   }, [user, load]);
 
   function exportCsv() {
-    const header = ["Name", "Tracks completed", `of ${totals.tracks}`, "Lessons completed", `of ${totals.lessons}`, "Last active"];
+    const header = [
+      "Name",
+      "Tracks completed",
+      `of ${totals.tracks}`,
+      "Lessons completed",
+      `of ${totals.lessons}`,
+      "Last active",
+      ...assignments.map((a) => `Assigned: ${a.lessonTitle}`),
+    ];
     const rows = roster.map((r) => [
       r.displayName,
       String(r.tracksCompleted),
@@ -70,6 +82,7 @@ export default function ClassRosterClient() {
       String(r.lessonsCompleted),
       String(totals.lessons),
       r.lastActivityDate ?? "Never",
+      ...assignments.map((a) => (a.completedStudentIds.includes(r.studentId) ? "Done" : "Not yet")),
     ]);
     const csv = [header, ...rows]
       .map((row) => row.map((cell) => `"${cell.replace(/"/g, '""')}"`).join(","))
@@ -133,6 +146,14 @@ export default function ClassRosterClient() {
             Export CSV →
           </button>
         )}
+      </div>
+
+      <div className="mb-6">
+        <AssignLessonsPanel
+          classId={classId}
+          assignedLessonIds={assignments.map((a) => a.lessonId)}
+          onAssigned={load}
+        />
       </div>
 
       {state === "ready" && roster.length === 0 && (
@@ -202,6 +223,13 @@ export default function ClassRosterClient() {
               })}
             </div>
           </div>
+
+          <AssignmentsPanel
+            classId={classId}
+            assignments={assignments}
+            roster={roster.map((r) => ({ studentId: r.studentId, displayName: r.displayName }))}
+            onDeleted={load}
+          />
         </>
       )}
     </div>

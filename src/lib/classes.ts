@@ -1,5 +1,6 @@
+import type { SupabaseClient } from "@supabase/supabase-js";
 import { getSupabaseAdmin } from "@/lib/supabase/admin";
-import { TRACKS } from "@/lib/tracks";
+import { TRACKS, getLessonById } from "@/lib/tracks";
 
 const CODE_ALPHABET = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"; // no 0/O/1/I — easy to read aloud
 
@@ -63,6 +64,107 @@ export async function getClassRoster(classId: string): Promise<RosterEntry[]> {
       tracksCompleted: tracksCompletedCount(completed),
       lessonsCompleted: completed.length,
       lastActivityDate: progress?.last_activity_date ?? null,
+    };
+  });
+}
+
+export interface OwnedClass {
+  id: string;
+  name: string;
+}
+
+export type TeacherOwnsClassResult =
+  | { class: OwnedClass }
+  | { error: string; status: 404 };
+
+/**
+ * Verifies the caller (via their own session-bound client, so RLS enforces
+ * teacher_id = auth.uid()) owns the given class, returning its {id, name}
+ * or a 404 — not 403, to avoid confirming a class id exists to a caller who
+ * doesn't own it. Shared by every teacher-only class-scoped route (roster,
+ * assignments) so the ownership check has exactly one implementation.
+ */
+export async function requireTeacherOwnsClass(
+  supabase: SupabaseClient,
+  teacherId: string,
+  classId: string
+): Promise<TeacherOwnsClassResult> {
+  const { data: klass, error } = await supabase
+    .from("classes")
+    .select("id, name")
+    .eq("id", classId)
+    .eq("teacher_id", teacherId)
+    .maybeSingle();
+
+  if (error || !klass) return { error: "Class not found", status: 404 };
+  return { class: klass };
+}
+
+/** Whether a specific assigned lesson is present in a student's completed set. */
+export function isAssignmentComplete(lessonId: string, completed: string[]): boolean {
+  return completed.includes(lessonId);
+}
+
+export interface AssignmentWithCompletion {
+  id: string;
+  lessonId: string;
+  lessonTitle: string;
+  trackTitle: string;
+  createdAt: string;
+  completedStudentIds: string[];
+}
+
+/**
+ * All assignments for a class plus which students (by id) have completed
+ * each one. Reads progress across users via the admin client — like
+ * getClassRoster, only safe to call after the caller's teacher_id has
+ * already been verified against the class.
+ */
+export async function getClassAssignmentsWithCompletion(
+  classId: string
+): Promise<AssignmentWithCompletion[]> {
+  const admin = getSupabaseAdmin();
+  if (!admin) return [];
+
+  const { data: assignments } = await admin
+    .from("assignments")
+    .select("id, lesson_id, created_at")
+    .eq("class_id", classId)
+    .order("created_at", { ascending: true });
+
+  if (!assignments?.length) return [];
+
+  const { data: members } = await admin
+    .from("class_members")
+    .select("student_id")
+    .eq("class_id", classId);
+
+  const studentIds = (members ?? []).map((m) => m.student_id as string);
+
+  const { data: progressRows } = studentIds.length
+    ? await admin.from("progress").select("user_id, completed").in("user_id", studentIds)
+    : { data: [] as { user_id: string; completed: unknown }[] };
+
+  const completedByUser = new Map(
+    (progressRows ?? []).map((p) => [
+      p.user_id as string,
+      (Array.isArray(p.completed) ? p.completed : []) as string[],
+    ])
+  );
+
+  return assignments.map((a) => {
+    const lessonId = a.lesson_id as string;
+    const lesson = getLessonById(lessonId);
+    const track = lesson ? TRACKS.find((t) => t.id === lesson.trackId) : undefined;
+    return {
+      id: a.id as string,
+      lessonId,
+      lessonTitle: lesson?.title ?? lessonId,
+      trackTitle: track?.title ?? "",
+      createdAt: a.created_at as string,
+      completedStudentIds: studentIds.filter((sid) =>
+        isAssignmentComplete(lessonId, completedByUser.get(sid) ?? [])
+      ),
     };
   });
 }
