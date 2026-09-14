@@ -1,0 +1,2 @@
+date,person,role,organization,interview_type,observation,quote,pain_severity_1to5,current_workaround,requested_outcome,resulting_decision
+EXAMPLE — 2026-09-10,Jordan (example),club_leader,Round Rock HS Investing Club,kickoff,"Runs a 20-person investing club with no technical component; wants students to build something they can show colleges.",,4,"Uses a stock-simulator app with no code and no teacher visibility into learning.",A ready-to-run 6-week program with almost no prep work on their end.,"Prioritize the launch-cohort flow so a leader can start with zero setup calls."

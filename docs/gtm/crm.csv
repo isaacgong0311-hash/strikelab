@@ -1,0 +1,3 @@
+organization,leader_name,leader_email,segment,source,status,expected_students,last_contact,next_action,objection,referral_from,notes
+EXAMPLE — Round Rock HS Investing Club,Jordan (example),jordan@example.edu,investing_club,founder_personal_network,contacted,18,2026-09-10,Send pilot one-pager and propose a 15-min call,None yet,,"Delete this row once you add real contacts."
+EXAMPLE — Westside Coding Club,Alex (example),alex@example.edu,coding_club,warm_intro,interested,12,2026-09-12,Schedule kickoff interview,Worried about 6 weekly meetings fitting the schedule,Round Rock HS Investing Club,"Delete this row once you add real contacts."

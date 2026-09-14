@@ -1,0 +1,846 @@
+<title>StrikeLab Runway</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,500&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f2f4f6;
+    --surface: #ffffff;
+    --surface-2: #e9edf1;
+    --ink: #171b21;
+    --ink-soft: #565f6a;
+    --ink-faint: #87919c;
+    --border: #d9dfe4;
+    --accent: #1c6f5c;
+    --accent-soft: #dcece6;
+    --accent-ink: #0f4d3f;
+    --status-red: #ae3f36;
+    --status-red-soft: #f3ddd9;
+    --status-yellow: #a3771f;
+    --status-yellow-soft: #f2e6cc;
+    --status-green: #2c7a4c;
+    --status-green-soft: #dcefe1;
+    --shadow: 0 1px 2px rgba(23,27,33,0.04), 0 8px 24px rgba(23,27,33,0.05);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #0e1216;
+      --surface: #161b21;
+      --surface-2: #1d2329;
+      --ink: #e9edf1;
+      --ink-soft: #a4adb7;
+      --ink-faint: #6b7580;
+      --border: #2a323b;
+      --accent: #4fb89a;
+      --accent-soft: #1c2e2a;
+      --accent-ink: #8fdcc4;
+      --status-red: #e08277;
+      --status-red-soft: #35201e;
+      --status-yellow: #dcb35a;
+      --status-yellow-soft: #332a17;
+      --status-green: #74c896;
+      --status-green-soft: #16281d;
+      --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 8px 24px rgba(0,0,0,0.35);
+    }
+  }
+
+  :root[data-theme="dark"] {
+    --bg: #0e1216;
+    --surface: #161b21;
+    --surface-2: #1d2329;
+    --ink: #e9edf1;
+    --ink-soft: #a4adb7;
+    --ink-faint: #6b7580;
+    --border: #2a323b;
+    --accent: #4fb89a;
+    --accent-soft: #1c2e2a;
+    --accent-ink: #8fdcc4;
+    --status-red: #e08277;
+    --status-red-soft: #35201e;
+    --status-yellow: #dcb35a;
+    --status-yellow-soft: #332a17;
+    --status-green: #74c896;
+    --status-green-soft: #16281d;
+    --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 8px 24px rgba(0,0,0,0.35);
+  }
+
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+    font-size: 16px;
+    line-height: 1.6;
+    padding-inline: 20px;
+  }
+
+  .mono, .num { font-family: "IBM Plex Mono", "SFMono-Regular", Menlo, monospace; font-variant-numeric: tabular-nums; }
+
+  h1, h2, h3 {
+    font-family: "Newsreader", Georgia, serif;
+    font-weight: 600;
+    color: var(--ink);
+    text-wrap: balance;
+    margin: 0;
+  }
+
+  a { color: var(--accent-ink); }
+
+  .wrap { max-width: 860px; margin: 0 auto; }
+
+  /* ---- sticky header ---- */
+  .topbar {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background: color-mix(in srgb, var(--surface) 92%, transparent);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--border);
+    margin-inline: -20px;
+    padding-inline: 20px;
+  }
+  .topbar-inner {
+    max-width: 860px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding-block: 10px;
+  }
+  .topbar-title {
+    font-family: "Newsreader", serif;
+    font-weight: 600;
+    font-size: 1.05rem;
+    white-space: nowrap;
+  }
+  .topbar-progress {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 0;
+  }
+  .bar-track {
+    flex: 1;
+    height: 6px;
+    border-radius: 4px;
+    background: var(--surface-2);
+    overflow: hidden;
+    min-width: 40px;
+  }
+  .bar-fill {
+    height: 100%;
+    background: var(--accent);
+    border-radius: 4px;
+    width: 0%;
+    transition: width .25s ease;
+  }
+  .topbar-pct {
+    font-size: 0.8rem;
+    color: var(--ink-soft);
+    white-space: nowrap;
+    min-width: 3.2em;
+    text-align: right;
+  }
+  .reset-btn {
+    background: none;
+    border: 1px solid var(--border);
+    color: var(--ink-faint);
+    font-size: 0.72rem;
+    padding: 4px 8px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-family: inherit;
+    white-space: nowrap;
+  }
+  .reset-btn:hover { border-color: var(--ink-faint); color: var(--ink-soft); }
+
+  /* ---- masthead ---- */
+  .masthead { padding-block: 40px 28px; }
+  .eyebrow {
+    font-family: "IBM Plex Sans", sans-serif;
+    font-weight: 600;
+    font-size: 0.72rem;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    color: var(--accent-ink);
+    margin: 0 0 10px;
+  }
+  h1.title { font-size: clamp(2.1rem, 5vw, 2.9rem); line-height: 1.08; }
+  .subhead {
+    margin-top: 14px;
+    max-width: 62ch;
+    color: var(--ink-soft);
+    font-size: 1.05rem;
+  }
+
+  .phase-rail {
+    display: flex;
+    gap: 8px;
+    margin-top: 26px;
+    flex-wrap: wrap;
+  }
+  .phase-pill {
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+    padding: 7px 12px;
+    border-radius: 999px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    font-size: 0.78rem;
+    color: var(--ink-soft);
+  }
+  .phase-pill .n { font-family: "IBM Plex Mono", monospace; font-weight: 600; color: var(--ink-faint); }
+  .phase-pill.current {
+    border-color: var(--accent);
+    background: var(--accent-soft);
+    color: var(--accent-ink);
+  }
+  .phase-pill.current .n { color: var(--accent-ink); }
+
+  /* ---- generic section ---- */
+  section { padding-block: 30px; border-top: 1px solid var(--border); }
+  section:first-of-type { border-top: none; }
+  .section-head { margin-bottom: 18px; }
+  .section-head h2 { font-size: 1.5rem; }
+  .section-head p { margin: 6px 0 0; color: var(--ink-soft); max-width: 62ch; }
+
+  /* ---- status chips ---- */
+  .chip-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 6px 11px;
+    border-radius: 8px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    font-size: 0.82rem;
+  }
+  .dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+  .dot.red { background: var(--status-red); }
+  .dot.yellow { background: var(--status-yellow); }
+  .dot.green { background: var(--status-green); }
+  .dot.mixed { background: linear-gradient(135deg, var(--status-yellow) 50%, var(--status-red) 50%); }
+  .chip .status-label { color: var(--ink-faint); font-size: 0.74rem; }
+
+  /* ---- metrics / proof thresholds ---- */
+  .metric-table { display: flex; flex-direction: column; gap: 0; border: 1px solid var(--border); border-radius: 12px; overflow: hidden; background: var(--surface); box-shadow: var(--shadow); }
+  .metric-row {
+    display: grid;
+    grid-template-columns: 1fr auto auto;
+    align-items: center;
+    gap: 14px;
+    padding: 13px 16px;
+    border-bottom: 1px solid var(--border);
+  }
+  .metric-row:last-child { border-bottom: none; }
+  .metric-label { font-size: 0.92rem; }
+  .metric-label .sub { display: block; font-size: 0.76rem; color: var(--ink-faint); margin-top: 2px; }
+  .metric-input-group {
+    display: flex;
+    align-items: baseline;
+    gap: 5px;
+    font-size: 0.9rem;
+  }
+  .metric-input-group input {
+    width: 3.4em;
+    text-align: right;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 0.88rem;
+    padding: 3px 6px;
+  }
+  .metric-input-group input:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
+  .metric-target { color: var(--ink-faint); font-family: "IBM Plex Mono", monospace; font-size: 0.85rem; white-space: nowrap; }
+  .metric-bar-wrap { width: 84px; }
+  .metric-bar-track { height: 5px; border-radius: 4px; background: var(--surface-2); overflow: hidden; }
+  .metric-bar-fill { height: 100%; background: var(--accent); border-radius: 4px; width: 0%; transition: width .2s ease; }
+
+  /* ---- weekly rhythm ---- */
+  .rhythm { display: flex; flex-direction: column; gap: 10px; }
+  .rhythm-row { display: grid; grid-template-columns: 90px 1fr auto; align-items: center; gap: 12px; }
+  .rhythm-hours { font-family: "IBM Plex Mono", monospace; font-size: 0.85rem; color: var(--ink-soft); }
+  .rhythm-track { height: 10px; border-radius: 5px; background: var(--surface-2); overflow: hidden; }
+  .rhythm-fill { height: 100%; border-radius: 5px; background: var(--accent); }
+  .rhythm-label { font-size: 0.88rem; }
+
+  /* ---- phase blocks ---- */
+  .phase-block { display: flex; gap: 18px; padding-block: 26px; border-top: 1px solid var(--border); }
+  .phase-block:first-child { border-top: none; padding-top: 6px; }
+  .phase-num {
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 0.8rem;
+    color: var(--ink-faint);
+    width: 34px;
+    flex-shrink: 0;
+    padding-top: 4px;
+  }
+  .phase-body { flex: 1; min-width: 0; }
+  .phase-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 10px; margin-bottom: 4px; }
+  .phase-head h3 { font-size: 1.2rem; }
+  .phase-weeks { font-family: "IBM Plex Mono", monospace; font-size: 0.76rem; color: var(--ink-faint); background: var(--surface-2); padding: 2px 8px; border-radius: 999px; }
+  .phase-goal { color: var(--ink-soft); font-size: 0.92rem; margin: 4px 0 14px; max-width: 60ch; }
+  .phase-progress { font-size: 0.76rem; color: var(--ink-faint); font-family: "IBM Plex Mono", monospace; margin-left: auto; }
+
+  .checklist { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; }
+  .checklist.grouped { gap: 2px; }
+  .check-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 7px 4px;
+    border-radius: 8px;
+  }
+  .check-item:hover { background: var(--surface-2); }
+  .check-item input[type="checkbox"] {
+    appearance: none;
+    -webkit-appearance: none;
+    width: 17px;
+    height: 17px;
+    border: 1.5px solid var(--ink-faint);
+    border-radius: 5px;
+    margin-top: 2px;
+    flex-shrink: 0;
+    cursor: pointer;
+    position: relative;
+    background: var(--surface);
+  }
+  .check-item input[type="checkbox"]:checked {
+    background: var(--accent);
+    border-color: var(--accent);
+  }
+  .check-item input[type="checkbox"]:checked::after {
+    content: "";
+    position: absolute;
+    left: 4.5px;
+    top: 1.5px;
+    width: 4px;
+    height: 8px;
+    border: solid white;
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+  }
+  .check-item input[type="checkbox"]:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .check-item label { font-size: 0.93rem; cursor: pointer; }
+  .check-item.done label { color: var(--ink-faint); text-decoration: line-through; text-decoration-color: var(--border); }
+  .group-label {
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: var(--ink-faint);
+    font-weight: 600;
+    margin: 14px 0 4px;
+  }
+  .group-label:first-child { margin-top: 2px; }
+
+  /* ---- callouts ---- */
+  .callout {
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 16px 18px;
+    background: var(--surface);
+  }
+  .callout + .callout { margin-top: 10px; }
+  .callout h4 { font-family: "IBM Plex Sans", sans-serif; font-size: 0.9rem; font-weight: 600; margin: 0 0 6px; }
+  .callout p { margin: 0; color: var(--ink-soft); font-size: 0.9rem; }
+  .callout.gate { border-left: 3px solid var(--accent); }
+  .callout.gate h4 .wk { font-family: "IBM Plex Mono", monospace; color: var(--accent-ink); margin-right: 6px; }
+
+  .rule-list { display: flex; flex-direction: column; gap: 10px; }
+  .rule { display: grid; grid-template-columns: 1fr; gap: 2px; padding: 12px 14px; border: 1px solid var(--border); border-radius: 10px; background: var(--surface); font-size: 0.9rem; }
+  .rule .if { color: var(--ink-faint); font-size: 0.76rem; text-transform: uppercase; letter-spacing: 0.06em; font-weight: 600; }
+  .rule .then { color: var(--ink); }
+
+  .not-doing { display: flex; flex-direction: column; gap: 8px; }
+  .not-doing li { list-style: none; color: var(--ink-faint); font-size: 0.9rem; padding-left: 20px; position: relative; }
+  .not-doing li::before {
+    content: "—";
+    position: absolute;
+    left: 0;
+    color: var(--status-red);
+  }
+
+  .yc-checklist { columns: 1; }
+  @media (min-width: 620px) { .yc-checklist.two-col { columns: 2; column-gap: 24px; } .yc-checklist.two-col .check-item { break-inside: avoid; } }
+
+  footer {
+    border-top: 1px solid var(--border);
+    padding-block: 26px 46px;
+    color: var(--ink-faint);
+    font-size: 0.8rem;
+  }
+  footer .src { font-family: "IBM Plex Mono", monospace; }
+
+  @media (max-width: 560px) {
+    .metric-row { grid-template-columns: 1fr; row-gap: 8px; }
+    .metric-bar-wrap { width: 100%; }
+    .rhythm-row { grid-template-columns: 70px 1fr; }
+    .rhythm-hours { grid-column: 2; order: 2; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { transition: none !important; scroll-behavior: auto !important; }
+  }
+</style>
+
+<div class="topbar">
+  <div class="topbar-inner">
+    <span class="topbar-title">StrikeLab Runway</span>
+    <div class="topbar-progress">
+      <div class="bar-track"><div class="bar-fill" id="overall-fill"></div></div>
+      <span class="topbar-pct mono" id="overall-pct">0%</span>
+    </div>
+    <button class="reset-btn" id="reset-btn" title="Clear all checkmarks on this device">Reset</button>
+  </div>
+</div>
+
+<div class="wrap">
+
+  <div class="masthead">
+    <p class="eyebrow">Operating plan · updated 2026&#8209;09&#8209;14</p>
+    <h1 class="title">32 weeks from pilot cohorts to a YC application</h1>
+    <p class="subhead">StrikeLab gives ambitious high-school clubs a ready-to-run technical-finance lab where students learn by coding real market models and finish with work they can show. The wedge is a founder-supported six-week <em>Quant Foundations Lab</em>; the proof YC needs is repeat cohorts, retained students, and money.</p>
+    <div class="phase-rail" id="phase-rail">
+      <!-- filled by JS -->
+    </div>
+  </div>
+
+  <section>
+    <div class="section-head">
+      <h2>Where the company actually stands</h2>
+      <p>The honest baseline this plan is built to change. Re-score these at the start of Phase&nbsp;4.</p>
+    </div>
+    <div class="chip-grid">
+      <span class="chip"><span class="dot red"></span>Meaningful users <span class="status-label">red</span></span>
+      <span class="chip"><span class="dot red"></span>Retention <span class="status-label">red</span></span>
+      <span class="chip"><span class="dot red"></span>Customer discovery <span class="status-label">red</span></span>
+      <span class="chip"><span class="dot red"></span>Distribution <span class="status-label">red</span></span>
+      <span class="chip"><span class="dot red"></span>Revenue <span class="status-label">red</span></span>
+      <span class="chip"><span class="dot red"></span>Narrative hygiene <span class="status-label">red</span></span>
+      <span class="chip"><span class="dot yellow"></span>Market narrative <span class="status-label">yellow</span></span>
+      <span class="chip"><span class="dot yellow"></span>Product readiness <span class="status-label">yellow</span></span>
+      <span class="chip"><span class="dot yellow"></span>Engineering ops <span class="status-label">yellow</span></span>
+      <span class="chip"><span class="dot yellow"></span>Founder commitment <span class="status-label">yellow</span></span>
+      <span class="chip"><span class="dot mixed"></span>School trust <span class="status-label">yellow/red</span></span>
+    </div>
+  </section>
+
+  <section>
+    <div class="section-head">
+      <h2>Proof thresholds</h2>
+      <p>The gate for the five free pilots. Type this week's numbers in — they save on this device only.</p>
+    </div>
+    <div class="metric-table" id="metric-table"></div>
+  </section>
+
+  <section>
+    <div class="section-head">
+      <h2>The weekly rhythm</h2>
+      <p>10–15 founder-hours a week, split the same way every week. No week is entirely coding.</p>
+    </div>
+    <div class="rhythm">
+      <div class="rhythm-row">
+        <span class="rhythm-hours num">4–5 hrs</span>
+        <div class="rhythm-track"><div class="rhythm-fill" style="width:33%"></div></div>
+        <span class="rhythm-label">Outreach, interviews, pilot recruitment</span>
+      </div>
+      <div class="rhythm-row">
+        <span class="rhythm-hours num">4–5 hrs</span>
+        <div class="rhythm-track"><div class="rhythm-fill" style="width:33%"></div></div>
+        <span class="rhythm-label">Fix the single largest measured bottleneck</span>
+      </div>
+      <div class="rhythm-row">
+        <span class="rhythm-hours num">2 hrs</span>
+        <div class="rhythm-track"><div class="rhythm-fill" style="width:14%"></div></div>
+        <span class="rhythm-label">Pilot support and session observation</span>
+      </div>
+      <div class="rhythm-row">
+        <span class="rhythm-hours num">1 hr</span>
+        <div class="rhythm-track"><div class="rhythm-fill" style="width:7%"></div></div>
+        <span class="rhythm-label">Metric review, decision log, next week's plan</span>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="section-head">
+      <h2>Delivery sequence</h2>
+      <p>Five phases, week 1 to week 32. Checkmarks persist on this device.</p>
+    </div>
+    <div id="phases"></div>
+  </section>
+
+  <section>
+    <div class="section-head">
+      <h2>Decision rules</h2>
+      <p>What a weak number means to fix — not a reason to add curriculum.</p>
+    </div>
+    <div class="rule-list">
+      <div class="rule"><span class="if">Low enrolled → activated</span><span class="then">Fix joining, onboarding, or the first-session experience.</span></div>
+      <div class="rule"><span class="if">Low week-4 retention</span><span class="then">Fix pacing, accountability, facilitator support, or the student value proposition.</span></div>
+      <div class="rule"><span class="if">Strong student use, weak leader reuse</span><span class="then">Reduce instructor burden and improve outcome visibility.</span></div>
+      <div class="rule"><span class="if">Five clean pilots, zero paid commitments</span><span class="then">Change the buyer, offer, or price before adding curriculum.</span></div>
+      <div class="rule"><span class="if">&lt;5 pilots after ~100 contacts / 20 leader calls</span><span class="then">The segment or pitch isn't urgent or reachable enough — change it.</span></div>
+    </div>
+  </section>
+
+  <section>
+    <div class="section-head">
+      <h2>Stop / go gates</h2>
+    </div>
+    <div class="callout gate">
+      <h4><span class="wk">Week 14</span>Continue past two pilots only if…</h4>
+      <p>One of the first two cohorts hits both the activation and week-4 retention targets, or interviews name a specific, testable fix.</p>
+    </div>
+    <div class="callout gate">
+      <h4><span class="wk">Week 24</span>Move to paid conversion only if…</h4>
+      <p>At least four of five leaders want to repeat and the combined cohorts clear the retention threshold.</p>
+    </div>
+    <div class="callout gate">
+      <h4><span class="wk">Any time</span>Strong outcomes, weak willingness to pay</h4>
+      <p>Test parent-funded advanced cohorts or sponsor-funded access as a new design cycle — don't silently change the model.</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="section-head">
+      <h2>Explicitly not doing yet</h2>
+      <p>Off the table until the five-pilot gate clears.</p>
+    </div>
+    <ul class="not-doing">
+      <li>Additional VaR, GARCH, Monte Carlo, interview-prep, or broad personal-finance tracks</li>
+      <li>Real-time market data, multi-asset expansion, native mobile/desktop apps, generalized course authoring</li>
+      <li>Google Classroom / Canvas / SIS integrations, district administration, SSO, automated procurement</li>
+      <li>A public talent marketplace, employer dashboard, recruiter search, job board, or sponsor marketplace</li>
+      <li>Sophisticated AI personalization, automated grading, or new generic chatbot features</li>
+      <li>A national competition — reuse the existing challenge surface only if a pilot specifically needs it</li>
+    </ul>
+  </section>
+
+  <section>
+    <div class="section-head">
+      <h2>YC application packet</h2>
+      <p>Assembled in Phase 4, after the proof exists — not before.</p>
+    </div>
+    <ul class="checklist yc-checklist two-col" id="yc-checklist"></ul>
+  </section>
+
+  <footer>
+    <p>Synthesized from <span class="src">docs/superpowers/specs/2026-09-13-strikelab-yc-company-design.md</span> and <span class="src">docs/superpowers/plans/2026-09-13-cohort-launch-foundation.md</span>. Checkmarks and metric values are stored in this browser only (<span class="src">localStorage</span>) — they are not synced anywhere and won't survive a cleared browser profile.</p>
+  </footer>
+
+</div>
+
+<script>
+(function () {
+  var STORE_KEY = "strikelab-runway-v1";
+
+  function loadState() {
+    try {
+      var raw = localStorage.getItem(STORE_KEY);
+      if (raw) return JSON.parse(raw);
+    } catch (e) {}
+    return { checks: {}, metrics: {} };
+  }
+  function saveState() {
+    try { localStorage.setItem(STORE_KEY, JSON.stringify(state)); } catch (e) {}
+  }
+  var state = loadState();
+  state.checks = state.checks || {};
+  state.metrics = state.metrics || {};
+
+  var PHASES = [
+    {
+      id: "p0",
+      n: 0,
+      title: "Company baseline",
+      weeks: "Weeks 1–2",
+      goal: "Stop behaving like a curriculum feature project. Freeze everything except the pilot bet, fix what's broken, and build the instruments to measure the truth.",
+      groups: [
+        { label: "Cleanup", items: [
+          "Freeze unrelated roadmap work — the Quant Foundations pilot is the only active product bet",
+          "Fix the lint failure on the roster branch",
+          "Fix the Recharts static-render build warning",
+          "Correct stale public copy (for-schools, roadmap) to match shipped reality"
+        ]},
+        { label: "Instruments", items: [
+          "Stand up the metric glossary",
+          "Stand up the weekly scorecard",
+          "Stand up a lightweight CRM (org, leader, segment, source, next action, objection, status)",
+          "Stand up the interview repository",
+          "Stand up the decision log"
+        ]},
+        { label: "Pilot readiness", items: [
+          "Write the pilot one-pager",
+          "Draft the facilitator-guide outline",
+          "Draft the pilot agreement checklist",
+          "Verify production Supabase, Sentry, analytics, email, and Stripe config",
+          "Record the honest baseline: users, active users, completed lessons, cohorts, revenue, acquisition sources"
+        ]}
+      ]
+    },
+    {
+      id: "p1",
+      n: 1,
+      title: "Pilot operating system",
+      weeks: "Weeks 3–6",
+      goal: "Ship the cohort operating system around the product that already exists — nothing new, no generalized course authoring.",
+      groups: [
+        { label: "Engineering — cohort launch", items: [
+          "Task 1 — restore the production-quality baseline (timestamps, chart sizing, copy) and commit",
+          "Task 2 — define the fixed six-week curriculum + schedule builder, with tests",
+          "Task 3 — transactional cohort persistence (migration, launch_cohort RPC, indexes)",
+          "Task 4 — expose cohort launch through the class API, with route tests",
+          "Task 5 — build the teacher launch experience (launch panel, launched-state view, progressive enhancement)"
+        ]},
+        { label: "Engineering — student experience", items: [
+          "Normalized lesson-completion timestamps, one record per user/lesson",
+          "Synced exercise submissions across devices",
+          "Student cohort home: current week, due date, next action",
+          "Instructor outcome scorecard + CSV export",
+          "Private-by-default capstone with a revocable share link",
+          "Automated coverage for authorization, metrics, and the full teacher→student cohort journey",
+          "Rehearse the full six-week program end-to-end with test accounts before the first real cohort"
+        ]}
+      ]
+    },
+    {
+      id: "p2",
+      n: 2,
+      title: "Two design-partner pilots",
+      weeks: "Weeks 7–14",
+      goal: "Run it for real, twice, with the founder watching every session.",
+      groups: [
+        { label: null, items: [
+          "Recruit and launch two local cohorts (10–25 students each)",
+          "Observe sessions and run weekly leader check-ins",
+          "Interview at least five students per cohort",
+          "Review the scorecard weekly; ship only the largest funnel fix",
+          "Write one internal pilot report per cohort — outcomes, failures, support load, next changes"
+        ]}
+      ]
+    },
+    {
+      id: "p3",
+      n: 3,
+      title: "Three repeat pilots",
+      weeks: "Weeks 15–24",
+      goal: "Prove the program works without the founder rescuing every session.",
+      groups: [
+        { label: null, items: [
+          "Run three more cohorts on the revised program",
+          "Confirm leaders can run it from the guide with minimal founder rescue",
+          "Publish consented, anonymized outcomes, capstones, and testimonials",
+          "Ship one concise case study",
+          "Build the next-term qualified pipeline from referrals"
+        ]}
+      ]
+    },
+    {
+      id: "p4",
+      n: 4,
+      title: "Paid proof and YC application",
+      weeks: "Weeks 25–32",
+      goal: "Convert goodwill into money, then tell the story with evidence.",
+      groups: [
+        { label: null, items: [
+          "Invite qualified pilot orgs to renew at $499/yr (school) or $199/yr (club)",
+          "Open new orgs at the same stated prices — manual invoicing is fine",
+          "Close at least two paid or contractually committed customers before automating billing",
+          "Write the one-sentence company description",
+          "Record the founder video",
+          "Record the two-minute product demo",
+          "Assemble cohort metrics, revenue figures, and user quotations",
+          "Write the competitive explanation and market-expansion thesis",
+          "Gather cap table and legal facts",
+          "Prepare an honest, concrete answer on full-time commitment",
+          "Submit the YC application"
+        ]}
+      ]
+    }
+  ];
+
+  var METRICS = [
+    { id: "cohorts", label: "Cohorts completed", target: 5, unit: "" },
+    { id: "students", label: "Students activated", target: 50, unit: "" },
+    { id: "activation", label: "Enrolled → activated", sub: "share of enrolled students", target: 60, unit: "%" },
+    { id: "retention", label: "Activated, retained week 4", sub: "share of activated students", target: 40, unit: "%" },
+    { id: "capstone", label: "Activated, completed capstone", sub: "share of activated students", target: 35, unit: "%" },
+    { id: "reuse", label: "Leaders who'll run it again", target: 4, unit: "of 5" },
+    { id: "referrals", label: "Leaders who referred another leader", target: 3, unit: "" },
+    { id: "paid", label: "Orgs paid or contractually committed", target: 2, unit: "" }
+  ];
+
+  var YC_ITEMS = [
+    "One-sentence company description",
+    "Founder video recorded",
+    "Two-minute product demo recorded",
+    "Cohort activation & retention metrics assembled",
+    "Revenue and paid-commitment figures assembled",
+    "Verbatim user quotations collected",
+    "Competitive explanation written",
+    "Market-expansion thesis written (pilot → talent pipeline)",
+    "Cap table and legal facts gathered",
+    "Honest full-time-commitment answer prepared",
+    "Application reviewed for narrative hygiene — copy matches shipped reality",
+    "Application submitted"
+  ];
+
+  var allCheckIds = [];
+
+  function el(tag, cls, html) {
+    var e = document.createElement(tag);
+    if (cls) e.className = cls;
+    if (html != null) e.innerHTML = html;
+    return e;
+  }
+
+  function makeCheckItem(id, text) {
+    allCheckIds.push(id);
+    var li = el("li", "check-item" + (state.checks[id] ? " done" : ""));
+    var cb = document.createElement("input");
+    cb.type = "checkbox";
+    cb.id = id;
+    cb.checked = !!state.checks[id];
+    cb.addEventListener("change", function () {
+      state.checks[id] = cb.checked;
+      li.classList.toggle("done", cb.checked);
+      saveState();
+      updateProgress();
+    });
+    var label = el("label", null, text);
+    label.setAttribute("for", id);
+    li.appendChild(cb);
+    li.appendChild(label);
+    return li;
+  }
+
+  // ---- phase rail (masthead) ----
+  var rail = document.getElementById("phase-rail");
+  PHASES.forEach(function (p, idx) {
+    var pill = el("span", "phase-pill" + (idx === 0 ? " current" : ""),
+      '<span class="n">' + p.n + '</span>' + p.title);
+    rail.appendChild(pill);
+  });
+
+  // ---- phases ----
+  var phasesRoot = document.getElementById("phases");
+  PHASES.forEach(function (p) {
+    var block = el("div", "phase-block");
+    block.appendChild(el("div", "phase-num mono", "0" + p.n));
+    var body = el("div", "phase-body");
+    var head = el("div", "phase-head");
+    head.appendChild(el("h3", null, p.title));
+    head.appendChild(el("span", "phase-weeks", p.weeks));
+    var progressSpan = el("span", "phase-progress");
+    progressSpan.id = "progress-" + p.id;
+    head.appendChild(progressSpan);
+    body.appendChild(head);
+    body.appendChild(el("p", "phase-goal", p.goal));
+
+    var list = el("ul", "checklist grouped");
+    p.groups.forEach(function (g) {
+      if (g.label) list.appendChild(el("li", "group-label", g.label));
+      g.items.forEach(function (text, i) {
+        var id = p.id + "-" + (g.label ? g.label.replace(/\s+/g, "").toLowerCase() : "item") + "-" + i;
+        list.appendChild(makeCheckItem(id, text));
+      });
+    });
+    body.appendChild(list);
+    block.appendChild(body);
+    phasesRoot.appendChild(block);
+  });
+
+  // ---- metric table ----
+  var metricTable = document.getElementById("metric-table");
+  METRICS.forEach(function (m) {
+    var row = el("div", "metric-row");
+    var labelHtml = m.label + (m.sub ? '<span class="sub">' + m.sub + '</span>' : "");
+    row.appendChild(el("div", "metric-label", labelHtml));
+
+    var group = el("div", "metric-input-group");
+    var input = document.createElement("input");
+    input.type = "number";
+    input.min = "0";
+    input.inputMode = "decimal";
+    input.id = "metric-" + m.id;
+    input.value = state.metrics[m.id] != null ? state.metrics[m.id] : "";
+    input.placeholder = "0";
+    group.appendChild(input);
+    var targetLabel = m.unit === "%" ? ("/ " + m.target + "%") : ("/ " + m.target + (m.unit ? " " + m.unit : ""));
+    group.appendChild(el("span", "metric-target", targetLabel));
+    row.appendChild(group);
+
+    var barWrap = el("div", "metric-bar-wrap");
+    var track = el("div", "metric-bar-track");
+    var fill = el("div", "metric-bar-fill");
+    fill.id = "bar-" + m.id;
+    track.appendChild(fill);
+    barWrap.appendChild(track);
+    row.appendChild(barWrap);
+
+    function updateBar() {
+      var val = parseFloat(input.value) || 0;
+      var pct = Math.max(0, Math.min(100, (val / m.target) * 100));
+      fill.style.width = pct + "%";
+    }
+    input.addEventListener("input", function () {
+      state.metrics[m.id] = input.value;
+      saveState();
+      updateBar();
+    });
+    updateBar();
+
+    metricTable.appendChild(row);
+  });
+
+  // ---- YC checklist ----
+  var ycRoot = document.getElementById("yc-checklist");
+  YC_ITEMS.forEach(function (text, i) {
+    ycRoot.appendChild(makeCheckItem("yc-" + i, text));
+  });
+
+  // ---- progress ----
+  function updateProgress() {
+    var total = allCheckIds.length, done = 0;
+    PHASES.forEach(function (p) {
+      var pTotal = 0, pDone = 0;
+      p.groups.forEach(function (g) {
+        g.items.forEach(function (text, i) {
+          var id = p.id + "-" + (g.label ? g.label.replace(/\s+/g, "").toLowerCase() : "item") + "-" + i;
+          pTotal++;
+          if (state.checks[id]) pDone++;
+        });
+      });
+      var span = document.getElementById("progress-" + p.id);
+      if (span) span.textContent = pDone + " / " + pTotal;
+    });
+    allCheckIds.forEach(function (id) { if (state.checks[id]) done++; });
+    var pct = total ? Math.round((done / total) * 100) : 0;
+    document.getElementById("overall-fill").style.width = pct + "%";
+    document.getElementById("overall-pct").textContent = pct + "% (" + done + "/" + total + ")";
+  }
+  updateProgress();
+
+  document.getElementById("reset-btn").addEventListener("click", function () {
+    if (confirm("Clear every checkmark and metric on this device? This can't be undone.")) {
+      state = { checks: {}, metrics: {} };
+      saveState();
+      location.reload();
+    }
+  });
+})();
+</script>
