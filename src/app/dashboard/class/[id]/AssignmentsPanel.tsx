@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { Fragment, useState } from "react";
 
 export interface AssignmentWithCompletion {
   id: string;
@@ -7,6 +7,9 @@ export interface AssignmentWithCompletion {
   lessonTitle: string;
   trackTitle: string;
   createdAt: string;
+  weekNumber: number | null;
+  position: number | null;
+  dueOn: string | null;
   completedStudentIds: string[];
 }
 
@@ -52,7 +55,7 @@ export default function AssignmentsPanel({ classId, assignments, roster, onDelet
         <span className="db-panel-title">Assignments</span>
       </div>
       <div className="flex flex-col">
-        {assignments.map((a) => {
+        {assignments.map((a, index) => {
           const total = roster.length;
           const doneCount = a.completedStudentIds.length;
           const pct = total ? Math.round((doneCount / total) * 100) : 0;
@@ -60,8 +63,18 @@ export default function AssignmentsPanel({ classId, assignments, roster, onDelet
           const done = roster.filter((r) => a.completedStudentIds.includes(r.studentId));
           const notDone = roster.filter((r) => !a.completedStudentIds.includes(r.studentId));
 
+          const previousWeek = assignments[index - 1]?.weekNumber ?? null;
+          const showGroup = index === 0 || previousWeek !== a.weekNumber;
+          const groupLabel = a.weekNumber ? `Week ${a.weekNumber}` : "Other assignments";
+          const dueLabel = a.dueOn
+            ? new Intl.DateTimeFormat("en-US", { month: "short", day: "numeric", timeZone: "UTC" })
+                .format(new Date(`${a.dueOn}T12:00:00Z`))
+            : null;
+
           return (
-            <div key={a.id} className="assignment-row-wrap">
+            <Fragment key={a.id}>
+            {showGroup && <div className="assignment-week-heading">{groupLabel}</div>}
+            <div className="assignment-row-wrap">
               <button
                 type="button"
                 className="assignment-row"
@@ -69,7 +82,9 @@ export default function AssignmentsPanel({ classId, assignments, roster, onDelet
               >
                 <div className="assignment-title">
                   <span className="assignment-lesson-title">{a.lessonTitle}</span>
-                  <span className="assignment-track-title">{a.trackTitle}</span>
+                  <span className="assignment-track-title">
+                    {a.trackTitle}{dueLabel ? ` · Due ${dueLabel}` : ""}
+                  </span>
                 </div>
                 <div className="db-mini-bar">
                   <div className="db-mini-bar-fill" style={{ width: `${pct}%` }} />
@@ -128,6 +143,7 @@ export default function AssignmentsPanel({ classId, assignments, roster, onDelet
                 </div>
               )}
             </div>
+            </Fragment>
           );
         })}
       </div>

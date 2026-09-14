@@ -4,6 +4,7 @@ import Link from "next/link";
 import {
   LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid,
 } from "recharts";
+import { useHydrated } from "@/lib/useHydrated";
 import { useAuth } from "@/lib/auth/AuthProvider";
 import { streamInto, renderAiMarkdown } from "@/components/AiMarkdown";
 import {
@@ -77,6 +78,7 @@ function SignInPrompt() {
 
 // ── Live price chart ────────────────────────────────────────────────────────────
 function PriceChart({ symbol, tick }: { symbol: string; tick: number }) {
+  const hydrated = useHydrated();
   const data = useMemo(
     () => simulatePriceHistory(symbol, 40).map((p, i) => ({ i, price: p.price })),
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -85,8 +87,10 @@ function PriceChart({ symbol, tick }: { symbol: string; tick: number }) {
   const up = data.length > 1 && data[data.length - 1].price >= data[0].price;
   const color = up ? "var(--grass)" : "var(--coral)";
 
+  if (!hydrated) return <div className="h-full" aria-hidden="true" />;
+
   return (
-    <ResponsiveContainer width="100%" height="100%">
+    <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={0}>
       <LineChart data={data} margin={{ top: 6, right: 8, bottom: 0, left: 0 }}>
         <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" vertical={false} />
         <XAxis dataKey="i" hide />

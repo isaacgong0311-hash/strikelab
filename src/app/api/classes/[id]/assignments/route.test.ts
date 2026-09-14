@@ -92,7 +92,16 @@ describe("GET/POST /api/classes/[id]/assignments", () => {
 
     expect(res.status).toBe(200);
     expect(json.assignments).toEqual([
-      { id: "a1", lessonId: "opt-1", lessonTitle: "Calls & Puts", trackTitle: "Options", createdAt: "2026-01-01" },
+      {
+        id: "a1",
+        lessonId: "opt-1",
+        lessonTitle: "Calls & Puts",
+        trackTitle: "Options",
+        createdAt: "2026-01-01",
+        weekNumber: null,
+        position: null,
+        dueOn: null,
+      },
     ]);
     expect(upsertSpy).toHaveBeenCalledWith(
       [{ class_id: "class-1", lesson_id: "opt-1" }],

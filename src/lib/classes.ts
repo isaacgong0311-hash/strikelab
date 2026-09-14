@@ -71,6 +71,10 @@ export async function getClassRoster(classId: string): Promise<RosterEntry[]> {
 export interface OwnedClass {
   id: string;
   name: string;
+  templateId: string | null;
+  startsOn: string | null;
+  timezone: string | null;
+  launchedAt: string | null;
 }
 
 export type TeacherOwnsClassResult =
@@ -91,13 +95,22 @@ export async function requireTeacherOwnsClass(
 ): Promise<TeacherOwnsClassResult> {
   const { data: klass, error } = await supabase
     .from("classes")
-    .select("id, name")
+    .select("id, name, template_id, starts_on, timezone, launched_at")
     .eq("id", classId)
     .eq("teacher_id", teacherId)
     .maybeSingle();
 
   if (error || !klass) return { error: "Class not found", status: 404 };
-  return { class: klass };
+  return {
+    class: {
+      id: klass.id as string,
+      name: klass.name as string,
+      templateId: (klass.template_id as string | null) ?? null,
+      startsOn: (klass.starts_on as string | null) ?? null,
+      timezone: (klass.timezone as string | null) ?? null,
+      launchedAt: (klass.launched_at as string | null) ?? null,
+    },
+  };
 }
 
 /** Whether a specific assigned lesson is present in a student's completed set. */
@@ -111,6 +124,9 @@ export interface AssignmentWithCompletion {
   lessonTitle: string;
   trackTitle: string;
   createdAt: string;
+  weekNumber: number | null;
+  position: number | null;
+  dueOn: string | null;
   completedStudentIds: string[];
 }
 
@@ -128,8 +144,10 @@ export async function getClassAssignmentsWithCompletion(
 
   const { data: assignments } = await admin
     .from("assignments")
-    .select("id, lesson_id, created_at")
+    .select("id, lesson_id, created_at, week_number, position, due_on")
     .eq("class_id", classId)
+    .order("week_number", { ascending: true, nullsFirst: false })
+    .order("position", { ascending: true, nullsFirst: false })
     .order("created_at", { ascending: true });
 
   if (!assignments?.length) return [];
@@ -162,6 +180,9 @@ export async function getClassAssignmentsWithCompletion(
       lessonTitle: lesson?.title ?? lessonId,
       trackTitle: track?.title ?? "",
       createdAt: a.created_at as string,
+      weekNumber: (a.week_number as number | null) ?? null,
+      position: (a.position as number | null) ?? null,
+      dueOn: (a.due_on as string | null) ?? null,
       completedStudentIds: studentIds.filter((sid) =>
         isAssignmentComplete(lessonId, completedByUser.get(sid) ?? [])
       ),

@@ -41,5 +41,6 @@ export async function GET(_req: Request, { params }: { params: Promise<{ id: str
     roster,
     assignments,
     totals: { tracks: TOTAL_TRACKS, lessons: TOTAL_LESSONS },
+    generatedAt: new Date().toISOString(),
   });
 }

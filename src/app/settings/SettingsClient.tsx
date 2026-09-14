@@ -152,6 +152,10 @@ interface OwnedClass {
   name: string;
   joinCode: string;
   memberCount: number;
+  templateId: string | null;
+  startsOn: string | null;
+  timezone: string | null;
+  launchedAt: string | null;
 }
 
 interface JoinedClass {

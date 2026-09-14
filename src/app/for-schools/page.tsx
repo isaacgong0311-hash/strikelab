@@ -31,7 +31,7 @@ const FAQS = [
   },
   {
     q: "Is a teacher admin dashboard or SSO available?",
-    a: "Not yet — both are on the roadmap. Today, teachers get visibility into class progress through monthly training calls and can request a manual export in the meantime.",
+    a: "The teacher dashboard is live: create classes, share join codes, assign lessons, track each student's progress, and export the roster as CSV. Google Classroom SSO is not available yet.",
   },
 ];
 

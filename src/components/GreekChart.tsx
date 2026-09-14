@@ -3,6 +3,7 @@ import {
   LineChart, Line, XAxis, YAxis, Tooltip,
   ResponsiveContainer, ReferenceLine, CartesianGrid,
 } from "recharts";
+import { useHydrated } from "@/lib/useHydrated";
 
 interface Props {
   data: { strike: number; value: number }[];
@@ -11,6 +12,8 @@ interface Props {
 }
 
 export default function GreekChart({ data, color, errorMsg }: Props) {
+  const hydrated = useHydrated();
+
   if (!data.length) {
     return (
       <div className="flex flex-col items-center justify-center h-full gap-2 px-4">
@@ -55,8 +58,12 @@ export default function GreekChart({ data, color, errorMsg }: Props) {
 
   const validData = data.filter(d => !isNaN(d.value));
 
+  if (!hydrated) {
+    return <div className="h-full" aria-hidden="true" />;
+  }
+
   return (
-    <ResponsiveContainer width="100%" height="100%">
+    <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={0}>
       <LineChart data={validData} margin={{ top: 6, right: 10, bottom: 18, left: 0 }}>
         <CartesianGrid
           strokeDasharray="3 3"

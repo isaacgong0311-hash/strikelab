@@ -4,6 +4,7 @@ import {
   LineChart, Line, XAxis, YAxis, Tooltip,
   ResponsiveContainer, ReferenceLine, CartesianGrid,
 } from "recharts";
+import { useHydrated } from "@/lib/useHydrated";
 
 type LegType = "call" | "put" | "stock";
 type Side = "long" | "short";
@@ -95,6 +96,7 @@ function legDesc(leg: Leg): string {
  * can actually look at.
  */
 export default function PayoffDiagram() {
+  const hydrated = useHydrated();
   const [strategyKey, setStrategyKey] = useState(STRATEGIES[2].key);
   const [spotNow, setSpotNow] = useState(100);
 
@@ -168,7 +170,8 @@ export default function PayoffDiagram() {
       </p>
 
       <div className="payoff-chart">
-        <ResponsiveContainer width="100%" height="100%">
+        {hydrated ? (
+          <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={0}>
           <LineChart data={data} margin={{ top: 6, right: 10, bottom: 4, left: 0 }}>
             <CartesianGrid strokeDasharray="3 3" stroke="var(--line-2)" strokeOpacity={0.4} vertical={false} />
             <XAxis
@@ -208,7 +211,10 @@ export default function PayoffDiagram() {
               isAnimationActive={false}
             />
           </LineChart>
-        </ResponsiveContainer>
+          </ResponsiveContainer>
+        ) : (
+          <div className="h-full" aria-hidden="true" />
+        )}
       </div>
 
       <div className="payoff-slider-row">

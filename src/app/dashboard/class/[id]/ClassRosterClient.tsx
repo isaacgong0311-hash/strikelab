@@ -5,6 +5,7 @@ import { useParams } from "next/navigation";
 import { useAuth } from "@/lib/auth/AuthProvider";
 import AssignLessonsPanel from "./AssignLessonsPanel";
 import AssignmentsPanel, { type AssignmentWithCompletion } from "./AssignmentsPanel";
+import CohortLaunchPanel from "./CohortLaunchPanel";
 
 interface RosterEntry {
   studentId: string;
@@ -15,6 +16,15 @@ interface RosterEntry {
 }
 
 type LoadState = "loading" | "ready" | "not-found";
+
+interface ClassSummary {
+  id: string;
+  name: string;
+  templateId: string | null;
+  startsOn: string | null;
+  timezone: string | null;
+  launchedAt: string | null;
+}
 
 function SignInPrompt() {
   return (
@@ -37,9 +47,11 @@ export default function ClassRosterClient() {
 
   const [state, setState] = useState<LoadState>("loading");
   const [className, setClassName] = useState("");
+  const [classSummary, setClassSummary] = useState<ClassSummary | null>(null);
   const [roster, setRoster] = useState<RosterEntry[]>([]);
   const [assignments, setAssignments] = useState<AssignmentWithCompletion[]>([]);
   const [totals, setTotals] = useState({ tracks: 0, lessons: 0 });
+  const [generatedAt, setGeneratedAt] = useState<string | null>(null);
 
   const load = useCallback(async () => {
     try {
@@ -50,9 +62,11 @@ export default function ClassRosterClient() {
       }
       const data = await res.json();
       setClassName(data.class?.name ?? "");
+      setClassSummary(data.class ?? null);
       setRoster(data.roster ?? []);
       setAssignments(data.assignments ?? []);
       setTotals(data.totals ?? { tracks: 0, lessons: 0 });
+      setGeneratedAt(data.generatedAt ?? null);
       setState("ready");
     } catch {
       setState("not-found");
@@ -102,8 +116,8 @@ export default function ClassRosterClient() {
       )
     : 0;
   const activeThisWeek = roster.filter((r) => {
-    if (!r.lastActivityDate) return false;
-    const days = (Date.now() - new Date(r.lastActivityDate).getTime()) / 86_400_000;
+    if (!r.lastActivityDate || !generatedAt) return false;
+    const days = (new Date(generatedAt).getTime() - new Date(r.lastActivityDate).getTime()) / 86_400_000;
     return days <= 7;
   }).length;
 
@@ -145,6 +159,16 @@ export default function ClassRosterClient() {
           <button type="button" onClick={exportCsv} className="v2-btn ghost sm">
             Export CSV →
           </button>
+        )}
+      </div>
+
+      <div className="mb-6">
+        {state === "ready" && classSummary && (
+          <CohortLaunchPanel
+            classId={classId}
+            cohort={classSummary}
+            onLaunched={load}
+          />
         )}
       </div>
 

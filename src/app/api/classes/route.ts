@@ -17,7 +17,7 @@ export async function GET() {
 
   const { data: classes, error } = await auth.supabase
     .from("classes")
-    .select("id, name, join_code, created_at, class_members(count)")
+    .select("id, name, join_code, created_at, template_id, starts_on, timezone, launched_at, class_members(count)")
     .eq("teacher_id", auth.userId)
     .order("created_at", { ascending: false });
 
@@ -31,6 +31,10 @@ export async function GET() {
     name: c.name,
     joinCode: c.join_code,
     memberCount: Array.isArray(c.class_members) ? (c.class_members[0]?.count ?? 0) : 0,
+    templateId: c.template_id ?? null,
+    startsOn: c.starts_on ?? null,
+    timezone: c.timezone ?? null,
+    launchedAt: c.launched_at ?? null,
   }));
 
   return NextResponse.json({ classes: result });

@@ -20,7 +20,16 @@ import { requireUser } from "@/lib/supabase/requireUser";
 import { requireTeacherOwnsClass } from "@/lib/classes";
 import { TRACKS, getLessonById } from "@/lib/tracks";
 
-function toAssignmentResponse(row: { id: string; lesson_id: string; created_at: string }) {
+interface AssignmentRow {
+  id: string;
+  lesson_id: string;
+  created_at: string;
+  week_number: number | null;
+  position: number | null;
+  due_on: string | null;
+}
+
+function toAssignmentResponse(row: AssignmentRow) {
   const lesson = getLessonById(row.lesson_id);
   const track = lesson ? TRACKS.find((t) => t.id === lesson.trackId) : undefined;
   return {
@@ -29,6 +38,9 @@ function toAssignmentResponse(row: { id: string; lesson_id: string; created_at: 
     lessonTitle: lesson?.title ?? row.lesson_id,
     trackTitle: track?.title ?? "",
     createdAt: row.created_at,
+    weekNumber: row.week_number ?? null,
+    position: row.position ?? null,
+    dueOn: row.due_on ?? null,
   };
 }
 
@@ -46,7 +58,7 @@ export async function GET(_req: NextRequest, { params }: { params: Promise<{ id:
 
   const { data, error } = await auth.supabase
     .from("assignments")
-    .select("id, lesson_id, created_at")
+    .select("id, lesson_id, created_at, week_number, position, due_on")
     .eq("class_id", id)
     .order("created_at", { ascending: true });
 
@@ -56,7 +68,7 @@ export async function GET(_req: NextRequest, { params }: { params: Promise<{ id:
   }
 
   const assignments = (data ?? []).map((a) =>
-    toAssignmentResponse(a as { id: string; lesson_id: string; created_at: string })
+    toAssignmentResponse(a as AssignmentRow)
   );
 
   return NextResponse.json({ assignments });
@@ -101,12 +113,12 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
 
   const { data } = await auth.supabase
     .from("assignments")
-    .select("id, lesson_id, created_at")
+    .select("id, lesson_id, created_at, week_number, position, due_on")
     .eq("class_id", id)
     .order("created_at", { ascending: true });
 
   const assignments = (data ?? []).map((a) =>
-    toAssignmentResponse(a as { id: string; lesson_id: string; created_at: string })
+    toAssignmentResponse(a as AssignmentRow)
   );
 
   return NextResponse.json({ assignments });
