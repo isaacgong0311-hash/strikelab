@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { ACHIEVEMENTS, isUnlocked } from "./achievements";
+import { TRACKS } from "./tracks";
 
 // isUnlocked drives both the dashboard achievement grid and /achievements —
 // a wrong result here either shows a badge as earned when it isn't, or
@@ -26,12 +27,20 @@ describe("isUnlocked", () => {
     expect(isUnlocked(greeks, new Set(["4", "5", "6", "7", "11"]))).toBe(true);
   });
 
-  it("all-star only unlocks at exactly the full lesson count, not before", () => {
+  it("all-star only unlocks once every current lesson is done", () => {
     const allstar = ACHIEVEMENTS.find((a) => a.id === "allstar")!;
-    const ids22 = new Set(Array.from({ length: 22 }, (_, i) => `x${i}`));
-    const ids23 = new Set(Array.from({ length: 23 }, (_, i) => `x${i}`));
-    expect(isUnlocked(allstar, ids22)).toBe(false);
-    expect(isUnlocked(allstar, ids23)).toBe(true);
+    const all = TRACKS.flatMap((t) => t.lessons.map((l) => l.id));
+    expect(allstar.total).toBe(all.length);
+    expect(allstar.desc).toBe(`Complete all ${all.length} lessons`);
+    expect(isUnlocked(allstar, new Set(all.slice(1)))).toBe(false);
+    expect(isUnlocked(allstar, new Set(all))).toBe(true);
+  });
+
+  it("all-star ignores ids from retired lessons", () => {
+    const allstar = ACHIEVEMENTS.find((a) => a.id === "allstar")!;
+    const all = TRACKS.flatMap((t) => t.lessons.map((l) => l.id));
+    // e.g. a quant lesson trimmed from the curriculum still in old progress data
+    expect(isUnlocked(allstar, new Set([...all.slice(1), "q2", "q5"]))).toBe(false);
   });
 
   it("every achievement id is unique", () => {

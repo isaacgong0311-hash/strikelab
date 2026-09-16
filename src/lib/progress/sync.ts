@@ -73,6 +73,47 @@ export function mergeProgress(
   return { completed, xp, streak, lastActivityDate, activityByDate };
 }
 
+/** True for IANA zone names the runtime recognises, e.g. "America/Chicago". */
+export function isValidTimeZone(timeZone: unknown): timeZone is string {
+  if (typeof timeZone !== "string" || timeZone.length === 0 || timeZone.length > 64) return false;
+  try {
+    new Intl.DateTimeFormat("en-US", { timeZone });
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+/**
+ * Record the learner's timezone on their progress row. Deliberately separate
+ * from upsertRemoteProgress and best-effort: if migration 0013 hasn't run yet
+ * the unknown column errors here instead of breaking progress sync.
+ */
+export async function saveProgressTimeZone(
+  supabase: SupabaseClient,
+  userId: string,
+  timeZone: string
+): Promise<void> {
+  if (!isValidTimeZone(timeZone)) return;
+  const { error } = await supabase.from("progress").update({ timezone: timeZone }).eq("user_id", userId);
+  if (error) console.warn("[progress] timezone not saved:", error.message);
+}
+
+/** The learner's stored timezone, or null if unknown or unavailable. */
+export async function fetchProgressTimeZone(
+  supabase: SupabaseClient,
+  userId: string
+): Promise<string | null> {
+  const { data, error } = await supabase
+    .from("progress")
+    .select("timezone")
+    .eq("user_id", userId)
+    .maybeSingle();
+  if (error || !data) return null;
+  const tz = (data as { timezone?: unknown }).timezone;
+  return isValidTimeZone(tz) ? tz : null;
+}
+
 /** Read a user's saved progress, or null if none exists. */
 export async function fetchRemoteProgress(
   supabase: SupabaseClient,

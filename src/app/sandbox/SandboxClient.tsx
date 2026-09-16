@@ -4,8 +4,11 @@ import Link from "next/link";
 import {
   LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid,
 } from "recharts";
+import { useHydrated } from "@/lib/useHydrated";
 import { useAuth } from "@/lib/auth/AuthProvider";
 import { streamInto, renderAiMarkdown } from "@/components/AiMarkdown";
+import Dialog from "@/components/ui/Dialog";
+import { TabList, TabPanel } from "@/components/ui/Tabs";
 import {
   WATCHLIST,
   simulatePrice,
@@ -77,6 +80,7 @@ function SignInPrompt() {
 
 // ── Live price chart ────────────────────────────────────────────────────────────
 function PriceChart({ symbol, tick }: { symbol: string; tick: number }) {
+  const hydrated = useHydrated();
   const data = useMemo(
     () => simulatePriceHistory(symbol, 40).map((p, i) => ({ i, price: p.price })),
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -85,8 +89,16 @@ function PriceChart({ symbol, tick }: { symbol: string; tick: number }) {
   const up = data.length > 1 && data[data.length - 1].price >= data[0].price;
   const color = up ? "var(--grass)" : "var(--coral)";
 
+  if (!hydrated) return <div className="h-full" aria-hidden="true" />;
+
+  const first = data[0]?.price ?? 0;
+  const last = data.at(-1)?.price ?? first;
+
   return (
-    <ResponsiveContainer width="100%" height="100%">
+    <>
+    <p className="sl-visually-hidden" role="img" aria-label={`${symbol} simulated price history. Started at ${money(first)}, ended at ${money(last)}, ${last >= first ? "up" : "down"} ${money(Math.abs(last - first))}.`} />
+    <div aria-hidden="true" style={{ width: "100%", height: "100%" }}>
+    <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={0}>
       <LineChart data={data} margin={{ top: 6, right: 8, bottom: 0, left: 0 }}>
         <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" vertical={false} />
         <XAxis dataKey="i" hide />
@@ -109,6 +121,8 @@ function PriceChart({ symbol, tick }: { symbol: string; tick: number }) {
         <Line type="monotone" dataKey="price" stroke={color} strokeWidth={2} dot={false} isAnimationActive={false} />
       </LineChart>
     </ResponsiveContainer>
+    </div>
+    </>
   );
 }
 
@@ -122,6 +136,7 @@ function SymbolPicker({
 }) {
   const [query, setQuery] = useState("");
   const [open, setOpen] = useState(false);
+  const [activeIndex, setActiveIndex] = useState(0);
   const current = WATCHLIST.find((w) => w.symbol === symbol)!;
 
   const matches = useMemo(() => {
@@ -136,6 +151,7 @@ function SymbolPicker({
     onSelect(w);
     setQuery("");
     setOpen(false);
+    setActiveIndex(0);
   }
 
   return (
@@ -146,23 +162,40 @@ function SymbolPicker({
       </div>
 
       <div className="sb-symbol-search-wrap">
+        <label htmlFor="sandbox-symbol-search" className="sb-field-label">Search simulated symbols</label>
         <input
+          id="sandbox-symbol-search"
           type="text"
           className="sb-symbol-search"
           placeholder="Search any of ~90 tickers (e.g. AMZN, PLTR, JPM)…"
           value={query}
-          onChange={(e) => { setQuery(e.target.value); setOpen(true); }}
+          role="combobox"
+          aria-expanded={open && query.trim() !== ""}
+          aria-controls="sandbox-symbol-options"
+          aria-autocomplete="list"
+          aria-activedescendant={open && matches[activeIndex] ? `sandbox-symbol-${matches[activeIndex].symbol}` : undefined}
+          autoComplete="off"
+          onChange={(e) => { setQuery(e.target.value); setOpen(true); setActiveIndex(0); }}
           onFocus={() => setOpen(true)}
           onBlur={() => setTimeout(() => setOpen(false), 120)}
+          onKeyDown={(event) => {
+            if (event.key === "ArrowDown") { event.preventDefault(); setOpen(true); setActiveIndex((index) => Math.min(index + 1, Math.max(matches.length - 1, 0))); }
+            if (event.key === "ArrowUp") { event.preventDefault(); setActiveIndex((index) => Math.max(index - 1, 0)); }
+            if (event.key === "Enter" && open && matches[activeIndex]) { event.preventDefault(); pick(matches[activeIndex]); }
+            if (event.key === "Escape") { setOpen(false); }
+          }}
         />
         {open && query.trim() !== "" && (
-          <div className="sb-symbol-dropdown">
+          <div className="sb-symbol-dropdown" id="sandbox-symbol-options" role="listbox" aria-label="Matching symbols">
             {matches.length > 0 ? (
               matches.map((w) => (
                 <button
                   key={w.symbol}
+                  id={`sandbox-symbol-${w.symbol}`}
                   type="button"
                   className="sb-symbol-option"
+                  role="option"
+                  aria-selected={matches[activeIndex]?.symbol === w.symbol}
                   onMouseDown={() => pick(w)}
                 >
                   <span className="sb-symbol-option-ticker">{w.symbol}</span>
@@ -170,18 +203,19 @@ function SymbolPicker({
                 </button>
               ))
             ) : (
-              <div className="sb-symbol-empty">No match in the simulated universe.</div>
+              <div className="sb-symbol-empty" role="status">No match in the simulated universe.</div>
             )}
           </div>
         )}
       </div>
 
-      <div className="sb-symbol-chips">
+      <div className="sb-symbol-chips" role="group" aria-label="Popular symbols">
         {POPULAR_SYMBOLS.map((s) => (
           <button
             key={s}
             type="button"
             className={`sb-symbol-chip${symbol === s ? " active" : ""}`}
+            aria-pressed={symbol === s}
             onClick={() => pick(WATCHLIST.find((w) => w.symbol === s)!)}
           >
             {s}
@@ -231,13 +265,16 @@ function TradeInsight({ payload, disabled }: { payload: InsightPayload; disabled
   }
 
   return (
-    <div className="sb-ai-panel">
+    <div className="sb-ai-panel" aria-busy={state === "loading"}>
       <div className="sb-ai-panel-label">AI take</div>
       {state === "loading" && !text ? (
         <div className="sb-ai-loading">Thinking…</div>
       ) : (
-        <div className="sb-ai-text">{renderAiMarkdown(text)}</div>
+        <div className="sb-ai-text" aria-live="off">{renderAiMarkdown(text)}</div>
       )}
+      <span className="sl-visually-hidden" role="status" aria-live="polite">
+        {state === "loading" ? "AI trade insight is loading." : "AI trade insight is ready."}
+      </span>
     </div>
   );
 }
@@ -284,12 +321,13 @@ function TradeIdeaGenerator({ onIdea }: { onIdea: (idea: TradeIdea) => void }) {
   }
 
   return (
-    <div className="sb-card sb-idea-card">
-      <div className="sb-card-title">AI trade idea</div>
+    <section className="sb-card sb-idea-card" aria-labelledby="trade-idea-title">
+      <h2 id="trade-idea-title" className="sb-card-title">AI trade idea</h2>
       <p className="sb-idea-hint">
         Describe your market view — the AI turns it into a concrete trade and fills in the order below.
       </p>
       <textarea
+        aria-label="Describe your market view"
         className="sb-idea-input"
         rows={2}
         placeholder="e.g. I think Tesla drops after earnings but I don't want unlimited risk…"
@@ -304,9 +342,9 @@ function TradeIdeaGenerator({ onIdea }: { onIdea: (idea: TradeIdea) => void }) {
       >
         {loading ? "Thinking…" : "Generate trade idea"}
       </button>
-      {error && <div className="sb-banner error small">{error}</div>}
-      {rationale && <div className="sb-idea-rationale">{rationale}</div>}
-    </div>
+      {error && <div className="sb-banner error small" role="alert">{error}</div>}
+      {rationale && <div className="sb-idea-rationale" role="status">{rationale}</div>}
+    </section>
   );
 }
 
@@ -326,6 +364,8 @@ export default function SandboxClient() {
   const [expiry, setExpiry] = useState(defaultExpiry(30));
   const [placing, setPlacing] = useState(false);
   const [formError, setFormError] = useState<string | null>(null);
+  const [orderMessage, setOrderMessage] = useState<string | null>(null);
+  const [closingPosition, setClosingPosition] = useState<PositionApi | null>(null);
   const [tab, setTab] = useState<"positions" | "trades">("positions");
 
   const watch = WATCHLIST.find((w) => w.symbol === symbol)!;
@@ -412,9 +452,22 @@ export default function SandboxClient() {
 
   const multiplier = assetType === "stock" ? 1 : 100;
   const estCost = quote != null ? quote * qty * multiplier : null;
+  const quantityError = !Number.isInteger(qty) || qty < 1 ? "Enter a whole number of 1 or more." : null;
+  const strikeError = assetType !== "stock" && (!Number.isFinite(strike) || strike <= 0)
+    ? "Enter a strike price greater than zero."
+    : null;
+  const expiryError = assetType !== "stock" && (!expiry || expiry < defaultExpiry(1))
+    ? "Choose a future expiration date."
+    : null;
+  const orderInvalid = Boolean(quantityError || strikeError || expiryError);
 
   async function placeOrder() {
     setFormError(null);
+    setOrderMessage(null);
+    if (orderInvalid) {
+      setFormError(quantityError ?? strikeError ?? expiryError ?? "Review the order details.");
+      return;
+    }
     setPlacing(true);
     try {
       const res = await fetch("/api/sandbox/execute", {
@@ -435,6 +488,7 @@ export default function SandboxClient() {
         return;
       }
       await refresh();
+      setOrderMessage(`${side === "long" ? "Bought" : "Sold"} ${qty} ${assetType === "stock" ? "shares" : "contracts"} of ${symbol}.`);
     } catch {
       setFormError("Network error placing order");
     } finally {
@@ -443,19 +497,38 @@ export default function SandboxClient() {
   }
 
   async function handleClose(positionId: string) {
-    await fetch("/api/sandbox/close", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ positionId }),
-    });
-    await refresh();
+    setFormError(null);
+    try {
+      const res = await fetch("/api/sandbox/close", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ positionId }),
+      });
+      const body = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(body.error ?? "Position could not be closed");
+      await refresh();
+      setOrderMessage("Position closed successfully.");
+    } catch (error) {
+      setFormError(error instanceof Error ? error.message : "Position could not be closed");
+    } finally {
+      setClosingPosition(null);
+    }
   }
 
-  if (authLoading) return null;
+  if (authLoading) return <p className="sb-root" role="status">Loading trading sandbox…</p>;
   if (!user) return <SignInPrompt />;
 
   return (
     <div className="sb-root">
+      <Dialog open={Boolean(closingPosition)} onClose={() => setClosingPosition(null)} title="Close this position?">
+        <p style={{ color: "var(--ink-2)", lineHeight: 1.6, marginBottom: 18 }}>
+          {closingPosition ? `Close ${closingPosition.qty} ${closingPosition.asset_type === "stock" ? "shares" : "contracts"} of ${closingPosition.symbol} at the current simulated mark?` : ""}
+        </p>
+        <div className="flex gap-2 flex-wrap">
+          <button type="button" className="v2-btn" onClick={() => closingPosition && handleClose(closingPosition.id)}>Confirm close</button>
+          <button type="button" className="v2-btn ghost" onClick={() => setClosingPosition(null)}>Keep position</button>
+        </div>
+      </Dialog>
       {/* No repeated eyebrow/title/subtitle here — page.tsx already
           server-renders that H1 block above (needed pre-auth for SEO/
           crawlers), so echoing it again once signed in was pure duplicate
@@ -475,15 +548,15 @@ export default function SandboxClient() {
         </div>
       )}
 
-      {loadError && <div className="sb-banner error">{loadError}</div>}
+      {loadError && <div className="sb-banner error" role="alert">{loadError}</div>}
+      {formError && <div className="sb-banner error" role="alert">{formError}</div>}
+      {orderMessage && <div className="sb-banner success" role="status" aria-live="polite">{orderMessage}</div>}
 
       <div className="sb-split">
         {/* ── Left: order ticket ── */}
         <div className="sb-left">
-          <TradeIdeaGenerator onIdea={applyIdea} />
-
-          <div className="sb-card">
-            <div className="sb-card-title">Symbol</div>
+          <section className="sb-card" aria-labelledby="symbol-card-title">
+            <h2 id="symbol-card-title" className="sb-card-title">Choose a symbol</h2>
             <SymbolPicker
               symbol={symbol}
               onSelect={(w) => { setSymbol(w.symbol); setStrike(Math.round(w.basePrice)); }}
@@ -496,70 +569,93 @@ export default function SandboxClient() {
               <span>Live price</span>
               <span className="sb-quote-value">{quote != null ? money(quote) : "—"}</span>
             </div>
-          </div>
+          </section>
 
-          <div className="sb-card">
-            <div className="sb-card-title">Order</div>
+          <section className="sb-card" aria-labelledby="order-card-title">
+            <h2 id="order-card-title" className="sb-card-title">Build an order</h2>
 
+            <fieldset className="sb-toggle-group">
+            <legend>Asset type</legend>
             <div className="sb-toggle-row">
               {(["stock", "call", "put"] as AssetType[]).map((t) => (
                 <button
                   key={t}
                   type="button"
                   className={`sb-toggle-btn${assetType === t ? " active" : ""}`}
+                  aria-pressed={assetType === t}
                   onClick={() => setAssetType(t)}
                 >
                   {t === "stock" ? "Stock" : t === "call" ? "Call" : "Put"}
                 </button>
               ))}
             </div>
+            </fieldset>
 
             {assetType !== "stock" && (
               <div className="sb-field-row">
                 <label className="sb-field">
                   <span>Strike</span>
                   <input
+                    id="sandbox-strike"
                     type="number"
                     value={strike}
                     min={1}
                     step={1}
+                    aria-describedby={strikeError ? "sandbox-strike-help sandbox-strike-error" : "sandbox-strike-help"}
+                    aria-invalid={Boolean(strikeError)}
                     onChange={(e) => setStrike(Number(e.target.value))}
                   />
+                  <small id="sandbox-strike-help">Price in US dollars.</small>
+                  {strikeError && <small id="sandbox-strike-error" className="sb-field-error">{strikeError}</small>}
                 </label>
                 <label className="sb-field">
                   <span>Expiry</span>
                   <input
+                    id="sandbox-expiry"
                     type="date"
                     value={expiry}
                     min={defaultExpiry(1)}
+                    aria-describedby={expiryError ? "sandbox-expiry-help sandbox-expiry-error" : "sandbox-expiry-help"}
+                    aria-invalid={Boolean(expiryError)}
                     onChange={(e) => setExpiry(e.target.value)}
                   />
+                  <small id="sandbox-expiry-help">Option expiration date.</small>
+                  {expiryError && <small id="sandbox-expiry-error" className="sb-field-error">{expiryError}</small>}
                 </label>
               </div>
             )}
 
+            <fieldset className="sb-toggle-group">
+            <legend>Position direction</legend>
             <div className="sb-toggle-row">
               {(["long", "short"] as const).map((s) => (
                 <button
                   key={s}
                   type="button"
                   className={`sb-toggle-btn${side === s ? (s === "long" ? " active-long" : " active-short") : ""}`}
+                  aria-pressed={side === s}
                   onClick={() => setSide(s)}
                 >
                   {s === "long" ? "Long" : "Short"}
                 </button>
               ))}
             </div>
+            </fieldset>
 
             <label className="sb-field">
               <span>Quantity {assetType !== "stock" && "(contracts)"}</span>
               <input
+                id="sandbox-quantity"
                 type="number"
                 value={qty}
                 min={1}
                 step={1}
-                onChange={(e) => setQty(Math.max(1, Math.floor(Number(e.target.value))))}
+                aria-describedby={quantityError ? "sandbox-quantity-help sandbox-quantity-error" : "sandbox-quantity-help"}
+                aria-invalid={Boolean(quantityError)}
+                onChange={(e) => setQty(Number(e.target.value))}
               />
+              <small id="sandbox-quantity-help">Whole {assetType === "stock" ? "shares" : "contracts"}; options represent 100 shares each.</small>
+              {quantityError && <small id="sandbox-quantity-error" className="sb-field-error">{quantityError}</small>}
             </label>
 
             <div className="sb-cost-row">
@@ -567,9 +663,7 @@ export default function SandboxClient() {
               <span className="sb-cost-value">{estCost != null ? money(estCost) : "—"}</span>
             </div>
 
-            {formError && <div className="sb-banner error small">{formError}</div>}
-
-            <button type="button" className="sb-execute-btn" onClick={placeOrder} disabled={placing || quote == null}>
+            <button type="button" className="sb-execute-btn" onClick={placeOrder} disabled={placing || quote == null || orderInvalid} aria-busy={placing}>
               {placing ? "Placing…" : `${side === "long" ? "Buy" : "Sell"} ${symbol}`}
             </button>
 
@@ -587,21 +681,25 @@ export default function SandboxClient() {
                 status: "proposed",
               }}
             />
-          </div>
+          </section>
+
+          <TradeIdeaGenerator onIdea={applyIdea} />
         </div>
 
         {/* ── Right: portfolio ── */}
         <div className="sb-right">
-          <div className="sb-tabs">
-            <button type="button" className={`sb-tab${tab === "positions" ? " active" : ""}`} onClick={() => setTab("positions")}>
-              Open positions {portfolio ? `(${portfolio.positions.length})` : ""}
-            </button>
-            <button type="button" className={`sb-tab${tab === "trades" ? " active" : ""}`} onClick={() => setTab("trades")}>
-              Recent trades
-            </button>
-          </div>
+          <TabList
+            idPrefix="sandbox-portfolio"
+            label="Portfolio views"
+            activeId={tab}
+            onChange={(id) => setTab(id as "positions" | "trades")}
+            items={[
+              { id: "positions", label: <>Open positions {portfolio ? `(${portfolio.positions.length})` : ""}</> },
+              { id: "trades", label: "Recent trades" },
+            ]}
+          />
 
-          {tab === "positions" ? (
+          <TabPanel idPrefix="sandbox-portfolio" id="positions" activeId={tab}>
             <div className="sb-position-list">
               {!portfolio || portfolio.positions.length === 0 ? (
                 <div className="sb-empty">No open positions yet — place an order to get started.</div>
@@ -624,10 +722,12 @@ export default function SandboxClient() {
                       <div className="sb-position-pnl">
                         <div className="sb-position-mark">{money(p.markPrice)}</div>
                         <div className={`sb-pnl ${p.unrealizedPnl >= 0 ? "gain" : "loss"}`}>
+                          <span aria-hidden="true">{p.unrealizedPnl >= 0 ? "▲" : "▼"} </span>
+                          <span className="sl-visually-hidden">{p.unrealizedPnl >= 0 ? "Unrealized gain" : "Unrealized loss"}: </span>
                           {p.unrealizedPnl >= 0 ? "+" : ""}{money(p.unrealizedPnl)}
                         </div>
                       </div>
-                      <button type="button" className="sb-close-btn" onClick={() => handleClose(p.id)}>Close</button>
+                      <button type="button" className="sb-close-btn" onClick={() => setClosingPosition(p)} aria-label={`Close ${p.symbol} position`}>Close</button>
                     </div>
                     <TradeInsight
                       payload={{
@@ -647,7 +747,8 @@ export default function SandboxClient() {
                 ))
               )}
             </div>
-          ) : (
+          </TabPanel>
+          <TabPanel idPrefix="sandbox-portfolio" id="trades" activeId={tab}>
             <div className="sb-position-list">
               {!portfolio || portfolio.trades.length === 0 ? (
                 <div className="sb-empty">No trades yet.</div>
@@ -662,7 +763,7 @@ export default function SandboxClient() {
                 ))
               )}
             </div>
-          )}
+          </TabPanel>
         </div>
       </div>
     </div>

@@ -64,3 +64,20 @@ export function trackNewsletterSignup() {
 export function trackVisualizerInteraction(param: "S" | "K" | "T" | "r" | "sigma") {
   track("visualizer_interaction", { param });
 }
+
+// ─── Bite-sized sessions ──────────────────────────────────────────────────────
+
+/** Learner opens a session in the session player */
+export function trackSessionStart(sessionId: string) {
+  track("session_start", { sessionId, ...getAttribution() });
+}
+
+/** Learner checks an answer on a question step */
+export function trackStepAnswered(sessionId: string, stepId: string, kind: string, correct: boolean) {
+  track("step_answered", { sessionId, stepId, kind, correct });
+}
+
+/** Learner reaches the session-complete screen */
+export function trackSessionComplete(sessionId: string, accuracy: number, durationMs: number) {
+  track("session_complete", { sessionId, accuracy, durationSec: Math.round(durationMs / 1000) });
+}

@@ -4,6 +4,8 @@ import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { useProgress } from "@/lib/useProgress";
 import { useAuth } from "@/lib/auth/AuthProvider";
+import BrandMark from "@/components/BrandMark";
+import AccessibilityMenu from "@/components/accessibility/AccessibilityMenu";
 
 const PRIMARY: { href: string; label: string; pro?: boolean }[] = [
   { href: "/dashboard",   label: "Dashboard" },
@@ -18,32 +20,6 @@ const SECONDARY: { href: string; label: string }[] = [
   { href: "/about",    label: "About" },
   { href: "/roadmap",  label: "Roadmap" },
 ];
-
-// ── Call-option payoff logo mark ─────────────────────────────
-function LogoMark({ size = 26 }: { size?: number }) {
-  return (
-    <svg
-      width={size} height={size}
-      viewBox="0 0 26 26"
-      fill="none"
-      aria-hidden="true"
-      style={{ flexShrink: 0 }}
-    >
-      {/* Rounded square border */}
-      <rect x="1" y="1" width="24" height="24" rx="6.5"
-        stroke="currentColor" strokeWidth="1.8" />
-      {/* Call option payoff: flat line → kink → diagonal up */}
-      <polyline
-        points="4,19 12,19 22,7"
-        stroke="currentColor" strokeWidth="2.2"
-        strokeLinecap="round" strokeLinejoin="round"
-      />
-      {/* Strike-price tick mark at kink */}
-      <line x1="12" y1="17" x2="12" y2="21"
-        stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
-    </svg>
-  );
-}
 
 // ── Small inline SVG icons (no emojis) ───────────────────────
 function FlameIcon() {
@@ -104,15 +80,25 @@ export default function Nav() {
   // use for exactly this reason.
   const [accountOpen, setAccountOpen] = useState(false);
   const accountRef = useRef<HTMLDivElement>(null);
+  const accountTriggerRef = useRef<HTMLButtonElement>(null);
   useEffect(() => {
     if (!accountOpen) return;
-    function onDown(e: MouseEvent) {
+    function onDown(e: PointerEvent) {
       if (accountRef.current && !accountRef.current.contains(e.target as Node)) {
         setAccountOpen(false);
       }
     }
-    document.addEventListener("mousedown", onDown);
-    return () => document.removeEventListener("mousedown", onDown);
+    function onKeyDown(e: KeyboardEvent) {
+      if (e.key !== "Escape") return;
+      setAccountOpen(false);
+      accountTriggerRef.current?.focus();
+    }
+    document.addEventListener("pointerdown", onDown);
+    document.addEventListener("keydown", onKeyDown);
+    return () => {
+      document.removeEventListener("pointerdown", onDown);
+      document.removeEventListener("keydown", onKeyDown);
+    };
   }, [accountOpen]);
 
   // Cheap scroll-past-hero shadow — no backdrop-filter (see nav-bar comment,
@@ -142,12 +128,42 @@ export default function Nav() {
     setMenuOpen(false);
   }
 
-  // Lock body scroll while the mobile menu is open.
+  const menuButtonRef = useRef<HTMLButtonElement>(null);
+  const mobilePanelRef = useRef<HTMLDivElement>(null);
+
+  // Lock body scroll, contain focus, and make background content inert while
+  // the mobile navigation dialog is open.
   useEffect(() => {
     if (!menuOpen) return;
     const prev = document.body.style.overflow;
+    const menuButton = menuButtonRef.current;
     document.body.style.overflow = "hidden";
-    return () => { document.body.style.overflow = prev; };
+    const background = [...document.querySelectorAll<HTMLElement>("main, body > footer")];
+    background.forEach((element) => { element.inert = true; });
+    const panel = mobilePanelRef.current;
+    const focusableSelector = 'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])';
+    panel?.querySelector<HTMLElement>(focusableSelector)?.focus();
+    function onKeyDown(event: KeyboardEvent) {
+      if (event.key === "Escape") {
+        event.preventDefault();
+        setMenuOpen(false);
+        return;
+      }
+      if (event.key !== "Tab" || !panel) return;
+      const focusable = [...panel.querySelectorAll<HTMLElement>(focusableSelector)];
+      if (!focusable.length) return;
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last.focus(); }
+      if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus(); }
+    }
+    document.addEventListener("keydown", onKeyDown);
+    return () => {
+      document.removeEventListener("keydown", onKeyDown);
+      document.body.style.overflow = prev;
+      background.forEach((element) => { element.inert = false; });
+      menuButton?.focus();
+    };
   }, [menuOpen]);
 
   async function handleSignOut() {
@@ -163,7 +179,7 @@ export default function Nav() {
   const allLinks = [...PRIMARY, ...SECONDARY] as { href: string; label: string; pro?: boolean }[];
 
   return (
-    <>
+    <header className="site-header">
       {/* ─── Announcement bar ──────────────────────────────────────────────── */}
       <div className="nav-announce">
         New &mdash;{" "}
@@ -177,12 +193,12 @@ export default function Nav() {
       </div>
 
       {/* ─── Main nav ──────────────────────────────────────────────────────── */}
-      <nav className={`nav-bar${scrolled ? " is-scrolled" : ""}`}>
+      <nav className={`nav-bar${scrolled ? " is-scrolled" : ""}`} aria-label="Primary navigation">
 
         {/* Left: logo + primary links */}
         <div className="nav-left">
           <Link href="/" className="nav-logo" aria-label="StrikeLab home">
-            <LogoMark />
+            <BrandMark />
             <span className="nav-wordmark">
               Strike<span className="nav-wordmark-lab">Lab</span>
             </span>
@@ -198,6 +214,7 @@ export default function Nav() {
                   <Link
                     href={l.href}
                     className={`nav-link${active ? " active" : ""}`}
+                    aria-current={active ? "page" : undefined}
                   >
                     {l.label}
                     {"pro" in l && l.pro && (
@@ -241,6 +258,8 @@ export default function Nav() {
             </>
           )}
 
+          <AccessibilityMenu />
+
           {/* GitHub */}
           <a
             href="https://github.com/isaacgong0311-hash/strikelab"
@@ -255,6 +274,7 @@ export default function Nav() {
           {user ? (
             <div className="nav-account" ref={accountRef}>
               <button
+                ref={accountTriggerRef}
                 type="button"
                 className="nav-avatar"
                 aria-label="Account menu"
@@ -269,17 +289,17 @@ export default function Nav() {
                 )}
               </button>
               {accountOpen && (
-                <div className="nav-account-menu" role="menu">
+                <div className="nav-account-menu" aria-label="Account options">
                   {displayName && (
                     <div className="nav-account-name" title={user.email ?? undefined}>{displayName}</div>
                   )}
-                  <Link href="/dashboard" className="nav-account-item" role="menuitem" onClick={() => setAccountOpen(false)}>
+                  <Link href="/dashboard" className="nav-account-item" onClick={() => setAccountOpen(false)}>
                     Dashboard
                   </Link>
-                  <Link href="/settings" className="nav-account-item" role="menuitem" onClick={() => setAccountOpen(false)}>
+                  <Link href="/settings" className="nav-account-item" onClick={() => setAccountOpen(false)}>
                     Settings
                   </Link>
-                  <button type="button" onClick={handleSignOut} className="nav-account-item nav-account-item-signout" role="menuitem">
+                  <button type="button" onClick={handleSignOut} className="nav-account-item nav-account-item-signout">
                     Sign out
                   </button>
                 </div>
@@ -296,10 +316,12 @@ export default function Nav() {
 
           {/* Mobile menu toggle — only visible below the nav-links breakpoint */}
           <button
+            ref={menuButtonRef}
             type="button"
             className="nav-hamburger"
             aria-label={menuOpen ? "Close menu" : "Open menu"}
             aria-expanded={menuOpen}
+            aria-controls="mobile-navigation"
             onClick={() => setMenuOpen((v) => !v)}
           >
             <MenuIcon open={menuOpen} />
@@ -309,14 +331,23 @@ export default function Nav() {
 
       {/* ─── Mobile menu panel ─────────────────────────────────────────────── */}
       {menuOpen && (
-        <div className="nav-mobile-overlay" onClick={() => setMenuOpen(false)}>
-          <div className="nav-mobile-panel" onClick={(e) => e.stopPropagation()}>
+        <div className="nav-mobile-overlay" onMouseDown={(event) => { if (event.target === event.currentTarget) setMenuOpen(false); }}>
+          <div
+            id="mobile-navigation"
+            ref={mobilePanelRef}
+            className="nav-mobile-panel"
+            role="dialog"
+            aria-modal="true"
+            aria-label="Mobile navigation"
+          >
             <div className="nav-mobile-links">
               {allLinks.map((l) => (
                 <Link
                   key={l.href}
                   href={l.href}
                   className={`nav-mobile-link${isActive(l.href) ? " active" : ""}`}
+                  aria-current={isActive(l.href) ? "page" : undefined}
+                  onClick={() => setMenuOpen(false)}
                 >
                   {l.label}
                   {"pro" in l && l.pro && <span className="nav-pro-badge">PRO</span>}
@@ -364,6 +395,6 @@ export default function Nav() {
           </div>
         </div>
       )}
-    </>
+    </header>
   );
 }

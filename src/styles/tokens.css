@@ -1,0 +1,120 @@
+:root[data-ui="v3"] {
+  color-scheme: light;
+
+  /* Brand + semantic surfaces */
+  --sl-canvas: #f5f6f3;
+  --sl-canvas-subtle: #eceee9;
+  --sl-surface: #ffffff;
+  --sl-surface-raised: #fafbf9;
+  --sl-surface-inverse: #101713;
+  --sl-text: #17201b;
+  --sl-text-muted: #4e5a53;
+  /* 5.35:1 against the subtle canvas; safe for 10–12px supporting copy. */
+  --sl-text-subtle: #59635b;
+  --sl-border: #cbd1cb;
+  --sl-border-strong: #8a948c;
+  --sl-brand: #14733c;
+  --sl-brand-strong: #0d5c2e;
+  --sl-brand-soft: #e4f5e9;
+  --sl-info: #2557c7;
+  --sl-info-soft: #e8eefc;
+  --sl-warning: #8a470b;
+  --sl-warning-soft: #faefd7;
+  --sl-danger: #a43b18;
+  --sl-danger-soft: #fbe9e2;
+  --sl-success: #14733c;
+
+  /* Type */
+  --sl-font-display: var(--font-display), "Plus Jakarta Sans", system-ui, sans-serif;
+  --sl-font-body: var(--font-ui), Inter, system-ui, sans-serif;
+  --sl-font-code: var(--font-mono), "JetBrains Mono", ui-monospace, monospace;
+  --sl-leading-tight: 1.08;
+  --sl-leading-body: 1.65;
+
+  /* Layout + shape */
+  --sl-space-1: 0.25rem;
+  --sl-space-2: 0.5rem;
+  --sl-space-3: 0.75rem;
+  --sl-space-4: 1rem;
+  --sl-space-5: 1.5rem;
+  --sl-space-6: 2rem;
+  --sl-space-7: 3rem;
+  --sl-space-8: 4.5rem;
+  --sl-radius-sm: 0.625rem;
+  --sl-radius-md: 0.875rem;
+  --sl-radius-lg: 1.125rem;
+  --sl-radius-xl: 1.5rem;
+  --sl-radius-pill: 999px;
+  --sl-shadow-1: 0 1px 2px rgb(15 23 18 / 0.08), 0 8px 24px rgb(15 23 18 / 0.05);
+  --sl-shadow-2: 0 18px 48px rgb(15 23 18 / 0.12);
+  --sl-focus: #075ee8;
+  --sl-motion-fast: 140ms;
+  --sl-motion-base: 220ms;
+  --sl-ease: cubic-bezier(0.2, 0.7, 0.3, 1);
+  --sl-tap: 44px;
+
+  /* Legacy aliases: migrated pages and older pages share one palette. */
+  --bg: var(--sl-canvas);
+  --bg2: var(--sl-canvas-subtle);
+  --card: var(--sl-surface);
+  --card2: var(--sl-surface-raised);
+  --paper: var(--sl-canvas);
+  --paper-2: var(--sl-surface);
+  --paper-3: var(--sl-surface-raised);
+  --text: var(--sl-text);
+  --ink: var(--sl-text);
+  --ink-2: var(--sl-text-muted);
+  --ink-3: var(--sl-text-subtle);
+  --muted: var(--sl-text-muted);
+  --muted2: var(--sl-text-muted);
+  --fg: var(--sl-text);
+  --fg-mute: var(--sl-text-muted);
+  --fg-faint: var(--sl-text-subtle);
+  --border: var(--sl-border);
+  --border2: var(--sl-border-strong);
+  --border-hi: var(--sl-border-strong);
+  --line: var(--sl-border);
+  --line-2: var(--sl-border-strong);
+  --grass: var(--sl-brand);
+  --grass-d: var(--sl-brand-strong);
+  --grass-tint: var(--sl-brand-soft);
+  --sky: var(--sl-info);
+  --sky-tint: var(--sl-info-soft);
+  --amber: var(--sl-warning);
+  --amber-tint: var(--sl-warning-soft);
+  --coral: var(--sl-danger);
+  --coral-tint: var(--sl-danger-soft);
+  --accent: var(--sl-brand);
+  --accent2: var(--sl-text-muted);
+  --check: var(--sl-success);
+  --night: var(--sl-surface-inverse);
+  --night-2: #17211b;
+}
+
+:root[data-ui="v3"][data-contrast="more"] {
+  --sl-canvas: #ffffff;
+  --sl-canvas-subtle: #f0f0f0;
+  --sl-surface-raised: #ffffff;
+  --sl-text: #090d0a;
+  --sl-text-muted: #252a26;
+  --sl-text-subtle: #373d38;
+  --sl-border: #777e78;
+  --sl-border-strong: #373d38;
+  --sl-brand: #075e2b;
+  --sl-brand-soft: #dff3e5;
+  --sl-info: #123eaa;
+  --sl-warning: #6d3400;
+  --sl-danger: #812600;
+}
+
+@media (prefers-contrast: more) {
+  :root[data-ui="v3"]:not([data-contrast="standard"]) {
+    --sl-canvas: #ffffff;
+    --sl-text: #090d0a;
+    --sl-text-muted: #252a26;
+    --sl-text-subtle: #373d38;
+    --sl-border: #777e78;
+    --sl-border-strong: #373d38;
+    --sl-brand: #075e2b;
+  }
+}

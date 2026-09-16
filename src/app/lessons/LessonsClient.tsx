@@ -31,6 +31,9 @@ export default function LessonsClient() {
     : 0;
 
   const pct = totalLessons ? (doneCount / totalLessons) * 100 : 0;
+  const nextLesson = hydrated
+    ? TRACKS.flatMap((track) => track.lessons).find((lesson) => !completed.has(lesson.id))
+    : TRACKS[0]?.lessons[0];
 
   return (
     <div className="dpath">
@@ -59,8 +62,23 @@ export default function LessonsClient() {
           </div>
         </div>
         <div className="dpath-progress">
-          <div className="dpath-progress-fill" style={{ width: `${pct}%` }} />
+          <div
+            className="dpath-progress-fill"
+            role="progressbar"
+            aria-label="Overall curriculum progress"
+            aria-valuemin={0}
+            aria-valuemax={totalLessons}
+            aria-valuenow={doneCount}
+            aria-valuetext={`${doneCount} of ${totalLessons} lessons complete`}
+            style={{ width: `${pct}%` }}
+          />
         </div>
+        {nextLesson && (
+          <Link href={`/lesson/${nextLesson.id}`} className="dpath-next">
+            <span><small>Recommended next</small><strong>{nextLesson.title}</strong></span>
+            <span aria-hidden="true">Continue →</span>
+          </Link>
+        )}
       </div>
 
       {/* Tracks */}
@@ -74,23 +92,23 @@ export default function LessonsClient() {
         const levelColor = LEVEL_COLORS[track.level] ?? "var(--grass)";
 
         return (
-          <div key={track.id}>
+          <section key={track.id} aria-labelledby={`track-title-${track.id}`}>
             {/* Unit banner */}
             <div
               className="dunit-banner"
               style={{ background: levelColor, boxShadow: `0 5px 0 color-mix(in srgb, ${levelColor} 70%, #000)` }}
             >
               <div>
-                <div className="t">{track.title}</div>
+                <h2 id={`track-title-${track.id}`} className="t">{track.title}</h2>
                 <div className="s">
                   {track.subtitle} · {track.level} · {trackDone}/{track.lessons.length} complete
                 </div>
               </div>
-              <span className="dunit-icon">{track.icon}</span>
+              <span className="dunit-icon" aria-hidden="true">{track.icon}</span>
             </div>
 
             {/* Winding path */}
-            <div className="dpath-nodes">
+            <div className="dpath-nodes" role="list" aria-label={`${track.title} lessons`}>
               {track.lessons.flatMap((lesson, i) => {
                 const done = hydrated && completed.has(lesson.id);
                 const isActive = !done && lesson.id === activeId;
@@ -102,6 +120,7 @@ export default function LessonsClient() {
                   <div
                     key={lesson.id}
                     className={`dnode ${state}`}
+                    role="listitem"
                     style={{
                       transform: `translateX(${off}px)`,
                       "--node-color": levelColor,
@@ -129,7 +148,7 @@ export default function LessonsClient() {
                             ? { background: "#fff", color: levelColor, border: `3px solid ${levelColor}`, boxShadow: `0 6px 0 color-mix(in srgb, ${levelColor} 20%, #fff)` }
                             : { background: "#fff", color: levelColor, border: `2px solid ${levelColor}44`, boxShadow: `0 2px 0 #e7e5e4` }
                         }
-                        aria-label={lesson.title}
+                        aria-label={`${lesson.title}, ${done ? "completed" : isActive ? "recommended next lesson" : "available"}`}
                       >
                         {state === "done" ? "✓" : i + 1}
                       </Link>
@@ -153,7 +172,7 @@ export default function LessonsClient() {
               })}
 
               {/* Track-finish trophy */}
-              <div className={`dnode dfinish ${trackDone === track.lessons.length ? "won" : ""}`}>
+              <div className={`dnode dfinish ${trackDone === track.lessons.length ? "won" : ""}`} role="listitem">
                 <div
                   className="dfinish-btn"
                   style={
@@ -175,6 +194,7 @@ export default function LessonsClient() {
               {COMING_SOON[track.id] && (
                 <div
                   className="dnode locked"
+                  role="listitem"
                   style={{ transform: `translateX(${OFFSETS[(track.lessons.length + 1) % OFFSETS.length]}px)` }}
                 >
                   <span className="dnode-soon">COMING SOON</span>
@@ -185,7 +205,7 @@ export default function LessonsClient() {
                 </div>
               )}
             </div>
-          </div>
+          </section>
         );
       })}
     </div>

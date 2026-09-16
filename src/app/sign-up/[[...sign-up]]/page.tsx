@@ -4,6 +4,8 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { getSupabaseBrowser } from "@/lib/supabase/client";
 import { TRACKS } from "@/lib/tracks";
+import BrandMark from "@/components/BrandMark";
+import AuthError from "@/components/AuthError";
 
 const TOTAL_LESSONS = TRACKS.reduce((s, t) => s + t.lessons.length, 0);
 
@@ -89,7 +91,7 @@ export default function SignUpPage() {
     return (
       <div className="auth">
         <div className="auth-card">
-          <div className="auth-brand"><span className="auth-logo">∫</span></div>
+          <div className="auth-brand"><span className="auth-logo"><BrandMark size={34} /></span></div>
           <h1 className="auth-title">Check your email</h1>
           <p className="auth-sub">
             We sent a confirmation link to <strong>{email}</strong>. Click it to
@@ -106,11 +108,11 @@ export default function SignUpPage() {
   return (
     <div className="auth">
       <div className="auth-card">
-        <div className="auth-brand"><span className="auth-logo">∫</span></div>
+        <div className="auth-brand"><span className="auth-logo"><BrandMark size={34} /></span></div>
         <h1 className="auth-title">Start learning free</h1>
         <p className="auth-sub">All {TOTAL_LESSONS} lessons, the Python playground, and the Greek visualizer — free forever.</p>
 
-        {error && <p className="auth-error" style={{ color: "var(--coral, #ef4444)", fontSize: 13, marginBottom: 10 }}>{error}</p>}
+        <AuthError message={error} />
 
         <form onSubmit={handleSubmit} className="auth-form">
           <label className="auth-label">
@@ -122,6 +124,7 @@ export default function SignUpPage() {
               value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder="Isaac Gong"
+              autoComplete="name"
             />
           </label>
           <label className="auth-label">
@@ -133,6 +136,7 @@ export default function SignUpPage() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="you@school.edu"
+              autoComplete="email"
             />
           </label>
           <label className="auth-label">
@@ -145,7 +149,10 @@ export default function SignUpPage() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="Min. 8 characters"
+              autoComplete="new-password"
+              aria-describedby="signup-password-help"
             />
+            <span id="signup-password-help" className="auth-help">Use at least 8 characters.</span>
           </label>
           <button type="submit" disabled={loading} className="v2-btn" style={{ width: "100%", marginTop: 4 }}>
             {loading ? "Creating account…" : <>Create free account <span className="v2-arr">→</span></>}

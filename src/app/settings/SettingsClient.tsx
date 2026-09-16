@@ -2,6 +2,7 @@
 import Link from "next/link";
 import { useState, useEffect, useCallback } from "react";
 import { useAuth } from "@/lib/auth/AuthProvider";
+import AccessibilityControls from "@/components/accessibility/AccessibilityControls";
 
 function SignInPrompt() {
   return (
@@ -93,9 +94,9 @@ function DiscordSettings() {
   }
 
   return (
-    <div className="db-panel">
+    <section className="db-panel" aria-labelledby="discord-settings-title">
       <div className="db-panel-head">
-        <span className="db-panel-title">Discord</span>
+        <h2 id="discord-settings-title" className="db-panel-title">Discord</h2>
       </div>
       <p className="text-xs leading-relaxed mb-4" style={{ color: "var(--muted2)" }}>
         Auto-post lesson completions and achievements to a Discord channel — handy
@@ -105,7 +106,7 @@ function DiscordSettings() {
       </p>
 
       {state === "loading" ? (
-        <p className="text-xs" style={{ color: "var(--ink-3)" }}>Loading…</p>
+        <p className="text-xs" style={{ color: "var(--ink-3)" }} role="status">Loading Discord settings…</p>
       ) : state === "connected" || state === "testing" ? (
         <div className="flex items-center gap-3 flex-wrap">
           <span
@@ -123,12 +124,17 @@ function DiscordSettings() {
         </div>
       ) : (
         <form onSubmit={save} className="flex gap-2 flex-wrap">
+          <label htmlFor="discord-webhook" className="text-xs font-semibold" style={{ color: "var(--ink-2)", flexBasis: "100%" }}>
+            Discord webhook URL
+          </label>
           <input
+            id="discord-webhook"
             className="auth-input"
             style={{ flex: "1 1 320px" }}
             type="url"
             required
             placeholder="https://discord.com/api/webhooks/..."
+            autoComplete="url"
             value={webhookInput}
             onChange={(e) => setWebhookInput(e.target.value)}
           />
@@ -139,11 +145,11 @@ function DiscordSettings() {
       )}
 
       {message && (
-        <p className="text-xs mt-3" style={{ color: message.isError ? "var(--coral)" : "var(--grass)" }}>
+        <p className="text-xs mt-3 sl-status" data-tone={message.isError ? "danger" : "success"} role={message.isError ? "alert" : "status"}>
           {message.text}
         </p>
       )}
-    </div>
+    </section>
   );
 }
 
@@ -152,6 +158,10 @@ interface OwnedClass {
   name: string;
   joinCode: string;
   memberCount: number;
+  templateId: string | null;
+  startsOn: string | null;
+  timezone: string | null;
+  launchedAt: string | null;
 }
 
 interface JoinedClass {
@@ -233,9 +243,9 @@ function ClassroomSettings() {
   }
 
   return (
-    <div className="db-panel" style={{ marginTop: 20 }}>
+    <section className="db-panel" style={{ marginTop: 20 }} aria-labelledby="classroom-settings-title">
       <div className="db-panel-head">
-        <span className="db-panel-title">Classroom</span>
+        <h2 id="classroom-settings-title" className="db-panel-title">Classroom</h2>
       </div>
       <p className="text-xs leading-relaxed mb-4" style={{ color: "var(--muted2)" }}>
         Teaching a class? Create one and share the join code with your students to see
@@ -243,7 +253,7 @@ function ClassroomSettings() {
       </p>
 
       {!loaded ? (
-        <p className="text-xs" style={{ color: "var(--ink-3)" }}>Loading…</p>
+        <p className="text-xs" style={{ color: "var(--ink-3)" }} role="status">Loading classroom settings…</p>
       ) : (
         <div className="flex flex-col gap-5">
           <div>
@@ -269,7 +279,11 @@ function ClassroomSettings() {
               </div>
             )}
             <form onSubmit={createClass} className="flex gap-2 flex-wrap">
+              <label htmlFor="new-class-name" className="text-xs font-semibold" style={{ color: "var(--ink-2)", flexBasis: "100%" }}>
+                New class name
+              </label>
               <input
+                id="new-class-name"
                 className="auth-input"
                 style={{ flex: "1 1 220px" }}
                 type="text"
@@ -291,7 +305,11 @@ function ClassroomSettings() {
               </p>
             ) : (
               <form onSubmit={joinClass} className="flex gap-2 flex-wrap">
+                <label htmlFor="join-class-code" className="text-xs font-semibold" style={{ color: "var(--ink-2)", flexBasis: "100%" }}>
+                  Class join code
+                </label>
                 <input
+                  id="join-class-code"
                   className="auth-input"
                   style={{ flex: "1 1 160px", textTransform: "uppercase" }}
                   type="text"
@@ -311,18 +329,18 @@ function ClassroomSettings() {
       )}
 
       {message && (
-        <p className="text-xs mt-3" style={{ color: message.isError ? "var(--coral)" : "var(--grass)" }}>
+        <p className="text-xs mt-3 sl-status" data-tone={message.isError ? "danger" : "success"} role={message.isError ? "alert" : "status"}>
           {message.text}
         </p>
       )}
-    </div>
+    </section>
   );
 }
 
 export default function SettingsClient() {
   const { user, loading } = useAuth();
 
-  if (loading) return null;
+  if (loading) return <p className="sl-page-shell" role="status">Loading settings…</p>;
   if (!user) return <SignInPrompt />;
 
   return (
@@ -338,6 +356,10 @@ export default function SettingsClient() {
           Integrations and account preferences.
         </p>
       </div>
+      <section id="accessibility" className="db-panel" aria-labelledby="accessibility-settings-title">
+        <h2 id="accessibility-settings-title" className="db-panel-title" style={{ marginBottom: 12 }}>Display and accessibility</h2>
+        <AccessibilityControls />
+      </section>
       <DiscordSettings />
       <ClassroomSettings />
     </div>

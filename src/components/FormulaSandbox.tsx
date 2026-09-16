@@ -140,12 +140,13 @@ export default function FormulaSandbox({ config }: { config: FormulaSandboxConfi
               }
               className="fsb-slider"
               aria-label={v.label}
+              aria-valuetext={`${values[v.key].toLocaleString()}${v.unit ? ` ${v.unit}` : ""}`}
             />
           </label>
         ))}
       </div>
 
-      <div className="fsb-result">
+      <div className="fsb-result" role="status" aria-live="polite">
         <span className="fsb-result-label">{config.resultLabel}</span>
         <span className="fsb-result-val">
           {isNegative && "−"}

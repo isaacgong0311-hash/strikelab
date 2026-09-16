@@ -1,4 +1,5 @@
 import Link from "next/link";
+import BrandMark from "@/components/BrandMark";
 
 const NAV_GROUPS = [
   {
@@ -42,20 +43,7 @@ export default function Footer() {
         {/* Brand */}
         <div className="col-span-2">
           <div className="flex items-center gap-2.5 mb-4">
-            <span
-              className="grid place-items-center"
-              style={{
-                width: 24,
-                height: 24,
-                border: "1.5px solid var(--fg)",
-                fontFamily: "var(--font-mono)",
-                fontSize: 11,
-                fontWeight: 500,
-                color: "var(--fg)",
-              }}
-            >
-              SL
-            </span>
+            <span style={{ color: "var(--fg)", display: "grid" }}><BrandMark size={26} /></span>
             <span style={{ fontFamily: "var(--font-display)", fontStyle: "italic", color: "var(--fg)", fontSize: "1.15rem", fontWeight: 600 }}>
               Strike<span style={{ fontStyle: "normal", fontWeight: 600 }}>Lab</span>
             </span>

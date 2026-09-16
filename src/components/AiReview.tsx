@@ -42,19 +42,19 @@ export default function AiReview({ lessonId, code }: { lessonId: string; code: s
   }
 
   return (
-    <div className="ai-review">
+    <section className="ai-review" aria-labelledby="ai-review-title">
       <div className="ai-review-head">
-        <span className="ai-review-title">
+        <h3 id="ai-review-title" className="ai-review-title">
           <span className="ai-dot" aria-hidden="true" />
           Code review
-        </span>
+        </h3>
         {state === "done" && (
           <button type="button" className="ai-review-again" onClick={run}>
             Re-run
           </button>
         )}
       </div>
-      <div className="ai-review-body">
+      <div className="ai-review-body" aria-busy={state === "loading"}>
         {review ? (
           renderAiMarkdown(review)
         ) : (
@@ -63,6 +63,7 @@ export default function AiReview({ lessonId, code }: { lessonId: string; code: s
           </span>
         )}
       </div>
-    </div>
+      <span className="sl-visually-hidden" role="status" aria-live="polite">{state === "loading" ? "Reviewing solution." : "Code review ready."}</span>
+    </section>
   );
 }

@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 import { TRACKS, type Track } from "@/lib/tracks";
 
 // ─── Hero notebook card ──────────────────────────────────────────────────────
@@ -26,55 +26,13 @@ const GREEKS = [
 
 const TOTAL_LESSONS = TRACKS.reduce((s, t) => s + t.lessons.length, 0);
 
-/**
- * Counts a numeric stat up from 0 once it scrolls into view. Non-numeric
- * badges ("$0") just render as-is — counting up to a dollar sign is silly.
- */
+/** Server-renders the final value so crawlers and first paint never show a 0. */
 function CountUpFact({ value }: { value: string }) {
-  const n = Number.parseInt(value, 10);
-  const ref = useRef<HTMLElement>(null);
-  const [display, setDisplay] = useState(() => {
-    if (!Number.isFinite(n)) return value;
-    if (
-      typeof window !== "undefined" &&
-      window.matchMedia("(prefers-reduced-motion: reduce)").matches
-    ) {
-      return n;
-    }
-    return 0;
-  });
-
-  useEffect(() => {
-    if (!Number.isFinite(n)) return;
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    const el = ref.current;
-    if (!el) return;
-    const io = new IntersectionObserver(
-      ([entry]) => {
-        if (!entry.isIntersecting) return;
-        io.disconnect();
-        const start = performance.now();
-        const dur = 700;
-        function tick(now: number) {
-          const p = Math.min(1, (now - start) / dur);
-          const eased = 1 - (1 - p) * (1 - p);
-          setDisplay(Math.round(eased * n));
-          if (p < 1) requestAnimationFrame(tick);
-        }
-        requestAnimationFrame(tick);
-      },
-      { threshold: 0.6 },
-    );
-    io.observe(el);
-    return () => io.disconnect();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  return <b ref={ref}>{display}</b>;
+  return <b>{value}</b>;
 }
 
 const FACTS = [
-  { b: "3",                     s: "Tracks" },
+  { b: String(TRACKS.length),   s: "Tracks" },
   { b: String(TOTAL_LESSONS),   s: "Lessons" },
   { b: "$0",                    s: "Forever free" },
   { b: "0",                     s: "Installs" },
@@ -83,7 +41,7 @@ const FACTS = [
 /**
  * One collapsible track on the homepage.
  *
- * The page used to render all 21 lessons inline, which made it enormous and
+ * The page used to render every lesson inline, which made it enormous and
  * pushed the actual call-to-action far below the fold — you had to scroll past
  * a wall of near-identical rows to reach anything else. Collapsing to three
  * cards makes the curriculum scannable in one screen while keeping the detail
@@ -104,8 +62,9 @@ function TrackCard({ track, defaultOpen }: { track: Track; defaultOpen: boolean 
   );
 
   return (
-    <div className={`sk-track-card${open ? " open" : ""}`} id={track.id}>
+    <section className={`sk-track-card${open ? " open" : ""}`} id={track.id}>
       <button
+        id={`track-trigger-${track.id}`}
         type="button"
         className="sk-track-head"
         onClick={() => setOpen((v) => !v)}
@@ -134,7 +93,7 @@ function TrackCard({ track, defaultOpen }: { track: Track; defaultOpen: boolean 
             >
               {track.level}
             </span>
-            <span className="sk-track-name">{track.title}</span>
+            <span className="sk-track-name" role="heading" aria-level={3}>{track.title}</span>
           </span>
           <span className="sk-track-sub">{track.subtitle}</span>
         </span>
@@ -147,7 +106,14 @@ function TrackCard({ track, defaultOpen }: { track: Track; defaultOpen: boolean 
         <span className="sk-track-chev" aria-hidden="true">›</span>
       </button>
 
-      <div className="sk-track-panel" id={panelId} role="region">
+      <div
+        className="sk-track-panel"
+        id={panelId}
+        role="region"
+        aria-labelledby={`track-trigger-${track.id}`}
+        aria-hidden={!open}
+        inert={!open}
+      >
         <div className="sk-track-panel-inner">
           {/* Background character for the path. Duolingo puts scenery behind
               its tree; the equivalent here is the maths the track is actually
@@ -156,9 +122,10 @@ function TrackCard({ track, defaultOpen }: { track: Track; defaultOpen: boolean 
           <span className="sk-track-deco" aria-hidden="true" style={{ color: track.color }}>
             {track.icon}
           </span>
-          <div className="sk-lessons">
+          <ol className="sk-lessons">
             {track.lessons.map((lesson, i) => (
-              <Link key={lesson.id} href={`/lesson/${lesson.id}`} className="sk-lesson">
+              <li key={lesson.id}>
+              <Link href={`/lesson/${lesson.id}`} className="sk-lesson">
                 <div
                   className="sk-lesson-num"
                   style={{
@@ -175,11 +142,12 @@ function TrackCard({ track, defaultOpen }: { track: Track; defaultOpen: boolean 
                 <span className="sk-pill live">{lesson.duration}</span>
                 <span className="arr">→</span>
               </Link>
+              </li>
             ))}
-          </div>
+          </ol>
         </div>
       </div>
-    </div>
+    </section>
   );
 }
 
@@ -230,7 +198,7 @@ export default function Home() {
           </div>
 
           <div className="sk-hero-visual">
-            <div className="sk-codecard">
+              <div className="sk-codecard" aria-label="Example Black-Scholes Python exercise">
               <div className="sk-codecard-bar">
                 <span className="sk-codecard-name">black_scholes.py</span>
                 <span className="sk-codecard-tag">Lesson 03</span>
@@ -245,7 +213,7 @@ export default function Home() {
               </div>
             </div>
             <div className="sk-result-chip">
-              <span className="ok">✓ tests passed</span>
+                <span className="ok">✓ All tests passed</span>
               <span>price <b>3.47</b></span>
               <span>Δ <b>0.443</b></span>
             </div>
@@ -257,7 +225,7 @@ export default function Home() {
             ~180px of dead air above and below the card. Pulling the stats out
             shortens the text column and gives the hero a full-width base to
             rest on instead of two columns floating in space. */}
-        <div className="sk-facts">
+          <div className="sk-facts" aria-label="StrikeLab at a glance">
           {FACTS.map((f) => (
             <div key={f.s} className="sk-fact">
               <CountUpFact value={f.b} />
@@ -394,6 +362,7 @@ export default function Home() {
               </p>
               <div className="sk-cta-btns">
                 <Link href="/lesson/inv-1" className="sk-btn">Start with stocks <span className="arr">→</span></Link>
+                <Link href="/for-teachers" className="sk-btn dark">For teachers</Link>
                 <a href="https://github.com/isaacgong0311-hash/strikelab" target="_blank" rel="noopener noreferrer" className="sk-btn dark">GitHub ↗</a>
               </div>
 
@@ -403,10 +372,12 @@ export default function Home() {
                   <p className="sk-nl-done">✓ You&apos;re in — first issue lands Sunday.</p>
                 ) : (
                   <form className="sk-nl-form" onSubmit={subscribe}>
+                    <label htmlFor="home-newsletter-email" className="sl-visually-hidden">Email address for Sunday Greeks</label>
                     <input
+                      id="home-newsletter-email"
                       type="email"
                       placeholder="you@school.edu"
-                      aria-label="Email address"
+                      autoComplete="email"
                       required
                       value={subEmail}
                       onChange={(e) => setSubEmail(e.target.value)}
@@ -414,6 +385,7 @@ export default function Home() {
                     <button type="submit" className="sk-btn">Subscribe</button>
                   </form>
                 )}
+                <div className="sl-visually-hidden" role="status" aria-live="polite">{subbed ? "Subscription saved." : ""}</div>
               </div>
             </div>
           </div>

@@ -12,10 +12,12 @@ import {
   fetchRemoteProgress,
   upsertRemoteProgress,
   mergeProgress,
+  fetchProgressTimeZone,
   EMPTY_PROGRESS,
   type ProgressPayload,
 } from "@/lib/progress/sync";
 import { notifyDiscordOfNewCompletions } from "@/lib/progress/discordNotify";
+import { resolveStreak } from "@/lib/progress/streak";
 
 // ─── GET /api/progress ────────────────────────────────────────────────────────
 export async function GET() {
@@ -24,8 +26,16 @@ export async function GET() {
     return NextResponse.json({ error: auth.error }, { status: auth.status });
   }
 
-  const data = await fetchRemoteProgress(auth.supabase, auth.userId);
-  return NextResponse.json({ data });
+  const [data, timeZone] = await Promise.all([
+    fetchRemoteProgress(auth.supabase, auth.userId),
+    fetchProgressTimeZone(auth.supabase, auth.userId),
+  ]);
+  if (!data) return NextResponse.json({ data });
+
+  // The stored streak is as of the last activity; report whether it is still
+  // alive today on the learner's local day (UTC when the zone is unknown).
+  const streak = resolveStreak(data, new Date(), timeZone ?? "UTC");
+  return NextResponse.json({ data: { ...data, streak }, timeZone });
 }
 
 // ─── POST /api/progress ───────────────────────────────────────────────────────

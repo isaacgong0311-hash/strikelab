@@ -1,0 +1,303 @@
+:root[data-ui="v3"] {
+  scroll-padding-top: 7rem;
+}
+
+:root[data-ui="v3"] body {
+  background:
+    radial-gradient(circle at 10% 0%, rgb(20 115 60 / 0.055), transparent 26rem),
+    var(--sl-canvas);
+  color: var(--sl-text);
+  font-family: var(--sl-font-body);
+}
+
+:root[data-ui="v3"] h1,
+:root[data-ui="v3"] h2,
+:root[data-ui="v3"] h3 {
+  font-family: var(--sl-font-display);
+  text-wrap: balance;
+}
+
+:root[data-ui="v3"] p,
+:root[data-ui="v3"] li {
+  text-wrap: pretty;
+}
+
+:root[data-ui="v3"] code,
+:root[data-ui="v3"] pre,
+:root[data-ui="v3"] kbd,
+:root[data-ui="v3"] .mono {
+  font-family: var(--sl-font-code);
+}
+
+/* tabindex="-1" elements (headings and landmarks that receive focus from
+   script) aren't keyboard stops, so they don't get the ring. */
+:root[data-ui="v3"] :where(a, button, input, select, textarea, [tabindex]:not([tabindex="-1"])):focus-visible {
+  outline: 3px solid var(--sl-focus) !important;
+  outline-offset: 3px !important;
+  box-shadow: none;
+}
+
+:root[data-ui="v3"] :where(button, input, select, textarea):disabled {
+  cursor: not-allowed;
+}
+
+:root[data-ui="v3"] main {
+  isolation: isolate;
+}
+
+.sl-skip-link {
+  position: fixed;
+  z-index: 10000;
+  inset: 0 auto auto 1rem;
+  translate: 0 -140%;
+  padding: 0.75rem 1rem;
+  border-radius: 0 0 var(--sl-radius-sm) var(--sl-radius-sm);
+  background: var(--sl-text);
+  color: white;
+  font-weight: 700;
+  transition: translate var(--sl-motion-fast) var(--sl-ease);
+}
+
+.sl-skip-link:focus {
+  translate: 0 0;
+}
+
+.sl-visually-hidden {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+}
+
+.sl-page-shell {
+  width: min(100% - 2rem, 72rem);
+  margin-inline: auto;
+  padding-block: clamp(2rem, 5vw, 4.5rem);
+}
+
+.sl-status {
+  border-inline-start: 3px solid currentColor;
+  border-radius: var(--sl-radius-sm);
+  padding: 0.75rem 0.875rem;
+  background: var(--sl-surface-raised);
+  color: var(--sl-text-muted);
+}
+
+.sl-status[data-tone="success"] { color: var(--sl-success); background: var(--sl-brand-soft); }
+.sl-status[data-tone="danger"] { color: var(--sl-danger); background: var(--sl-danger-soft); }
+.sl-status[data-tone="warning"] { color: var(--sl-warning); background: var(--sl-warning-soft); }
+
+.a11y-menu { position: relative; }
+.a11y-menu-trigger {
+  width: var(--sl-tap);
+  height: var(--sl-tap);
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--sl-border);
+  border-radius: var(--sl-radius-sm);
+  background: var(--sl-surface);
+  color: var(--sl-text-muted);
+  font: 800 0.75rem/1 var(--sl-font-body);
+  cursor: pointer;
+}
+.a11y-menu-panel {
+  position: absolute;
+  z-index: 300;
+  top: calc(100% + 0.65rem);
+  right: 0;
+  width: min(19rem, calc(100vw - 2rem));
+  padding: 1rem;
+  border: 1px solid var(--sl-border);
+  border-radius: var(--sl-radius-lg);
+  background: var(--sl-surface);
+  box-shadow: var(--sl-shadow-2);
+}
+.a11y-controls { margin: 0; padding: 1rem; border: 1px solid var(--sl-border); border-radius: var(--sl-radius-lg); background: var(--sl-surface-raised); display: grid; gap: 0.85rem; }
+.a11y-controls.compact { padding: 0; border: 0; background: transparent; }
+.a11y-controls legend { padding-inline: 0.2rem; color: var(--sl-text); font-weight: 800; }
+.a11y-controls-help { color: var(--sl-text-muted); font-size: 0.78rem; line-height: 1.55; }
+.a11y-switch { min-height: var(--sl-tap); display: grid; grid-template-columns: auto 1fr; align-items: center; gap: 0.75rem; cursor: pointer; }
+.a11y-switch input { width: 1.25rem; height: 1.25rem; accent-color: var(--sl-brand); }
+.a11y-switch span { display: grid; gap: 0.15rem; }
+.a11y-switch strong { color: var(--sl-text); font-size: 0.82rem; }
+.a11y-switch small { color: var(--sl-text-muted); font-size: 0.72rem; line-height: 1.4; }
+.a11y-reset { width: fit-content; min-height: 36px; padding: 0.45rem 0.7rem; border: 1px solid var(--sl-border-strong); border-radius: var(--sl-radius-sm); background: var(--sl-surface); color: var(--sl-text); font-weight: 700; cursor: pointer; }
+.a11y-reset:disabled { opacity: 0.5; }
+
+:root[data-ui="v3"] .sk-track-card {
+  border-color: var(--sl-border);
+  border-radius: var(--sl-radius-lg);
+  box-shadow: var(--sl-shadow-1);
+}
+:root[data-ui="v3"] .sk-track-card.open { border-color: var(--sl-border-strong); }
+:root[data-ui="v3"] .sk-track-panel[aria-hidden="true"] { visibility: hidden; }
+:root[data-ui="v3"] .sk-lessons > li { list-style: none; }
+:root[data-ui="v3"] .sk-lessons > li + li { margin-top: 0.625rem; }
+:root[data-ui="v3"] .sk-lesson { min-height: var(--sl-tap); }
+
+.dpath-next {
+  margin-top: 1rem;
+  min-height: 4rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.8rem 1rem;
+  border: 1px solid var(--sl-border);
+  border-radius: var(--sl-radius-md);
+  background: var(--sl-surface);
+  color: var(--sl-text);
+  text-decoration: none;
+  box-shadow: var(--sl-shadow-1);
+}
+.dpath-next span:first-child { display: grid; gap: 0.2rem; }
+.dpath-next small { color: var(--sl-brand); font: 700 0.65rem/1 var(--sl-font-code); letter-spacing: 0.08em; text-transform: uppercase; }
+.dpath-next strong { font-size: 0.9rem; }
+.dpath-next > span:last-child { color: var(--sl-brand); font-size: 0.8rem; font-weight: 800; white-space: nowrap; }
+
+@media (max-width: 40rem) {
+  :root[data-ui="v3"] .dpath-nodes { align-items: stretch; gap: 0.75rem; padding-inline: 0; }
+  :root[data-ui="v3"] .dpath-nodes::before,
+  :root[data-ui="v3"] .dpath-scenery,
+  :root[data-ui="v3"] .dnode-start,
+  :root[data-ui="v3"] .dchest,
+  :root[data-ui="v3"] .dfinish { display: none; }
+  :root[data-ui="v3"] .dnode { transform: none !important; align-items: stretch; }
+  :root[data-ui="v3"] .dnode-rise { flex-direction: row !important; align-items: center !important; gap: 0.8rem; min-height: 4rem; padding: 0.65rem 0.8rem; border: 1px solid var(--sl-border); border-radius: var(--sl-radius-md); background: var(--sl-surface); box-shadow: var(--sl-shadow-1); }
+  :root[data-ui="v3"] .dnode-btn { width: 48px; height: 48px; flex: 0 0 48px; font-size: 1rem; box-shadow: none !important; }
+  :root[data-ui="v3"] .dnode-label { margin: 0; max-width: none; text-align: left; font-family: var(--sl-font-body); font-size: 0.9rem; }
+}
+
+.cp-fieldset,
+.sl-question {
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+.cp-fieldset > legend,
+.sl-question > legend { width: 100%; }
+.sl-celebration-content { display: grid; justify-items: center; gap: 0.9rem; text-align: center; }
+.sl-celebration-content .sl-celebration-actions { width: 100%; }
+:root[data-ui="v3"] .lesson-content :where(pre, table, .fsb, .payoff, .binomial-tree) { max-width: 100%; }
+
+.sb-field-label,
+.sb-toggle-group > legend {
+  display: block;
+  margin-bottom: 0.45rem;
+  color: var(--sl-text-muted);
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+.sb-toggle-group { min-width: 0; margin: 0 0 0.9rem; padding: 0; border: 0; }
+.sb-symbol-option[aria-selected="true"] { background: var(--sl-brand-soft); color: var(--sl-text); }
+.sb-banner.success { border-color: var(--sl-success); background: var(--sl-brand-soft); color: var(--sl-success); }
+.sb-field small { color: var(--sl-text-muted); font-size: 0.68rem; line-height: 1.45; }
+.sb-field .sb-field-error { color: var(--sl-danger); font-weight: 700; }
+.sb-field input[aria-invalid="true"] { border-color: var(--sl-danger); }
+:root[data-ui="v3"] :where(.pg-slider, .fsb-slider) { min-height: var(--sl-tap); }
+
+.ah-details { margin-top: 0.75rem; color: var(--sl-text-muted); font-size: 0.75rem; }
+.ah-details summary { min-height: 36px; display: flex; align-items: center; width: fit-content; color: var(--sl-brand); font-weight: 700; cursor: pointer; }
+.ah-details ul { max-height: 12rem; overflow: auto; margin-top: 0.5rem; padding-left: 1.25rem; }
+.ah-details li + li { margin-top: 0.25rem; }
+
+.auth-error { margin-bottom: 0.75rem; font-size: 0.8rem; }
+.auth-help { color: var(--sl-text-muted); font-size: 0.72rem; font-weight: 400; }
+:root[data-ui="v3"] .auth-logo { border-radius: var(--sl-radius-lg); }
+
+/* Legacy screens used opacity to make already-muted microcopy fainter. That
+   drops essential labels and data below 4.5:1 on the unified canvas. */
+:root[data-ui="v3"] :where(.db-tab-prog, .pg-param-desc, .pg-chart-axis) {
+  opacity: 1;
+}
+
+@media (max-width: 26.25rem) {
+  :root[data-ui="v3"] .nav-bar { padding-inline: 0.75rem; }
+  :root[data-ui="v3"] .nav-right > .nav-cta { display: none; }
+}
+
+.btree-node-select { display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: center; gap: 0.75rem; margin: 0.75rem 0; color: var(--sl-text-muted); font-size: 0.75rem; font-weight: 700; }
+.btree-node-select select { min-height: var(--sl-tap); min-width: 0; border: 1px solid var(--sl-border-strong); border-radius: var(--sl-radius-sm); background: var(--sl-surface); color: var(--sl-text); padding: 0.5rem; }
+
+/* Content is visible without hydration. JavaScript adds .sl-motion-ready and
+   marks each observed element data-sl-reveal="pending" only while it waits
+   below the fold, so an observer failure or late-mounted DOM cannot hide
+   content. */
+:root[data-ui="v3"] .v2-page-head,
+:root[data-ui="v3"] .v2-rise {
+  opacity: 1;
+  transform: none;
+}
+
+:root[data-ui="v3"].sl-motion-ready .v2-page-head[data-sl-reveal="pending"],
+:root[data-ui="v3"].sl-motion-ready .v2-rise[data-sl-reveal="pending"] {
+  opacity: 0;
+  transform: translateY(12px);
+}
+
+:root[data-ui="v3"][data-motion="reduce"] *,
+:root[data-ui="v3"][data-motion="reduce"] *::before,
+:root[data-ui="v3"][data-motion="reduce"] *::after {
+  scroll-behavior: auto !important;
+  animation-duration: 0.001ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.001ms !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root[data-ui="v3"]:not([data-motion="full"]) *,
+  :root[data-ui="v3"]:not([data-motion="full"]) *::before,
+  :root[data-ui="v3"]:not([data-motion="full"]) *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}
+
+@media (forced-colors: active) {
+  :root[data-ui="v3"] :where(a, button, input, select, textarea):focus-visible {
+    outline-color: Highlight !important;
+  }
+
+  :root[data-ui="v3"] :where(.nav-pro-badge, .sl-status, .db-next-badge) {
+    border: 1px solid currentColor;
+  }
+}
+
+/* Bite-sized sessions entry point on long-form lesson pages. */
+.sl-sessions-callout {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin: 0 0 1.75rem;
+  padding: 1rem 1.25rem;
+  border: 2px solid color-mix(in srgb, var(--sl-brand) 30%, transparent);
+  border-radius: var(--sl-radius-lg);
+  background: linear-gradient(135deg, var(--sl-brand-soft), var(--sl-surface));
+  box-shadow: 0 3px 0 color-mix(in srgb, var(--sl-brand) 22%, transparent);
+}
+.sl-sessions-callout-eyebrow { margin: 0 0 0.3rem; color: var(--sl-brand); font: 700 0.65rem/1 var(--sl-font-code); letter-spacing: 0.12em; text-transform: uppercase; }
+.sl-sessions-callout-title { margin: 0; color: var(--sl-text); font: 800 1.1rem/1.25 var(--sl-font-display); }
+.sl-sessions-callout-meta { margin: 0.25rem 0 0; color: var(--sl-text-muted); font-size: 0.875rem; }
+.sl-sessions-callout-action {
+  min-height: var(--sl-tap);
+  display: inline-flex;
+  align-items: center;
+  padding: 0.7rem 1.4rem;
+  border-radius: var(--sl-radius-md);
+  background: var(--sl-brand);
+  box-shadow: 0 4px 0 var(--sl-brand-strong);
+  color: white;
+  font: 800 0.9rem/1 var(--sl-font-body);
+  text-decoration: none;
+}
+.sl-sessions-callout-action:active { transform: translateY(3px); box-shadow: 0 1px 0 var(--sl-brand-strong); }

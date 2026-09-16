@@ -1,36 +1,10 @@
 import { NextRequest } from "next/server";
 import { requireUser } from "@/lib/supabase/requireUser";
-import type { SupabaseClient } from "@supabase/supabase-js";
+import { consumeHintQuota } from "./quota";
 
 const GROQ_API_KEY = process.env.GROQ_API_KEY;
 const MODEL = "llama-3.3-70b-versatile";
 const GROQ_ENDPOINT = "https://api.groq.com/openai/v1/chat/completions";
-const DAILY_HINT_CAP = 20;
-
-/**
- * Checks and increments today's hint count for a user, atomically, via the
- * consume_hint_quota() Postgres function (supabase/migrations/
- * 0008_separate_ai_quota_from_hints.sql). Returns true if the caller was
- * still under the cap (and the count was incremented), false if they're
- * over it. That function is also what keeps this cap in its own row,
- * separate from the general per-feature AI budget in src/lib/ai/quota.ts —
- * the two used to accidentally share the same counter (see that migration's
- * header comment). Fails open (allows the request) on any RPC error — a
- * transient Supabase hiccup shouldn't block a student's hint.
- */
-export async function consumeHintQuota(supabase: SupabaseClient, userId: string): Promise<boolean> {
-  const { data, error } = await supabase
-    .rpc("consume_hint_quota", { p_user_id: userId, p_cap: DAILY_HINT_CAP })
-    .single();
-
-  if (error || !data) {
-    console.error("[ai/hint] consume_hint_quota failed:", error?.message);
-    return true;
-  }
-
-  return (data as { new_count: number; allowed: boolean }).allowed;
-}
-
 // ─── Lesson context lookup ────────────────────────────────────────────────────
 const LESSON_CONTEXT: Record<string, string> = {
   "1":     "Options basics — calls, puts, intrinsic vs. extrinsic value, long/short payoffs",

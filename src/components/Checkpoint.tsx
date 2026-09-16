@@ -39,16 +39,16 @@ export default function Checkpoint({
   }
 
   return (
-    <aside className={`cp${answered ? (isCorrect ? " correct" : " wrong") : ""}`}>
+    <aside className={`cp${answered ? (isCorrect ? " correct" : " wrong") : ""}`} aria-label={`Checkpoint ${index}`}>
       <div className="cp-head">
         <span className="cp-label">Checkpoint {index}</span>
         {answered && (
-          <span className="cp-verdict">{isCorrect ? "Correct" : "Not quite"}</span>
+          <span className="cp-verdict" role="status">{isCorrect ? "Correct" : "Not quite"}</span>
         )}
       </div>
 
-      <p className="cp-q">{question.question}</p>
-
+      <fieldset className="cp-fieldset">
+      <legend className="cp-q">{question.question}</legend>
       <div className="cp-options">
         {question.options.map((opt, i) => {
           let cls = "cp-opt";
@@ -58,15 +58,16 @@ export default function Checkpoint({
             else cls += " is-dim";
           }
           return (
-            <button key={i} className={cls} onClick={() => choose(i)} disabled={answered}>
+            <button key={i} type="button" className={cls} onClick={() => choose(i)} disabled={answered} aria-label={`${LETTERS[i]}. ${opt}`}>
               <span className="cp-letter">{LETTERS[i]}</span>
               <span>{opt}</span>
             </button>
           );
         })}
       </div>
+      </fieldset>
 
-      {answered && <p className="cp-explain">{question.explanation}</p>}
+      {answered && <p className="cp-explain" role="status" aria-live="polite">{isCorrect ? "Correct. " : "Not quite. "}{question.explanation}</p>}
     </aside>
   );
 }

@@ -6,8 +6,10 @@ import {
   fetchRemoteProgress,
   upsertRemoteProgress,
   mergeProgress,
+  saveProgressTimeZone,
   type ProgressPayload,
 } from "@/lib/progress/sync";
+import { applyActivity, recentDayKeys, resolveStreak } from "@/lib/progress/streak";
 
 const PROGRESS_KEY = "strikelab_progress_v2";
 
@@ -20,41 +22,6 @@ const DEFAULT_STATE: ProgressState = {
   lastActivityDate: null,
   activityByDate: {},
 };
-
-function toDateStr(date: Date): string {
-  return date.toISOString().split("T")[0];
-}
-
-function todayStr(): string {
-  return toDateStr(new Date());
-}
-
-function yesterdayStr(): string {
-  const d = new Date();
-  d.setDate(d.getDate() - 1);
-  return toDateStr(d);
-}
-
-function last7DayStrs(): string[] {
-  const days: string[] = [];
-  for (let i = 6; i >= 0; i--) {
-    const d = new Date();
-    d.setDate(d.getDate() - i);
-    days.push(toDateStr(d));
-  }
-  return days;
-}
-
-/** Recalculate whether the stored streak is still alive. */
-function resolveStreak(state: ProgressState): number {
-  if (!state.lastActivityDate) return 0;
-  const today = todayStr();
-  const yesterday = yesterdayStr();
-  if (state.lastActivityDate === today || state.lastActivityDate === yesterday) {
-    return state.streak;
-  }
-  return 0; // streak expired
-}
 
 function readLocal(): ProgressState | null {
   try {
@@ -149,6 +116,7 @@ export function useProgress() {
       setHydrated(true);
       // Push the reconciled state up so local completions migrate to the cloud.
       await upsertRemoteProgress(supabase, user.id, merged);
+      await saveProgressTimeZone(supabase, user.id, Intl.DateTimeFormat().resolvedOptions().timeZone);
     })();
 
     return () => {
@@ -167,29 +135,11 @@ export function useProgress() {
       if (prev.completed.includes(id)) return prev; // already done — no change
 
       wasNew = true;
-      const today = todayStr();
-      const yesterday = yesterdayStr();
-
-      // Update streak
-      let newStreak = prev.streak;
-      if (prev.lastActivityDate === today) {
-        // Already active today — streak unchanged
-      } else if (prev.lastActivityDate === yesterday) {
-        newStreak = prev.streak + 1;
-      } else {
-        newStreak = 1; // fresh start or expired streak
-      }
-
-      // Update daily activity
-      const newActivity = { ...prev.activityByDate };
-      newActivity[today] = (newActivity[today] ?? 0) + 1;
-
       const next: ProgressState = {
+        ...prev,
+        ...applyActivity(prev, new Date()),
         completed: [...prev.completed, id],
         xp: prev.xp + 100,
-        streak: newStreak,
-        lastActivityDate: today,
-        activityByDate: newActivity,
       };
 
       writeLocal(next);
@@ -208,8 +158,9 @@ export function useProgress() {
   }, []);
 
   const completed = new Set(state.completed);
-  const weekActivity = last7DayStrs().map((date) => state.activityByDate[date] ?? 0);
-  const currentStreak = resolveStreak(state);
+  const now = new Date();
+  const weekActivity = recentDayKeys(7, now).map((date) => state.activityByDate[date] ?? 0);
+  const currentStreak = resolveStreak(state, now);
   const level = getLevel(state.xp);
   const xpProgress = getXpToNextLevel(state.xp);
 

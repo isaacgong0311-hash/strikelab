@@ -3,17 +3,21 @@ import {
   LineChart, Line, XAxis, YAxis, Tooltip,
   ResponsiveContainer, ReferenceLine, CartesianGrid,
 } from "recharts";
+import { useHydrated } from "@/lib/useHydrated";
 
 interface Props {
   data: { strike: number; value: number }[];
   color: string;
+  label?: string;
   errorMsg?: string | null;
 }
 
-export default function GreekChart({ data, color, errorMsg }: Props) {
+export default function GreekChart({ data, color, label = "Greek", errorMsg }: Props) {
+  const hydrated = useHydrated();
+
   if (!data.length) {
     return (
-      <div className="flex flex-col items-center justify-center h-full gap-2 px-4">
+      <div className="flex flex-col items-center justify-center h-full gap-2 px-4" role="status">
         <span
           className="text-2xl opacity-20"
           style={{ color, fontFamily: "var(--font-mono)" }}
@@ -35,7 +39,7 @@ export default function GreekChart({ data, color, errorMsg }: Props) {
   if (allNaN) {
     const isStub = errorMsg?.includes("NotImplementedError");
     return (
-      <div className="flex flex-col items-center justify-center h-full gap-1.5 px-4">
+      <div className="flex flex-col items-center justify-center h-full gap-1.5 px-4" role={isStub ? "status" : "alert"}>
         <span
           className="text-[11px] text-center leading-relaxed"
           style={{ color: isStub ? "var(--ink-3)" : "var(--coral)", fontFamily: "var(--font-mono)" }}
@@ -54,9 +58,19 @@ export default function GreekChart({ data, color, errorMsg }: Props) {
   }
 
   const validData = data.filter(d => !isNaN(d.value));
+  const minimum = validData.reduce((best, point) => point.value < best.value ? point : best, validData[0]);
+  const maximum = validData.reduce((best, point) => point.value > best.value ? point : best, validData[0]);
+  const midpoint = validData[Math.floor(validData.length / 2)];
+
+  if (!hydrated) {
+    return <div className="h-full" aria-hidden="true" />;
+  }
 
   return (
-    <ResponsiveContainer width="100%" height="100%">
+    <>
+    <div className="sl-visually-hidden" role="img" aria-label={`${label} by strike price. Minimum ${minimum.value.toFixed(4)} at strike ${minimum.strike}; value ${midpoint.value.toFixed(4)} at strike ${midpoint.strike}; maximum ${maximum.value.toFixed(4)} at strike ${maximum.strike}.`} />
+    <div aria-hidden="true" style={{ width: "100%", height: "100%" }}>
+    <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={0}>
       <LineChart data={validData} margin={{ top: 6, right: 10, bottom: 18, left: 0 }}>
         <CartesianGrid
           strokeDasharray="3 3"
@@ -110,5 +124,7 @@ export default function GreekChart({ data, color, errorMsg }: Props) {
         />
       </LineChart>
     </ResponsiveContainer>
+    </div>
+    </>
   );
 }

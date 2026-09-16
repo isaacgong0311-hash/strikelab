@@ -8,7 +8,7 @@ export const metadata = pageMetadata({
   path: "/roadmap",
   title: "Roadmap",
   description:
-    "What's shipping next on StrikeLab — assignment grading, VaR/GARCH/Monte Carlo lessons, and a live equity sandbox.",
+    "What's shipping next on StrikeLab — guided cohorts, VaR/GARCH/Monte Carlo lessons, and a live equity sandbox.",
 });
 
 const ROADMAP = [
@@ -35,6 +35,7 @@ const ROADMAP = [
       { title: "Certificates of completion ✓", state: "done", desc: "Finish a track, claim a shareable certificate at /certificate/[id] — LinkedIn-ready card, verifiable by URL." },
       { title: "Discord integration ✓", state: "done", desc: "Connect a webhook in Settings to auto-post lesson completions, track finishes, and achievements to a school club's channel." },
       { title: "Classroom rosters ✓", state: "done", desc: "Teachers create a class in Settings, share a join code, and see every student's track/lesson progress at a glance — free for every account." },
+      { title: "Lesson assignments ✓", state: "done", desc: "Teachers assign specific lessons and see completion student by student, with CSV export for the full class." },
     ],
   },
   {
@@ -42,7 +43,7 @@ const ROADMAP = [
     label: "Next up",
     color: "#1d4ed8",
     items: [
-      { title: "Assignment grading", state: "planned", desc: "Assign specific lessons to a class and track per-assignment completion, not just aggregate progress." },
+      { title: "Guided cohort pilots", state: "in-progress", desc: "A ready-to-run six-week Quant Foundations program with scheduled lessons, a facilitator guide, and measurable cohort outcomes." },
       { title: "Lesson 9–11: VaR, GARCH, Monte Carlo", state: "planned", desc: "Bridge to quant research and risk." },
     ],
   },
