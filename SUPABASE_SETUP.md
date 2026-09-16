@@ -41,6 +41,20 @@ for the next file:
    atomic open/close RPCs for the sandbox, fixing a cash-balance race
    condition. **Required** — the sandbox will error on every trade until
    this one is run.
+8. [`0008_separate_ai_quota_from_hints.sql`](supabase/migrations/0008_separate_ai_quota_from_hints.sql) —
+   separate, atomic daily budgets for AI actions and hints.
+9. [`0009_signup_source.sql`](supabase/migrations/0009_signup_source.sql) —
+   records the `?src=` a signup came from.
+10. [`0010_classes.sql`](supabase/migrations/0010_classes.sql) — teacher
+    classes, rosters, and join codes.
+11. [`0011_assignments.sql`](supabase/migrations/0011_assignments.sql) —
+    lessons assigned to a class, with per-student completion.
+12. [`0012_cohort_launch.sql`](supabase/migrations/0012_cohort_launch.sql) —
+    six-week cohort template, start date, and scheduled assignments.
+13. [`0013_progress_timezone.sql`](supabase/migrations/0013_progress_timezone.sql) —
+    the learner's timezone, so server-side streak checks use their local day.
+    Safe to run late: the app saves it separately and progress sync keeps
+    working without it.
 
 ## 3. Grab your API keys
 

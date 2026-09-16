@@ -4,7 +4,7 @@ I can't verify any of this myself — this session has no production credentials
 
 ## Supabase
 
-- [ ] All 12 migrations through `supabase/migrations/0012_cohort_launch.sql` are applied to the production database (`0001_init` → `0012_cohort_launch`)
+- [ ] All 13 migrations through `supabase/migrations/0013_progress_timezone.sql` are applied to the production database (`0001_init` → `0013_progress_timezone`)
 - [ ] `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, and `SUPABASE_SERVICE_ROLE_KEY` are set in the production environment (Vercel project settings, not just `.env.local`)
 - [ ] RLS is enabled on every table that holds student data, and a quick manual test confirms a student can't read another student's row
 - [ ] The `launch_cohort` RPC's `SECURITY INVOKER` + `auth.uid()` ownership check actually blocks a non-owner in production, not just in the route test

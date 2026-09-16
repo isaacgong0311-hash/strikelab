@@ -65,7 +65,7 @@ Goal: nothing on the site looks broken or contradicts itself.
 - [x] G1: the real cause was `.lesson-content` mounting *after* `V2Animator`'s effect, so it was never observed and never got `.in`. Tall elements also couldn't reach the 15% threshold. Now only elements explicitly marked `data-sl-reveal="pending"` are hidden, the threshold is 0, and anything already on or above the screen reveals right away. `tests/reveal.spec.ts` fails on the old behaviour and passes now.
 - [x] Playwright was hitting `127.0.0.1` while Next dev serves `localhost`, so the cross-origin dev check blocked hydration and **every browser test ran without JS**. `playwright.config.ts` now uses `localhost`, and all 16 tests pass with the page hydrated.
 - [x] G2 client side: `src/lib/progress/streak.ts` uses local-day keys, and `useProgress` and `ActivityHeatmap` use it (12 timezone/DST tests).
-- [ ] G2 server side: store the IANA timezone on the profile and compute streaks during sync.
+- [x] G2 server side: `progress.timezone` (migration 0013) is saved separately and best-effort on sign-in, and `GET /api/progress` reports the streak on the learner's local day. **Run migration 0013 in Supabase.**
 - [x] G4: FAQ, homepage stats and achievement totals come from `TRACKS`, All-Star ignores retired lesson ids, and the README counts are fixed.
 - [ ] Split the UI/a11y branch into commits and merge.
 - [ ] Loading/empty/error state audit.

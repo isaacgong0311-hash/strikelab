@@ -6,6 +6,7 @@ import {
   fetchRemoteProgress,
   upsertRemoteProgress,
   mergeProgress,
+  saveProgressTimeZone,
   type ProgressPayload,
 } from "@/lib/progress/sync";
 import { applyActivity, recentDayKeys, resolveStreak } from "@/lib/progress/streak";
@@ -115,6 +116,7 @@ export function useProgress() {
       setHydrated(true);
       // Push the reconciled state up so local completions migrate to the cloud.
       await upsertRemoteProgress(supabase, user.id, merged);
+      await saveProgressTimeZone(supabase, user.id, Intl.DateTimeFormat().resolvedOptions().timeZone);
     })();
 
     return () => {
