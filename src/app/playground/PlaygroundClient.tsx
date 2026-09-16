@@ -341,7 +341,9 @@ export default function PlaygroundClient() {
           </div>
 
           {/* Editor area */}
-          <div className="pg-editor-wrap">
+          {/* Scrolls independently of the page, so it must be a keyboard stop
+              for scrolling without entering the editor (WCAG 2.1.1). */}
+          <div className="pg-editor-wrap" role="region" aria-label="Code editor, scrollable" tabIndex={0}>
             <MiniEditor value={code} onChange={setCode} ariaLabel="Greek functions Python editor" />
           </div>
 

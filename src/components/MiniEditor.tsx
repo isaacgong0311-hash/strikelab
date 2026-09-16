@@ -1,7 +1,8 @@
 "use client";
+import { useMemo } from "react";
 import CodeMirror, { EditorView } from "@uiw/react-codemirror";
 import { python } from "@codemirror/lang-python";
-import { oneDark } from "@codemirror/theme-one-dark";
+import { accessibleOneDark } from "./editorTheme";
 
 interface Props {
   value: string;
@@ -35,12 +36,19 @@ const NO_BROWSER_TEXT_ASSIST = EditorView.contentAttributes.of({
 const LINE_WRAP = EditorView.lineWrapping;
 
 export default function MiniEditor({ value, onChange, readOnly, ariaLabel = "Python code editor" }: Props) {
+  // The label must sit on CodeMirror's contenteditable (the element with
+  // role="textbox" that screen readers focus), not on the outer wrapper div,
+  // or the editor is announced as an unnamed text field.
+  const extensions = useMemo(
+    () => [python(), NO_BROWSER_TEXT_ASSIST, LINE_WRAP, EditorView.contentAttributes.of({ "aria-label": ariaLabel })],
+    [ariaLabel]
+  );
+
   return (
     <CodeMirror
-      aria-label={ariaLabel}
       value={value}
-      extensions={[python(), NO_BROWSER_TEXT_ASSIST, LINE_WRAP]}
-      theme={oneDark}
+      extensions={extensions}
+      theme={accessibleOneDark}
       onChange={onChange}
       readOnly={readOnly}
       basicSetup={{

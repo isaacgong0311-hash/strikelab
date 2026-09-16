@@ -17,7 +17,11 @@ async function waitForClientShell(page: import("@playwright/test").Page) {
 
 for (const route of PUBLIC_ROUTES) {
   test(`${route} has no serious automated accessibility violations`, async ({ page }) => {
-    await page.goto(route, { waitUntil: "domcontentloaded" });
+    // Scan the settled page: with motion on, axe can sample text mid fade-in
+    // and report blended colours as contrast failures (flaky on slow CI).
+    await page.emulateMedia({ reducedMotion: "reduce" });
+    await page.goto(route, { waitUntil: "networkidle" });
+    await waitForClientShell(page);
     await expect(page.locator("h1").first()).toBeVisible();
     const results = await new AxeBuilder({ page }).analyze();
     const blocking = results.violations.filter((violation) =>
