@@ -25,5 +25,11 @@ jobs:
       - name: Test
         run: npm test
 
+      - name: Install browser for accessibility checks
+        run: npx playwright install --with-deps chromium
+
+      - name: Browser journeys (accessibility + scroll reveal)
+        run: npm run test:e2e
+
       - name: Build
         run: npm run build

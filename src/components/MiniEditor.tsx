@@ -7,6 +7,7 @@ interface Props {
   value: string;
   onChange: (v: string) => void;
   readOnly?: boolean;
+  ariaLabel?: string;
 }
 
 // The editor's contenteditable region inherits the browser's spellcheck /
@@ -33,9 +34,10 @@ const NO_BROWSER_TEXT_ASSIST = EditorView.contentAttributes.of({
 // kicks in unintentionally.
 const LINE_WRAP = EditorView.lineWrapping;
 
-export default function MiniEditor({ value, onChange, readOnly }: Props) {
+export default function MiniEditor({ value, onChange, readOnly, ariaLabel = "Python code editor" }: Props) {
   return (
     <CodeMirror
+      aria-label={ariaLabel}
       value={value}
       extensions={[python(), NO_BROWSER_TEXT_ASSIST, LINE_WRAP]}
       theme={oneDark}

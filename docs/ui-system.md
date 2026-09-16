@@ -1,0 +1,32 @@
+# StrikeLab UI System
+
+StrikeLab uses a student-first “premium learning lab” visual language: calm light surfaces, a disciplined green brand accent, restrained data colors, and dark feature moments where code or market tools benefit from stronger focus.
+
+## Foundation
+
+- `src/styles/tokens.css` owns brand and semantic design tokens. Components consume semantic names such as `--sl-text`, `--sl-surface`, and `--sl-brand`; route code must not introduce a competing palette.
+- `src/styles/foundation.css` owns global focus, reduced-motion, enhanced-contrast, no-JavaScript safety, and shared shell behavior.
+- `src/components/ui/` contains accessible controls and display primitives. Import the individual component file directly rather than using a barrel.
+- Route-specific layout belongs in a co-located CSS module. Existing selectors in `src/app/globals.css`, `sandbox.css`, and `pg-ch.css` are a compatibility layer and should be deleted as their routes migrate.
+
+## Interaction rules
+
+- Essential content is visible in the server-rendered document. Motion may enhance visible content after hydration but must never be required to reveal it.
+- Use `:focus-visible` and the global focus token. Never remove an outline without an equally visible replacement.
+- Interactive targets are at least 24 by 24 CSS pixels and normally 44 by 44 pixels.
+- Color supplements text, icons, shape, or position; it never carries status alone.
+- Dynamic success uses a polite status region. Errors that require immediate action use an alert. Streaming text is not announced per token.
+- Dialogs contain focus, close with Escape, restore focus, and make background content inert. Disclosures and tabs use their complete native/ARIA keyboard patterns.
+- Charts provide a concise text equivalent. Complex manipulatives provide a keyboard-operable control that reaches the same values as pointer input.
+
+## Accessibility preferences
+
+`reduceMotion` and `enhancedContrast` are `boolean | null`. `null` follows the device; a boolean is an explicit override. Preferences use the versioned `strikelab:a11y:v1` local-storage key and resolve to `data-motion` and `data-contrast` on the root element before paint.
+
+## Route migration checklist
+
+1. Preserve product behavior and server-rendered metadata.
+2. Use one `h1`, logical heading order, and named landmarks.
+3. Label every form control and associate help/errors programmatically.
+4. Verify keyboard order, focus restoration, status announcements, 320px reflow, 400% zoom, reduced motion, and enhanced/forced contrast.
+5. Add or update Playwright/axe coverage, then remove the migrated legacy selectors.

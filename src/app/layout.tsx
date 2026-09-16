@@ -1,12 +1,16 @@
 import type { Metadata, Viewport } from "next";
 import { Plus_Jakarta_Sans, Inter, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
+import "../styles/tokens.css";
+import "../styles/foundation.css";
 import Nav from "@/components/Nav";
 import Footer from "@/components/Footer";
 import V2Animator from "@/components/V2Animator";
 import { Analytics } from "@vercel/analytics/react";
 import { SITE_URL, SITE_NAME, SITE_DESCRIPTION } from "@/lib/site";
 import { AuthProvider } from "@/lib/auth/AuthProvider";
+import AccessibilityProvider from "@/components/accessibility/AccessibilityProvider";
+import { ACCESSIBILITY_BOOT_SCRIPT } from "@/lib/accessibility/preferences";
 
 // Plus Jakarta Sans — headings.
 //
@@ -140,8 +144,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html
       lang="en"
+      data-ui="v3"
+      suppressHydrationWarning
       className={`${jakarta.variable} ${inter.variable} ${jetbrains.variable} h-full`}
     >
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: ACCESSIBILITY_BOOT_SCRIPT }} />
+      </head>
       <body
         className="min-h-screen flex flex-col"
         style={{ background: "var(--bg)", color: "var(--text)", fontFamily: "var(--font-ui), system-ui, sans-serif" }}
@@ -154,12 +163,15 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <div id="v2-bg-grid" className="v2-bg-grid" />
         <div className="v2-bg-vignette" />
 
-        <AuthProvider>
-          <V2Animator />
-          <Nav />
-          <main className="flex-1 relative" style={{ zIndex: 1 }}>{children}</main>
-          <Footer />
-        </AuthProvider>
+        <AccessibilityProvider>
+          <AuthProvider>
+            <V2Animator />
+            <a className="sl-skip-link" href="#main-content">Skip to main content</a>
+            <Nav />
+            <main id="main-content" tabIndex={-1} className="flex-1 relative" style={{ zIndex: 1 }}>{children}</main>
+            <Footer />
+          </AuthProvider>
+        </AccessibilityProvider>
         <Analytics />
       </body>
     </html>

@@ -147,12 +147,13 @@ export default function PayoffDiagram() {
         <span className="payoff-label">Try it — Payoff Diagram</span>
       </div>
 
-      <div className="viz-chip-row">
+      <div className="viz-chip-row" role="group" aria-label="Option strategy">
         {STRATEGIES.map((s) => (
           <button
             key={s.key}
             type="button"
             className={`viz-chip${s.key === strategyKey ? " active" : ""}`}
+            aria-pressed={s.key === strategyKey}
             onClick={() => setStrategyKey(s.key)}
           >
             {s.label}
@@ -170,6 +171,10 @@ export default function PayoffDiagram() {
       </p>
 
       <div className="payoff-chart">
+        <p className="sl-visually-hidden" role="img">
+          {strategy.label} payoff diagram. Maximum profit {maxProfitLabel}. Maximum loss {maxLossLabel}. {breakevens.length ? `Breakeven ${breakevens.map((value) => `$${value}`).join(" and ")}.` : "No breakeven in the displayed range."}
+        </p>
+        <div aria-hidden="true" style={{ width: "100%", height: "100%" }}>
         {hydrated ? (
           <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={0}>
           <LineChart data={data} margin={{ top: 6, right: 10, bottom: 4, left: 0 }}>
@@ -215,6 +220,7 @@ export default function PayoffDiagram() {
         ) : (
           <div className="h-full" aria-hidden="true" />
         )}
+        </div>
       </div>
 
       <div className="payoff-slider-row">
@@ -234,11 +240,12 @@ export default function PayoffDiagram() {
             onChange={(e) => setSpotNow(Number(e.target.value))}
             className="fsb-slider"
             aria-label="Stock price now"
+            aria-valuetext={`Stock price ${fmtMoney(spotNow)}; profit and loss ${fmtMoney(currentPnl)}`}
           />
         </label>
       </div>
 
-      <div className="payoff-stats">
+      <div className="payoff-stats" role="status" aria-live="polite">
         <div>
           <span className="payoff-stat-label">Max profit</span>
           <span className="payoff-stat-val pos">{maxProfitLabel}</span>

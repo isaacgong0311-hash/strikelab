@@ -1,10 +1,12 @@
 "use client";
+import { localDateKey } from "@/lib/progress/streak";
 
 const DAY_ROWS = ["M", "", "W", "", "F", "", ""]; // Mon-first, sparse labels like GitHub
 const MONTH_NAMES = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
+// Local calendar day, matching how useProgress keys activityByDate.
 function toDateStr(d: Date): string {
-  return d.toISOString().split("T")[0];
+  return localDateKey(d);
 }
 
 /** Builds `weeks` columns of 7 days (Mon-Sun), ending on the current week, oldest first. */
@@ -36,6 +38,10 @@ export default function ActivityHeatmap({
 }) {
   const cols = buildWeeks(weeks);
   const todayStr = toDateStr(new Date());
+  const activityDates = Object.entries(activityByDate)
+    .filter(([, count]) => count > 0)
+    .sort(([a], [b]) => b.localeCompare(a));
+  const totalLessons = activityDates.reduce((sum, [, count]) => sum + count, 0);
 
   // Track which columns start a new month, for the label row.
   const monthLabels = cols.reduce<(string | null)[]>((acc, col) => {
@@ -46,7 +52,11 @@ export default function ActivityHeatmap({
   }, []);
 
   return (
-    <div className="ah">
+    <div className="ah" aria-describedby="activity-summary">
+      <p id="activity-summary" className="sl-visually-hidden">
+        {activityDates.length} active days and {totalLessons} lesson {totalLessons === 1 ? "completion" : "completions"} recorded.
+      </p>
+      <div aria-hidden="true">
       <div className="ah-months">
         {monthLabels.map((label, i) => (
           <span key={i} className="ah-month">{label ?? ""}</span>
@@ -91,6 +101,17 @@ export default function ActivityHeatmap({
         ))}
         <span>More</span>
       </div>
+      </div>
+      {activityDates.length > 0 && (
+        <details className="ah-details">
+          <summary>View activity dates</summary>
+          <ul>
+            {activityDates.slice(0, 30).map(([date, count]) => (
+              <li key={date}>{date}: {count} lesson {count === 1 ? "completion" : "completions"}</li>
+            ))}
+          </ul>
+        </details>
+      )}
     </div>
   );
 }

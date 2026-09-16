@@ -88,7 +88,7 @@ export default function LessonToc({ sections }: { sections: TocSection[] }) {
         <span className="lt-pct">{Math.round(progress)}%</span>
       </div>
 
-      <div className="lt-track" role="presentation">
+      <div className="lt-track" role="progressbar" aria-label="Lesson reading progress" aria-valuemin={0} aria-valuemax={100} aria-valuenow={Math.round(progress)}>
         <div className="lt-fill" style={{ width: `${progress}%` }} />
       </div>
 

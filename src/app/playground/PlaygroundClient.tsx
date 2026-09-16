@@ -141,6 +141,7 @@ function ParamSlider({
   min: number; max: number; step: number;
   fmt: (v: number) => string; color: string;
 }) {
+  const inputId = `playground-${symbol.codePointAt(0)?.toString(16) ?? label.toLowerCase().replace(/\s+/g, "-")}`;
   return (
     <div className="pg-param">
       {/* Symbol (top-left) + current value (top-right) */}
@@ -149,21 +150,22 @@ function ParamSlider({
         <span className="pg-param-val" style={{ color }}>{fmt(val)}</span>
       </div>
       {/* Full name underneath */}
-      <div className="pg-param-name">{label}</div>
+      <label className="pg-param-name" htmlFor={inputId}>{label}</label>
       {/* Slider — accent-color is reliable cross-browser for thumb + track.
           aria-label/aria-valuetext: this is a bare input with sibling divs,
           not a <label htmlFor>, so without these a screen reader announced
           it as an unlabeled slider reading only the raw numeric value —
           "63" instead of "Volatility, 20 percent." */}
       <input
+        id={inputId}
         type="range" min={min} max={max} step={step} value={val}
         onChange={e => set(Number(e.target.value))}
         className="pg-slider"
         style={{ accentColor: color }}
-        aria-label={label}
         aria-valuetext={fmt(val)}
+        aria-describedby={`${inputId}-description`}
       />
-      <div className="pg-param-desc">{desc}</div>
+      <div className="pg-param-desc" id={`${inputId}-description`}>{desc}. Current value {fmt(val)}.</div>
     </div>
   );
 }
@@ -270,7 +272,7 @@ export default function PlaygroundClient() {
         <div className="pg-header-right">
           {implemented > 0 && (
             <div className="pg-progress-ring-wrap">
-              <svg width="52" height="52" viewBox="0 0 52 52">
+              <svg width="52" height="52" viewBox="0 0 52 52" aria-hidden="true">
                 <circle cx="26" cy="26" r="21" fill="none" stroke="var(--bg2)" strokeWidth="5"/>
                 <circle cx="26" cy="26" r="21" fill="none"
                   stroke={implemented === 4 ? "var(--grass)" : "var(--amber)"}
@@ -279,12 +281,13 @@ export default function PlaygroundClient() {
                   style={{ transform: "rotate(-90deg)", transformOrigin: "26px 26px", transition: "stroke-dasharray .6s" }}
                 />
               </svg>
-              <div className="pg-ring-label" style={{ color: implemented === 4 ? "var(--grass)" : "var(--amber)" }}>
+              <div className="pg-ring-label" style={{ color: implemented === 4 ? "var(--grass)" : "var(--amber)" }} aria-label={`${implemented} of 4 Greeks implemented`}>
                 {implemented}/4
               </div>
             </div>
           )}
           <button
+            type="button"
             onClick={() => {
               setCode(showingSolution ? STARTER_CODE : DEMO_CODE);
               setShowingSolution(!showingSolution);
@@ -321,17 +324,17 @@ export default function PlaygroundClient() {
               )}
             </div>
             <div className="pg-toolbar-right">
-              <div className="pg-py-status">
+              <div className="pg-py-status" role="status" aria-live="polite">
                 <span className="pg-py-dot" style={{ background: pyodideReady ? "#22c55e" : "#64748b" }} />
                 <span>{pyodideReady ? "Python 3.11" : "Loading Python…"}</span>
               </div>
-              <button onClick={runAndPlot} disabled={status === "running" || !pyodideReady} className="pg-run-btn">
+              <button type="button" onClick={runAndPlot} disabled={status === "running" || !pyodideReady} className="pg-run-btn">
                 {!pyodideReady ? (
                   <><span className="pg-spin">◌</span> Loading Python…</>
                 ) : status === "running" ? (
                   <><span className="pg-spin">◌</span> Running…</>
                 ) : (
-                  <><span>▶</span> Run <kbd className="pg-kbd">⌘↵</kbd></>
+                  <><span>▶</span> Run <kbd className="pg-kbd">Ctrl/⌘ + Enter</kbd></>
                 )}
               </button>
             </div>
@@ -339,7 +342,7 @@ export default function PlaygroundClient() {
 
           {/* Editor area */}
           <div className="pg-editor-wrap">
-            <MiniEditor value={code} onChange={setCode} />
+            <MiniEditor value={code} onChange={setCode} ariaLabel="Greek functions Python editor" />
           </div>
 
           {/* Parameter sliders */}
@@ -354,7 +357,7 @@ export default function PlaygroundClient() {
           </div>
 
           {/* Output console */}
-          <div className="pg-console" style={{ borderColor: outBorder }}>
+          <div className="pg-console" style={{ borderColor: outBorder }} role={status === "fail" ? "alert" : "status"} aria-live="polite" aria-atomic="true">
             <div className="pg-console-header" style={{
               background: status==="pass" ? "rgba(34,197,94,0.06)" : status==="fail" ? "rgba(239,68,68,0.06)" : "var(--bg2)",
               color: status==="pass" ? "var(--grass)" : status==="fail" ? "#dc2626" : "var(--ink-3)",
@@ -372,13 +375,13 @@ export default function PlaygroundClient() {
 
           {/* Formula reference */}
           <div className="pg-ref">
-            <button onClick={() => setRefOpen(o => !o)} className="pg-ref-toggle">
+            <button type="button" onClick={() => setRefOpen(o => !o)} className="pg-ref-toggle" aria-expanded={refOpen} aria-controls="playground-formula-reference">
               <span className="pg-ref-icon">∂</span>
               <span>Formula Reference</span>
               <span className="pg-ref-chevron">{refOpen ? "▲" : "▼"}</span>
             </button>
             {refOpen && (
-              <div className="pg-ref-body">
+              <div className="pg-ref-body" id="playground-formula-reference">
                 <div className="pg-ref-section-label">Available helpers</div>
                 <div className="pg-helpers">
                   {HELPERS.map(h => (
@@ -408,7 +411,7 @@ export default function PlaygroundClient() {
 
         {/* ─ RIGHT: CHARTS ─ */}
         <div className="pg-right">
-          <div className="pg-charts-label">Greek curves vs. strike price K</div>
+          <h2 className="pg-charts-label">Greek curves vs. strike price K</h2>
           <div className="pg-charts-grid">
             {GREEKS.map((greek, i) => (
               <div key={greek.key} className="pg-chart-card" style={{ animationDelay: `${0.12 + i * 0.07}s` }}>
@@ -423,7 +426,7 @@ export default function PlaygroundClient() {
                   <span className="pg-chart-axis">vs K</span>
                 </div>
                 <div className="pg-chart-body">
-                  <GreekChart data={chartData[greek.key]} color={SERIES_COLORS[i]} errorMsg={chartErrors[greek.key]} />
+                  <GreekChart label={greek.label} data={chartData[greek.key]} color={SERIES_COLORS[i]} errorMsg={chartErrors[greek.key]} />
                 </div>
               </div>
             ))}

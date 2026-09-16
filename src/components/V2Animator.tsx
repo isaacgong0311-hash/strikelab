@@ -17,35 +17,62 @@ export default function V2Animator() {
   const path = usePathname();
 
   useEffect(() => {
+    const root = document.documentElement;
+    const reduceMotion = root.dataset.motion === "reduce" || window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (!reduceMotion) root.classList.add("sl-motion-ready");
     // Reset any "in" classes only on elements that exist for the new route.
     // We use 'once' semantics by unobserving after firing — so just re-bind.
     const bg = document.getElementById("v2-bg-grid");
 
+    // Only elements explicitly marked data-sl-reveal="pending" are hidden (see
+    // foundation.css), so anything this effect never reaches — DOM mounted
+    // later, a failed observer — stays visible. Threshold 0 (not a fraction of
+    // the element) because a lesson body is many viewports tall and can never
+    // be 15% on screen at once; that is what left lessons blank.
+    const reveal = (el: Element) => {
+      el.classList.add("in");
+      el.removeAttribute("data-sl-reveal");
+    };
+    const inOrAboveViewport = (el: Element) => el.getBoundingClientRect().top < window.innerHeight;
+    const observerOptions: IntersectionObserverInit = { threshold: 0, rootMargin: "0px 0px -8% 0px" };
+
     const headIO = new IntersectionObserver((entries) => {
       entries.forEach((e) => {
-        if (e.isIntersecting) { e.target.classList.add("in"); headIO.unobserve(e.target); }
+        if (e.isIntersecting) { reveal(e.target); headIO.unobserve(e.target); }
       });
-    }, { threshold: 0.15 });
-    document.querySelectorAll("[data-v2-head]").forEach((el) => headIO.observe(el));
+    }, observerOptions);
+    document.querySelectorAll("[data-v2-head]").forEach((el) => {
+      if (reduceMotion || el.classList.contains("in") || inOrAboveViewport(el)) return reveal(el);
+      el.setAttribute("data-sl-reveal", "pending");
+      headIO.observe(el);
+    });
 
     const staggerIO = new IntersectionObserver((entries) => {
       entries.forEach((e) => {
         if (!e.isIntersecting) return;
         e.target.querySelectorAll<HTMLElement>(".v2-rise").forEach((c, i) => {
-          setTimeout(() => c.classList.add("in"), i * 100);
+          setTimeout(() => reveal(c), i * 100);
         });
         staggerIO.unobserve(e.target);
       });
-    }, { threshold: 0.1 });
-    document.querySelectorAll("[data-v2-stagger]").forEach((g) => staggerIO.observe(g));
+    }, observerOptions);
+    document.querySelectorAll("[data-v2-stagger]").forEach((g) => {
+      const children = g.querySelectorAll(".v2-rise:not(.in)");
+      if (reduceMotion || inOrAboveViewport(g)) return children.forEach(reveal);
+      children.forEach((el) => el.setAttribute("data-sl-reveal", "pending"));
+      staggerIO.observe(g);
+    });
 
     const loneIO = new IntersectionObserver((entries) => {
       entries.forEach((e) => {
-        if (e.isIntersecting) { e.target.classList.add("in"); loneIO.unobserve(e.target); }
+        if (e.isIntersecting) { reveal(e.target); loneIO.unobserve(e.target); }
       });
-    }, { threshold: 0.15 });
-    document.querySelectorAll(".v2-rise").forEach((el) => {
-      if (!el.closest("[data-v2-stagger]")) loneIO.observe(el);
+    }, observerOptions);
+    document.querySelectorAll(".v2-rise:not(.in)").forEach((el) => {
+      if (el.closest("[data-v2-stagger]")) return;
+      if (reduceMotion || inOrAboveViewport(el)) return reveal(el);
+      el.setAttribute("data-sl-reveal", "pending");
+      loneIO.observe(el);
     });
 
     const onScroll = () => {
@@ -65,6 +92,8 @@ export default function V2Animator() {
       headIO.disconnect();
       staggerIO.disconnect();
       loneIO.disconnect();
+      document.querySelectorAll("[data-sl-reveal]").forEach(reveal);
+      root.classList.remove("sl-motion-ready");
     };
   }, [path]);
 

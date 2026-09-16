@@ -67,3 +67,7 @@ qa_slides/
 demo-video/
 render_mp4.mjs
 thumb_render.mjs
+
+# playwright
+/test-results/
+/playwright-report/

@@ -4,6 +4,8 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { getSupabaseBrowser } from "@/lib/supabase/client";
 import { useAuth } from "@/lib/auth/AuthProvider";
+import BrandMark from "@/components/BrandMark";
+import AuthError from "@/components/AuthError";
 
 export default function ResetPasswordPage() {
   const router = useRouter();
@@ -52,7 +54,7 @@ export default function ResetPasswordPage() {
     return (
       <div className="auth">
         <div className="auth-card">
-          <div className="auth-brand"><span className="auth-logo">∫</span></div>
+          <div className="auth-brand"><span className="auth-logo"><BrandMark size={34} /></span></div>
           <h1 className="auth-title">Password updated</h1>
           <p className="auth-sub">Taking you to your dashboard…</p>
         </div>
@@ -67,7 +69,7 @@ export default function ResetPasswordPage() {
     return (
       <div className="auth">
         <div className="auth-card">
-          <div className="auth-brand"><span className="auth-logo">∫</span></div>
+          <div className="auth-brand"><span className="auth-logo"><BrandMark size={34} /></span></div>
           <h1 className="auth-title">Link expired</h1>
           <p className="auth-sub">
             This password reset link is invalid or has expired. Request a new one.
@@ -83,11 +85,11 @@ export default function ResetPasswordPage() {
   return (
     <div className="auth">
       <div className="auth-card">
-        <div className="auth-brand"><span className="auth-logo">∫</span></div>
+        <div className="auth-brand"><span className="auth-logo"><BrandMark size={34} /></span></div>
         <h1 className="auth-title">Set a new password</h1>
         <p className="auth-sub">Choose a new password for your account.</p>
 
-        {error && <p className="auth-error" style={{ color: "var(--coral, #ef4444)", fontSize: 13, marginBottom: 10 }}>{error}</p>}
+        <AuthError message={error} />
 
         <form onSubmit={handleSubmit} className="auth-form">
           <label className="auth-label">
@@ -100,9 +102,12 @@ export default function ResetPasswordPage() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="Min. 8 characters"
+              autoComplete="new-password"
+              aria-describedby="reset-password-help"
               autoFocus
               disabled={authLoading}
             />
+            <span id="reset-password-help" className="auth-help">Use at least 8 characters.</span>
           </label>
           <label className="auth-label">
             Confirm password
@@ -114,6 +119,7 @@ export default function ResetPasswordPage() {
               value={confirm}
               onChange={(e) => setConfirm(e.target.value)}
               placeholder="Re-enter password"
+              autoComplete="new-password"
               disabled={authLoading}
             />
           </label>

@@ -98,7 +98,7 @@ export default function ExplainSelection({ lessonId }: { lessonId: string }) {
       )}
 
       {open && (
-        <div className="explain-panel" style={{ left, top: anchor.y - 12 }} ref={panelRef}>
+        <div className="explain-panel" style={{ left, top: anchor.y - 12 }} ref={panelRef} role="dialog" aria-label="Simplified explanation">
           <div className="explain-head">
             <span className="explain-quote">&ldquo;{anchor.text.slice(0, 70)}{anchor.text.length > 70 ? "…" : ""}&rdquo;</span>
             <button
@@ -110,12 +110,13 @@ export default function ExplainSelection({ lessonId }: { lessonId: string }) {
               ✕
             </button>
           </div>
-          <div className="explain-body">
+          <div className="explain-body" aria-busy={loading}>
             {loading && !answer ? (
               <span className="ai-thinking" aria-label="Thinking"><i /><i /><i /></span>
             ) : (
               renderAiMarkdown(answer)
             )}
+            <span className="sl-visually-hidden" role="status" aria-live="polite">{loading ? "Generating explanation." : answer ? "Explanation ready." : ""}</span>
           </div>
         </div>
       )}

@@ -104,12 +104,13 @@ export default function BinomialTree() {
         <span className="btree-label">Try it — Binomial Tree</span>
       </div>
 
-      <div className="viz-chip-row" style={{ marginBottom: 8 }}>
+      <div className="viz-chip-row" style={{ marginBottom: 8 }} role="group" aria-label="Option type and exercise style">
         {(["call", "put"] as OptionType[]).map((t) => (
           <button
             key={t}
             type="button"
             className={`viz-chip${optionType === t ? " active" : ""}`}
+            aria-pressed={optionType === t}
             onClick={() => setOptionType(t)}
           >
             {t === "call" ? "Call" : "Put"}
@@ -120,6 +121,7 @@ export default function BinomialTree() {
             key={s}
             type="button"
             className={`viz-chip${style === s ? " active" : ""}`}
+            aria-pressed={style === s}
             onClick={() => setStyle(s)}
           >
             {s === "american" ? "American" : "European"}
@@ -143,13 +145,31 @@ export default function BinomialTree() {
               onChange={(e) => { setSteps(Number(e.target.value)); setSelected({ step: 0, j: 0 }); }}
               className="fsb-slider"
               aria-label="Number of steps"
+              aria-valuetext={`${steps} steps`}
             />
           </label>
         </div>
       </div>
 
-      <div className="btree-svg-wrap">
-        <svg viewBox={`0 0 ${width} ${height}`} width="100%" height={height}>
+      <label className="btree-node-select">
+        <span>Inspect node</span>
+        <select
+          value={`${selected.step}:${selected.j}`}
+          onChange={(event) => {
+            const [step, j] = event.target.value.split(":").map(Number);
+            setSelected({ step, j });
+          }}
+        >
+          {tree.flatMap((layer, step) => layer.map((node) => (
+            <option key={`${step}-${node.j}`} value={`${step}:${node.j}`}>
+              Step {step}, node {node.j}, stock {fmt(node.S)}, option {fmt(node.value)}{node.exercised ? ", exercise" : ""}
+            </option>
+          )))}
+        </select>
+      </label>
+
+      <div className="btree-svg-wrap" aria-hidden="true">
+        <svg viewBox={`0 0 ${width} ${height}`} width="100%" height={height} focusable="false">
           {edges.map((e, i) => (
             <line
               key={i}
@@ -203,7 +223,7 @@ export default function BinomialTree() {
         </svg>
       </div>
 
-      <div className="btree-detail">
+      <div className="btree-detail" role="status" aria-live="polite">
         <div className="btree-detail-title">
           Step {selected.step} of {steps} · node {selected.j}
           {selectedNode.exercised && <span style={{ color: "var(--coral)" }}> · early exercise</span>}

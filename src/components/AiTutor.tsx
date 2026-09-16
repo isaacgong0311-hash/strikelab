@@ -97,12 +97,12 @@ export default function AiTutor({
   };
 
   return (
-    <div className="ai-tutor">
+    <section className="ai-tutor" aria-labelledby="ai-tutor-title">
       <div className="ai-tutor-head">
-        <span className="ai-tutor-title">
+        <h3 id="ai-tutor-title" className="ai-tutor-title">
           <span className="ai-dot" aria-hidden="true" />
           AI tutor
-        </span>
+        </h3>
         <button type="button" onClick={onClose} className="ai-close" aria-label="Close tutor">
           ✕
         </button>
@@ -141,7 +141,9 @@ export default function AiTutor({
       </div>
 
       <form className="ai-composer" onSubmit={onSubmit}>
+        <label htmlFor="ai-tutor-question" className="sl-visually-hidden">Ask the AI tutor a question</label>
         <textarea
+          id="ai-tutor-question"
           ref={inputRef}
           value={input}
           onChange={(e) => setInput(e.target.value)}
@@ -150,12 +152,14 @@ export default function AiTutor({
           placeholder={streaming ? "Replying…" : "Ask a question…"}
           className="ai-input"
           disabled={streaming}
-          aria-label="Ask the AI tutor a question"
         />
         <button type="submit" className="ai-send" disabled={streaming || !input.trim()}>
           Send
         </button>
       </form>
-    </div>
+      <div className="sl-visually-hidden" role="status" aria-live="polite">
+        {streaming ? "AI tutor is responding." : messages.at(-1)?.role === "assistant" ? "AI tutor response complete." : ""}
+      </div>
+    </section>
   );
 }

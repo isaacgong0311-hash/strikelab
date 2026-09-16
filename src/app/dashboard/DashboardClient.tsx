@@ -23,7 +23,7 @@ function XPRing({ pct, color, size = 130 }: { pct: number; color: string; size?:
   const filled = Math.max(0, Math.min(pct, 100)) / 100 * circ;
   const cx = size / 2, cy = size / 2;
   return (
-    <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} style={{ transform: "rotate(-90deg)" }}>
+    <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} style={{ transform: "rotate(-90deg)" }} aria-hidden="true" focusable="false">
       <circle cx={cx} cy={cy} r={r} fill="none" stroke="var(--bg2)" strokeWidth={strokeW} />
       <circle
         cx={cx} cy={cy} r={r} fill="none"
@@ -36,10 +36,11 @@ function XPRing({ pct, color, size = 130 }: { pct: number; color: string; size?:
 }
 
 // ── Thin inline progress bar ─────────────────────────────────
-function MiniBar({ pct, color }: { pct: number; color: string }) {
+function MiniBar({ pct, color, label = "Progress" }: { pct: number; color: string; label?: string }) {
+  const safe = Math.max(0, Math.min(100, Math.round(pct)));
   return (
-    <div className="db-mini-bar">
-      <div className="db-mini-bar-fill" style={{ width: `${pct}%`, background: color }} />
+    <div className="db-mini-bar" role="progressbar" aria-label={label} aria-valuemin={0} aria-valuemax={100} aria-valuenow={safe} aria-valuetext={`${safe}%`}>
+      <div className="db-mini-bar-fill" style={{ width: `${safe}%`, background: color }} />
     </div>
   );
 }
@@ -75,7 +76,7 @@ function CertificateCTA({ trackId, color }: { trackId: string; color: string }) 
     >
       <div>
         <div className="db-cert-cta-title" style={{ color }}>Track complete 🎓</div>
-        <div className="db-cert-cta-sub">
+        <div className="db-cert-cta-sub" role={state === "error" ? "alert" : undefined}>
           {state === "error"
             ? "Something went wrong — try again."
             : "Claim your certificate of completion, shareable on LinkedIn."}
@@ -160,29 +161,29 @@ export default function DashboardClient() {
           </div>
         </div>
         <div className="db-hero-progress-wrap">
-          <MiniBar pct={overallPct} color="var(--grass)" />
+          <MiniBar pct={overallPct} color="var(--grass)" label="Overall curriculum progress" />
         </div>
       </div>
 
       {/* ── METRIC TILES ─────────────────────────────────── */}
       <div className="db-metrics">
         <div className="db-metric">
-          <div className="db-metric-icon" style={{ background: "var(--grass-tint)", color: "var(--grass)" }}>✓</div>
+          <div className="db-metric-icon" aria-hidden="true" style={{ background: "var(--grass-tint)", color: "var(--grass)" }}>✓</div>
           <div className="db-metric-v" style={{ color: "var(--grass)" }}>{completedCount}</div>
           <div className="db-metric-l">Lessons done</div>
         </div>
         <div className="db-metric">
-          <div className="db-metric-icon" style={{ background: "var(--coral-tint)", color: "var(--coral)" }}>△</div>
+          <div className="db-metric-icon" aria-hidden="true" style={{ background: "var(--coral-tint)", color: "var(--coral)" }}>△</div>
           <div className="db-metric-v" style={{ color: "var(--coral)" }}>{hydrated ? streak : 0}</div>
           <div className="db-metric-l">Day streak</div>
         </div>
         <div className="db-metric">
-          <div className="db-metric-icon" style={{ background: "rgba(251,191,36,0.12)", color: "var(--amber)" }}>◆</div>
+          <div className="db-metric-icon" aria-hidden="true" style={{ background: "rgba(251,191,36,0.12)", color: "var(--amber)" }}>◆</div>
           <div className="db-metric-v" style={{ color: "var(--amber)" }}>{hydrated ? xp.toLocaleString() : "0"}</div>
           <div className="db-metric-l">Total XP</div>
         </div>
         <div className="db-metric">
-          <div className="db-metric-icon" style={{ background: `${level.color}18`, color: level.color }}>◉</div>
+          <div className="db-metric-icon" aria-hidden="true" style={{ background: `${level.color}18`, color: level.color }}>◉</div>
           <div className="db-metric-v" style={{ color: level.color, fontSize: 20 }}>{level.label}</div>
           <div className="db-metric-l">Level {levelNum}</div>
         </div>
@@ -194,7 +195,7 @@ export default function DashboardClient() {
         {/* XP Level panel */}
         <div className="db-panel">
           <div className="db-panel-head">
-            <span className="db-panel-title">Level &amp; XP</span>
+            <h2 className="db-panel-title">Level &amp; XP</h2>
             <span className="db-level-chip" style={{ background: `${level.color}20`, color: level.color }}>Lv.{levelNum}</span>
           </div>
           <div className="db-ring-layout">
@@ -211,7 +212,7 @@ export default function DashboardClient() {
               {xpNeeded > 0 && (
                 <div className="db-ring-needed">{xpNeeded} XP → {XP_LEVELS[levelNum]?.label ?? "Max"}</div>
               )}
-              <div className="db-level-track">
+              <div className="db-level-track" aria-hidden="true">
                 {XP_LEVELS.map((l, i) => (
                   <div
                     key={l.label}
@@ -221,7 +222,7 @@ export default function DashboardClient() {
                   />
                 ))}
               </div>
-              <div className="db-level-labels">
+              <div className="db-level-labels" aria-hidden="true">
                 {XP_LEVELS.map((l, i) => (
                   <span key={i} className="db-level-lbl" style={{ color: i < levelNum ? l.color : "var(--ink-3)" }}>
                     {i + 1}
@@ -235,7 +236,7 @@ export default function DashboardClient() {
         {/* Difficulty-tier breakdown */}
         <div className="db-panel">
           <div className="db-panel-head">
-            <span className="db-panel-title">Solved by difficulty</span>
+            <h2 className="db-panel-title">Solved by difficulty</h2>
             <span className="db-section-meta">{completedCount} / {totalLessons}</span>
           </div>
           <div className="db-tier-list">
@@ -250,7 +251,7 @@ export default function DashboardClient() {
                     <span className="db-tier-name" style={{ color }}>{track.level}</span>
                     <span className="db-tier-count">{done}<span className="db-tier-count-sep">/{total}</span></span>
                   </div>
-                  <MiniBar pct={pct} color={color} />
+                  <MiniBar pct={pct} color={color} label={`${track.title} progress`} />
                 </div>
               );
             })}
@@ -261,7 +262,7 @@ export default function DashboardClient() {
       {/* ── ACTIVITY ─────────────────────────────────────── */}
       <div className="db-panel" style={{ marginBottom: 16 }}>
         <div className="db-panel-head">
-          <span className="db-panel-title">Activity</span>
+          <h2 className="db-panel-title">Activity</h2>
           <span className="db-streak-pill" style={{ color: streak > 0 ? "var(--coral)" : "var(--ink-3)" }}>
             {streak > 0 ? <><FlameIcon size={12} /> {streak} day streak</> : "No active streak"}
           </span>
@@ -272,21 +273,38 @@ export default function DashboardClient() {
 
       {/* ── CURRICULUM PROGRESS ──────────────────────────── */}
       <div className="db-section-head">
-        <span className="db-section-title">Curriculum</span>
+        <h2 className="db-section-title">Curriculum</h2>
         <span className="db-section-meta">{completedCount} / {totalLessons} lessons</span>
       </div>
 
       {/* Track tab bar */}
-      <div className="db-tabs">
+      <div className="db-tabs" role="tablist" aria-label="Curriculum tracks">
         {TRACKS.map((track, i) => {
           const done = hydrated ? track.lessons.filter(l => completed.has(l.id)).length : 0;
           const pct = Math.round((done / track.lessons.length) * 100);
           return (
             <button
               key={track.id}
+              type="button"
+              role="tab"
+              id={`dashboard-tab-${track.id}`}
+              aria-controls={`dashboard-panel-${track.id}`}
+              aria-selected={activeTrackIdx === i}
+              tabIndex={activeTrackIdx === i ? 0 : -1}
               className={`db-tab ${activeTrackIdx === i ? "active" : ""}`}
               style={{ "--tc": track.color } as React.CSSProperties}
               onClick={() => setActiveTrackIdx(i)}
+              onKeyDown={(event) => {
+                let nextIndex = i;
+                if (event.key === "ArrowRight") nextIndex = (i + 1) % TRACKS.length;
+                else if (event.key === "ArrowLeft") nextIndex = (i - 1 + TRACKS.length) % TRACKS.length;
+                else if (event.key === "Home") nextIndex = 0;
+                else if (event.key === "End") nextIndex = TRACKS.length - 1;
+                else return;
+                event.preventDefault();
+                setActiveTrackIdx(nextIndex);
+                event.currentTarget.parentElement?.querySelectorAll<HTMLButtonElement>('[role="tab"]')[nextIndex]?.focus();
+              }}
             >
               <span className="db-tab-glyph">{track.icon}</span>
               <span className="db-tab-name">{track.title}</span>
@@ -298,16 +316,23 @@ export default function DashboardClient() {
 
       {/* Active track panel */}
       {TRACKS.map((track, ti) => {
-        if (ti !== activeTrackIdx) return null;
         const done = hydrated ? track.lessons.filter(l => completed.has(l.id)).length : 0;
         const pct = totalLessons ? Math.round((done / track.lessons.length) * 100) : 0;
         const nextInTrack = hydrated ? track.lessons.find(l => !completed.has(l.id)) : track.lessons[0];
 
         return (
-          <div key={track.id} className="db-track-panel">
+          <div
+            key={track.id}
+            id={`dashboard-panel-${track.id}`}
+            role="tabpanel"
+            aria-labelledby={`dashboard-tab-${track.id}`}
+            tabIndex={0}
+            hidden={ti !== activeTrackIdx}
+            className="db-track-panel"
+          >
             <div className="db-track-top">
               <div>
-                <div className="db-track-title" style={{ color: track.color }}>{track.title}</div>
+                <h3 className="db-track-title" style={{ color: track.color }}>{track.title}</h3>
                 <div className="db-track-sub">{track.subtitle} · {track.level}</div>
               </div>
               <div className="db-track-count">
@@ -315,7 +340,7 @@ export default function DashboardClient() {
                 <span className="db-track-count-sep">/{track.lessons.length}</span>
               </div>
             </div>
-            <MiniBar pct={pct} color={track.color} />
+            <MiniBar pct={pct} color={track.color} label={`${track.title} progress`} />
             {pct === 100 && <CertificateCTA trackId={track.id} color={track.color} />}
             <div className="db-lesson-list">
               {track.lessons.map((l, li) => {
@@ -326,6 +351,7 @@ export default function DashboardClient() {
                     key={l.id}
                     href={`/lesson/${l.id}`}
                     className={`db-lesson-row ${isDone ? "done" : ""} ${isCurrent ? "current" : ""}`}
+                    aria-label={`${l.title}. ${isDone ? "Completed" : isCurrent ? "Recommended next lesson" : "Available"}. ${l.duration}.`}
                     style={{ "--tc": track.color } as React.CSSProperties}
                   >
                     <div
@@ -400,7 +426,7 @@ export default function DashboardClient() {
 
       {/* ── ACHIEVEMENTS ─────────────────────────────────── */}
       <div className="db-section-head" style={{ marginTop: 8 }}>
-        <span className="db-section-title">Achievements</span>
+        <h2 className="db-section-title">Achievements</h2>
         <Link href="/achievements" className="db-section-meta db-section-link">
           {unlockedAch} / {ACHIEVEMENTS.length} unlocked · View all →
         </Link>
@@ -414,6 +440,7 @@ export default function DashboardClient() {
               <div className="db-ach-icon">{a.icon}</div>
               <div className="db-ach-name">{a.name}</div>
               <div className="db-ach-desc">{a.desc}</div>
+              <span className="sl-visually-hidden">{unlocked ? "Unlocked" : "Locked"}</span>
               {unlocked && <div className="db-ach-check">✓</div>}
             </div>
           );

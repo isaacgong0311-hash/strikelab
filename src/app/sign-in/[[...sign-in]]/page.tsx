@@ -3,6 +3,8 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { getSupabaseBrowser } from "@/lib/supabase/client";
+import BrandMark from "@/components/BrandMark";
+import AuthError from "@/components/AuthError";
 
 export default function SignInPage() {
   const router = useRouter();
@@ -51,11 +53,11 @@ export default function SignInPage() {
   return (
     <div className="auth">
       <div className="auth-card">
-        <div className="auth-brand"><span className="auth-logo">∫</span></div>
+        <div className="auth-brand"><span className="auth-logo"><BrandMark size={34} /></span></div>
         <h1 className="auth-title">Welcome back</h1>
         <p className="auth-sub">Sign in to pick up your streak and keep learning.</p>
 
-        {error && <p className="auth-error" style={{ color: "var(--coral, #ef4444)", fontSize: 13, marginBottom: 10 }}>{error}</p>}
+        <AuthError message={error} />
 
         <form onSubmit={handleSubmit} className="auth-form">
           <label className="auth-label">
@@ -67,6 +69,7 @@ export default function SignInPage() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="you@school.edu"
+              autoComplete="email"
             />
           </label>
           <label className="auth-label">
@@ -83,6 +86,7 @@ export default function SignInPage() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="••••••••"
+              autoComplete="current-password"
             />
           </label>
           <button type="submit" disabled={loading} className="v2-btn" style={{ width: "100%", marginTop: 4 }}>

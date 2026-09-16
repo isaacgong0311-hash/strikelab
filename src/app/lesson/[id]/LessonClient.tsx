@@ -20,6 +20,7 @@ import BinomialTree from "@/components/BinomialTree";
 import PracticeProblem from "@/components/PracticeProblem";
 import { checkpointPlacement, type TocSection } from "@/lib/lessonToc";
 import FlameIcon from "@/components/FlameIcon";
+import Dialog from "@/components/ui/Dialog";
 
 const MiniEditor = dynamic(() => import("@/components/MiniEditor"), { ssr: false });
 
@@ -95,12 +96,12 @@ function QuizSection({
   }
 
   return (
-    <div className="sl-quiz">
+    <section className="sl-quiz" aria-labelledby="knowledge-check-title">
       {/* Header */}
       <div className="sl-quiz-header">
-        <div className="sl-quiz-title">Knowledge Check</div>
+        <h2 id="knowledge-check-title" className="sl-quiz-title">Knowledge Check</h2>
         {answeredCount > 0 && (
-          <div className="sl-quiz-score">
+          <div className="sl-quiz-score" role="status" aria-live="polite">
             {correctCount}/{answeredCount} correct
           </div>
         )}
@@ -114,9 +115,9 @@ function QuizSection({
           const isCorrect = chosen === q.correct;
 
           return (
-            <div key={qIdx} className="sl-question">
+            <fieldset key={qIdx} className="sl-question">
               <div className="sl-question-num">Q{qIdx + 1} of {questions.length}</div>
-              <div className="sl-question-text">{q.question}</div>
+              <legend className="sl-question-text">{q.question}</legend>
 
               <div className="sl-options">
                 {q.options.map((opt, oIdx) => {
@@ -128,6 +129,7 @@ function QuizSection({
                   return (
                     <button
                       key={oIdx}
+                      type="button"
                       className={cls}
                       onClick={() => choose(qIdx, oIdx)}
                       disabled={isAnswered}
@@ -141,16 +143,16 @@ function QuizSection({
 
               {/* Explanation */}
               {isAnswered && (
-                <div className={`sl-explanation ${isCorrect ? "correct" : "wrong"}`}>
+                <div className={`sl-explanation ${isCorrect ? "correct" : "wrong"}`} role="status" aria-live="polite">
                   {isCorrect ? "✓ " : "✗ "}
                   {q.explanation}
                 </div>
               )}
-            </div>
+            </fieldset>
           );
         })}
       </div>
-    </div>
+    </section>
   );
 }
 
@@ -167,23 +169,13 @@ function CelebrationOverlay({
   streak: number;
   onClose: () => void;
 }) {
-  // Prevent body scroll while overlay is open
-  useEffect(() => {
-    document.body.style.overflow = "hidden";
-    return () => { document.body.style.overflow = ""; };
-  }, []);
-
   return (
-    <div
-      className="sl-celebration-overlay"
-      onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
-    >
-      <div className="sl-celebration-card">
+    <Dialog open onClose={onClose} title="Lesson complete">
+      <div className="sl-celebration-content">
         {/* Check */}
         <div className="sl-celebration-check">✓</div>
 
         {/* Title */}
-        <div className="sl-celebration-title">Lesson Complete!</div>
         <div className="sl-celebration-subtitle">{lessonTitle}</div>
 
         {/* XP badge */}
@@ -221,12 +213,12 @@ function CelebrationOverlay({
               Open Playground →
             </Link>
           )}
-          <button className="sl-btn-ghost" onClick={onClose}>
+          <button type="button" className="sl-btn-ghost" onClick={onClose}>
             Stay on this lesson
           </button>
         </div>
       </div>
-    </div>
+    </Dialog>
   );
 }
 
@@ -491,7 +483,8 @@ export default function LessonClient({ lesson, sections, chunks, prev, next, tra
 
         {/* Exercise — Options/Quant only, see hasCodingExercise above */}
         {hasCodingExercise && (
-        <div
+        <section
+          aria-labelledby="coding-exercise-title"
           className="v2-rise border overflow-hidden mb-8"
           style={{
             transitionDelay: "160ms",
@@ -505,12 +498,13 @@ export default function LessonClient({ lesson, sections, chunks, prev, next, tra
             style={{ borderColor: "var(--border)", background: "var(--bg2)" }}
           >
             <div className="flex items-center gap-3">
-              <span
+              <h2
+                id="coding-exercise-title"
                 className="text-sm font-semibold"
                 style={{ fontFamily: "var(--font-display)", color: "var(--ink)" }}
               >
                 Coding Exercise
-              </span>
+              </h2>
               <span
                 className="text-[10px] uppercase tracking-widest"
                 style={{ color: "var(--muted)", fontFamily: "var(--font-mono)" }}
@@ -544,7 +538,7 @@ export default function LessonClient({ lesson, sections, chunks, prev, next, tra
           </div>
 
           {/* Code editor */}
-          <MiniEditor value={code} onChange={setCode} />
+          <MiniEditor value={code} onChange={setCode} ariaLabel={`${lesson.title} coding exercise`} />
 
           {/* Run bar */}
           <div
@@ -553,6 +547,7 @@ export default function LessonClient({ lesson, sections, chunks, prev, next, tra
           >
             <div className="flex items-center gap-2">
               <button
+                type="button"
                 onClick={runCode}
                 disabled={status === "running"}
                 className="flex items-center gap-2 px-4 py-1.5 text-sm font-medium transition-all disabled:opacity-30"
@@ -582,7 +577,7 @@ export default function LessonClient({ lesson, sections, chunks, prev, next, tra
                         fontFamily: "var(--font-mono)",
                       }}
                     >
-                      ⌘↵
+                      Ctrl/⌘ + Enter
                     </kbd>
                   </>
                 )}
@@ -590,7 +585,10 @@ export default function LessonClient({ lesson, sections, chunks, prev, next, tra
 
               {/* AI Hint button — shows after first attempt or always */}
               <button
+                type="button"
                 onClick={() => setShowHint((v) => !v)}
+                aria-expanded={showHint}
+                aria-controls="lesson-ai-tutor"
                 className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium transition-all"
                 style={{
                   background: showHint ? "rgba(34,197,94,0.12)" : "var(--card)",
@@ -620,7 +618,7 @@ export default function LessonClient({ lesson, sections, chunks, prev, next, tra
 
           {/* Output */}
           {output && (
-            <div className="border-t" style={{ borderColor: "var(--border)" }}>
+            <div className="border-t" style={{ borderColor: "var(--border)" }} role={status === "fail" ? "alert" : "status"} aria-live="polite" aria-atomic="true">
               <div
                 className="flex items-center gap-2 px-5 py-2 border-b text-[10px] uppercase tracking-widest"
                 style={{
@@ -658,7 +656,7 @@ export default function LessonClient({ lesson, sections, chunks, prev, next, tra
 
           {/* AI tutor — conversational, sees the current code and error */}
           {showHint && (
-            <div style={{ padding: "0 14px 14px" }}>
+            <div id="lesson-ai-tutor" style={{ padding: "0 14px 14px" }}>
               <AiTutor
                 lessonId={lesson.id}
                 code={code}
@@ -667,7 +665,7 @@ export default function LessonClient({ lesson, sections, chunks, prev, next, tra
               />
             </div>
           )}
-        </div>
+        </section>
         )}
 
         {/* Pyodide loader — only needed when there's a Python exercise on

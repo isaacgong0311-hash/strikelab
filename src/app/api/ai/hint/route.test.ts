@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from "vitest";
-import { consumeHintQuota } from "./route";
+import { consumeHintQuota } from "./quota";
 
 // Same reasoning as src/lib/ai/quota.test.ts — consumeHintQuota calls the
 // consume_hint_quota() RPC (supabase/migrations/0008_separate_ai_quota_from_hints.sql)

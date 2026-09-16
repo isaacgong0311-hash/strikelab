@@ -84,14 +84,14 @@ export default function PracticeProblem({ lessonId }: { lessonId: string }) {
         <button type="button" className="pr-btn" onClick={generate}>
           New practice problem
         </button>
-        {error && <p className="pr-error">{error}</p>}
+        {error && <p className="pr-error" role="alert">{error}</p>}
       </div>
     );
   }
 
   if (status === "generating") {
     return (
-      <div className="pr-cta">
+      <div className="pr-cta" role="status">
         <div className="pr-cta-text">
           <span className="ai-thinking" aria-label="Generating"><i /><i /><i /></span>
           <span style={{ marginLeft: 10 }}>Writing you a problem…</span>
@@ -112,7 +112,7 @@ export default function PracticeProblem({ lessonId }: { lessonId: string }) {
       <p className="pr-prompt">{problem?.prompt}</p>
 
       <div className="pr-editor">
-        <MiniEditor value={code} onChange={setCode} />
+        <MiniEditor value={code} onChange={setCode} ariaLabel={`${problem?.title ?? "Practice problem"} Python editor`} />
       </div>
 
       <div className="pr-actions">
@@ -126,11 +126,11 @@ export default function PracticeProblem({ lessonId }: { lessonId: string }) {
         >
           {showSolution ? "Hide solution" : "Show solution"}
         </button>
-        {status === "pass" && <span className="pr-pass">Passed</span>}
+        {status === "pass" && <span className="pr-pass" role="status">Passed</span>}
       </div>
 
       {output && (
-        <pre className={`pr-output${status === "fail" ? " fail" : ""}`}>{output}</pre>
+        <pre className={`pr-output${status === "fail" ? " fail" : ""}`} role={status === "fail" ? "alert" : "status"} aria-live="polite">{output}</pre>
       )}
 
       {showSolution && (

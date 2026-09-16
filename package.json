@@ -10,6 +10,8 @@
     "lint": "eslint",
     "test": "vitest run",
     "test:watch": "vitest",
+    "test:a11y": "playwright test tests/accessibility",
+    "test:e2e": "playwright test",
     "electron:dev": "concurrently --kill-others \"npm run dev\" \"wait-on http://localhost:3000 && cross-env NODE_ENV=development electron .\"",
     "electron:build": "npm run build && node scripts/copy-standalone.mjs && electron-builder --win --config electron-builder.json"
   },
@@ -30,6 +32,8 @@
     "stripe": "^22.2.0"
   },
   "devDependencies": {
+    "@axe-core/playwright": "^4.13.0",
+    "@playwright/test": "^1.63.0",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
     "@types/react": "^19",
