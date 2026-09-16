@@ -1,3 +1,7 @@
+import { TRACKS } from "./tracks";
+
+const LESSON_COUNT = TRACKS.reduce((n, t) => n + t.lessons.length, 0);
+
 export interface FAQItem {
   q: string;
   a: string;
@@ -14,7 +18,7 @@ export const FAQ_GROUPS: FAQGroup[] = [
     items: [
       {
         q: "What is StrikeLab?",
-        a: "A free, browser-based investing and quant finance curriculum, taught by writing real code instead of reading slides. 23 lessons across three tracks — Investing Fundamentals, Options Pricing, and Quant Investing — take you from \"what is a stock?\" to reading a balance sheet to a working Black-Scholes engine with all five Greeks. Quant Investing is there once you want to go deeper, not a requirement to get there.",
+        a: `A free, browser-based investing and quant finance curriculum, taught by writing real code instead of reading slides. ${LESSON_COUNT} lessons across three tracks — Investing Fundamentals, Options Pricing, and Quant Investing — take you from "what is a stock?" to reading a balance sheet to a working Black-Scholes engine with all five Greeks. Quant Investing is there once you want to go deeper, not a requirement to get there.`,
       },
       {
         q: "Who is it for?",
@@ -35,7 +39,7 @@ export const FAQ_GROUPS: FAQGroup[] = [
     items: [
       {
         q: "How long does it take?",
-        a: "Each lesson is 10–20 minutes of reading + a 5–15 minute coding exercise. Most students finish all 23 in a few weeks, spread over evenings — the tracks are independent, so there's no requirement to binge one before starting another.",
+        a: `Each lesson is 10–20 minutes of reading + a 5–15 minute coding exercise. Most students finish all ${LESSON_COUNT} in a few weeks, spread over evenings — the tracks are independent, so there's no requirement to binge one before starting another.`,
       },
       {
         q: "Do I have to start with options?",
@@ -77,7 +81,7 @@ export const FAQ_GROUPS: FAQGroup[] = [
     items: [
       {
         q: "Is StrikeLab really free?",
-        a: "The full curriculum (all 23 lessons), the playground, the Greek visualizer, achievements, and the paper-trading sandbox are free forever — nothing there is gated. The Pro tier ($9/mo) adds weekly coding challenges, a leaderboard, and office hours with the founder. School licenses fund the platform.",
+        a: `The full curriculum (all ${LESSON_COUNT} lessons), the playground, the Greek visualizer, achievements, and the paper-trading sandbox are free forever — nothing there is gated. The Pro tier ($9/mo) adds weekly coding challenges, a leaderboard, and office hours with the founder. School licenses fund the platform.`,
       },
       {
         q: "Is this safe to use as a minor?",
