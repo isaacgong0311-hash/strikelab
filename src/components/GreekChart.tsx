@@ -17,18 +17,14 @@ export default function GreekChart({ data, color, label = "Greek", errorMsg }: P
 
   if (!data.length) {
     return (
-      <div className="flex flex-col items-center justify-center h-full gap-2 px-4" role="status">
-        <span
-          className="text-2xl opacity-20"
-          style={{ color, fontFamily: "var(--font-mono)" }}
-        >
-          —
-        </span>
-        <span
-          className="text-[11px] text-center leading-relaxed"
-          style={{ color: "var(--ink-3)", fontFamily: "var(--font-mono)" }}
-        >
-          Implement this function,<br />then click ▶ Run
+      <div className="greek-empty" role="status" style={{ ["--greek" as string]: color }}>
+        {/* A ghost of the curve the learner is about to draw. */}
+        <svg className="greek-empty-art" viewBox="0 0 200 80" preserveAspectRatio="none" aria-hidden="true">
+          <line x1="0" y1="72" x2="200" y2="72" className="greek-empty-axis" />
+          <path d="M0 70 C 55 69, 70 12, 100 12 S 145 69, 200 70" className="greek-empty-curve" />
+        </svg>
+        <span className="greek-empty-text">
+          Implement <b>{label}</b>, then press <kbd>Run</kbd>
         </span>
       </div>
     );

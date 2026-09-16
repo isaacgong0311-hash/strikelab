@@ -1,5 +1,6 @@
 "use client";
 import { useMemo, useState } from "react";
+import { rangeFill } from "@/lib/rangeFill";
 
 type OptionType = "call" | "put";
 type Style = "american" | "european";
@@ -144,6 +145,7 @@ export default function BinomialTree() {
               value={steps}
               onChange={(e) => { setSteps(Number(e.target.value)); setSelected({ step: 0, j: 0 }); }}
               className="fsb-slider"
+              style={rangeFill(steps, 2, 6)}
               aria-label="Number of steps"
               aria-valuetext={`${steps} steps`}
             />

@@ -1,5 +1,6 @@
 "use client";
 import { useState, useEffect, useCallback, useRef } from "react";
+import { rangeFill } from "@/lib/rangeFill";
 import { useSearchParams } from "next/navigation";
 import dynamic from "next/dynamic";
 import GreekChart from "@/components/GreekChart";
@@ -161,11 +162,11 @@ function ParamSlider({
         type="range" min={min} max={max} step={step} value={val}
         onChange={e => set(Number(e.target.value))}
         className="pg-slider"
-        style={{ accentColor: color }}
+        style={rangeFill(val, min, max, color)}
         aria-valuetext={fmt(val)}
         aria-describedby={`${inputId}-description`}
       />
-      <div className="pg-param-desc" id={`${inputId}-description`}>{desc}. Current value {fmt(val)}.</div>
+      <div className="sl-visually-hidden" id={`${inputId}-description`}>{desc}. Current value {fmt(val)}.</div>
     </div>
   );
 }

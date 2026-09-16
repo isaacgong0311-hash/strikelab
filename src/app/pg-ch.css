@@ -19,8 +19,10 @@
 .pg-root {
   display: flex;
   flex-direction: column;
-  height: calc(100vh - 280px);
-  min-height: 400px;
+  /* Fill the viewport below the nav once the intro above scrolls away, so the
+     editor, sliders, and charts all fit on one screen without a stale
+     "header height" constant to keep in sync. */
+  height: max(640px, calc(100dvh - 96px));
   background: var(--bg);
   overflow: hidden;
 }
@@ -226,10 +228,43 @@
 .pg-chart-axis { font-family: var(--font-mono); font-size: 9px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--ink-3); opacity: 0.5; }
 .pg-chart-body { flex: 1; min-height: 0; padding: 4px; }
 
+.greek-empty {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 16px;
+}
+.greek-empty-art { width: min(78%, 220px); height: 72px; overflow: visible; }
+.greek-empty-axis { stroke: var(--sl-border); stroke-width: 1; vector-effect: non-scaling-stroke; }
+.greek-empty-curve {
+  fill: none;
+  stroke: var(--greek);
+  stroke-width: 2;
+  stroke-dasharray: 5 6;
+  stroke-linecap: round;
+  opacity: 0.35;
+  vector-effect: non-scaling-stroke;
+}
+.greek-empty-text { color: var(--sl-text-muted); font: 500 12px/1.5 var(--sl-font-body); text-align: center; }
+.greek-empty-text b { color: var(--greek); font-weight: 700; }
+.greek-empty-text kbd {
+  padding: 1px 6px;
+  border: 1px solid var(--sl-border);
+  border-bottom-width: 2px;
+  border-radius: 5px;
+  background: var(--sl-surface);
+  font: 700 11px/1.4 var(--sl-font-code);
+  color: var(--sl-text);
+}
+
 /* Below ~900px the side-by-side editor+charts split doesn't fit — stack
    them and let the page scroll normally instead of confining everything
    to one fixed-height screen (matches the .ch-body breakpoint below). */
 @media (max-width: 900px) {
+  .pg-kbd { display: none; }
   .pg-root { height: auto; overflow: visible; }
   .pg-split { flex-direction: column; overflow: visible; }
   .pg-left { width: 100%; border-right: none; border-bottom: 1px solid var(--border); }
