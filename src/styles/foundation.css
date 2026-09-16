@@ -29,7 +29,9 @@
   font-family: var(--sl-font-code);
 }
 
-:root[data-ui="v3"] :where(a, button, input, select, textarea, [tabindex]):focus-visible {
+/* tabindex="-1" elements (headings and landmarks that receive focus from
+   script) aren't keyboard stops, so they don't get the ring. */
+:root[data-ui="v3"] :where(a, button, input, select, textarea, [tabindex]:not([tabindex="-1"])):focus-visible {
   outline: 3px solid var(--sl-focus) !important;
   outline-offset: 3px !important;
   box-shadow: none;
@@ -268,3 +270,34 @@
     border: 1px solid currentColor;
   }
 }
+
+/* Bite-sized sessions entry point on long-form lesson pages. */
+.sl-sessions-callout {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin: 0 0 1.75rem;
+  padding: 1rem 1.25rem;
+  border: 2px solid color-mix(in srgb, var(--sl-brand) 30%, transparent);
+  border-radius: var(--sl-radius-lg);
+  background: linear-gradient(135deg, var(--sl-brand-soft), var(--sl-surface));
+  box-shadow: 0 3px 0 color-mix(in srgb, var(--sl-brand) 22%, transparent);
+}
+.sl-sessions-callout-eyebrow { margin: 0 0 0.3rem; color: var(--sl-brand); font: 700 0.65rem/1 var(--sl-font-code); letter-spacing: 0.12em; text-transform: uppercase; }
+.sl-sessions-callout-title { margin: 0; color: var(--sl-text); font: 800 1.1rem/1.25 var(--sl-font-display); }
+.sl-sessions-callout-meta { margin: 0.25rem 0 0; color: var(--sl-text-muted); font-size: 0.875rem; }
+.sl-sessions-callout-action {
+  min-height: var(--sl-tap);
+  display: inline-flex;
+  align-items: center;
+  padding: 0.7rem 1.4rem;
+  border-radius: var(--sl-radius-md);
+  background: var(--sl-brand);
+  box-shadow: 0 4px 0 var(--sl-brand-strong);
+  color: white;
+  font: 800 0.9rem/1 var(--sl-font-body);
+  text-decoration: none;
+}
+.sl-sessions-callout-action:active { transform: translateY(3px); box-shadow: 0 1px 0 var(--sl-brand-strong); }

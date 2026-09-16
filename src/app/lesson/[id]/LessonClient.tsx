@@ -9,6 +9,7 @@ import { trackLessonStart, trackTestsPassed, trackLessonComplete, trackQuizAnswe
 import Eyebrow from "@/components/Eyebrow";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import PrereqBox from "@/components/PrereqBox";
+import SessionsCallout from "@/components/SessionsCallout";
 import AiTutor from "@/components/AiTutor";
 import LessonToc from "@/components/LessonToc";
 import AiReview from "@/components/AiReview";
@@ -440,6 +441,8 @@ export default function LessonClient({ lesson, sections, chunks, prev, next, tra
         </div>
 
         {lesson.prereqs && <PrereqBox prereqs={lesson.prereqs} />}
+
+        <SessionsCallout lessonId={lesson.id} />
 
         {/* Lesson content, with checkpoints interleaved between sections.
             The questions used to sit in one block at the end, so you could

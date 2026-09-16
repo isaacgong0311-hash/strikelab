@@ -110,6 +110,20 @@ type Step =
 
 **Done when:** the median session lasts 3–6 minutes in analytics, the first-session completion rate for new visitors is instrumented, and Playwright covers keyboard-only and screen-reader runs through one session.
 
+**Progress (2026-09-16), first vertical slice:**
+- [x] Engine (`src/lib/sessions/engine.ts`): multiple-choice and numeric grading (accepts `$`, `%`, commas), a retry queue for missed questions, progress and first-try accuracy, all unit tested.
+- [x] Content lint (`src/lib/sessions/content.test.ts`): unique ids, 5–15 steps, at least 2 questions, paragraphs of 50 words or fewer, valid answer keys, and worked numeric answers recomputed.
+- [x] `inv-1` converted into 3 sessions (6/6/10 steps), reusing its existing quiz questions.
+- [x] Player at `/learn/[sessionId]` (prerendered, `noindex`, canonical is the long-form lesson): progress bar, number-key answers, Enter from anywhere, red/green feedback bar with focus management, and a complete screen with accuracy, time and session dots.
+- [x] XP is awarded once, through `markComplete`, when the last session of an unfinished lesson ends.
+- [x] "Learn this in N short sessions" callout on lesson pages, which resumes at the first unfinished session.
+- [x] `session_start` / `step_answered` / `session_complete` events.
+- [x] Playwright: full keyboard run with a retry, Check disabled until answered, axe scan of the feedback state, 404, and XP awarded only once.
+- [ ] Session results sync to Supabase (`session_completions`). Localhost-only for now.
+- [ ] Path nodes show session rings, and the path links to sessions instead of the long-form lesson.
+- [ ] Step kinds `slider-target`, `order`, `predict-chart`, `code`.
+- [ ] Convert the remaining pilot lessons: `inv-2`, `inv-5`, `1`, `2`, `3`, `4`–`7`, `q3`.
+
 ---
 
 ### Phase 2: Habit loop (2 build-weeks) · *serves: week-4 retention*
