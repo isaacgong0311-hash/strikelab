@@ -6,22 +6,19 @@ import AccessibilityControls from "@/components/accessibility/AccessibilityContr
 
 function SignInPrompt() {
   return (
-    <div className="max-w-md mx-auto px-6 py-24 text-center">
-      <h1
-        className="text-2xl font-semibold mb-3"
-        style={{ fontFamily: "var(--font-display)", color: "var(--ink)" }}
-      >
-        Sign in to manage settings
-      </h1>
-      <p className="text-sm mb-6" style={{ color: "var(--muted2)" }}>
-        Settings are tied to your account.
-      </p>
-      <Link href="/sign-up" className="v2-btn">Start free →</Link>
-      <div style={{ marginTop: 10 }}>
-        <Link href="/sign-in" style={{ fontSize: 13, color: "var(--ink-3)" }}>
-          I already have an account
-        </Link>
-      </div>
+    <div className="settings-gate">
+      <section className="settings-gate-card" aria-labelledby="settings-gate-title">
+        <h1 id="settings-gate-title">Settings</h1>
+        <p>
+          Sign in to manage your profile, classes, and integrations. Display
+          preferences below work without an account and are saved in this browser.
+        </p>
+        <div className="settings-gate-actions">
+          <Link href="/sign-in" className="settings-gate-primary">Sign in</Link>
+          <Link href="/sign-up" className="settings-gate-secondary">Create a free account</Link>
+        </div>
+      </section>
+      <AccessibilityControls />
     </div>
   );
 }

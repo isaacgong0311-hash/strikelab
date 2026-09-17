@@ -10,6 +10,12 @@ async function shot(page: Page, name: string) {
   if (shots) await page.screenshot({ path: `${shots}/${name}.png` });
 }
 
+/** Navigate and wait for hydration: keyboard shortcuts attach on the client. */
+async function open(page: Page, path: string) {
+  await page.goto(path);
+  await expect(page.locator("html")).toHaveAttribute("data-client-ready", "true");
+}
+
 async function continueButton(page: Page) {
   return page.getByRole("button", { name: /^(Continue|Check)$/ });
 }
@@ -17,7 +23,7 @@ async function continueButton(page: Page) {
 test.use({ viewport: { width: 390, height: 844 } });
 
 test("a learner can finish a session with the keyboard, retrying a missed question", async ({ page }) => {
-  await page.goto("/learn/inv-1.1");
+  await open(page, "/learn/inv-1.1");
   await expect(page.getByRole("heading", { level: 1, name: "Companies need money" })).toBeVisible();
   await shot(page, "1-explain");
 
@@ -78,7 +84,7 @@ test("a learner can finish a session with the keyboard, retrying a missed questi
 });
 
 test("Check stays disabled until an answer is chosen", async ({ page }) => {
-  await page.goto("/learn/inv-1.1");
+  await open(page, "/learn/inv-1.1");
   await page.keyboard.press("Enter");
   await expect(page.getByRole("button", { name: "Check" })).toBeDisabled();
   // The transparent native radio covers the whole card, so clicking the card hits it.
@@ -87,7 +93,7 @@ test("Check stays disabled until an answer is chosen", async ({ page }) => {
 });
 
 test("session player has no serious automated accessibility violations", async ({ page }) => {
-  await page.goto("/learn/inv-1.1");
+  await open(page, "/learn/inv-1.1");
   await page.keyboard.press("Enter");
   await page.keyboard.press("2");
   await page.keyboard.press("Enter");
@@ -110,7 +116,7 @@ test("finishing the last session completes the lesson and awards XP once", async
     }
   }, { "inv-1.1": done, "inv-1.2": done });
 
-  await page.goto("/learn/inv-1.3");
+  await open(page, "/learn/inv-1.3");
   const answer = async (key: string) => {
     await page.keyboard.press(key);
     await page.keyboard.press("Enter");
@@ -145,7 +151,7 @@ test("finishing the last session completes the lesson and awards XP once", async
   expect(progress.xp).toBe(100);
 
   // Replaying the final session doesn't award XP again.
-  await page.goto("/learn/inv-1.3");
+  await open(page, "/learn/inv-1.3");
   await page.keyboard.press("Enter");
   await page.keyboard.press("Enter");
   await type("25");

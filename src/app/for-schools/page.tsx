@@ -156,7 +156,7 @@ export default function ForSchoolsPage() {
           Request a quote →
         </a>
         <p className="text-xs mt-4" style={{ color: "var(--muted)" }}>
-          Or see the full <Link href="/pricing" style={{ color: "var(--grass)" }}>pricing page</Link>{" "}
+          Or see the full <Link href="/pricing" style={{ color: "var(--grass)", textDecoration: "underline", textUnderlineOffset: 3 }}>pricing page</Link>{" "}
           for how School compares to Student and Pro.
         </p>
       </div>

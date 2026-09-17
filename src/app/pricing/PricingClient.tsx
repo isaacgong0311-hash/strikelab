@@ -59,7 +59,7 @@ const TIERS = [
     href: "mailto:hello@strikelab.app",
     action: "link" as const,
     popular: false,
-    accent: "#7c4dd4",
+    accent: "var(--sl-text)",
     features: [
       "Everything in Pro",
       "30 student seats included",
