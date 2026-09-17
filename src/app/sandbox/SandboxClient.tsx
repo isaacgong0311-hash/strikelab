@@ -65,14 +65,47 @@ function defaultExpiry(daysOut: number): string {
 function SignInPrompt() {
   return (
     <div className="sb-gate">
-      <div className="sb-gate-card">
-        <h2 className="sb-gate-title">Sign in to trade</h2>
+      <div className="sb-gate-copy">
+        <p className="sb-gate-eyebrow">Free account required</p>
+        <h2 className="sb-gate-title">Trade the math you just learned</h2>
         <p className="sb-gate-desc">
-          The Paper-Trading Sandbox gives you $100,000 in simulated cash, saved to
-          your account. Sign in (free) to start.
+          Start with $100,000 in simulated cash. Every option is priced live by the
+          same Black-Scholes engine you build in the lessons, and your portfolio is
+          saved to your account.
         </p>
-        <Link href="/sign-up" className="sb-gate-btn">Start free →</Link>
-        <Link href="/sign-in" className="sb-gate-link">I already have an account</Link>
+        <ul className="sb-gate-points">
+          <li>Stocks and options on about 90 tickers</li>
+          <li>Live Greeks and a cost preview before every order</li>
+          <li>No real money, ever</li>
+        </ul>
+        <div className="sb-gate-actions">
+          <Link href="/sign-up?src=sandbox" className="sb-gate-btn">Start free →</Link>
+          <Link href="/sign-in" className="sb-gate-link">I already have an account</Link>
+        </div>
+      </div>
+
+      {/* Static preview of the trading screen. Decorative only. */}
+      <div className="sb-gate-preview" aria-hidden="true">
+        <div className="sb-gate-preview-head">
+          <span>Portfolio value</span>
+          <span className="sb-gate-up">+2.4% today</span>
+        </div>
+        <div className="sb-gate-total">$102,418.60</div>
+        <svg className="sb-gate-spark" viewBox="0 0 300 64" preserveAspectRatio="none">
+          <defs>
+            <linearGradient id="sbGateFill" x1="0" x2="0" y1="0" y2="1">
+              <stop offset="0" stopColor="currentColor" stopOpacity="0.22" />
+              <stop offset="1" stopColor="currentColor" stopOpacity="0" />
+            </linearGradient>
+          </defs>
+          <path d="M0 52 L30 48 L60 50 L90 40 L120 43 L150 32 L180 35 L210 24 L240 27 L270 16 L300 12 L300 64 L0 64 Z" fill="url(#sbGateFill)" />
+          <path d="M0 52 L30 48 L60 50 L90 40 L120 43 L150 32 L180 35 L210 24 L240 27 L270 16 L300 12" fill="none" stroke="currentColor" strokeWidth="2" vectorEffect="non-scaling-stroke" />
+        </svg>
+        <div className="sb-gate-rows">
+          <div><b>AAPL</b><span>10 shares</span><em className="sb-gate-up">+$84.20</em></div>
+          <div><b>SPY 525C</b><span>2 contracts · Δ 0.44</span><em className="sb-gate-up">+$131.00</em></div>
+          <div><b>NVDA 110P</b><span>1 contract · Δ −0.31</span><em className="sb-gate-down">−$22.50</em></div>
+        </div>
       </div>
     </div>
   );

@@ -53,7 +53,7 @@ export default function Footer() {
             Free forever for students. Built by a freshman AIME qualifier.
           </p>
           <div className="flex gap-2 flex-wrap mb-5">
-            {["Free forever", "Open source", "No install"].map((tag) => (
+            {["Free forever", "MIT open source", "No install"].map((tag) => (
               <span
                 key={tag}
                 className="text-[10px] px-2 py-0.5 rounded-full"
@@ -70,18 +70,6 @@ export default function Footer() {
             ))}
           </div>
 
-          <div
-            className="inline-flex items-center gap-2 text-[10px] px-2.5 py-1 rounded-full"
-            style={{
-              border: "1px solid var(--border-hi)",
-              color: "var(--fg)",
-              fontFamily: "var(--font-mono)",
-              letterSpacing: "0.06em",
-              textTransform: "uppercase",
-            }}
-          >
-            MIT License · Open Source
-          </div>
         </div>
 
         {/* Nav groups */}

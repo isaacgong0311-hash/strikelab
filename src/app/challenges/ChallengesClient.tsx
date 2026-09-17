@@ -13,12 +13,18 @@ const MiniEditor = dynamic(() => import("@/components/MiniEditor"), { ssr: false
 // object (which is a new reference on every render and would cause an infinite
 // re-render loop: new Date → effect re-runs → setState → re-render → repeat).
 function useCountdown(targetMs: number) {
-  const [timeLeft, setTimeLeft] = useState({ h: 0, m: 0, s: 0, done: false });
+  const [timeLeft, setTimeLeft] = useState({ d: 0, h: 0, m: 0, s: 0, done: false });
   useEffect(() => {
     function tick() {
       const diff = targetMs - Date.now();
-      if (diff <= 0) { setTimeLeft({ h: 0, m: 0, s: 0, done: true }); return; }
-      setTimeLeft({ h: Math.floor(diff / 3600000), m: Math.floor((diff % 3600000) / 60000), s: Math.floor((diff % 60000) / 1000), done: false });
+      if (diff <= 0) { setTimeLeft({ d: 0, h: 0, m: 0, s: 0, done: true }); return; }
+      setTimeLeft({
+        d: Math.floor(diff / 86400000),
+        h: Math.floor((diff % 86400000) / 3600000),
+        m: Math.floor((diff % 3600000) / 60000),
+        s: Math.floor((diff % 60000) / 1000),
+        done: false,
+      });
     }
     tick();
     const id = setInterval(tick, 1000);
@@ -202,6 +208,15 @@ export default function ChallengesClient() {
             <div className="ch-countdown-done">New challenge!</div>
           ) : (
             <div className="ch-countdown-timer">
+              {countdown.d > 0 && (
+                <>
+                  <div className="ch-time-unit">
+                    <span className="ch-time-num">{countdown.d}</span>
+                    <span className="ch-time-label">{countdown.d === 1 ? "day" : "days"}</span>
+                  </div>
+                  <span className="ch-time-sep">:</span>
+                </>
+              )}
               <div className="ch-time-unit">
                 <span className="ch-time-num">{String(countdown.h).padStart(2,"0")}</span>
                 <span className="ch-time-label">hr</span>
