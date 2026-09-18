@@ -1198,6 +1198,28 @@ body:has(.sk-home) .v2-bg-vignette { display: none; }
 
 /* Hero visual — light notebook card on the dark hero */
 .sk-hero-visual { position: relative; }
+
+/* Ambient Spline layer (see src/components/SplineScene.tsx).
+   Deliberately bled out past the code card on every side so the 3D reads as
+   atmosphere behind the product rather than a boxed-in widget, and feathered
+   with a radial mask so the canvas never shows a hard rectangular edge against
+   the hero's dark ground. `.sk-hero` already sets overflow:hidden, so the
+   negative insets can't introduce horizontal scroll on small screens.
+   Renders nothing at all when no scene is configured. */
+.sk-hero-spline {
+  position: absolute;
+  inset: -18% -12% -18% -28%;
+  z-index: 0;
+  pointer-events: none;
+  -webkit-mask-image: radial-gradient(70% 60% at 55% 50%, #000 32%, transparent 78%);
+  mask-image: radial-gradient(70% 60% at 55% 50%, #000 32%, transparent 78%);
+}
+
+/* Both hero props sit above the 3D. The code card is the message; the canvas
+   is wallpaper. */
+.sk-hero-visual > .sk-codecard { position: relative; }
+.sk-hero-visual > .sk-codecard,
+.sk-hero-visual > .sk-result-chip { z-index: 1; }
 .sk-codecard {
   background: var(--paper-2); border: 1px solid rgba(0,0,0,0.06); border-radius: var(--r-lg);
   box-shadow: 0 30px 60px -28px rgba(0,0,0,0.6); overflow: hidden; transform: rotate(-1.1deg);
@@ -1909,11 +1931,11 @@ body:has(.sk-home) .v2-bg-vignette { display: none; }
     padding: 11px 20px;
     font-size: 14px;
   }
-  /* Footer link lists were 16px tall — nearly unhittable with a thumb. */
-  .v2-foot-link {
-    display: inline-block;
-    padding: 9px 0;
-  }
+  /* Footer link lists were 16px tall — nearly unhittable with a thumb. The
+     padding that used to fix that now lives as a wider column gap in
+     Footer.tsx instead: the animated underline is drawn on the anchor's own
+     box, so vertical padding would have floated the rule well below the text.
+     Same ~34px of pitch per row, underline still on the baseline. */
 }
 
 /* Mobile menu overlay + slide-down panel */

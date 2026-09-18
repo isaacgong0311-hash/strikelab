@@ -1,5 +1,5 @@
-import Link from "next/link";
 import BrandMark from "@/components/BrandMark";
+import AnimatedLink from "@/components/AnimatedLink";
 
 const NAV_GROUPS = [
   {
@@ -27,10 +27,12 @@ const NAV_GROUPS = [
   {
     title: "Open Source",
     links: [
-      { href: "https://github.com/isaacgong0311-hash/strikelab",                external: true,  label: "GitHub" },
-      { href: "https://github.com/isaacgong0311-hash/strikelab/discussions",   external: true,  label: "Discussions" },
-      { href: "https://github.com/isaacgong0311-hash/strikelab/blob/main/LICENSE", external: true, label: "MIT License" },
-      { href: "mailto:hello@strikelab.app",                                    external: true,  label: "Email" },
+      // No `external` flag any more — AnimatedLink derives that from the
+      // protocol, so the data can't drift out of sync with the markup.
+      { href: "https://github.com/isaacgong0311-hash/strikelab",                   label: "GitHub" },
+      { href: "https://github.com/isaacgong0311-hash/strikelab/discussions",       label: "Discussions" },
+      { href: "https://github.com/isaacgong0311-hash/strikelab/blob/main/LICENSE", label: "MIT License" },
+      { href: "mailto:hello@strikelab.app",                                       label: "Email" },
     ],
   },
 ];
@@ -81,28 +83,18 @@ export default function Footer() {
             >
               {group.title}
             </div>
-            <div className="flex flex-col gap-2.5">
-              {group.links.map((l) =>
-                "external" in l && l.external ? (
-                  <a
-                    key={l.href}
-                    href={l.href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="v2-foot-link text-xs"
-                  >
-                    {l.label} ↗
-                  </a>
-                ) : (
-                  <Link
-                    key={l.href}
-                    href={l.href}
-                    className="v2-foot-link text-xs"
-                  >
-                    {l.label}
-                  </Link>
-                )
-              )}
+            {/* Wider gap on mobile than the old 10px. The tap target used to
+                come from 9px of padding on each link, but that padding also
+                pushed the new hover rule 9px clear of the text. Spacing gives
+                the same ~34px of vertical pitch per row (WCAG 2.5.8 is
+                satisfied by spacing, not just by box size) while letting the
+                underline sit on the baseline where it belongs. */}
+            <div className="flex flex-col gap-4 md:gap-2.5">
+              {group.links.map((l) => (
+                <AnimatedLink key={l.href} href={l.href} className="v2-foot-link text-xs">
+                  {l.label}
+                </AnimatedLink>
+              ))}
             </div>
           </div>
         ))}

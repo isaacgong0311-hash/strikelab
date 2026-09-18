@@ -30,3 +30,39 @@ StrikeLab uses a student-first “premium learning lab” visual language: calm 
 3. Label every form control and associate help/errors programmatically.
 4. Verify keyboard order, focus restoration, status announcements, 320px reflow, 400% zoom, reduced motion, and enhanced/forced contrast.
 5. Add or update Playwright/axe coverage, then remove the migrated legacy selectors.
+
+## Third-party components
+
+`components.json` configures the shadcn CLI. StrikeLab does not use the shadcn
+base theme — `tailwind.cssVariables` is `false` deliberately, so nothing the CLI
+pulls in can start emitting `bg-background`/`text-foreground` against a palette
+we don't own. Tokens stay in `src/styles/tokens.css`.
+
+Registry components land in `src/components/ui/<registry>/` and are treated as
+vendored source we own: keep them as close to upstream as possible so a future
+re-pull is a readable diff, and put StrikeLab-specific behavior in a wrapper
+next to it rather than editing the vendored file.
+
+Currently vendored:
+
+- `src/components/ui/skiper-ui/skiper40.tsx` — six animated link treatments
+  (`npx shadcn add @skiper-ui/skiper40`). Wrapped by
+  `src/components/AnimatedLink.tsx`, which picks the `next/link` variant for
+  internal hrefs and the new-tab-plus-arrow variant for external ones.
+  Skiper UI's free tier requires attribution; the licence header at the bottom
+  of the vendored file is the current form of it.
+
+Two things to know if you re-run the CLI over this file:
+
+- Its transformer rewrites *every* string attribute, not just `className`, and
+  it deduplicated `viewBox="0 0 10 10"` down to an invalid `viewBox="0 10"` on
+  all five SVGs. Check the arrows still render after any re-pull.
+- Upstream's external-link variant ships `target="_blank"` with no `rel`. We add
+  `rel="noopener noreferrer"`; re-pulling drops that fix.
+
+`@splinetool/react-spline` backs `src/components/SplineScene.tsx`. The runtime
+is roughly a megabyte of WebGL, so it is `next/dynamic` with `ssr: false` and
+mounts only when a scene URL is configured, motion is not reduced, the device is
+not on Save-Data or low memory, WebGL is present, and the host has scrolled near
+the viewport. With `NEXT_PUBLIC_SPLINE_HERO_SCENE` unset it renders no DOM at
+all and the chunk is never fetched.

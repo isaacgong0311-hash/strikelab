@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useState } from "react";
 import { TRACKS, type Track } from "@/lib/tracks";
+import SplineScene from "@/components/SplineScene";
 
 // ─── Hero notebook card ──────────────────────────────────────────────────────
 const CODE_ROWS: { ln: string; src: string }[] = [
@@ -198,6 +199,12 @@ export default function Home() {
           </div>
 
           <div className="sk-hero-visual">
+            {/* Ambient 3D layer, sat behind the code card. Renders nothing at
+                all unless NEXT_PUBLIC_SPLINE_HERO_SCENE is set and the device
+                and motion preferences allow it — see SplineScene. The hero's
+                existing grid/vignette backdrop is what shows through
+                otherwise, so nothing here is load-bearing. */}
+            <SplineScene className="sk-hero-spline" />
               <div className="sk-codecard" aria-label="Example Black-Scholes Python exercise">
               <div className="sk-codecard-bar">
                 <span className="sk-codecard-name">black_scholes.py</span>
