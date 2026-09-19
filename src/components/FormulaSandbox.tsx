@@ -1,6 +1,16 @@
 "use client";
 import { useMemo, useState } from "react";
 import type { FormulaSandboxConfig } from "@/lib/lessons";
+import { rangeFill } from "@/lib/rangeFill";
+
+/** "$100", "$250M", "5%", "15.4B", "1.5 yrs": symbol-like units attach without a space. */
+function formatWithUnit(value: number, unit?: string): string {
+  const n = value.toLocaleString();
+  if (!unit) return n;
+  if (unit.startsWith("$")) return `$${n}${unit.slice(1)}`; // "$", "$M"
+  if (unit === "%" || unit === "B" || unit === "M") return `${n}${unit}`;
+  return `${n} ${unit}`;
+}
 
 /** Abramowitz & Stegun 7.1.26 — accurate to ~1.5e-7, plenty for a "try it" widget. */
 function erf(x: number): number {
@@ -124,10 +134,7 @@ export default function FormulaSandbox({ config }: { config: FormulaSandboxConfi
           <label key={v.key} className="fsb-var">
             <span className="fsb-var-head">
               <span className="fsb-var-name">{v.label}</span>
-              <span className="fsb-var-val">
-                {values[v.key].toLocaleString()}
-                {v.unit ? ` ${v.unit}` : ""}
-              </span>
+              <span className="fsb-var-val">{formatWithUnit(values[v.key], v.unit)}</span>
             </span>
             <input
               type="range"
@@ -139,8 +146,9 @@ export default function FormulaSandbox({ config }: { config: FormulaSandboxConfi
                 setValues((prev) => ({ ...prev, [v.key]: Number(e.target.value) }))
               }
               className="fsb-slider"
+              style={rangeFill(values[v.key], v.min, v.max)}
               aria-label={v.label}
-              aria-valuetext={`${values[v.key].toLocaleString()}${v.unit ? ` ${v.unit}` : ""}`}
+              aria-valuetext={formatWithUnit(values[v.key], v.unit)}
             />
           </label>
         ))}

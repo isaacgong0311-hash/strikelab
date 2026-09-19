@@ -214,7 +214,7 @@ export default function AboutPage() {
               t.state === "next"     ? "#2f6df0" :
                                        "#475569";
             return (
-              <div key={t.date} className="v2-rise flex items-start gap-4 py-2.5">
+              <div key={`${t.date}-${t.event}`} className="v2-rise flex items-start gap-4 py-2.5">
                 <div
                   className="flex-shrink-0 w-7 h-7 rounded-full flex items-center justify-center text-xs relative z-10"
                   style={{

@@ -5,6 +5,7 @@ import {
   ResponsiveContainer, ReferenceLine, CartesianGrid,
 } from "recharts";
 import { useHydrated } from "@/lib/useHydrated";
+import { rangeFill } from "@/lib/rangeFill";
 
 type LegType = "call" | "put" | "stock";
 type Side = "long" | "short";
@@ -239,6 +240,7 @@ export default function PayoffDiagram() {
             value={spotNow}
             onChange={(e) => setSpotNow(Number(e.target.value))}
             className="fsb-slider"
+            style={rangeFill(spotNow, SCAN_MIN, SCAN_MAX)}
             aria-label="Stock price now"
             aria-valuetext={`Stock price ${fmtMoney(spotNow)}; profit and loss ${fmtMoney(currentPnl)}`}
           />

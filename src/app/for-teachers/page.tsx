@@ -105,21 +105,6 @@ export default function ForTeachersPage() {
       {/* Testimonials — placeholder copy, ready to swap for real quotes once
           we have them. Structure (name, role, school) is set so this is a
           content edit, not a rebuild, when quotes come in. */}
-      <h2
-        className="text-xl font-semibold mb-4"
-        style={{ fontFamily: "var(--font-display)", color: "var(--ink)" }}
-      >
-        What teachers say
-      </h2>
-      <div
-        className="p-5 rounded-lg border mb-12 text-sm"
-        style={{ borderColor: "var(--border)", color: "var(--muted2)", fontStyle: "italic" }}
-      >
-        We haven&rsquo;t published teacher testimonials yet — this section is reserved for
-        them. If you&rsquo;ve used StrikeLab in a class, we&rsquo;d genuinely like to hear
-        about it: <a href="mailto:hello@strikelab.app" style={{ color: "var(--grass)", fontStyle: "normal" }}>hello@strikelab.app</a>.
-      </div>
-
       <div className="p-6 rounded-lg border text-center" style={{ borderColor: "var(--border)", background: "var(--bg2)" }}>
         <p className="text-sm mb-4" style={{ color: "var(--muted2)" }}>
           Create a free account, then head to Settings → Classroom to make a class and get
@@ -127,7 +112,7 @@ export default function ForTeachersPage() {
           required.
         </p>
         <Link
-          href="/sign-up"
+          href="/sign-up?src=for-teachers"
           className="text-sm px-4 py-2 font-medium transition-colors hover:opacity-80"
           style={{ background: "var(--grass)", color: "#fff", fontFamily: "var(--font-mono)", borderRadius: 10, boxShadow: "0 3px 0 var(--grass-d)" }}
         >
@@ -135,7 +120,7 @@ export default function ForTeachersPage() {
         </Link>
         <p className="text-xs mt-3" style={{ color: "var(--muted)" }}>
           Need 30+ seats, a curriculum alignment guide, and training calls?{" "}
-          <Link href="/for-schools" style={{ color: "var(--grass)" }}>See the School plan →</Link>
+          <Link href="/for-schools" style={{ color: "var(--grass)", textDecoration: "underline", textUnderlineOffset: 3 }}>See the School plan →</Link>
         </p>
       </div>
     </div>

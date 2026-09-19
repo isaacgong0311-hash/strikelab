@@ -471,13 +471,14 @@ input[type="range"]::-moz-range-track {
    "Curriculum" eyebrow). .v2-section/.v2-sec-head/.v2-sec-title/.v2-sec-sub
    were part of an earlier full homepage draft (see below) and are dead. */
 .v2-sec-label {
-  font-family: var(--mono); font-size: 10px;
-  letter-spacing: 0.2em; text-transform: uppercase;
-  color: var(--fg-mute);
+  /* --mono was never defined, so this fell back to the browser's serif. */
+  font-family: var(--sl-font-code, var(--font-mono)); font-size: 11px; font-weight: 700;
+  letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--sl-brand, var(--grass));
   display: inline-flex; align-items: center; gap: 12px;
   margin-bottom: 18px;
 }
-.v2-sec-label::before { content: ''; width: 24px; height: 1px; background: var(--fg-faint); }
+.v2-sec-label::before { content: ''; width: 20px; height: 2px; border-radius: 2px; background: currentColor; opacity: 0.5; }
 
 /* Footer links — monochrome hover */
 .v2-foot-link { color: var(--fg-mute); transition: color 180ms ease; }
@@ -1197,6 +1198,28 @@ body:has(.sk-home) .v2-bg-vignette { display: none; }
 
 /* Hero visual — light notebook card on the dark hero */
 .sk-hero-visual { position: relative; }
+
+/* Ambient Spline layer (see src/components/SplineScene.tsx).
+   Deliberately bled out past the code card on every side so the 3D reads as
+   atmosphere behind the product rather than a boxed-in widget, and feathered
+   with a radial mask so the canvas never shows a hard rectangular edge against
+   the hero's dark ground. `.sk-hero` already sets overflow:hidden, so the
+   negative insets can't introduce horizontal scroll on small screens.
+   Renders nothing at all when no scene is configured. */
+.sk-hero-spline {
+  position: absolute;
+  inset: -18% -12% -18% -28%;
+  z-index: 0;
+  pointer-events: none;
+  -webkit-mask-image: radial-gradient(70% 60% at 55% 50%, #000 32%, transparent 78%);
+  mask-image: radial-gradient(70% 60% at 55% 50%, #000 32%, transparent 78%);
+}
+
+/* Both hero props sit above the 3D. The code card is the message; the canvas
+   is wallpaper. */
+.sk-hero-visual > .sk-codecard { position: relative; }
+.sk-hero-visual > .sk-codecard,
+.sk-hero-visual > .sk-result-chip { z-index: 1; }
 .sk-codecard {
   background: var(--paper-2); border: 1px solid rgba(0,0,0,0.06); border-radius: var(--r-lg);
   box-shadow: 0 30px 60px -28px rgba(0,0,0,0.6); overflow: hidden; transform: rotate(-1.1deg);
@@ -1439,7 +1462,7 @@ body:has(.sk-home) .v2-bg-vignette { display: none; }
 .dunit-banner .s { font-size: 13px; opacity: 0.88; margin-top: 2px; }
 .dunit-icon { font-family: var(--font-display), Georgia, serif; font-size: 30px; opacity: 0.9; }
 
-.dpath-nodes { display: flex; flex-direction: column; align-items: center; gap: 20px; padding: 32px 0; position: relative; }
+.dpath-nodes { display: flex; flex-direction: column; align-items: center; gap: 26px; padding: 40px 0 32px; position: relative; }
 .dpath-nodes::before {
   content: ''; position: absolute; top: 30px; bottom: 30px; left: 50%; width: 3px;
   background: repeating-linear-gradient(var(--line-2) 0 8px, transparent 8px 17px);
@@ -1539,7 +1562,19 @@ body:has(.sk-home) .v2-bg-vignette { display: none; }
   font-family: var(--font-mono);
   pointer-events: none;
 }
-.dnode-label { margin-top: 10px; font-family: var(--font-display), Georgia, serif; font-weight: 600; font-size: 14px; color: var(--ink); text-align: center; max-width: 210px; line-height: 1.2; }
+/* Labels sit on a canvas-coloured pill so the dashed spine never runs
+   through the text. */
+.dnode-label {
+  position: relative; z-index: 1;
+  margin-top: 10px; padding: 4px 12px;
+  border-radius: 999px;
+  background: var(--sl-canvas, var(--bg));
+  box-shadow: 0 0 0 4px var(--sl-canvas, var(--bg));
+  font-family: var(--font-display), Georgia, serif; font-weight: 600; font-size: 14px; color: var(--ink);
+  text-align: center; max-width: 230px; line-height: 1.25;
+}
+.dnode.locked { margin-top: 30px; }
+.dchest-label { position: relative; z-index: 1; padding: 2px 8px; border-radius: 999px; background: var(--sl-canvas, var(--bg)); }
 .dnode.locked .dnode-label { color: var(--ink-3); }
 
 .dfinish { margin-top: 4px; }
@@ -1896,11 +1931,11 @@ body:has(.sk-home) .v2-bg-vignette { display: none; }
     padding: 11px 20px;
     font-size: 14px;
   }
-  /* Footer link lists were 16px tall — nearly unhittable with a thumb. */
-  .v2-foot-link {
-    display: inline-block;
-    padding: 9px 0;
-  }
+  /* Footer link lists were 16px tall — nearly unhittable with a thumb. The
+     padding that used to fix that now lives as a wider column gap in
+     Footer.tsx instead: the animated underline is drawn on the anchor's own
+     box, so vertical padding would have floated the rule well below the text.
+     Same ~34px of pitch per row, underline still on the baseline. */
 }
 
 /* Mobile menu overlay + slide-down panel */
@@ -2284,30 +2319,32 @@ h1, h2, h3, h4 {
 }
 .db-heatmap-day.today { color: var(--ink); font-weight: 700; }
 
-/* Full-year activity heatmap */
+/* Full-year activity heatmap. Columns flex to fill the card, and the month
+   row uses the same flex columns + gap, so labels stay over their weeks. */
 .ah { overflow-x: auto; padding-bottom: 4px; }
+.ah > [aria-hidden] { min-width: 560px; }
 .ah-months {
-  display: flex; gap: 3px; margin-left: 22px; margin-bottom: 4px;
+  display: flex; gap: 3px; margin-left: 22px; margin-bottom: 6px;
   font-family: var(--font-mono); font-size: 10px; color: var(--ink-3);
 }
-.ah-month { width: 13px; flex-shrink: 0; overflow: visible; white-space: nowrap; }
-.ah-body { display: flex; gap: 6px; }
+.ah-month { flex: 1 1 0; min-width: 0; overflow: visible; white-space: nowrap; }
+.ah-body { display: flex; gap: 8px; }
 .ah-daylabels {
   display: flex; flex-direction: column; gap: 3px;
   font-family: var(--font-mono); font-size: 9px; color: var(--ink-3);
   width: 14px; flex-shrink: 0;
 }
-.ah-daylabels span { height: 10px; line-height: 10px; }
-.ah-grid { display: flex; gap: 3px; }
-.ah-col { display: flex; flex-direction: column; gap: 3px; }
+.ah-daylabels span { flex: 1 1 0; display: flex; align-items: center; line-height: 1; }
+.ah-grid { flex: 1; display: flex; gap: 3px; }
+.ah-col { flex: 1 1 0; display: flex; flex-direction: column; gap: 3px; }
 .ah-cell {
-  width: 10px; height: 10px; border-radius: 2px;
-  background: var(--bg2);
+  width: 100%; aspect-ratio: 1; max-width: 16px; border-radius: 3px;
+  background: color-mix(in srgb, var(--sl-text, #17201b) 7%, transparent);
 }
-.ah-cell.today { outline: 1.5px solid var(--coral); outline-offset: 1px; }
+.ah-cell.today { outline: 2px solid var(--sl-brand, var(--coral)); outline-offset: 1px; }
 .ah-cell.future { background: transparent; }
 .ah-legend { display: flex; align-items: center; gap: 4px; margin-top: 10px; font-family: var(--font-mono); font-size: 10px; color: var(--ink-3); }
-.ah-legend-cell { width: 10px; height: 10px; border-radius: 2px; background: var(--bg2); }
+.ah-legend-cell { width: 10px; height: 10px; border-radius: 3px; background: color-mix(in srgb, var(--sl-text, #17201b) 7%, transparent); }
 
 /* Difficulty-tier breakdown */
 .db-tier-list { display: flex; flex-direction: column; gap: 18px; }
@@ -2447,22 +2484,23 @@ h1, h2, h3, h4 {
 .db-cert-cta-btn:disabled { opacity: 0.6; cursor: default; }
 
 /* lesson rows */
-.db-lesson-list { display: flex; flex-direction: column; gap: 5px; }
+/* A divided list inside the card rather than a stack of grey slabs. */
+.db-lesson-list { display: flex; flex-direction: column; gap: 2px; }
 .db-lesson-row {
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 9px 12px;
+  gap: 14px;
+  padding: 10px 12px;
   border-radius: var(--r-md);
   border: 1px solid transparent;
-  background: var(--bg2);
-  transition: all .15s;
+  background: transparent;
+  transition: background .15s, border-color .15s;
   text-decoration: none;
 }
+.db-lesson-row + .db-lesson-row:not(.current) { box-shadow: inset 0 1px 0 color-mix(in srgb, var(--sl-text, #17201b) 7%, transparent); }
 .db-lesson-row:hover {
-  border-color: color-mix(in srgb, var(--tc, var(--grass)) 50%, transparent);
-  background: color-mix(in srgb, var(--tc, var(--grass)) 6%, var(--bg2));
-  transform: translateX(3px);
+  border-color: color-mix(in srgb, var(--tc, var(--grass)) 35%, transparent);
+  background: color-mix(in srgb, var(--tc, var(--grass)) 6%, transparent);
 }
 .db-lesson-row.current {
   border-color: color-mix(in srgb, var(--tc, var(--grass)) 60%, transparent);
@@ -4029,6 +4067,29 @@ h1, h2, h3, h4 {
   .sk-track-glyph { width: 40px; height: 40px; font-size: 19px; }
   .sk-track-name { font-size: 18px; }
   .sk-track-card .sk-lessons { padding: 2px 14px 16px; }
+
+  /* Four columns (node, title, pill, arrow) left the title ~90px wide on a
+     phone, wrapping one word per line. Drop the arrow (the whole row is the
+     link), tuck the duration under the title, and clamp the subtitle. */
+  .sk-lesson {
+    grid-template-columns: 36px minmax(0, 1fr);
+    grid-template-areas: "num title" "num pill";
+    column-gap: 12px;
+    row-gap: 6px;
+    padding: 12px 14px;
+  }
+  .sk-lesson-num { grid-area: num; width: 36px; height: 36px; font-size: 12px; }
+  .sk-lesson-t { grid-area: title; font-size: 16px; }
+  .sk-lesson-t .sub {
+    font-size: 12.5px;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .sk-lesson .sk-pill { grid-area: pill; justify-self: start; padding: 3px 8px; font-size: 9.5px; }
+  .sk-lesson .arr { display: none; }
+  .sk-lesson:not(:last-child)::after { display: none; }
 }
 
 /* ══════════════════════════════════════════════════════════════════════════

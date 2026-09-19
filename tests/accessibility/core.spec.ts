@@ -9,6 +9,10 @@ const PUBLIC_ROUTES = [
   "/sandbox",
   "/dashboard",
   "/sign-in",
+  "/settings",
+  "/pricing",
+  "/for-schools",
+  "/challenges",
 ];
 
 async function waitForClientShell(page: import("@playwright/test").Page) {

@@ -4,6 +4,9 @@ import Breadcrumbs from "@/components/Breadcrumbs";
 import JsonLd from "@/components/JsonLd";
 import { pageMetadata, breadcrumbJsonLd } from "@/lib/seo";
 import { SITE_URL, SITE_NAME } from "@/lib/site";
+import { TRACKS } from "@/lib/tracks";
+
+const LESSON_COUNT = TRACKS.reduce((n, t) => n + t.lessons.length, 0);
 
 export const metadata = pageMetadata({
   path: "/for-schools",
@@ -94,7 +97,7 @@ export default function ForSchoolsPage() {
         {[
           ["30", "student seats included"],
           ["$499", "per year, flat"],
-          ["23", "lessons across 3 tracks"],
+          [String(LESSON_COUNT), `lessons across ${TRACKS.length} tracks`],
           ["1", "curriculum alignment guide"],
         ].map(([stat, label]) => (
           <div key={label} className="p-4 rounded-lg border text-center" style={{ borderColor: "var(--border)" }}>
@@ -103,6 +106,26 @@ export default function ForSchoolsPage() {
           </div>
         ))}
       </div>
+
+      <h2
+        className="text-xl font-semibold mb-4"
+        style={{ fontFamily: "var(--font-display)", color: "var(--ink)" }}
+      >
+        How it works in a classroom
+      </h2>
+      <ol className="school-steps mb-12">
+        {[
+          ["Create a class", "Set it up in Settings and share the join code or link. Students sign up free and land in your class."],
+          ["Assign the work", "Pick individual lessons, or launch the six-week Quant Foundations program with scheduled weekly assignments."],
+          ["Track progress", "See who is active, what each student has finished, and export the roster to CSV for your gradebook."],
+        ].map(([title, body], i) => (
+          <li key={title} className="school-step">
+            <span className="school-step-num" aria-hidden="true">{i + 1}</span>
+            <h3>{title}</h3>
+            <p>{body}</p>
+          </li>
+        ))}
+      </ol>
 
       <h2
         className="text-xl font-semibold mb-4"
@@ -119,13 +142,7 @@ export default function ForSchoolsPage() {
         ))}
       </div>
 
-      <div
-        className="p-5 rounded-lg border mb-12 text-sm"
-        style={{ borderColor: "var(--border)", color: "var(--muted2)", fontStyle: "italic" }}
-      >
-        We haven&rsquo;t published school testimonials yet — this section is reserved for
-        them once a district has been live long enough to have real results to share.
-      </div>
+
 
       <div className="p-6 rounded-lg border text-center" style={{ borderColor: "var(--border)", background: "var(--bg2)" }}>
         <p className="text-sm mb-4" style={{ color: "var(--muted2)" }}>
@@ -139,7 +156,7 @@ export default function ForSchoolsPage() {
           Request a quote →
         </a>
         <p className="text-xs mt-4" style={{ color: "var(--muted)" }}>
-          Or see the full <Link href="/pricing" style={{ color: "var(--grass)" }}>pricing page</Link>{" "}
+          Or see the full <Link href="/pricing" style={{ color: "var(--grass)", textDecoration: "underline", textUnderlineOffset: 3 }}>pricing page</Link>{" "}
           for how School compares to Student and Pro.
         </p>
       </div>
