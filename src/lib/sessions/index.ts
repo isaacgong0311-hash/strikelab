@@ -1,8 +1,9 @@
 import type { Session } from "./types";
 import { INV1_SESSIONS } from "./content/inv1";
+import { INV2_SESSIONS } from "./content/inv2";
 
 /** Lessons converted to bite-sized sessions so far, in pilot-schedule order. */
-export const SESSIONS: Session[] = [...INV1_SESSIONS];
+export const SESSIONS: Session[] = [...INV1_SESSIONS, ...INV2_SESSIONS];
 
 export function getSession(id: string): Session | undefined {
   return SESSIONS.find((s) => s.id === id);
@@ -40,7 +41,7 @@ export function resumeSession(lessonId: string, results: SessionResults): Sessio
   return sessions.find((s) => !results[s.id]) ?? sessions[0];
 }
 
-const RESULTS_KEY = "strikelab_sessions_v1";
+export const RESULTS_KEY = "strikelab_sessions_v1";
 
 export function readSessionResults(): SessionResults {
   try {
@@ -52,12 +53,27 @@ export function readSessionResults(): SessionResults {
   }
 }
 
-export function saveSessionResult(sessionId: string, result: SessionResult): SessionResults {
-  const results = { ...readSessionResults(), [sessionId]: result };
+function writeSessionResults(results: SessionResults): void {
   try {
     localStorage.setItem(RESULTS_KEY, JSON.stringify(results));
   } catch {
     // Private mode or storage full: the run still completes in memory.
   }
+}
+
+/**
+ * Record a finished session. The first completion is kept (re-runs are
+ * tracked by analytics), matching the session_completions table.
+ */
+export function saveSessionResult(sessionId: string, result: SessionResult): SessionResults {
+  const existing = readSessionResults();
+  if (existing[sessionId]) return existing;
+  const results = { ...existing, [sessionId]: result };
+  writeSessionResults(results);
   return results;
+}
+
+/** Replace local results with a reconciled set (after a cloud sync). */
+export function replaceSessionResults(results: SessionResults): void {
+  writeSessionResults(results);
 }

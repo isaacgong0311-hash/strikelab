@@ -3,6 +3,9 @@
 import Link from "next/link";
 import { Fragment, useEffect, useRef, useState, type FormEvent, type ReactNode } from "react";
 import { useProgress } from "@/lib/useProgress";
+import { useAuth } from "@/lib/auth/AuthProvider";
+import { getSupabaseBrowser } from "@/lib/supabase/client";
+import { pushSessionResults } from "@/lib/sessions/sync";
 import {
   advance,
   firstTryAccuracy,
@@ -58,6 +61,7 @@ export default function SessionPlayer({ session, lessonTitle, sessionIds, nextSe
   const [summary, setSummary] = useState<{ accuracy: number; durationMs: number; lessonJustFinished: boolean; results: SessionResults } | null>(null);
 
   const { completed, markComplete } = useProgress();
+  const { user } = useAuth();
   const startedAt = useRef<number | null>(null);
   const headingRef = useRef<HTMLHeadingElement>(null);
   const continueRef = useRef<HTMLButtonElement>(null);
@@ -100,9 +104,13 @@ export default function SessionPlayer({ session, lessonTitle, sessionIds, nextSe
     // lesson, so finishing sessions after reading the lesson can't double it.
     const earnedXp = !wasFinished && isLessonFinished(session.lessonId, results) && !completed.has(session.lessonId);
     if (earnedXp) markComplete(session.lessonId);
+    const supabase = getSupabaseBrowser();
+    if (supabase && user && !before[session.id]) {
+      void pushSessionResults(supabase, user.id, { [session.id]: results[session.id] });
+    }
     trackSessionComplete(session.id, accuracy, durationMs);
     setSummary({ accuracy, durationMs, lessonJustFinished: earnedXp, results });
-  }, [finished, summary, run, steps, session.id, session.lessonId, completed, markComplete]);
+  }, [finished, summary, run, steps, session.id, session.lessonId, completed, markComplete, user]);
 
   // Number keys pick a multiple-choice option, like Duolingo.
   useEffect(() => {
