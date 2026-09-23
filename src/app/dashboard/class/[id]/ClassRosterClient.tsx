@@ -201,7 +201,7 @@ export default function ClassRosterClient() {
 
       {state === "ready" && scorecard && (
         <div className="mb-6">
-          <CohortScorecard scorecard={scorecard} className={className} />
+          <CohortScorecard scorecard={scorecard} className={className} classId={classId} />
         </div>
       )}
 

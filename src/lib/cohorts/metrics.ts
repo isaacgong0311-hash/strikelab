@@ -27,6 +27,8 @@ export interface CohortMember {
   joinedAt: string;
   /** progress.last_activity_date (learner-local YYYY-MM-DD), if known. */
   lastActivityDate?: string | null;
+  /** The student's capstone for this cohort, if they started one. */
+  capstone?: { id: string; status: "draft" | "submitted"; submittedAt: string | null } | null;
 }
 
 export interface CohortCompletion {
@@ -44,6 +46,8 @@ export interface CohortMetricsInput {
   members: readonly CohortMember[];
   completions: readonly CohortCompletion[];
   now: Date;
+  /** False before capstones exist (migration 0019): program completion then ignores them. */
+  capstonesEnabled?: boolean;
 }
 
 export interface StudentMetrics {
@@ -61,6 +65,7 @@ export interface StudentMetrics {
   /** Most recent completion or activity day, YYYY-MM-DD. */
   lastActiveOn: string | null;
   programCompleted: boolean;
+  capstone: { id: string; status: "draft" | "submitted"; submittedOn: string | null } | null;
   needsHelp: string | null;
 }
 
@@ -81,6 +86,8 @@ export interface CohortMetrics {
   /** Activated students active in week 4; null until week 4 has started. */
   week4Retained: (Rate & { final: boolean }) | null;
   programCompleted: Rate & { final: boolean };
+  /** Activated students who submitted a capstone; null before capstones exist. */
+  capstones: Rate | null;
   students: StudentMetrics[];
 }
 
@@ -148,6 +155,17 @@ export function computeCohortMetrics(input: CohortMetricsInput): CohortMetrics {
       return day === null || day === undefined || day <= completionDeadline;
     });
 
+    const capstone = m.capstone
+      ? {
+          id: m.capstone.id,
+          status: m.capstone.status,
+          submittedOn: m.capstone.submittedAt ? localDateKey(new Date(m.capstone.submittedAt), timezone) : null,
+        }
+      : null;
+    const capstoneInTime =
+      !input.capstonesEnabled ||
+      (capstone?.status === "submitted" && capstone.submittedOn !== null && capstone.submittedOn <= completionDeadline);
+
     return {
       studentId: m.studentId,
       displayName: m.displayName,
@@ -159,7 +177,8 @@ export function computeCohortMetrics(input: CohortMetricsInput): CohortMetrics {
       lessonsTotal: scheduled.length,
       overdue,
       lastActiveOn,
-      programCompleted: scheduled.length > 0 && doneInTime,
+      programCompleted: scheduled.length > 0 && doneInTime && capstoneInTime,
+      capstone,
       needsHelp,
     };
   });
@@ -190,6 +209,9 @@ export function computeCohortMetrics(input: CohortMetricsInput): CohortMetrics {
       ...rate(students.filter((s) => s.programCompleted).length, students.length),
       final: today > completionDeadline,
     },
+    capstones: input.capstonesEnabled
+      ? rate(students.filter((s) => s.activated === true && s.capstone?.status === "submitted").length, activatedCount)
+      : null,
     students,
   };
 }
@@ -209,6 +231,7 @@ export function cohortCsvRows(metrics: CohortMetrics): string[][] {
       "Lessons assigned",
       "Overdue",
       "Last active",
+      "Capstone",
       "Program completed",
       "Needs help",
     ],
@@ -222,6 +245,7 @@ export function cohortCsvRows(metrics: CohortMetrics): string[][] {
       String(s.lessonsTotal),
       String(s.overdue),
       s.lastActiveOn ?? "",
+      s.capstone ? (s.capstone.status === "submitted" ? `submitted ${s.capstone.submittedOn ?? ""}`.trim() : "draft") : "",
       yesNo(s.programCompleted),
       s.needsHelp ?? "",
     ]),

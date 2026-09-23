@@ -23,13 +23,14 @@ export async function loadCohortScorecard(klass: OwnedClass): Promise<CohortScor
   ]);
   const studentIds = (members ?? []).map((m) => m.student_id as string);
 
-  const [profilesRes, progressRes, completionsRes] = studentIds.length
+  const [profilesRes, progressRes, completionsRes, capstonesRes] = studentIds.length
     ? await Promise.all([
         admin.from("profiles").select("id, display_name").in("id", studentIds),
         admin.from("progress").select("user_id, last_activity_date").in("user_id", studentIds),
         admin.from("lesson_completions").select("user_id, lesson_id, completed_at").in("user_id", studentIds),
+        admin.from("capstone_submissions").select("id, user_id, status, submitted_at").eq("class_id", klass.id),
       ])
-    : [{ data: [] }, { data: [] }, { data: [], error: null }];
+    : [{ data: [] }, { data: [] }, { data: [], error: null }, { data: [], error: null }];
 
   if (completionsRes.error) {
     // Migration 0016 not applied yet: say so rather than show made-up numbers.
@@ -37,6 +38,18 @@ export async function loadCohortScorecard(klass: OwnedClass): Promise<CohortScor
   }
 
   const names = new Map((profilesRes.data ?? []).map((p) => [p.id as string, (p.display_name as string) || "StrikeLab student"]));
+  // Capstones exist once migration 0019 runs; until then they're left out.
+  const capstonesEnabled = !capstonesRes.error;
+  const capstones = new Map(
+    (capstonesRes.data ?? []).map((c) => [
+      c.user_id as string,
+      {
+        id: c.id as string,
+        status: (c.status === "submitted" ? "submitted" : "draft") as "draft" | "submitted",
+        submittedAt: (c.submitted_at as string | null) ?? null,
+      },
+    ])
+  );
   const activity = new Map((progressRes.data ?? []).map((p) => [p.user_id as string, (p.last_activity_date as string | null) ?? null]));
 
   const metrics = computeCohortMetrics({
@@ -54,6 +67,7 @@ export async function loadCohortScorecard(klass: OwnedClass): Promise<CohortScor
       displayName: names.get(m.student_id as string) ?? "StrikeLab student",
       joinedAt: m.joined_at as string,
       lastActivityDate: activity.get(m.student_id as string) ?? null,
+      capstone: capstones.get(m.student_id as string) ?? null,
     })),
     completions: (completionsRes.data ?? []).map((c) => ({
       studentId: c.user_id as string,
@@ -61,6 +75,7 @@ export async function loadCohortScorecard(klass: OwnedClass): Promise<CohortScor
       completedAt: (c.completed_at as string | null) ?? null,
     })),
     now: new Date(),
+    capstonesEnabled,
   });
   return { measurable: true, metrics, csv: cohortCsvRows(metrics) };
 }

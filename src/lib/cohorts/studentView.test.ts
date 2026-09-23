@@ -40,8 +40,8 @@ describe("buildStudentCohortView", () => {
     expect(v.nextAction?.href).toBe("/learn/inv-1.2");
     expect(v.nextAction?.sessionCount).toBe(3);
     expect(v.nextAction?.sessionsDone).toBe(1);
-    // No sessions yet for inv-5: long-form lesson.
-    expect(v.weeks[0].lessons[2].href).toBe("/lesson/inv-5");
+    // No sessions yet for lesson 1: long-form lesson.
+    expect(v.weeks[1].lessons[0].href).toBe("/lesson/1");
   });
 
   it("puts overdue work first", () => {

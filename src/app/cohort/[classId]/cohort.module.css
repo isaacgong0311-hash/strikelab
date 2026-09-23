@@ -198,3 +198,30 @@ details[open] > .weekSummary::after { transform: rotate(-135deg); }
 
 .footerNote { margin: 0; color: var(--sl-text-muted); font-size: 0.9375rem; }
 .footerNote a { color: var(--sl-brand-strong); font-weight: 700; }
+
+/* ── Capstone ────────────────────────────────────────────────── */
+.capstone {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem 1rem;
+  padding: clamp(1rem, 3vw, 1.25rem);
+  border: 1px solid var(--sl-border);
+  border-radius: var(--sl-radius-lg);
+  background: var(--sl-surface);
+}
+.capstone .muted { margin-top: 0.25rem; }
+.secondaryLink {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--sl-tap);
+  padding: 0 1.125rem;
+  border: 1px solid var(--sl-border-strong);
+  border-radius: var(--sl-radius-md);
+  color: var(--sl-text);
+  font-weight: 800;
+  text-decoration: none;
+}
+.secondaryLink:hover { border-color: var(--sl-brand); background: var(--sl-brand-soft); }
+.secondaryLink:focus-visible { outline: 3px solid var(--sl-focus); outline-offset: 3px; }

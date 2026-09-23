@@ -23,29 +23,12 @@ import { checkpointPlacement, type TocSection } from "@/lib/lessonToc";
 import FlameIcon from "@/components/FlameIcon";
 import Dialog from "@/components/ui/Dialog";
 
+import { CODE_SYNC_LABELS, useSyncedCode } from "@/lib/submissions/useSyncedCode";
+
 const MiniEditor = dynamic(() => import("@/components/MiniEditor"), { ssr: false });
 
-// Exercise code was pure React state with no persistence at all — reloading
-// the tab, or even just navigating to another lesson and back, silently threw
-// away everything the student had typed. Saved per-lesson so a draft survives
-// both.
-const CODE_KEY_PREFIX = "strikelab_code_";
-
-function readSavedCode(lessonId: string): string | null {
-  try {
-    return localStorage.getItem(CODE_KEY_PREFIX + lessonId);
-  } catch {
-    return null;
-  }
-}
-
-function writeSavedCode(lessonId: string, code: string) {
-  try {
-    localStorage.setItem(CODE_KEY_PREFIX + lessonId, code);
-  } catch {
-    // ignore (private browsing, quota, etc. — same fallback as useProgress)
-  }
-}
+// Exercise code persistence (localStorage first, synced to the account when
+// signed in) lives in useSyncedCode.
 
 interface Props {
   lesson: Lesson;
@@ -235,7 +218,7 @@ export default function LessonClient({ lesson, sections, chunks, prev, next, tra
   // "implement Black-Scholes yourself" is the whole point there.
   const hasCodingExercise = trackId !== "investing";
 
-  const [code, setCodeState] = useState(() => readSavedCode(lesson.id) ?? lesson.exercise.starterCode);
+  const { code, setCode, status: codeSync, markPassed } = useSyncedCode(lesson.id, lesson.exercise.starterCode);
   const [output, setOutput] = useState("");
   const [status, setStatus] = useState<"idle" | "running" | "pass" | "fail">("idle");
   const [showCelebration, setShowCelebration] = useState(false);
@@ -245,13 +228,6 @@ export default function LessonClient({ lesson, sections, chunks, prev, next, tra
   const runRef = useRef<(() => void) | null>(null);
   const celebratedRef = useRef(false);
 
-  // Persisting from the setter itself, rather than a useEffect watching
-  // `code`, ties the write directly to the edit event instead of a render
-  // pass.
-  const setCode = useCallback((next: string) => {
-    setCodeState(next);
-    writeSavedCode(lesson.id, next);
-  }, [lesson.id]);
 
   // Track lesson start
   useEffect(() => {
@@ -332,6 +308,7 @@ export default function LessonClient({ lesson, sections, chunks, prev, next, tra
       setOutput("✓ All tests passed!");
       setStatus("pass");
       trackTestsPassed(lesson.id);
+      markPassed();
 
       // Award XP + show celebration only for first-time completions
       const isNew = markComplete(lesson.id);
@@ -344,7 +321,7 @@ export default function LessonClient({ lesson, sections, chunks, prev, next, tra
       setOutput(msg);
       setStatus("fail");
     }
-  }, [code, lesson.exercise.testFn, lesson.id, markComplete]);
+  }, [code, lesson.exercise.testFn, lesson.id, markComplete, markPassed]);
 
   useEffect(() => {
     runRef.current = runCode;
@@ -542,6 +519,13 @@ export default function LessonClient({ lesson, sections, chunks, prev, next, tra
 
           {/* Code editor */}
           <MiniEditor value={code} onChange={setCode} ariaLabel={`${lesson.title} coding exercise`} />
+          {/* Only a failed save is announced; "Saving…/Saved" after every pause would be noise. */}
+          <p className="code-sync-status" data-state={codeSync}>
+            <span aria-hidden={codeSync === "retrying" || undefined}>{CODE_SYNC_LABELS[codeSync]}</span>
+            <span className="sl-visually-hidden" role="status">
+              {codeSync === "retrying" ? CODE_SYNC_LABELS.retrying : ""}
+            </span>
+          </p>
 
           {/* Run bar */}
           <div

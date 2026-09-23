@@ -142,6 +142,35 @@ describe("program completion", () => {
   });
 });
 
+describe("capstones", () => {
+  it("counts activated students who submitted, and gates program completion on the capstone", () => {
+    // First lesson on time (activated), everything else by Dec 10.
+    const all = (id: string) => [
+      ...assignments.slice(1).map((a) => done(id, a.lessonId, "2026-12-10")),
+      done(id, "inv-1", "2026-10-27"),
+    ];
+    const members = [
+      member("submitted", "2026-10-26", { capstone: { id: "c1", status: "submitted", submittedAt: at("2026-12-11") } }),
+      member("drafting", "2026-10-26", { capstone: { id: "c2", status: "draft", submittedAt: null } }),
+      member("none"),
+    ];
+    const completions = [...all("submitted"), ...all("drafting"), done("none", "inv-1", "2026-10-27")];
+    const m = computeCohortMetrics({
+      startsOn: START, skipWeeks: SKIPS, timezone: TZ, assignments, members, completions,
+      now: new Date(at("2026-12-28", 15)), capstonesEnabled: true,
+    });
+    expect(m.capstones).toMatchObject({ count: 1, of: 3, pct: 33 });
+    expect(m.students.map((s) => s.programCompleted)).toEqual([true, false, false]);
+    expect(cohortCsvRows(m)[1]).toContain("submitted 2026-12-11");
+  });
+
+  it("ignores capstones entirely before the feature exists", () => {
+    const m = metrics([member("a")], assignments.map((a) => done("a", a.lessonId, "2026-12-10")), "2026-12-28");
+    expect(m.capstones).toBeNull();
+    expect(m.students[0].programCompleted).toBe(true);
+  });
+});
+
 describe("cohortCsvRows", () => {
   it("has a header and one row per student with every metric column", () => {
     const rows = cohortCsvRows(metrics([member("a")], [done("a", "inv-1", "2026-10-27")], "2026-11-10"));
