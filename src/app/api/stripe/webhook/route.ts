@@ -21,6 +21,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { stripe } from "@/lib/stripe";
 import { getSupabaseAdmin } from "@/lib/supabase/admin";
 import type Stripe from "stripe";
+import { applySubscriptionEvent, type SubscriptionFields } from "@/lib/subscription/applyEvent";
 
 function planFromPriceId(priceId: string | undefined): "pro" | "school" | null {
   if (!priceId) return null;
@@ -57,38 +58,17 @@ async function linkCustomerToUser(userId: string, customerId: string) {
   if (error) console.error("[webhook] Failed to link customer to user:", error.message);
 }
 
-/**
- * Updates subscription status/plan for an existing row, keyed by
- * `stripe_customer_id`. Deliberately an UPDATE (not upsert) — this event
- * type never carries a Supabase user id, so it can't create the row itself.
- * The row is expected to already exist via `linkCustomerToUser`; if it
- * doesn't yet (out-of-order webhook delivery), this is a no-op and the
- * next subscription event reconciles it.
- */
 async function updateByCustomerId(
   customerId: string,
-  fields: {
-    stripe_subscription_id: string;
-    plan: string | null;
-    status: string;
-    current_period_end: string | null;
-  },
+  fields: SubscriptionFields,
+  eventCreated: number,
 ) {
   const admin = getSupabaseAdmin();
   if (!admin) {
     console.error("[webhook] Supabase admin client not configured — subscription not persisted");
     return;
   }
-  const { data, error } = await admin
-    .from("subscriptions")
-    .update({ ...fields, updated_at: new Date().toISOString() })
-    .eq("stripe_customer_id", customerId)
-    .select("user_id");
-  if (error) {
-    console.error("[webhook] Failed to update subscription:", error.message);
-  } else if (!data || data.length === 0) {
-    console.warn(`[webhook] No subscription row yet for customer ${customerId} — will reconcile on next event`);
-  }
+  await applySubscriptionEvent(admin, customerId, fields, eventCreated);
 }
 
 // Webhooks must read the raw body — Next.js App Router gives us Request.text()
@@ -143,7 +123,7 @@ export async function POST(req: NextRequest) {
           plan: planFromPriceId(sub.items.data[0]?.price.id),
           status: sub.status,
           current_period_end: currentPeriodEnd(sub),
-        });
+        }, event.created);
         break;
       }
       case "customer.subscription.deleted": {
@@ -155,7 +135,7 @@ export async function POST(req: NextRequest) {
           plan: planFromPriceId(sub.items.data[0]?.price.id),
           status: "canceled",
           current_period_end: currentPeriodEnd(sub),
-        });
+        }, event.created);
         break;
       }
       case "invoice.payment_failed": {
