@@ -6,8 +6,40 @@ import FlameIcon from "@/components/FlameIcon";
 import TrophyIcon from "@/components/TrophyIcon";
 import ConstructionIcon from "@/components/ConstructionIcon";
 import PathScenery, { sceneryForIndex, ChestIcon } from "@/components/PathScenery";
+import { getLessonSessions, resumeSession, type SessionResults } from "@/lib/sessions";
+import { useSessionResults } from "@/lib/sessions/useSessionResults";
 
 const OFFSETS = [0, 44, 62, 44, 0, -44, -62, -44];
+
+/**
+ * Where a lesson node points. Unfinished lessons that have bite-sized
+ * sessions open the next session; everything else opens the long-form page.
+ */
+function lessonHref(lessonId: string, done: boolean, results: SessionResults): string {
+  const next = done ? undefined : resumeSession(lessonId, results);
+  return next ? `/learn/${next.id}` : `/lesson/${lessonId}`;
+}
+
+/** Fraction-of-sessions ring drawn around an unfinished node. */
+function SessionRing({ done, total }: { done: number; total: number }) {
+  const fraction = total ? done / total : 0;
+  return (
+    <svg className="dnode-ring" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+      <circle className="dnode-ring-track" cx="50" cy="50" r="46" pathLength={100} vectorEffect="non-scaling-stroke" />
+      {fraction > 0 && (
+        <circle
+          className="dnode-ring-fill"
+          cx="50"
+          cy="50"
+          r="46"
+          pathLength={100}
+          strokeDasharray={`${fraction * 100} 100`}
+          vectorEffect="non-scaling-stroke"
+        />
+      )}
+    </svg>
+  );
+}
 
 const LEVEL_COLORS: Record<string, string> = {
   Beginner:     "var(--sky)",
@@ -24,6 +56,7 @@ const COMING_SOON: Record<string, string> = {
 
 export default function LessonsClient() {
   const { completed, hydrated, xp, streak } = useProgress();
+  const sessionResults = useSessionResults();
 
   const totalLessons = TRACKS.reduce((s, t) => s + t.lessons.length, 0);
   const doneCount = hydrated
@@ -74,7 +107,7 @@ export default function LessonsClient() {
           />
         </div>
         {nextLesson && (
-          <Link href={`/lesson/${nextLesson.id}`} className="dpath-next">
+          <Link href={lessonHref(nextLesson.id, false, sessionResults)} className="dpath-next">
             <span><small>Recommended next</small><strong>{nextLesson.title}</strong></span>
             <span aria-hidden="true">Continue →</span>
           </Link>
@@ -115,6 +148,9 @@ export default function LessonsClient() {
                 const off = OFFSETS[i % OFFSETS.length];
                 const state = done ? "done" : isActive ? "active" : "open";
                 const scenery = sceneryForIndex(i);
+                const sessions = getLessonSessions(lesson.id);
+                const sessionsDone = sessions.filter((s) => sessionResults[s.id]).length;
+                const showRing = !done && sessions.length > 0;
 
                 const node = (
                   <div
@@ -138,20 +174,23 @@ export default function LessonsClient() {
                       style={{ animationDelay: `${Math.min(i, 8) * 60}ms`, display: "flex", flexDirection: "column", alignItems: "center" }}
                     >
                       {isActive && <span className="dnode-start">START</span>}
-                      <Link
-                        href={`/lesson/${lesson.id}`}
-                        className="dnode-btn"
-                        style={
-                          state === "done"
-                            ? { background: levelColor, boxShadow: `0 6px 0 color-mix(in srgb, ${levelColor} 70%, #000)` }
-                            : state === "active"
-                            ? { background: "#fff", color: levelColor, border: `3px solid ${levelColor}`, boxShadow: `0 6px 0 color-mix(in srgb, ${levelColor} 20%, #fff)` }
-                            : { background: "#fff", color: levelColor, border: `2px solid ${levelColor}44`, boxShadow: `0 2px 0 #e7e5e4` }
-                        }
-                        aria-label={`${lesson.title}, ${done ? "completed" : isActive ? "recommended next lesson" : "available"}`}
-                      >
-                        {state === "done" ? "✓" : i + 1}
-                      </Link>
+                      <span className="dnode-ring-wrap">
+                        {showRing && <SessionRing done={sessionsDone} total={sessions.length} />}
+                        <Link
+                          href={lessonHref(lesson.id, done, sessionResults)}
+                          className="dnode-btn"
+                          style={
+                            state === "done"
+                              ? { background: levelColor, boxShadow: `0 6px 0 color-mix(in srgb, ${levelColor} 70%, #000)` }
+                              : state === "active"
+                              ? { background: "#fff", color: levelColor, border: `3px solid ${levelColor}`, boxShadow: `0 6px 0 color-mix(in srgb, ${levelColor} 20%, #fff)` }
+                              : { background: "#fff", color: levelColor, border: `2px solid ${levelColor}44`, boxShadow: `0 2px 0 #e7e5e4` }
+                          }
+                          aria-label={`${lesson.title}, ${done ? "completed" : isActive ? "recommended next lesson" : "available"}${showRing ? `, ${sessionsDone} of ${sessions.length} sessions done` : ""}`}
+                        >
+                          {state === "done" ? "✓" : i + 1}
+                        </Link>
+                      </span>
                       <div className="dnode-label">{lesson.title}</div>
                     </div>
                   </div>

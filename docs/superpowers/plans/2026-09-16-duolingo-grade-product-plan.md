@@ -1,7 +1,7 @@
 # Duolingo-Grade Product Plan
 
 **Date:** 2026-09-16
-**Status:** Draft for founder review
+**Status:** Draft for founder review. **Re-sequenced 2026-09-22:** `2026-09-22-master-plan.md` Workstream B decides when each phase runs, and pilot-OS work (Workstream A) comes first.
 **Relates to:** `docs/superpowers/specs/2026-09-13-strikelab-yc-company-design.md` (YC strategy), `docs/ui-system.md`, `docs/ui-accessibility-audit.md`
 
 ## 1. What "like Duolingo" means here
@@ -110,7 +110,7 @@ type Step =
 
 **Done when:** the median session lasts 3–6 minutes in analytics, the first-session completion rate for new visitors is instrumented, and Playwright covers keyboard-only and screen-reader runs through one session.
 
-**Progress (2026-09-16), first vertical slice:**
+**Progress (2026-09-16 to 2026-09-22), first two slices:**
 - [x] Engine (`src/lib/sessions/engine.ts`): multiple-choice and numeric grading (accepts `$`, `%`, commas), a retry queue for missed questions, progress and first-try accuracy, all unit tested.
 - [x] Content lint (`src/lib/sessions/content.test.ts`): unique ids, 5–15 steps, at least 2 questions, paragraphs of 50 words or fewer, valid answer keys, and worked numeric answers recomputed.
 - [x] `inv-1` converted into 3 sessions (6/6/10 steps), reusing its existing quiz questions.
@@ -119,10 +119,11 @@ type Step =
 - [x] "Learn this in N short sessions" callout on lesson pages, which resumes at the first unfinished session.
 - [x] `session_start` / `step_answered` / `session_complete` events.
 - [x] Playwright: full keyboard run with a retry, Check disabled until answered, axe scan of the feedback state, 404, and XP awarded only once.
-- [ ] Session results sync to Supabase (`session_completions`). Localhost-only for now.
-- [ ] Path nodes show session rings, and the path links to sessions instead of the long-form lesson.
+- [x] Session results sync to Supabase (`session_completions`, migration 0014). The first completion is kept on both sides, pushed when a session finishes and reconciled on sign-in. It's best-effort, so sessions stay local-only until **migration 0014 is run in Supabase**.
+- [x] Path nodes for unfinished lessons with sessions show a sessions-done ring and link to the next unfinished session. "Recommended next" does too.
 - [ ] Step kinds `slider-target`, `order`, `predict-chart`, `code`.
-- [ ] Convert the remaining pilot lessons: `inv-2`, `inv-5`, `1`, `2`, `3`, `4`–`7`, `q3`.
+- [x] `inv-2` converted (3 sessions, 6/7/7 steps). The content lint now also rejects `**` in questions, options and explanations, which render as plain text.
+- [ ] Convert the remaining pilot lessons: `inv-5`, `1`, `2`, `3`, `4`–`7`, `q3`.
 
 ---
 

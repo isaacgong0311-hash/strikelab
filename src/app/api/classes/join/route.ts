@@ -30,7 +30,7 @@ export async function POST(req: NextRequest) {
 
   const { data: klass } = await admin
     .from("classes")
-    .select("id, name")
+    .select("id, name, template_id, starts_on")
     .eq("join_code", code)
     .maybeSingle();
 
@@ -48,5 +48,8 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Failed to join class" }, { status: 500 });
   }
 
-  return NextResponse.json({ id: klass.id, name: klass.name });
+  // A launched cohort sends the student to their cohort home; a plain class
+  // back to the dashboard.
+  const isCohort = Boolean(klass.template_id && klass.starts_on);
+  return NextResponse.json({ id: klass.id, name: klass.name, isCohort });
 }

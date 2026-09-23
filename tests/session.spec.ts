@@ -167,3 +167,46 @@ test("finishing the last session completes the lesson and awards XP once", async
   const after = await page.evaluate(() => JSON.parse(localStorage.getItem("strikelab_progress_v2") ?? "{}"));
   expect(after.xp).toBe(100);
 });
+
+test("path nodes show session progress and open the next unfinished session", async ({ page }) => {
+  const done = { completedAt: "2026-09-16T12:00:00Z", accuracy: 1, durationMs: 60_000 };
+  await page.addInitScript((results) => {
+    localStorage.setItem("strikelab_sessions_v1", JSON.stringify(results));
+  }, { "inv-1.1": done });
+
+  await open(page, "/lessons");
+  await expect(page.getByRole("link", { name: /What Is a Stock\?.*1 of 3 sessions done/ })).toHaveAttribute("href", "/learn/inv-1.2");
+  await expect(page.getByRole("link", { name: /How Markets Work.*0 of 3 sessions done/ })).toHaveAttribute("href", "/learn/inv-2.1");
+  await expect(page.getByRole("link", { name: /Recommended next/ })).toHaveAttribute("href", "/learn/inv-1.2");
+});
+
+test("a session keeps its first result when replayed", async ({ page }) => {
+  const first = { completedAt: "2026-09-16T12:00:00Z", accuracy: 0.5, durationMs: 60_000 };
+  await page.addInitScript((results) => {
+    if (!localStorage.getItem("strikelab_sessions_v1")) {
+      localStorage.setItem("strikelab_sessions_v1", JSON.stringify(results));
+    }
+  }, { "inv-2.1": first });
+
+  await open(page, "/learn/inv-2.1");
+  await expect(page.getByRole("heading", { level: 1, name: "Where trades happen" })).toBeVisible();
+  const answer = async (key: string) => {
+    await page.keyboard.press(key);
+    await page.keyboard.press("Enter");
+    await expect(page.getByRole("status")).toContainText("Nice!");
+    await page.keyboard.press("Enter");
+  };
+  await page.keyboard.press("Enter"); // exchanges
+  await answer("2"); // payment for order flow
+  await page.keyboard.press("Enter"); // bid and ask
+  await page.getByRole("textbox").fill("0.25");
+  await page.keyboard.press("Enter");
+  await expect(page.getByRole("status")).toContainText("Nice!");
+  await page.keyboard.press("Enter");
+  await answer("2"); // market buy pays the ask
+  await answer("3"); // spread definition
+
+  await expect(page.getByRole("heading", { level: 1, name: "Session complete!" })).toBeVisible();
+  const stored = await page.evaluate(() => JSON.parse(localStorage.getItem("strikelab_sessions_v1") ?? "{}"));
+  expect(stored["inv-2.1"]).toEqual(first);
+});

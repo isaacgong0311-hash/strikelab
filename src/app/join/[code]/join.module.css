@@ -1,0 +1,50 @@
+.shell {
+  width: min(100%, 32rem);
+  margin: 0 auto;
+  padding: clamp(2rem, 8vw, 5rem) 16px;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.875rem;
+  padding: clamp(1.5rem, 5vw, 2.25rem);
+  border: 1px solid var(--sl-border);
+  border-radius: var(--sl-radius-xl);
+  background:
+    radial-gradient(120% 120% at 100% 0%, color-mix(in srgb, var(--sl-brand) 12%, transparent), transparent 55%),
+    var(--sl-surface);
+  box-shadow: var(--sl-shadow-2);
+  color: var(--sl-text);
+}
+
+.kicker { margin: 0; color: var(--sl-brand); font-weight: 800; font-size: 0.8125rem; letter-spacing: 0.08em; text-transform: uppercase; }
+.title { margin: 0; font: 800 clamp(1.625rem, 5vw, 2.125rem) / 1.12 var(--sl-font-display); letter-spacing: -0.02em; text-wrap: balance; }
+.muted { margin: 0; color: var(--sl-text-muted); line-height: var(--sl-leading-body); }
+.muted a { color: var(--sl-brand-strong); font-weight: 700; }
+.fine { margin: 0.25rem 0 0; color: var(--sl-text-subtle); font-size: 0.8125rem; }
+.error { margin: 0; color: var(--sl-danger); font-weight: 600; }
+
+.actions { display: flex; flex-direction: column; gap: 0.625rem; margin-top: 0.5rem; }
+
+.primary,
+.secondary {
+  min-height: 48px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 1.25rem;
+  border-radius: var(--sl-radius-md);
+  font: 800 1rem/1 var(--sl-font-body);
+  text-decoration: none;
+  cursor: pointer;
+  transition: transform var(--sl-motion-fast) var(--sl-ease), box-shadow var(--sl-motion-fast) var(--sl-ease);
+}
+.primary { border: 0; background: var(--sl-brand); box-shadow: 0 4px 0 var(--sl-brand-strong); color: #fff; }
+.primary:hover:not(:disabled) { transform: translateY(-1px); box-shadow: 0 5px 0 var(--sl-brand-strong); }
+.primary:active:not(:disabled) { transform: translateY(3px); box-shadow: 0 1px 0 var(--sl-brand-strong); }
+.primary:disabled { opacity: 0.7; cursor: progress; }
+.secondary { border: 1px solid var(--sl-border-strong); background: var(--sl-surface); color: var(--sl-text); }
+.secondary:hover { border-color: var(--sl-brand); background: var(--sl-brand-soft); }
+.primary:focus-visible,
+.secondary:focus-visible { outline: 3px solid var(--sl-focus); outline-offset: 3px; }

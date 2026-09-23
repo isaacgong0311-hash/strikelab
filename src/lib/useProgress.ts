@@ -10,6 +10,8 @@ import {
   type ProgressPayload,
 } from "@/lib/progress/sync";
 import { applyActivity, recentDayKeys, resolveStreak } from "@/lib/progress/streak";
+import { readSessionResults, replaceSessionResults } from "@/lib/sessions";
+import { syncSessionResults } from "@/lib/sessions/sync";
 
 const PROGRESS_KEY = "strikelab_progress_v2";
 
@@ -117,6 +119,9 @@ export function useProgress() {
       // Push the reconciled state up so local completions migrate to the cloud.
       await upsertRemoteProgress(supabase, user.id, merged);
       await saveProgressTimeZone(supabase, user.id, Intl.DateTimeFormat().resolvedOptions().timeZone);
+      // Session results sync separately and best-effort (migration 0014).
+      const sessions = await syncSessionResults(supabase, user.id, readSessionResults());
+      if (active && sessions) replaceSessionResults(sessions);
     })();
 
     return () => {

@@ -24,6 +24,36 @@ interface ClassSummary {
   startsOn: string | null;
   timezone: string | null;
   launchedAt: string | null;
+  skipWeeks?: string[];
+  joinCode?: string;
+}
+
+/** The link students open to join. Readable text first; copying is a bonus. */
+function InviteLink({ code }: { code: string }) {
+  const [copied, setCopied] = useState(false);
+  const url = typeof window === "undefined" ? `/join/${code}` : `${window.location.origin}/join/${code}`;
+  return (
+    <div className="class-invite">
+      <span className="class-invite-label">Invite link</span>
+      <code className="class-invite-url">{url}</code>
+      <button
+        type="button"
+        className="v2-btn ghost sm"
+        onClick={async () => {
+          try {
+            await navigator.clipboard.writeText(url);
+            setCopied(true);
+            window.setTimeout(() => setCopied(false), 2000);
+          } catch {
+            // Clipboard blocked (e.g. school-managed browser): the link is still on screen.
+          }
+        }}
+      >
+        {copied ? "Copied" : "Copy"}
+      </button>
+      <span className="sl-visually-hidden" role="status">{copied ? "Invite link copied" : ""}</span>
+    </div>
+  );
 }
 
 function SignInPrompt() {
@@ -154,6 +184,7 @@ export default function ClassRosterClient() {
           <p className="text-sm" style={{ color: "var(--muted2)" }}>
             {roster.length} student{roster.length === 1 ? "" : "s"}
           </p>
+          {classSummary?.joinCode && <InviteLink code={classSummary.joinCode} />}
         </div>
         {roster.length > 0 && (
           <button type="button" onClick={exportCsv} className="v2-btn ghost sm">

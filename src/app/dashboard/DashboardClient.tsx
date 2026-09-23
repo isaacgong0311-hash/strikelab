@@ -111,7 +111,24 @@ export default function DashboardClient() {
 
   const unlockedAch = hydrated ? ACHIEVEMENTS.filter(a => isUnlocked(a, completed)).length : 0;
 
-  const { displayName } = useAuth();
+  const { displayName, user } = useAuth();
+  // A student in a launched pilot cohort gets one primary action: their
+  // cohort home. Everyone else keeps "Continue" into the curriculum.
+  const [cohort, setCohort] = useState<{ id: string; name: string } | null>(null);
+  useEffect(() => {
+    if (!user) return;
+    let active = true;
+    fetch("/api/classes/joined")
+      .then((res) => (res.ok ? res.json() : { classes: [] }))
+      .then((data: { classes?: { id: string; name: string; isCohort?: boolean }[] }) => {
+        const first = data.classes?.find((c) => c.isCohort);
+        if (active && first) setCohort({ id: first.id, name: first.name });
+      })
+      .catch(() => {});
+    return () => {
+      active = false;
+    };
+  }, [user]);
   const [localName, setLocalName] = useState<string | null>(null);
   useEffect(() => {
     // Prefer the authenticated profile name; only fall back to legacy
@@ -154,9 +171,15 @@ export default function DashboardClient() {
               : `${completedCount} of ${totalLessons} lessons complete · ${overallPct}% of the way through`}
           </p>
           <div className="db-hero-actions">
-            <Link href={nextLesson ? `/lesson/${nextLesson.id}` : "/lessons"} className="db-cta-btn">
-              {completedCount === 0 ? "Start learning" : "Continue"} <span>→</span>
-            </Link>
+            {cohort ? (
+              <Link href={`/cohort/${cohort.id}`} className="db-cta-btn">
+                This week in {cohort.name} <span>→</span>
+              </Link>
+            ) : (
+              <Link href={nextLesson ? `/lesson/${nextLesson.id}` : "/lessons"} className="db-cta-btn">
+                {completedCount === 0 ? "Start learning" : "Continue"} <span>→</span>
+              </Link>
+            )}
             <Link href="/lessons" className="db-ghost-btn">View learning path</Link>
           </div>
         </div>

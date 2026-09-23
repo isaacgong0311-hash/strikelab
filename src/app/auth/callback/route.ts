@@ -1,6 +1,7 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { cookies } from "next/headers";
 import { getSupabaseServer } from "@/lib/supabase/server";
+import { safeNextPath } from "@/lib/auth/nextPath";
 
 /**
  * Exchanges the OAuth / email-confirmation `code` for a session, then
@@ -9,7 +10,9 @@ import { getSupabaseServer } from "@/lib/supabase/server";
 export async function GET(request: NextRequest) {
   const { searchParams, origin } = new URL(request.url);
   const code = searchParams.get("code");
-  const next = searchParams.get("next") ?? "/dashboard";
+  // Sanitized: a raw value like "@evil.com" would turn `${origin}${next}`
+  // into https://strikelab.dev@evil.com, an open redirect.
+  const next = safeNextPath(searchParams.get("next"));
 
   if (code) {
     const supabase = await getSupabaseServer();

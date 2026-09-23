@@ -1518,6 +1518,22 @@ body:has(.sk-home) .v2-bg-vignette { display: none; }
   background: radial-gradient(120% 120% at 30% 20%, rgba(255,255,255,0.65), transparent 48%);
   pointer-events: none;
 }
+/* Session-progress ring around unfinished lessons that have bite-sized
+   sessions. Sits outside the button so it tracks either button size. */
+.dnode-ring-wrap { position: relative; display: grid; place-items: center; }
+.dnode-ring {
+  position: absolute; inset: -7px; width: calc(100% + 14px); height: calc(100% + 14px);
+  overflow: visible; pointer-events: none; transform: rotate(-90deg);
+}
+.dnode-ring circle { fill: none; stroke-width: 5px; }
+.dnode-ring-track { stroke: color-mix(in srgb, var(--node-color, var(--grass)) 18%, transparent); }
+.dnode-ring-fill {
+  stroke: var(--node-color, var(--grass)); stroke-linecap: round;
+  transition: stroke-dasharray .32s ease;
+}
+@media (prefers-reduced-motion: reduce) {
+  .dnode-ring-fill { transition: none; }
+}
 .dnode-btn:hover { filter: brightness(1.05); transform: translateY(-2px); }
 .dnode-btn:active { transform: translateY(4px); box-shadow: 0 2px 0 var(--grass-d); }
 .dnode.open .dnode-btn { background: #fff; color: var(--grass); border: 3px solid var(--grass); box-shadow: 0 6px 0 var(--grass-tint); }
@@ -2952,6 +2968,41 @@ h1, h2, h3, h4 {
 .cohort-launch-form small { font-size: 10px; line-height: 1.45; color: var(--ink-3); }
 .cohort-launch-error { color: var(--coral) !important; font-family: var(--font-mono); font-size: 11px !important; }
 .cohort-launch-active { grid-template-columns: 1fr auto; align-items: center; }
+.class-invite { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-top: 10px; }
+.class-invite-label { font-family: var(--font-mono); font-size: 10px; font-weight: 700; letter-spacing: .05em; text-transform: uppercase; color: var(--ink-3); }
+.class-invite-url {
+  padding: 5px 9px; border: 1px solid var(--line-2); border-radius: var(--r-sm);
+  background: var(--paper); color: var(--ink); font-size: 12px; overflow-wrap: anywhere; user-select: all;
+}
+.cohort-preview-link { display: inline-block; margin-top: 8px; font-size: 12px; font-weight: 700; color: var(--grass); }
+.cohort-breaks { margin: 0; padding: 0; border: 0; display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.cohort-breaks legend {
+  padding: 0; margin-bottom: 5px;
+  font-family: var(--font-mono); font-size: 10px; font-weight: 700;
+  letter-spacing: .05em; text-transform: uppercase; color: var(--ink-3);
+}
+.cohort-breaks legend em { font-style: normal; font-weight: 500; text-transform: none; letter-spacing: 0; }
+.cohort-breaks-options { display: flex; flex-wrap: wrap; gap: 6px; }
+.cohort-launch-form .cohort-break-option,
+.cohort-break-option {
+  flex-direction: row; align-items: center; gap: 6px;
+  min-height: 32px; padding: 4px 10px;
+  border: 1px solid var(--line-2); border-radius: var(--r-full);
+  background: var(--paper); cursor: pointer;
+  font-family: var(--font-mono); font-size: 11px; color: var(--ink-2);
+}
+.cohort-launch-form .cohort-break-option input,
+.cohort-break-option input { width: 14px; min-height: 0; height: 14px; margin: 0; padding: 0; accent-color: var(--grass); }
+.cohort-break-option:has(input:checked) { border-color: var(--grass); background: color-mix(in srgb, var(--grass) 10%, var(--paper)); color: var(--ink); }
+.cohort-break-option:has(input:disabled) { opacity: .5; cursor: not-allowed; }
+.cohort-break-option:has(input:focus-visible) { outline: 2px solid var(--grass); outline-offset: 2px; }
+.cohort-launch-form .cohort-break-option > span,
+.cohort-break-option > span { font-size: inherit; font-weight: 500; letter-spacing: 0; text-transform: none; color: inherit; }
+.cohort-launch-end { font-family: var(--font-mono); font-size: 11px !important; color: var(--ink-2); }
+.cohort-breaks-edit { margin-top: 10px; position: relative; z-index: 1; }
+.cohort-breaks-edit summary { cursor: pointer; font-family: var(--font-mono); font-size: 11px; color: var(--grass); min-height: 24px; }
+.cohort-breaks-edit[open] { display: flex; flex-direction: column; gap: 10px; }
+.cohort-breaks-edit .v2-btn { align-self: flex-start; }
 .cohort-live-badge {
   position: relative;
   z-index: 1;

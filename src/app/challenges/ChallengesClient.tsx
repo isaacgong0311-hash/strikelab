@@ -91,6 +91,35 @@ const DIFFICULTY_STYLES: Record<string, { bg: string; color: string }> = {
 };
 
 // ── Main component ────────────────────────────────────────────────────────────
+// Problem statements are light markdown: "- " lines form a list, and
+// consecutive ones are grouped so every <li> sits inside a <ul>.
+type ProblemBlock = { kind: "line"; line: string } | { kind: "list"; items: string[] };
+
+function problemBlocks(description: string): ProblemBlock[] {
+  const blocks: ProblemBlock[] = [];
+  for (const line of description.split("\n")) {
+    const last = blocks[blocks.length - 1];
+    if (line.startsWith("- ")) {
+      if (last?.kind === "list") last.items.push(line.slice(2));
+      else blocks.push({ kind: "list", items: [line.slice(2)] });
+    } else {
+      blocks.push({ kind: "line", line });
+    }
+  }
+  return blocks;
+}
+
+// Inline code spans and inline **bold**: the whole-line bold check only
+// catches a line that's bold start-to-finish, not bold mixed into a sentence
+// (e.g. "implement it with **bisection search**").
+function renderInline(text: string) {
+  return text.split(/(`[^`]+`|\*\*[^*]+\*\*)/g).map((p, j) => {
+    if (p.startsWith("`") && p.endsWith("`")) return <code key={j} className="ch-inline-code">{p.slice(1, -1)}</code>;
+    if (p.startsWith("**") && p.endsWith("**")) return <strong key={j}>{p.slice(2, -2)}</strong>;
+    return p;
+  });
+}
+
 export default function ChallengesClient() {
   const challenge = getCurrentChallenge();
   const nextDate = getNextChallengeDate();
@@ -249,27 +278,18 @@ export default function ChallengesClient() {
               Problem Statement
             </div>
             <div className="ch-problem-body">
-              {challenge.description.split("\n").map((line, i) => {
+              {problemBlocks(challenge.description).map((block, i) => {
+                if (block.kind === "list")
+                  return (
+                    <ul key={i} className="ch-p-ul">
+                      {block.items.map((item, j) => <li key={j} className="ch-p-li">{renderInline(item)}</li>)}
+                    </ul>
+                  );
+                const line = block.line;
                 if (line.startsWith("**") && line.endsWith("**"))
                   return <p key={i} className="ch-p-bold">{line.slice(2,-2)}</p>;
-                if (line.startsWith("- "))
-                  return <li key={i} className="ch-p-li">{line.slice(2)}</li>;
                 if (!line.trim()) return <div key={i} className="ch-p-gap"/>;
-                // Inline code spans and inline **bold** — the whole-line check above
-                // only catches a line that's bold start-to-finish, not bold mixed
-                // into a sentence (e.g. "implement it with **bisection search**").
-                const parts = line.split(/(`[^`]+`|\*\*[^*]+\*\*)/g);
-                return (
-                  <p key={i} className="ch-p">
-                    {parts.map((p, j) => {
-                      if (p.startsWith("`") && p.endsWith("`"))
-                        return <code key={j} className="ch-inline-code">{p.slice(1,-1)}</code>;
-                      if (p.startsWith("**") && p.endsWith("**"))
-                        return <strong key={j}>{p.slice(2,-2)}</strong>;
-                      return p;
-                    })}
-                  </p>
-                );
+                return <p key={i} className="ch-p">{renderInline(line)}</p>;
               })}
             </div>
           </div>

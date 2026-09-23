@@ -4,6 +4,7 @@ import { requireTeacherOwnsClass } from "@/lib/classes";
 import {
   QUANT_FOUNDATIONS_TEMPLATE,
   QUANT_FOUNDATIONS_TEMPLATE_ID,
+  MAX_SKIP_WEEKS,
   buildCohortSchedule,
 } from "@/lib/cohorts/template";
 
@@ -34,15 +35,29 @@ export async function POST(
   const body = (await req.json().catch(() => ({}))) as {
     startsOn?: unknown;
     timezone?: unknown;
+    skipWeeks?: unknown;
   };
   const startsOn = typeof body.startsOn === "string" ? body.startsOn : "";
   const timezone = typeof body.timezone === "string" ? body.timezone.trim() : "";
+  const skipWeeks = body.skipWeeks ?? [];
+  if (!Array.isArray(skipWeeks) || !skipWeeks.every((d): d is string => typeof d === "string")) {
+    return NextResponse.json({ error: "Break weeks must be a list of dates" }, { status: 400 });
+  }
 
+  // Check the start date alone first so the error names the right field.
   let schedule;
   try {
     schedule = buildCohortSchedule(startsOn);
   } catch {
     return NextResponse.json({ error: "Enter a valid start date" }, { status: 400 });
+  }
+  try {
+    schedule = buildCohortSchedule(startsOn, skipWeeks);
+  } catch {
+    return NextResponse.json(
+      { error: `Break weeks must be meeting weeks after week 1 (at most ${MAX_SKIP_WEEKS})` },
+      { status: 400 },
+    );
   }
 
   if (!timezone || !isValidTimezone(timezone)) {
@@ -61,6 +76,9 @@ export async function POST(
     p_starts_on: startsOn,
     p_timezone: timezone,
     p_schedule: rpcSchedule,
+    // Only sent when used, so launches without breaks keep working against
+    // the pre-0017 function signature.
+    ...(skipWeeks.length > 0 ? { p_skip_weeks: skipWeeks } : {}),
   });
 
   if (error) {
@@ -74,6 +92,7 @@ export async function POST(
       templateName: QUANT_FOUNDATIONS_TEMPLATE.name,
       startsOn,
       timezone,
+      skipWeeks,
       schedule,
     },
   });

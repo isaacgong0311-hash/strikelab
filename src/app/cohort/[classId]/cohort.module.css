@@ -1,0 +1,200 @@
+/* Student cohort home: calm, one obvious next step. Server-rendered and
+   fully usable without JavaScript; the only motion is hover feedback. */
+
+.shell {
+  width: min(100%, 46rem);
+  margin: 0 auto;
+  padding: clamp(1.25rem, 4vw, 2.5rem) 16px clamp(3rem, 8vw, 5rem);
+  display: flex;
+  flex-direction: column;
+  gap: clamp(1.25rem, 3vw, 1.75rem);
+  color: var(--sl-text);
+}
+
+.kicker {
+  margin: 0;
+  color: var(--sl-brand);
+  font: 700 0.75rem/1.2 var(--sl-font-body);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.title {
+  margin: 0.25rem 0 0;
+  font: 800 clamp(1.75rem, 5vw, 2.5rem) / var(--sl-leading-tight) var(--sl-font-display);
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+}
+
+.muted { margin: 0; color: var(--sl-text-muted); line-height: var(--sl-leading-body); }
+
+.header { display: flex; flex-direction: column; gap: 0.5rem; }
+.status { margin: 0; color: var(--sl-text-muted); font-weight: 600; }
+
+.progress { display: flex; align-items: center; gap: 0.75rem; margin-top: 0.25rem; }
+.progressTrack {
+  flex: 1;
+  height: 10px;
+  overflow: hidden;
+  border-radius: var(--sl-radius-pill);
+  background: var(--sl-canvas-subtle);
+  box-shadow: inset 0 1px 2px rgb(15 23 18 / 0.08);
+}
+.progressFill {
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, #1f9d55, var(--sl-brand));
+}
+.progressCount { color: var(--sl-text-subtle); font-weight: 700; font-size: 0.8125rem; font-variant-numeric: tabular-nums; }
+
+/* ── Next action ─────────────────────────────────────────────── */
+.next {
+  position: relative;
+  overflow: hidden;
+  padding: clamp(1.25rem, 4vw, 1.75rem);
+  border: 1px solid color-mix(in srgb, var(--sl-brand) 28%, var(--sl-border));
+  border-radius: var(--sl-radius-xl);
+  background:
+    radial-gradient(120% 140% at 100% 0%, color-mix(in srgb, var(--sl-brand) 14%, transparent), transparent 55%),
+    var(--sl-surface);
+  box-shadow: var(--sl-shadow-1);
+}
+.next[data-overdue] {
+  border-color: color-mix(in srgb, var(--sl-warning) 40%, var(--sl-border));
+  background:
+    radial-gradient(120% 140% at 100% 0%, color-mix(in srgb, var(--sl-warning) 12%, transparent), transparent 55%),
+    var(--sl-surface);
+}
+.nextEyebrow {
+  margin: 0;
+  color: var(--sl-brand-strong);
+  font-weight: 800;
+  font-size: 0.8125rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.next[data-overdue] .nextEyebrow { color: var(--sl-warning); }
+.nextTitle {
+  margin: 0.375rem 0 0.25rem;
+  font: 800 clamp(1.375rem, 4vw, 1.75rem) / 1.15 var(--sl-font-display);
+  letter-spacing: -0.015em;
+}
+.nextMeta { margin: 0 0 1.125rem; color: var(--sl-text-muted); }
+
+.primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 48px;
+  padding: 0 1.5rem;
+  border-radius: var(--sl-radius-md);
+  background: var(--sl-brand);
+  box-shadow: 0 4px 0 var(--sl-brand-strong);
+  color: #fff;
+  font-weight: 800;
+  text-decoration: none;
+  transition: transform var(--sl-motion-fast) var(--sl-ease), box-shadow var(--sl-motion-fast) var(--sl-ease);
+}
+.primary:hover { transform: translateY(-1px); box-shadow: 0 5px 0 var(--sl-brand-strong); }
+.primary:active { transform: translateY(3px); box-shadow: 0 1px 0 var(--sl-brand-strong); }
+.primary:focus-visible { outline: 3px solid var(--sl-focus); outline-offset: 3px; }
+
+/* ── This week ───────────────────────────────────────────────── */
+.week {
+  padding: clamp(1rem, 3vw, 1.25rem);
+  border: 1px solid var(--sl-border);
+  border-radius: var(--sl-radius-lg);
+  background: var(--sl-surface);
+}
+.weekHead { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 0.25rem 1rem; margin-bottom: 0.75rem; }
+.weekTitle { margin: 0; font: 800 1.125rem/1.3 var(--sl-font-display); }
+.weekDates { color: var(--sl-text-subtle); font-size: 0.875rem; font-weight: 600; }
+
+.lessons { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 0.5rem; }
+.lesson { display: flex; align-items: center; gap: 0.75rem; }
+.check {
+  flex: 0 0 auto;
+  width: 28px;
+  height: 28px;
+  display: grid;
+  place-items: center;
+  border: 2px solid var(--sl-border-strong);
+  border-radius: 50%;
+  color: #fff;
+  font-weight: 900;
+  font-size: 0.875rem;
+}
+.lesson[data-done] .check { border-color: var(--sl-brand); background: var(--sl-brand); }
+
+.lessonLink {
+  flex: 1;
+  min-width: 0;
+  min-height: var(--sl-tap);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.5rem 0.875rem;
+  border: 1px solid var(--sl-border);
+  border-radius: var(--sl-radius-md);
+  background: var(--sl-surface-raised);
+  color: inherit;
+  text-decoration: none;
+  transition: border-color var(--sl-motion-fast), background var(--sl-motion-fast);
+}
+.lessonLink:hover { border-color: var(--sl-brand); background: var(--sl-brand-soft); }
+.lessonLink:focus-visible { outline: 3px solid var(--sl-focus); outline-offset: 2px; }
+.lessonTitle { font-weight: 700; overflow-wrap: anywhere; }
+.lessonMeta { flex: 0 0 auto; color: var(--sl-text-subtle); font-size: 0.8125rem; font-weight: 600; }
+.lesson[data-done] .lessonTitle { color: var(--sl-text-muted); }
+
+/* ── All weeks ───────────────────────────────────────────────── */
+.sectionTitle { margin: 0 0 0.75rem; font: 800 1rem/1.3 var(--sl-font-display); }
+.weekList { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 0.5rem; }
+.weekItem {
+  border: 1px solid var(--sl-border);
+  border-radius: var(--sl-radius-md);
+  background: var(--sl-surface);
+}
+.weekItem[data-current] { border-color: var(--sl-brand); box-shadow: 0 0 0 1px var(--sl-brand); }
+.weekItem details > .lessons { padding: 0 0.875rem 0.875rem; }
+.weekSummary {
+  min-height: var(--sl-tap);
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.625rem 0.875rem;
+  cursor: pointer;
+  list-style: none;
+}
+.weekSummary::-webkit-details-marker { display: none; }
+.weekSummary::after {
+  content: "";
+  margin-left: auto;
+  width: 8px;
+  height: 8px;
+  border-right: 2px solid var(--sl-text-subtle);
+  border-bottom: 2px solid var(--sl-text-subtle);
+  transform: rotate(45deg);
+  transition: transform var(--sl-motion-fast);
+}
+details[open] > .weekSummary::after { transform: rotate(-135deg); }
+.weekSummary:focus-visible { outline: 3px solid var(--sl-focus); outline-offset: -3px; border-radius: var(--sl-radius-md); }
+.weekNumber {
+  flex: 0 0 auto;
+  width: 30px;
+  height: 30px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--sl-canvas-subtle);
+  color: var(--sl-text-muted);
+  font-weight: 800;
+  font-size: 0.875rem;
+}
+.weekNumber[data-done] { background: var(--sl-brand); color: #fff; }
+.weekSummaryText { display: flex; flex-direction: column; min-width: 0; }
+.weekSummaryText small { color: var(--sl-text-subtle); font-size: 0.8125rem; }
+
+.footerNote { margin: 0; color: var(--sl-text-muted); font-size: 0.9375rem; }
+.footerNote a { color: var(--sl-brand-strong); font-weight: 700; }

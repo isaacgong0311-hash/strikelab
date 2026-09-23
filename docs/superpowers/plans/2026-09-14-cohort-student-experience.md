@@ -2,6 +2,8 @@
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
+> **Update 2026-09-22:** Sequencing and migration numbers now follow `docs/superpowers/plans/2026-09-22-master-plan.md` (Workstream A, §12). Task 1's write path changes: `useProgress` upserts `progress` straight from the browser, so completions are recorded by a Postgres trigger on `progress`, not in `POST /api/progress`.
+
 **Goal:** Make cohort metrics real instead of aspirational. Right now `progress.completed` is one aggregate array with no timestamps — activation, week-N-active, and retention are not measurable at all (see `docs/gtm/metric-glossary.md`). This plan adds normalized completion records, a student cohort home, a private-by-default capstone, and a server-derived instructor scorecard, on top of the cohort-launch foundation already shipped (`docs/superpowers/plans/2026-09-13-cohort-launch-foundation.md`).
 
 **Precondition:** the cohort-launch-foundation plan's five tasks (schedule template, `launch_cohort` RPC, launch route, teacher launch panel) are implemented and committed. Do not start Task 1 below on top of uncommitted launch-flow work.
@@ -15,7 +17,7 @@
 ### Task 1: Normalized lesson-completion timestamps
 
 **Files:**
-- Create: `supabase/migrations/0013_lesson_completions.sql`
+- Create: `supabase/migrations/0016_lesson_completions.sql`
 - Modify: `src/lib/progress/sync.ts`
 - Modify: `src/app/api/progress/route.ts`
 - Test: `src/lib/progress/sync.test.ts`
@@ -28,7 +30,7 @@
 ### Task 2: Synced exercise submissions
 
 **Files:**
-- Create: `supabase/migrations/0014_lesson_submissions.sql`
+- Create: `supabase/migrations/0018_lesson_submissions.sql`
 - Create: `src/lib/submissions/sync.ts`
 - Create: `src/app/api/submissions/[lessonId]/route.ts`
 - Test: `src/lib/submissions/sync.test.ts`, `src/app/api/submissions/[lessonId]/route.test.ts`
@@ -71,7 +73,7 @@
 ### Task 5: Private-by-default capstone
 
 **Files:**
-- Create: `supabase/migrations/0015_capstone_submissions.sql`
+- Create: `supabase/migrations/0019_capstone_submissions.sql`
 - Create: `src/app/api/capstone/route.ts`
 - Create: `src/app/capstone/[token]/page.tsx` (unlisted share view)
 - Test: `src/app/api/capstone/route.test.ts`

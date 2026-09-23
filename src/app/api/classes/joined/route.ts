@@ -13,7 +13,7 @@ export async function GET() {
 
   const { data, error } = await auth.supabase
     .from("class_members")
-    .select("classes(id, name)")
+    .select("classes(id, name, template_id, starts_on)")
     .eq("student_id", auth.userId);
 
   if (error) {
@@ -21,9 +21,12 @@ export async function GET() {
     return NextResponse.json({ error: "Failed to load classes" }, { status: 500 });
   }
 
+  type JoinedRow = { id: string; name: string; template_id: string | null; starts_on: string | null };
   const classes = (data ?? [])
-    .map((row) => row.classes as unknown as { id: string; name: string } | null)
-    .filter((c): c is { id: string; name: string } => Boolean(c));
+    .map((row) => row.classes as unknown as JoinedRow | null)
+    .filter((c): c is JoinedRow => Boolean(c))
+    // isCohort: launched cohorts get a "Your cohort" link to /cohort/[id].
+    .map((c) => ({ id: c.id, name: c.name, isCohort: Boolean(c.template_id && c.starts_on) }));
 
   return NextResponse.json({ classes });
 }

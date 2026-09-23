@@ -33,6 +33,8 @@ describe("session content", () => {
           if (step.kind === "explain") {
             for (const paragraph of step.body) expect(wordCount(paragraph)).toBeLessThanOrEqual(50);
           } else if (step.kind === "mcq") {
+            // Only explain bodies render **bold**; elsewhere it shows literally.
+            for (const text of [step.question, step.explanation, ...step.options]) expect(text).not.toContain("**");
             expect(step.options.length).toBeGreaterThanOrEqual(2);
             expect(step.options.length).toBeLessThanOrEqual(4);
             expect(step.correct).toBeGreaterThanOrEqual(0);
@@ -40,6 +42,7 @@ describe("session content", () => {
             expect(new Set(step.options).size).toBe(step.options.length);
             expect(step.explanation.length).toBeGreaterThan(20);
           } else {
+            for (const text of [step.question, step.explanation]) expect(text).not.toContain("**");
             expect(Number.isFinite(step.answer)).toBe(true);
             expect(step.explanation.length).toBeGreaterThan(10);
           }
@@ -49,7 +52,7 @@ describe("session content", () => {
   }
 });
 
-describe("inv-1 worked answers", () => {
+describe("worked answers", () => {
   const byId = new Map(SESSIONS.flatMap((s) => s.steps).map((s) => [s.id, s]));
   const answer = (id: string) => {
     const step = byId.get(id);
@@ -61,6 +64,8 @@ describe("inv-1 worked answers", () => {
     expect(answer("inv-1.1.percent")).toBeCloseTo((10_000 / 2_000_000) * 100);
     expect(answer("inv-1.3.pe-calc")).toBeCloseTo(150 / 6);
     expect(answer("inv-1.3.market-cap-calc")).toBeCloseTo((40 * 500_000_000) / 1e9);
+    expect(answer("inv-2.1.spread-calc")).toBeCloseTo(5.25 - 5.0);
+    expect(answer("inv-2.2.spread-cost")).toBeCloseTo((100 * 0.5) / 2);
   });
 });
 
