@@ -1,9 +1,10 @@
 import type { Session } from "./types";
 import { INV1_SESSIONS } from "./content/inv1";
 import { INV2_SESSIONS } from "./content/inv2";
+import { INV5_SESSIONS } from "./content/inv5";
 
 /** Lessons converted to bite-sized sessions so far, in pilot-schedule order. */
-export const SESSIONS: Session[] = [...INV1_SESSIONS, ...INV2_SESSIONS];
+export const SESSIONS: Session[] = [...INV1_SESSIONS, ...INV2_SESSIONS, ...INV5_SESSIONS];
 
 export function getSession(id: string): Session | undefined {
   return SESSIONS.find((s) => s.id === id);

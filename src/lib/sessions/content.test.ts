@@ -66,6 +66,9 @@ describe("worked answers", () => {
     expect(answer("inv-1.3.market-cap-calc")).toBeCloseTo((40 * 500_000_000) / 1e9);
     expect(answer("inv-2.1.spread-calc")).toBeCloseTo(5.25 - 5.0);
     expect(answer("inv-2.2.spread-cost")).toBeCloseTo((100 * 0.5) / 2);
+    expect(answer("inv-5.1.annualize-calc")).toBeCloseTo(1 * Math.sqrt(252), 1);
+    expect(answer("inv-5.2.portfolio-vol")).toBeCloseTo(Math.sqrt(0.25 * 0.04 + 0.25 * 0.04) * 100, 1);
+    expect(answer("inv-5.3.sharpe-calc")).toBeCloseTo((12 - 5) / 14);
   });
 });
 
