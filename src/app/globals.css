@@ -2968,6 +2968,12 @@ h1, h2, h3, h4 {
 .cohort-launch-form small { font-size: 10px; line-height: 1.45; color: var(--ink-3); }
 .cohort-launch-error { color: var(--coral) !important; font-family: var(--font-mono); font-size: 11px !important; }
 .cohort-launch-active { grid-template-columns: 1fr auto; align-items: center; }
+.code-sync-status {
+  margin: 0; padding: 6px 20px; border-top: 1px solid var(--border);
+  background: var(--card); color: var(--ink-3); font-size: 12px;
+}
+.code-sync-status[data-state="saved"] { color: var(--grass); }
+.code-sync-status[data-state="retrying"] { color: var(--sl-warning, #8a470b); font-weight: 600; }
 .class-invite { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-top: 10px; }
 .class-invite-label { font-family: var(--font-mono); font-size: 10px; font-weight: 700; letter-spacing: .05em; text-transform: uppercase; color: var(--ink-3); }
 .class-invite-url {
