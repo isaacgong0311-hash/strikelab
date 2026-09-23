@@ -75,6 +75,8 @@ export interface OwnedClass {
   startsOn: string | null;
   timezone: string | null;
   launchedAt: string | null;
+  /** Holiday weeks the cohort skips (YYYY-MM-DD block starts). */
+  skipWeeks: string[];
 }
 
 export type TeacherOwnsClassResult =
@@ -95,7 +97,9 @@ export async function requireTeacherOwnsClass(
 ): Promise<TeacherOwnsClassResult> {
   const { data: klass, error } = await supabase
     .from("classes")
-    .select("id, name, template_id, starts_on, timezone, launched_at")
+    // "*" rather than a column list so a deploy that lands before migration
+    // 0017 (skip_weeks) still loads the class instead of 404ing it.
+    .select("*")
     .eq("id", classId)
     .eq("teacher_id", teacherId)
     .maybeSingle();
@@ -109,6 +113,7 @@ export async function requireTeacherOwnsClass(
       startsOn: (klass.starts_on as string | null) ?? null,
       timezone: (klass.timezone as string | null) ?? null,
       launchedAt: (klass.launched_at as string | null) ?? null,
+      skipWeeks: Array.isArray(klass.skip_weeks) ? (klass.skip_weeks as string[]) : [],
     },
   };
 }

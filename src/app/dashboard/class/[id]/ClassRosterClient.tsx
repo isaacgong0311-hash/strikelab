@@ -24,6 +24,7 @@ interface ClassSummary {
   startsOn: string | null;
   timezone: string | null;
   launchedAt: string | null;
+  skipWeeks?: string[];
 }
 
 function SignInPrompt() {

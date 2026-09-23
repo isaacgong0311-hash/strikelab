@@ -37,6 +37,8 @@ describe("POST /api/classes/[id]/launch", () => {
   it.each([
     [{ startsOn: "2026-02-30", timezone: "America/Chicago" }, "valid start date"],
     [{ startsOn: "2026-09-14", timezone: "Not/A_Zone" }, "valid timezone"],
+    [{ startsOn: "2026-09-14", timezone: "America/Chicago", skipWeeks: ["2026-09-15"] }, "Break weeks"],
+    [{ startsOn: "2026-09-14", timezone: "America/Chicago", skipWeeks: "2026-09-21" }, "Break weeks"],
   ])("rejects invalid launch metadata", async (body, message) => {
     const supabase = { rpc: vi.fn() };
     requireUserMock.mockResolvedValue({ userId: "teacher-1", supabase });
@@ -75,6 +77,27 @@ describe("POST /api/classes/[id]/launch", () => {
       p_timezone: "America/Chicago",
       p_schedule: expect.arrayContaining([
         { lesson_id: "inv-1", week_number: 1, position: 1, due_on: "2026-09-20" },
+      ]),
+    }));
+  });
+
+  it("passes break weeks through and shifts later due dates", async () => {
+    const rpc = vi.fn().mockResolvedValue({ error: null });
+    requireUserMock.mockResolvedValue({ userId: "teacher-1", supabase: { rpc } });
+    requireTeacherOwnsClassMock.mockResolvedValue({ class: { id: "class-1", name: "Quant Club" } });
+    const { POST } = await import("./route");
+
+    const response = await POST(
+      request({ startsOn: "2026-10-26", timezone: "America/Chicago", skipWeeks: ["2026-11-23"] }),
+      context,
+    );
+    const json = await response.json();
+    expect(response.status).toBe(200);
+    expect(json.cohort.skipWeeks).toEqual(["2026-11-23"]);
+    expect(rpc).toHaveBeenCalledWith("launch_cohort", expect.objectContaining({
+      p_skip_weeks: ["2026-11-23"],
+      p_schedule: expect.arrayContaining([
+        { lesson_id: "q4", week_number: 6, position: 1, due_on: "2026-12-13" },
       ]),
     }));
   });
