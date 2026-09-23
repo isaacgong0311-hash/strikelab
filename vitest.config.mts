@@ -13,5 +13,6 @@ export default defineConfig({
     // *.db.test.ts boot an in-process Postgres (PGlite) and replay every
     // migration, which can pass 5s when the whole suite runs in parallel.
     testTimeout: 30_000,
+    hookTimeout: 30_000,
   },
 });
