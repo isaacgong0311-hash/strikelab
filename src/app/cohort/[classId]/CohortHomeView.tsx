@@ -46,7 +46,22 @@ function LessonRow({ lesson }: { lesson: CohortWeekItem["lessons"][number] }) {
 }
 
 /** The cohort home for a launched cohort. Pure markup from the view, no data access. */
-export default function CohortHomeView({ className, view }: { className: string; view: StudentCohortView }) {
+export interface CohortCapstoneSummary {
+  status: "none" | "draft" | "submitted";
+}
+
+export default function CohortHomeView({
+  classId,
+  className,
+  view,
+  capstone,
+}: {
+  classId: string;
+  className: string;
+  view: StudentCohortView;
+  /** Null when capstones aren't available (before migration 0019). */
+  capstone: CohortCapstoneSummary | null;
+}) {
   const focus = view.weeks[view.focusWeek - 1];
   const action = view.nextAction;
   const pct = view.progress.total ? Math.round((view.progress.done / view.progress.total) * 100) : 0;
@@ -97,6 +112,26 @@ export default function CohortHomeView({ className, view }: { className: string;
           </>
         )}
       </section>
+
+      {capstone && (
+        <section className={styles.capstone} aria-labelledby="capstone-title">
+          <div>
+            <h2 id="capstone-title" className={styles.weekTitle}>Your capstone</h2>
+            <p className={styles.muted}>
+              {capstone.status === "submitted"
+                ? "Submitted. You can keep improving it until the program ends."
+                : capstone.status === "draft"
+                  ? "Draft saved. Finish and submit it by the end of week 6."
+                  : view.focusWeek >= 5
+                    ? "Time to start: pick a prompt and build the piece of work you'll show."
+                    : "Your week-6 project. You can look at the prompts now."}
+            </p>
+          </div>
+          <Link href={`/cohort/${classId}/capstone`} className={styles.secondaryLink}>
+            {capstone.status === "none" ? "Open capstone" : capstone.status === "draft" ? "Continue capstone" : "View capstone"}
+          </Link>
+        </section>
+      )}
 
       <section className={styles.week} aria-labelledby="focus-week-title">
         <div className={styles.weekHead}>

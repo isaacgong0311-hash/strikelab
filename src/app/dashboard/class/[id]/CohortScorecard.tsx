@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { downloadCsv, toCsv } from "@/lib/csv";
 import type { CohortScorecard as Scorecard } from "@/lib/cohorts/loadScorecard";
 import styles from "./scorecard.module.css";
@@ -24,7 +25,15 @@ function Tile({ label, value, detail }: { label: string; value: string; detail?:
  * Pilot outcomes for the teacher. Every number arrives computed by the
  * server (src/lib/cohorts/metrics.ts); this only formats them.
  */
-export default function CohortScorecard({ scorecard, className }: { scorecard: Scorecard; className: string }) {
+export default function CohortScorecard({
+  scorecard,
+  className,
+  classId,
+}: {
+  scorecard: Scorecard;
+  className: string;
+  classId: string;
+}) {
   if (!scorecard.measurable) {
     return (
       <section className={styles.card} aria-labelledby="scorecard-title">
@@ -89,6 +98,13 @@ export default function CohortScorecard({ scorecard, className }: { scorecard: S
                 : undefined
           }
         />
+        {metrics.capstones && (
+          <Tile
+            label="Capstones"
+            value={metrics.capstones.pct === null ? "—" : `${metrics.capstones.pct}%`}
+            detail={`${metrics.capstones.count} of ${metrics.capstones.of} activated submitted`}
+          />
+        )}
       </dl>
 
       <div className={styles.weeks} role="list" aria-label="Students active each week">
@@ -110,6 +126,28 @@ export default function CohortScorecard({ scorecard, className }: { scorecard: S
           );
         })}
       </div>
+
+      {metrics.students.some((s) => s.capstone) && (
+        <div className={styles.help}>
+          <h3 className={styles.helpTitle}>Capstones</h3>
+          <p className={styles.note}>Opening one is recorded, and the student can see when you did.</p>
+          <ul className={styles.capstoneList}>
+            {metrics.students
+              .filter((s) => s.capstone)
+              .map((s) => (
+                <li key={s.studentId}>
+                  <strong>{s.displayName}</strong>
+                  <span className={styles.muted}>
+                    {s.capstone!.status === "submitted"
+                      ? `Submitted${s.capstone!.submittedOn ? ` ${shortDate(s.capstone!.submittedOn)}` : ""}`
+                      : "Draft"}
+                  </span>
+                  <Link href={`/dashboard/class/${classId}/capstone/${s.capstone!.id}`}>Open</Link>
+                </li>
+              ))}
+          </ul>
+        </div>
+      )}
 
       <div className={styles.help}>
         <h3 className={styles.helpTitle}>Students needing help</h3>

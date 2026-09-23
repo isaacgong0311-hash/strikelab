@@ -44,5 +44,16 @@ export default async function CohortHomePage({ params }: { params: Promise<{ cla
     );
   }
 
-  return <CohortHomeView className={result.className} view={result.view} />;
+  // Capstone status for the card; null when capstones aren't set up yet (0019).
+  const { data: capstoneRow, error: capstoneError } = await supabase
+    .from("capstone_submissions")
+    .select("status")
+    .eq("class_id", classId)
+    .eq("user_id", auth.user.id)
+    .maybeSingle();
+  const capstone = capstoneError
+    ? null
+    : { status: (capstoneRow?.status === "submitted" ? "submitted" : capstoneRow ? "draft" : "none") as "none" | "draft" | "submitted" };
+
+  return <CohortHomeView classId={classId} className={result.className} view={result.view} capstone={capstone} />;
 }
