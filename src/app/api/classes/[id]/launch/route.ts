@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { requireUser } from "@/lib/supabase/requireUser";
+import { rateLimit } from "@/lib/rateLimit";
 import { requireTeacherOwnsClass } from "@/lib/classes";
 import {
   QUANT_FOUNDATIONS_TEMPLATE,
@@ -25,6 +26,9 @@ export async function POST(
   if ("error" in auth) {
     return NextResponse.json({ error: auth.error }, { status: auth.status });
   }
+
+  const limited = await rateLimit(auth.supabase, "class-launch");
+  if (limited) return limited;
 
   const { id } = await params;
   const owned = await requireTeacherOwnsClass(auth.supabase, auth.userId, id);

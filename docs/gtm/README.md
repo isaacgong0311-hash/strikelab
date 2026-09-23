@@ -13,6 +13,7 @@ The instruments called for in `docs/superpowers/specs/2026-09-13-strikelab-yc-co
 | [facilitator-guide.md](facilitator-guide.md) | Week-by-week script for the leader running the pilot | Rarely — revise from pilot observations |
 | [pilot-agreement-checklist.md](pilot-agreement-checklist.md) | What a real pilot agreement needs to cover (not a legal document) | Rarely |
 | [production-readiness-checklist.md](production-readiness-checklist.md) | Manual production config verification — Supabase, Stripe, Sentry, email | Before the first real pilot, then after any infra change |
+| [`scripts/metrics/`](../../scripts/metrics) | SQL to paste into the Supabase SQL editor: `weekly-scorecard.sql` (per-cohort activation/retention, same definitions as the in-app scorecard and tested against it), `baseline.sql`, `check-migrations.sql` | Weekly (scorecard); once now (baseline); after every migration (check) |
 | [baseline-template.md](baseline-template.md) | Fill-in template for the honest Phase 0 baseline | Once now, once again at Phase 4 |
 
 The example rows in `crm.csv` and `interview-log.csv` are placeholders (marked `EXAMPLE`) — delete them once real contacts replace them.

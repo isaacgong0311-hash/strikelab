@@ -64,7 +64,7 @@ export const FAQ_GROUPS: FAQGroup[] = [
       },
       {
         q: "Is my code saved?",
-        a: "Your code edits persist via localStorage on your device. Lesson completions, XP, and streaks also sync to your account automatically if you sign in — free for everyone, not a Pro feature — so your progress carries over to a new device even though the code itself stays local.",
+        a: "Your code edits save on your device as you type. If you sign in, your code, lesson completions, XP, and streaks also sync to your account automatically (free for everyone, not a Pro feature), so you can start an exercise on a school computer and finish it at home.",
       },
       {
         q: "Is the pricing engine open source?",

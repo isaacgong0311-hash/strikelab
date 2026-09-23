@@ -7,6 +7,7 @@ import { fetchSubmission, readLocalCode } from "@/lib/submissions/sync";
 import { getLessonById } from "@/lib/tracks";
 import { CAPSTONE_LIMITS, type CapstoneFields, type CapstonePrompt } from "@/lib/capstone/prompts";
 import type { Capstone } from "@/lib/capstone/rows";
+import { useOrigin } from "@/lib/useOrigin";
 import styles from "./capstone.module.css";
 
 type SaveState = "idle" | "saving" | "saved" | "error";
@@ -65,6 +66,7 @@ export default function CapstoneEditor({
   openedByTeacher: string[];
 }) {
   const { user } = useAuth();
+  const origin = useOrigin();
   const [fields, setFields] = useState<CapstoneFields>(() => ({
     promptId: initial?.promptId ?? "option-pricing",
     title: initial?.title ?? "",
@@ -150,7 +152,7 @@ export default function CapstoneEditor({
     }
   }
 
-  const shareUrl = capstone?.shareToken && typeof window !== "undefined" ? `${window.location.origin}/capstone/${capstone.shareToken}` : null;
+  const shareUrl = capstone?.shareToken ? `${origin}/capstone/${capstone.shareToken}` : null;
   const lessonTitle = prompt.lessonId ? getLessonById(prompt.lessonId)?.title : null;
 
   return (

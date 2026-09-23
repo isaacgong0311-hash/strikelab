@@ -6,11 +6,15 @@
  */
 import { NextRequest, NextResponse } from "next/server";
 import { requireUser } from "@/lib/supabase/requireUser";
+import { rateLimit } from "@/lib/rateLimit";
 
 export async function POST(req: NextRequest, { params }: { params: Promise<{ classId: string }> }) {
   const auth = await requireUser();
   if ("error" in auth) return NextResponse.json({ error: auth.error }, { status: auth.status });
   const { classId } = await params;
+
+  const limited = await rateLimit(auth.supabase, "capstone-share");
+  if (limited) return limited;
 
   const body = (await req.json().catch(() => ({}))) as { enabled?: unknown };
   if (typeof body.enabled !== "boolean") return NextResponse.json({ error: "enabled must be true or false" }, { status: 400 });

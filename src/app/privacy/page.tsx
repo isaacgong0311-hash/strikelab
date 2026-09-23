@@ -35,9 +35,19 @@ const SECTIONS: { title: string; body: React.ReactNode }[] = [
         <p className="mb-3">
           <strong>If you create an account</strong> (email + password, or
           Google sign-in): your email, an optional display name, and the same
-          progress data above — synced via Supabase so it follows you to a new
-          device. Signing in also unlocks the paper-trading sandbox, which
-          stores your simulated cash balance and trade history.
+          progress data above, your exercise code and short-session results
+          — synced via Supabase so they follow you to a new device. Signing
+          in also unlocks the paper-trading sandbox, which stores your
+          simulated cash balance and trade history.
+        </p>
+        <p className="mb-3">
+          <strong>If you join a class:</strong> your teacher sees your display
+          name, which assigned lessons you&rsquo;ve finished and when, and your
+          exercise code. If your class runs the six-week program, your
+          capstone is private to you; your teacher can open it, and each time
+          they do it&rsquo;s shown to you. A capstone is only public if you
+          create a share link, which shows the work without your name and
+          stops working the moment you turn it off.
         </p>
         <p>
           <strong>If you subscribe to Pro or a School plan:</strong> Stripe
@@ -105,12 +115,13 @@ const SECTIONS: { title: string; body: React.ReactNode }[] = [
     title: "Your data, your call",
     body: (
       <>
-        Email{" "}
+        Delete your account and everything in it yourself from Settings, at
+        any time. Or email{" "}
         <a href="mailto:hello@strikelab.app" className="underline underline-offset-2" style={{ color: "var(--grass)" }}>
           hello@strikelab.app
         </a>{" "}
-        to see what we have on you or to have your account and all associated
-        data deleted. We&rsquo;ll handle it within a few days.
+        to see what we have on you or to ask us to delete it. We&rsquo;ll
+        handle it within a few days.
       </>
     ),
   },

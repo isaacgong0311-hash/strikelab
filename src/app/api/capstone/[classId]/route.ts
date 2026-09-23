@@ -8,6 +8,7 @@
  */
 import { NextRequest, NextResponse } from "next/server";
 import { requireUser } from "@/lib/supabase/requireUser";
+import { rateLimit } from "@/lib/rateLimit";
 import { validateCapstone } from "@/lib/capstone/prompts";
 import { CAPSTONE_COLUMNS, rowToCapstone } from "@/lib/capstone/rows";
 
@@ -44,6 +45,9 @@ export async function PUT(req: NextRequest, { params }: Ctx) {
   const auth = await requireUser();
   if ("error" in auth) return NextResponse.json({ error: auth.error }, { status: auth.status });
   const { classId } = await params;
+
+  const limited = await rateLimit(auth.supabase, "capstone-save");
+  if (limited) return limited;
 
   const body = (await req.json().catch(() => null)) as Record<string, unknown> | null;
   const submit = body?.submit === true;

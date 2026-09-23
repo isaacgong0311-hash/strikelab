@@ -36,6 +36,10 @@ const ROADMAP = [
       { title: "Discord integration ✓", state: "done", desc: "Connect a webhook in Settings to auto-post lesson completions, track finishes, and achievements to a school club's channel." },
       { title: "Classroom rosters ✓", state: "done", desc: "Teachers create a class in Settings, share a join code, and see every student's track/lesson progress at a glance — free for every account." },
       { title: "Lesson assignments ✓", state: "done", desc: "Teachers assign specific lessons and see completion student by student, with CSV export for the full class." },
+      { title: "Cohort program tools ✓", state: "done", desc: "Launch the six-week Quant Foundations program with break weeks, invite links, a student cohort home with one clear next step, and a teacher scorecard with activation and retention." },
+      { title: "Bite-sized sessions ✓", state: "done", desc: "Week-1 lessons also run as short sessions: one idea per screen, instant feedback, missed questions come back." },
+      { title: "Code that follows you ✓", state: "done", desc: "Signed-in exercise code syncs across devices, so a school Chromebook and a home laptop stay in step." },
+      { title: "Private capstones ✓", state: "done", desc: "A week-6 project students can submit, keep private, or share with an unlisted link that hides their name and can be turned off." },
     ],
   },
   {

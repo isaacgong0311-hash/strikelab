@@ -35,14 +35,29 @@ export interface TestDb {
   as<T>(userId: string, fn: (tx: Transaction) => Promise<T>): Promise<T>;
 }
 
-export async function createTestDb(options: { upTo?: string } = {}): Promise<TestDb> {
+// Replaying every migration takes seconds; do it once per worker (per
+// `upTo`) and give each test its own clone of the migrated database.
+const templates = new Map<string, Promise<PGlite>>();
+
+async function migratedTemplate(upTo: string | undefined): Promise<PGlite> {
   const db = new PGlite();
   await db.exec(SUPABASE_STUBS);
   const files = readdirSync(MIGRATIONS_DIR).filter((f) => f.endsWith(".sql")).sort();
   for (const file of files) {
-    if (options.upTo && file > options.upTo) break;
+    if (upTo && file > upTo) break;
     await db.exec(readFileSync(join(MIGRATIONS_DIR, file), "utf8"));
   }
+  return db;
+}
+
+export async function createTestDb(options: { upTo?: string } = {}): Promise<TestDb> {
+  const key = options.upTo ?? "*";
+  let template = templates.get(key);
+  if (!template) {
+    template = migratedTemplate(options.upTo);
+    templates.set(key, template);
+  }
+  const db = (await (await template).clone()) as PGlite;
 
   return {
     db,
