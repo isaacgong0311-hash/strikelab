@@ -47,7 +47,7 @@
   border: 1px dashed var(--sl-border-strong);
   border-radius: var(--sl-radius-md);
 }
-.checklist ul { margin: 0; padding-left: 1.25rem; color: var(--sl-text-muted); line-height: 1.6; }
+.checklist ul { margin: 0; padding-left: 1.25rem; list-style: disc; color: var(--sl-text-muted); line-height: 1.6; }
 
 .field { display: flex; flex-direction: column; }
 .input {

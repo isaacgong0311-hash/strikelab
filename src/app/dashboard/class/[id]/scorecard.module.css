@@ -76,3 +76,21 @@
 @media (max-width: 640px) {
   .tiles { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
+
+/* ── Leader toolkit ──────────────────────────────────────────── */
+.toolkitGrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr)); gap: 0.5rem 1.5rem; }
+.body { margin: 0 0 0.75rem; color: var(--sl-text-muted); line-height: 1.55; }
+.bodyList { margin: 0 0 0.75rem; padding-left: 1.25rem; list-style: disc; color: var(--sl-text-muted); line-height: 1.55; }
+.copyBlock { border: 1px solid var(--sl-border); border-radius: var(--sl-radius-md); background: var(--sl-surface-raised); }
+.copyHead { display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; padding: 0.5rem 0.75rem; border-bottom: 1px solid var(--sl-border); }
+.copyText {
+  margin: 0;
+  padding: 0.75rem;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  font: 0.875rem/1.55 var(--sl-font-body);
+  color: var(--sl-text);
+  user-select: all;
+}
+ol.bodyList { list-style: decimal; }
+.bodyList li + li { margin-top: 0.25rem; }

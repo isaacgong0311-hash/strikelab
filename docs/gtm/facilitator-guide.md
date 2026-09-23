@@ -1,5 +1,7 @@
 # Quant Foundations Lab — Facilitator Guide
 
+> The class page shows this guide's current week (goal, meeting shape, prompts, watch-outs) with a ready-to-send message, from `src/lib/cohorts/facilitator.ts`. Keep the two in step.
+
 For the club leader or teacher running the pilot. No finance or coding background required — you're facilitating discussion and accountability, not teaching the material line by line. The platform teaches; you keep the room moving and keep students unstuck.
 
 **Format:** one 45–60 minute meeting per week, six weeks, in person or virtual. Independent work between meetings is optional but recommended (15–30 minutes).
@@ -86,7 +88,7 @@ You don't need to solve every student's stuck point yourself — "what have you 
 
 ## Week 6 — Capstone
 
-**Lesson:** *Portfolio Optimization* (`q4`) — used as this pilot's capstone activity until StrikeLab ships a dedicated capstone-submission feature.
+**Lesson:** *Portfolio Optimization* (`q4`), plus the capstone: students pick a prompt (price an option and defend the volatility, backtest a strategy honestly, or their own question) and submit from their cohort home. Submissions show on your class scorecard, and you can open each one. They stay private unless the student creates a share link.
 
 **Objective:** each student (or team) presents a model or strategy: what question they asked, what they built, what they found, and what they'd do with another week.
 
@@ -102,4 +104,4 @@ You don't need to solve every student's stuck point yourself — "what have you 
 
 - Run the end-of-pilot interview with the leader (see `interview-log.csv`) — reuse and payment willingness go here, not into the scorecard as a guess.
 - Interview at least five students.
-- Export the cohort roster as CSV for your own records.
+- Export the cohort CSV (activation, weekly activity, retention, capstones) from the class page for your own records.

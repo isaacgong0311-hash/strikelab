@@ -7,7 +7,9 @@ import AssignLessonsPanel from "./AssignLessonsPanel";
 import AssignmentsPanel, { type AssignmentWithCompletion } from "./AssignmentsPanel";
 import CohortLaunchPanel from "./CohortLaunchPanel";
 import { downloadCsv, toCsv } from "@/lib/csv";
+import { useOrigin } from "@/lib/useOrigin";
 import CohortScorecard from "./CohortScorecard";
+import LeaderToolkit from "./LeaderToolkit";
 import type { CohortScorecard as Scorecard } from "@/lib/cohorts/loadScorecard";
 
 interface RosterEntry {
@@ -34,7 +36,7 @@ interface ClassSummary {
 /** The link students open to join. Readable text first; copying is a bonus. */
 function InviteLink({ code }: { code: string }) {
   const [copied, setCopied] = useState(false);
-  const url = typeof window === "undefined" ? `/join/${code}` : `${window.location.origin}/join/${code}`;
+  const url = `${useOrigin()}/join/${code}`;
   return (
     <div className="class-invite">
       <span className="class-invite-label">Invite link</span>
@@ -202,6 +204,12 @@ export default function ClassRosterClient() {
       {state === "ready" && scorecard && (
         <div className="mb-6">
           <CohortScorecard scorecard={scorecard} className={className} classId={classId} />
+        </div>
+      )}
+
+      {state === "ready" && scorecard?.measurable && (
+        <div className="mb-6">
+          <LeaderToolkit classId={classId} metrics={scorecard.metrics} assignments={assignments} />
         </div>
       )}
 
