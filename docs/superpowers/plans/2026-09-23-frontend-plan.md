@@ -1,7 +1,7 @@
 # StrikeLab Frontend Plan: from "learning site" to "company a YC partner gets in 10 seconds"
 
 **Date:** 2026-09-23 (runway week 2)
-**Status:** Draft for founder review
+**Status:** Decisions made 2026-09-23 (founder delegated them; see `docs/gtm/decision-log.md`): headline A, `/clubs` buyer page with `/for-schools` redirected, text-only founder note, founder-written example capstones, Pro hidden until the five-pilot gate.
 **Parent plan:** `2026-09-22-master-plan.md`. This plan covers everything a visitor, leader, student or investor *sees*. Its tasks slot into the master calendar and never outrank pilot-critical work (Workstream A).
 **Related:** `docs/ui-system.md` (tokens, accessibility rules), `2026-09-16-duolingo-grade-product-plan.md` (in-lesson polish).
 

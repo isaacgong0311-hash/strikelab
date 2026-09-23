@@ -55,13 +55,21 @@ export default function CohortHomeView({
   className,
   view,
   capstone,
+  embedded = false,
+  capstoneHref,
 }: {
   classId: string;
   className: string;
   view: StudentCohortView;
   /** Null when capstones aren't available (before migration 0019). */
   capstone: CohortCapstoneSummary | null;
+  /** Rendered inside another page (demo, homepage): headings drop one level. */
+  embedded?: boolean;
+  /** Where the capstone card links; defaults to the cohort's capstone page. */
+  capstoneHref?: string;
 }) {
+  const H1 = embedded ? "h2" : "h1";
+  const H2 = embedded ? "h3" : "h2";
   const focus = view.weeks[view.focusWeek - 1];
   const action = view.nextAction;
   const pct = view.progress.total ? Math.round((view.progress.done / view.progress.total) * 100) : 0;
@@ -70,7 +78,7 @@ export default function CohortHomeView({
     <div className={styles.shell}>
       <header className={styles.header}>
         <p className={styles.kicker}>{className}</p>
-        <h1 className={styles.title}>{QUANT_FOUNDATIONS_TEMPLATE.name}</h1>
+        <H1 className={styles.title}>{QUANT_FOUNDATIONS_TEMPLATE.name}</H1>
         <p className={styles.status}>{statusLine(view)}</p>
         <div className={styles.progress}>
           <div
@@ -94,7 +102,7 @@ export default function CohortHomeView({
             <p className={styles.nextEyebrow} id="next-title">
               {action.overdue ? "Catch up" : action.week > view.focusWeek ? "Get ahead" : "Up next"}
             </p>
-            <h2 className={styles.nextTitle}>{action.title}</h2>
+            <H2 className={styles.nextTitle}>{action.title}</H2>
             <p className={styles.nextMeta}>
               Week {action.week}
               {dueLabel(action) ? ` · ${dueLabel(action)}` : ""}
@@ -106,7 +114,7 @@ export default function CohortHomeView({
         ) : (
           <>
             <p className={styles.nextEyebrow} id="next-title">All caught up</p>
-            <h2 className={styles.nextTitle}>Every assigned lesson is done</h2>
+            <H2 className={styles.nextTitle}>Every assigned lesson is done</H2>
             <p className={styles.nextMeta}>Nice work. Review a lesson or explore the rest of the curriculum.</p>
             <Link href="/lessons" className={styles.primary}>Explore lessons →</Link>
           </>
@@ -116,7 +124,7 @@ export default function CohortHomeView({
       {capstone && (
         <section className={styles.capstone} aria-labelledby="capstone-title">
           <div>
-            <h2 id="capstone-title" className={styles.weekTitle}>Your capstone</h2>
+            <H2 id="capstone-title" className={styles.weekTitle}>Your capstone</H2>
             <p className={styles.muted}>
               {capstone.status === "submitted"
                 ? "Submitted. You can keep improving it until the program ends."
@@ -127,7 +135,7 @@ export default function CohortHomeView({
                     : "Your week-6 project. You can look at the prompts now."}
             </p>
           </div>
-          <Link href={`/cohort/${classId}/capstone`} className={styles.secondaryLink}>
+          <Link href={capstoneHref ?? `/cohort/${classId}/capstone`} className={styles.secondaryLink}>
             {capstone.status === "none" ? "Open capstone" : capstone.status === "draft" ? "Continue capstone" : "View capstone"}
           </Link>
         </section>
@@ -135,9 +143,9 @@ export default function CohortHomeView({
 
       <section className={styles.week} aria-labelledby="focus-week-title">
         <div className={styles.weekHead}>
-          <h2 id="focus-week-title" className={styles.weekTitle}>
+          <H2 id="focus-week-title" className={styles.weekTitle}>
             Week {focus.week}: {focus.title}
-          </h2>
+          </H2>
           <span className={styles.weekDates}>Due {shortDate(focus.endsOn)}</span>
         </div>
         <ul className={styles.lessons}>
@@ -148,7 +156,7 @@ export default function CohortHomeView({
       </section>
 
       <section aria-labelledby="all-weeks-title" className={styles.allWeeks}>
-        <h2 id="all-weeks-title" className={styles.sectionTitle}>All six weeks</h2>
+        <H2 id="all-weeks-title" className={styles.sectionTitle}>All six weeks</H2>
         <ol className={styles.weekList}>
           {view.weeks.map((week) => (
             <li key={week.week} className={styles.weekItem} data-current={week.week === view.focusWeek || undefined}>

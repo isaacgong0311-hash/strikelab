@@ -29,10 +29,13 @@ export default function CohortScorecard({
   scorecard,
   className,
   classId,
+  capstoneHrefPrefix,
 }: {
   scorecard: Scorecard;
   className: string;
   classId: string;
+  /** Prefix for a capstone's "Open" link (id appended); the demo points at example capstones. */
+  capstoneHrefPrefix?: string;
 }) {
   if (!scorecard.measurable) {
     return (
@@ -142,7 +145,7 @@ export default function CohortScorecard({
                       ? `Submitted${s.capstone!.submittedOn ? ` ${shortDate(s.capstone!.submittedOn)}` : ""}`
                       : "Draft"}
                   </span>
-                  <Link href={`/dashboard/class/${classId}/capstone/${s.capstone!.id}`}>Open</Link>
+                  <Link href={`${capstoneHrefPrefix ?? `/dashboard/class/${classId}/capstone/`}${s.capstone!.id}`}>Open</Link>
                 </li>
               ))}
           </ul>
