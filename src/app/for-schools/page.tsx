@@ -34,7 +34,7 @@ const FAQS = [
   },
   {
     q: "Is a teacher admin dashboard or SSO available?",
-    a: "The teacher dashboard is live: create classes, share join codes, assign lessons, track each student's progress, and export the roster as CSV. Google Classroom SSO is not available yet.",
+    a: "The teacher dashboard is live: create classes, share an invite link, assign lessons or launch the six-week program, see a cohort scorecard (activation, weekly activity, week-4 retention, students who need help), review student capstones, and export everything as CSV. Google Classroom SSO is not available yet.",
   },
 ];
 
@@ -117,7 +117,7 @@ export default function ForSchoolsPage() {
         {[
           ["Create a class", "Set it up in Settings and share the join code or link. Students sign up free and land in your class."],
           ["Assign the work", "Pick individual lessons, or launch the six-week Quant Foundations program with scheduled weekly assignments."],
-          ["Track progress", "See who is active, what each student has finished, and export the roster to CSV for your gradebook."],
+          ["Track progress", "See who is active each week, who needs a nudge, and each student's capstone, and export it all to CSV for your gradebook."],
         ].map(([title, body], i) => (
           <li key={title} className="school-step">
             <span className="school-step-num" aria-hidden="true">{i + 1}</span>
