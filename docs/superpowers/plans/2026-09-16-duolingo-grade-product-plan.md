@@ -1,7 +1,7 @@
 # Duolingo-Grade Product Plan
 
 **Date:** 2026-09-16
-**Status:** Draft for founder review
+**Status:** Draft for founder review. **Re-sequenced 2026-09-22:** `2026-09-22-master-plan.md` Workstream B decides when each phase runs, and pilot-OS work (Workstream A) comes first.
 **Relates to:** `docs/superpowers/specs/2026-09-13-strikelab-yc-company-design.md` (YC strategy), `docs/ui-system.md`, `docs/ui-accessibility-audit.md`
 
 ## 1. What "like Duolingo" means here
