@@ -5,6 +5,86 @@ import { useRouter } from "next/navigation";
 import { useAuth } from "@/lib/auth/AuthProvider";
 import AccessibilityControls from "@/components/accessibility/AccessibilityControls";
 
+/**
+ * Self-serve account deletion. Two-step: open the panel, type DELETE. The
+ * server refuses (with a reason) while billing is active or when deleting a
+ * teacher would take students' class work with it.
+ */
+function DeleteAccount() {
+  const { signOut } = useAuth();
+  const router = useRouter();
+  const [open, setOpen] = useState(false);
+  const [confirm, setConfirm] = useState("");
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  async function remove(e: React.FormEvent) {
+    e.preventDefault();
+    setBusy(true);
+    setError(null);
+    try {
+      const res = await fetch("/api/account", {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ confirm }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data.error ?? "Couldn't delete your account");
+      try {
+        Object.keys(localStorage).filter((k) => k.startsWith("strikelab_") || k === "sl_user").forEach((k) => localStorage.removeItem(k));
+      } catch {
+        // Storage blocked: nothing stored to clear.
+      }
+      await signOut();
+      router.push("/?account=deleted");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Couldn't delete your account");
+      setBusy(false);
+    }
+  }
+
+  return (
+    <section className="db-panel" style={{ marginTop: 20 }} aria-labelledby="delete-account-title">
+      <h2 id="delete-account-title" className="db-panel-title">Delete account</h2>
+      <p className="text-xs mb-3" style={{ color: "var(--muted2)" }}>
+        Permanently deletes your account and everything in it: progress, streaks, saved code, capstones and class
+        memberships. This can&rsquo;t be undone.
+      </p>
+      {!open ? (
+        <button type="button" className="v2-btn ghost sm" onClick={() => setOpen(true)}>
+          Delete my account…
+        </button>
+      ) : (
+        <form onSubmit={remove} className="flex gap-2 flex-wrap items-end">
+          <label htmlFor="delete-confirm" className="text-xs font-semibold" style={{ color: "var(--ink-2)", flexBasis: "100%" }}>
+            Type DELETE to confirm
+          </label>
+          <input
+            id="delete-confirm"
+            className="auth-input"
+            style={{ flex: "1 1 180px" }}
+            autoComplete="off"
+            value={confirm}
+            onChange={(e) => setConfirm(e.target.value)}
+          />
+          <button
+            type="submit"
+            className="v2-btn sm"
+            disabled={confirm !== "DELETE" || busy}
+            style={{ background: "var(--sl-danger, #a43b18)", borderColor: "var(--sl-danger, #a43b18)" }}
+          >
+            {busy ? "Deleting…" : "Delete forever"}
+          </button>
+          <button type="button" className="v2-btn ghost sm" onClick={() => { setOpen(false); setConfirm(""); setError(null); }}>
+            Cancel
+          </button>
+          {error && <p className="text-xs" role="alert" style={{ color: "var(--sl-danger, #a43b18)", flexBasis: "100%" }}>{error}</p>}
+        </form>
+      )}
+    </section>
+  );
+}
+
 function SignInPrompt() {
   return (
     <div className="settings-gate">
@@ -365,6 +445,7 @@ export default function SettingsClient() {
       </section>
       <DiscordSettings />
       <ClassroomSettings />
+      <DeleteAccount />
     </div>
   );
 }

@@ -105,12 +105,13 @@ const SECTIONS: { title: string; body: React.ReactNode }[] = [
     title: "Your data, your call",
     body: (
       <>
-        Email{" "}
+        Delete your account and everything in it yourself from Settings, at
+        any time. Or email{" "}
         <a href="mailto:hello@strikelab.app" className="underline underline-offset-2" style={{ color: "var(--grass)" }}>
           hello@strikelab.app
         </a>{" "}
-        to see what we have on you or to have your account and all associated
-        data deleted. We&rsquo;ll handle it within a few days.
+        to see what we have on you or to ask us to delete it. We&rsquo;ll
+        handle it within a few days.
       </>
     ),
   },
