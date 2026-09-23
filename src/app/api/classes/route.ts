@@ -7,6 +7,7 @@
  */
 import { NextRequest, NextResponse } from "next/server";
 import { requireUser } from "@/lib/supabase/requireUser";
+import { rateLimit } from "@/lib/rateLimit";
 import { generateJoinCode } from "@/lib/classes";
 
 export async function GET() {
@@ -45,6 +46,9 @@ export async function POST(req: NextRequest) {
   if ("error" in auth) {
     return NextResponse.json({ error: auth.error }, { status: auth.status });
   }
+
+  const limited = await rateLimit(auth.supabase, "class-create");
+  if (limited) return limited;
 
   const body = (await req.json().catch(() => ({}))) as { name?: string };
   const name = (body.name ?? "").trim().slice(0, 80);

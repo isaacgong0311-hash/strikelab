@@ -10,5 +10,6 @@ from (values
   ('0017_cohort_skip_weeks',        exists (select 1 from information_schema.columns where table_schema = 'public' and table_name = 'classes' and column_name = 'skip_weeks')),
   ('0018_lesson_submissions',       to_regclass('public.lesson_submissions') is not null),
   ('0019_capstone_submissions',     to_regclass('public.capstone_submissions') is not null),
-  ('0020_subscription_event_order', exists (select 1 from information_schema.columns where table_schema = 'public' and table_name = 'subscriptions' and column_name = 'last_event_created'))
+  ('0020_subscription_event_order', exists (select 1 from information_schema.columns where table_schema = 'public' and table_name = 'subscriptions' and column_name = 'last_event_created')),
+  ('0021_rate_limits',              to_regclass('public.rate_limits') is not null)
 ) as m(migration, present);

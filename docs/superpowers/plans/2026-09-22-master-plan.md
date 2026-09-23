@@ -427,6 +427,19 @@ Everything runs on free tiers unless listed here.
 
 ---
 
+### Engineering status (2026-09-22, end of day)
+
+Every agent-doable engineering task scheduled before the first kickoff is done and deployed (PRs #27–#29, plus this batch):
+
+- [x] A1 completion timestamps · A2 synced code · A3 cohort home · A4 scorecard + CSV · A5 capstone · A6 journey test · A7 break weeks · A8 invite links (join by link through sign-up) · A9 leader toolkit
+- [x] B0 session sync merged · B1 `inv-5` sessions
+- [x] C2 metrics SQL (tested against the app's metrics)
+- [x] D4 Stripe event ordering · D5 certificate race (was already fixed) · D6 Playwright already runs in CI · D11 per-user rate limits
+- [x] E5 self-serve account deletion (cascade verified) · E3 privacy page updated for code sync, classes and capstones
+- [x] H1 public copy matches what ships
+
+**Still yours:** apply migrations 0013–0021 (0015 first), then everything in §11 marked Founder: production readiness (D1, D7, D9), the baseline, outreach (F1–F2), pilot agreements (E6), and the open questions in §13. Also consider a Vercel Firewall rate-limit rule on `/join/*` and `/api/classes/join`: the invite page looks up class names by code for signed-out visitors, which the per-user limiter can't cover. C1 (PostHog) waits on your decision in §13.
+
 ## 11. Next 10 days (through 2026-10-02)
 
 **Founder**
@@ -453,14 +466,17 @@ Everything runs on free tiers unless listed here.
 | # | File | Status |
 |---|---|---|
 | 0001–0012 | init → cohort_launch | Shipped; **verify applied in prod** (D1) |
-| 0013 | `progress_timezone` | Shipped in code; **apply in prod** |
-| 0014 | `session_completions` | On `feat/pilot-os`; apply after merge |
-| 0015 | `fix_class_rls_recursion` | On `feat/pilot-os`. **Apply first.** Without it every signed-in read of classes/class_members/assignments errors |
-| 0016 | `lesson_completions` (+ trigger) | On `feat/pilot-os` (A1) |
-| 0017 | `cohort_skip_weeks` (+ launch_cohort v2) | On `feat/pilot-os` (A7) |
-| 0018 | `lesson_submissions` | Planned, A2 |
-| 0019 | `capstone_submissions` | Planned, A5 |
-| 0020 | Stripe event-ordering column(s) | Planned, D4 |
+| 0013 | `progress_timezone` | Deployed; **apply in prod** |
+| 0014 | `session_completions` | Deployed (#27); apply |
+| 0015 | `fix_class_rls_recursion` | Deployed (#27). **Apply first**: without it every signed-in read of classes/class_members/assignments errors |
+| 0016 | `lesson_completions` (+ trigger) | Deployed (#27), A1 |
+| 0017 | `cohort_skip_weeks` (+ launch_cohort v2) | Deployed (#27), A7 |
+| 0018 | `lesson_submissions` | Deployed (#29), A2 |
+| 0019 | `capstone_submissions` (+ sharing/teacher-view functions, access log) | Deployed (#29), A5 |
+| 0020 | `subscription_event_ordering` | D4 |
+| 0021 | `rate_limits` | D11 |
+
+`scripts/metrics/check-migrations.sql` shows which are applied. The app tolerates any of them being missing (features degrade to device-only or "not measurable"), but apply them in order.
 
 Every migration now runs in CI through `supabase/testing/db.ts` (PGlite). A migration that doesn't apply cleanly fails `npm test`.
 

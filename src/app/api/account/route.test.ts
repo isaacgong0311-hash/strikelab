@@ -1,6 +1,9 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { NextRequest } from "next/server";
 
+const rateLimitMock = vi.fn().mockResolvedValue(null);
+vi.mock("@/lib/rateLimit", () => ({ rateLimit: () => rateLimitMock() }));
+
 const requireUserMock = vi.fn();
 vi.mock("@/lib/supabase/requireUser", () => ({ requireUser: () => requireUserMock() }));
 const adminMock = vi.fn();
@@ -62,6 +65,16 @@ describe("DELETE /api/account", () => {
     adminMock.mockReturnValue(empty.client);
     ({ DELETE } = await import("./route"));
     expect((await DELETE(del({ confirm: "DELETE" }))).status).toBe(200);
+  });
+
+  it("is rate limited", async () => {
+    const a = admin();
+    adminMock.mockReturnValue(a.client);
+    const { NextResponse } = await import("next/server");
+    rateLimitMock.mockResolvedValueOnce(NextResponse.json({ error: "Too many attempts" }, { status: 429 }));
+    const { DELETE } = await import("./route");
+    expect((await DELETE(del({ confirm: "DELETE" }))).status).toBe(429);
+    expect(a.deleteUser).not.toHaveBeenCalled();
   });
 
   it("requires sign-in", async () => {

@@ -1,6 +1,9 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { NextRequest } from "next/server";
 
+const rateLimitMock = vi.fn().mockResolvedValue(null);
+vi.mock("@/lib/rateLimit", () => ({ rateLimit: () => rateLimitMock() }));
+
 const requireUserMock = vi.fn();
 vi.mock("@/lib/supabase/requireUser", () => ({ requireUser: () => requireUserMock() }));
 

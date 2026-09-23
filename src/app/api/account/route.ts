@@ -11,11 +11,15 @@
  */
 import { NextRequest, NextResponse } from "next/server";
 import { requireUser } from "@/lib/supabase/requireUser";
+import { rateLimit } from "@/lib/rateLimit";
 import { getSupabaseAdmin } from "@/lib/supabase/admin";
 
 export async function DELETE(req: NextRequest) {
   const auth = await requireUser();
   if ("error" in auth) return NextResponse.json({ error: auth.error }, { status: auth.status });
+
+  const limited = await rateLimit(auth.supabase, "account-delete");
+  if (limited) return limited;
 
   const body = (await req.json().catch(() => ({}))) as { confirm?: unknown };
   if (body.confirm !== "DELETE") {
