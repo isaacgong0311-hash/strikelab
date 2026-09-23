@@ -6,6 +6,7 @@ import { getSupabaseBrowser } from "@/lib/supabase/client";
 import { TRACKS } from "@/lib/tracks";
 import BrandMark from "@/components/BrandMark";
 import AuthError from "@/components/AuthError";
+import { useNextPath } from "@/lib/auth/useNextPath";
 
 const TOTAL_LESSONS = TRACKS.reduce((s, t) => s + t.lessons.length, 0);
 
@@ -32,6 +33,8 @@ export default function SignUpPage() {
   const [name, setName] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  // Where to land after auth, e.g. /join/CODE from a class invite link.
+  const nextPath = useNextPath();
   const [checkEmail, setCheckEmail] = useState(false);
   const signupSource = useSignupSource();
 
@@ -45,7 +48,7 @@ export default function SignUpPage() {
     // Fallback when Supabase isn't configured yet — keep the old local behavior.
     if (!supabase) {
       try { localStorage.setItem("sl_user", JSON.stringify({ name, email })); } catch {}
-      router.push("/dashboard");
+      router.push(nextPath);
       return;
     }
 
@@ -54,7 +57,7 @@ export default function SignUpPage() {
       password,
       options: {
         data: { display_name: name, full_name: name, signup_source: signupSource },
-        emailRedirectTo: `${window.location.origin}/auth/callback?next=/dashboard`,
+        emailRedirectTo: `${window.location.origin}/auth/callback?next=${encodeURIComponent(nextPath)}`,
       },
     });
 
@@ -66,7 +69,7 @@ export default function SignUpPage() {
 
     // If email confirmation is on, there's no session yet.
     if (data.session) {
-      router.push("/dashboard");
+      router.push(nextPath);
       router.refresh();
     } else {
       setCheckEmail(true);
@@ -80,7 +83,7 @@ export default function SignUpPage() {
     setError(null);
     const { error } = await supabase.auth.signInWithOAuth({
       provider: "google",
-      options: { redirectTo: `${window.location.origin}/auth/callback?next=/dashboard` },
+      options: { redirectTo: `${window.location.origin}/auth/callback?next=${encodeURIComponent(nextPath)}` },
     });
     if (error) setError(error.message);
   }
@@ -172,7 +175,7 @@ export default function SignUpPage() {
         </p>
 
         <p className="auth-alt">
-          Already have an account? <Link href="/sign-in">Sign in</Link>
+          Already have an account? <Link href={nextPath === "/dashboard" ? "/sign-in" : `/sign-in?next=${encodeURIComponent(nextPath)}`}>Sign in</Link>
         </p>
       </div>
     </div>

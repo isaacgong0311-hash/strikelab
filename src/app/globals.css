@@ -2968,6 +2968,13 @@ h1, h2, h3, h4 {
 .cohort-launch-form small { font-size: 10px; line-height: 1.45; color: var(--ink-3); }
 .cohort-launch-error { color: var(--coral) !important; font-family: var(--font-mono); font-size: 11px !important; }
 .cohort-launch-active { grid-template-columns: 1fr auto; align-items: center; }
+.class-invite { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-top: 10px; }
+.class-invite-label { font-family: var(--font-mono); font-size: 10px; font-weight: 700; letter-spacing: .05em; text-transform: uppercase; color: var(--ink-3); }
+.class-invite-url {
+  padding: 5px 9px; border: 1px solid var(--line-2); border-radius: var(--r-sm);
+  background: var(--paper); color: var(--ink); font-size: 12px; overflow-wrap: anywhere; user-select: all;
+}
+.cohort-preview-link { display: inline-block; margin-top: 8px; font-size: 12px; font-weight: 700; color: var(--grass); }
 .cohort-breaks { margin: 0; padding: 0; border: 0; display: flex; flex-direction: column; gap: 6px; min-width: 0; }
 .cohort-breaks legend {
   padding: 0; margin-bottom: 5px;

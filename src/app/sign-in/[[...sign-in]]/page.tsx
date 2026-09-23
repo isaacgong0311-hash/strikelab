@@ -5,6 +5,7 @@ import Link from "next/link";
 import { getSupabaseBrowser } from "@/lib/supabase/client";
 import BrandMark from "@/components/BrandMark";
 import AuthError from "@/components/AuthError";
+import { useNextPath } from "@/lib/auth/useNextPath";
 
 export default function SignInPage() {
   const router = useRouter();
@@ -12,6 +13,8 @@ export default function SignInPage() {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  // Where to land after auth, e.g. /join/CODE from a class invite link.
+  const nextPath = useNextPath();
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -23,7 +26,7 @@ export default function SignInPage() {
     // Fallback when Supabase isn't configured yet — keep the old local behavior.
     if (!supabase) {
       try { localStorage.setItem("sl_user", JSON.stringify({ email })); } catch {}
-      router.push("/dashboard");
+      router.push(nextPath);
       return;
     }
 
@@ -33,7 +36,7 @@ export default function SignInPage() {
       setLoading(false);
       return;
     }
-    router.push("/dashboard");
+    router.push(nextPath);
     router.refresh();
   }
 
@@ -43,7 +46,7 @@ export default function SignInPage() {
     setError(null);
     const { error } = await supabase.auth.signInWithOAuth({
       provider: "google",
-      options: { redirectTo: `${window.location.origin}/auth/callback?next=/dashboard` },
+      options: { redirectTo: `${window.location.origin}/auth/callback?next=${encodeURIComponent(nextPath)}` },
     });
     if (error) setError(error.message);
   }
@@ -101,7 +104,7 @@ export default function SignInPage() {
         )}
 
         <p className="auth-alt">
-          New here? <Link href="/sign-up">Create a free account</Link>
+          New here? <Link href={nextPath === "/dashboard" ? "/sign-up" : `/sign-up?next=${encodeURIComponent(nextPath)}`}>Create a free account</Link>
         </p>
       </div>
     </div>

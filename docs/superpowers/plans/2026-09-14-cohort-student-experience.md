@@ -17,7 +17,7 @@
 ### Task 1: Normalized lesson-completion timestamps
 
 **Files:**
-- Create: `supabase/migrations/0015_lesson_completions.sql`
+- Create: `supabase/migrations/0016_lesson_completions.sql`
 - Modify: `src/lib/progress/sync.ts`
 - Modify: `src/app/api/progress/route.ts`
 - Test: `src/lib/progress/sync.test.ts`
@@ -30,7 +30,7 @@
 ### Task 2: Synced exercise submissions
 
 **Files:**
-- Create: `supabase/migrations/0016_lesson_submissions.sql`
+- Create: `supabase/migrations/0018_lesson_submissions.sql`
 - Create: `src/lib/submissions/sync.ts`
 - Create: `src/app/api/submissions/[lessonId]/route.ts`
 - Test: `src/lib/submissions/sync.test.ts`, `src/app/api/submissions/[lessonId]/route.test.ts`
@@ -73,7 +73,7 @@
 ### Task 5: Private-by-default capstone
 
 **Files:**
-- Create: `supabase/migrations/0017_capstone_submissions.sql`
+- Create: `supabase/migrations/0019_capstone_submissions.sql`
 - Create: `src/app/api/capstone/route.ts`
 - Create: `src/app/capstone/[token]/page.tsx` (unlisted share view)
 - Test: `src/app/api/capstone/route.test.ts`

@@ -134,7 +134,7 @@ Estimates are **agent build hours / founder review hours**. `F` = founder-only (
 ### Workstream A: Pilot operating system (critical path)
 
 **A1. Server-timestamped lesson completions** · wk 2 · 3h / 1h
-- Migration `0015_lesson_completions.sql`: `lesson_completions(user_id, lesson_id, completed_at default now(), primary key(user_id, lesson_id))`.
+- Migration `0016_lesson_completions.sql` (shipped): `lesson_completions(user_id, lesson_id, completed_at default now(), primary key(user_id, lesson_id))`.
 - An `after insert or update of completed on progress` trigger (`security definer`, fixed `search_path`) inserts one row per lesson id that's in `new.completed` and wasn't in `old.completed`, `on conflict do nothing`. The timestamp comes from the DB clock, never the client.
 - RLS: the owner reads their own rows. The teacher of a class the student belongs to reads rows through a `class_members` + `classes.teacher_id` join, mirroring the roster policy.
 - **No backfill with invented timestamps.** Historical completions stay only in the aggregate array (strategy §3).
@@ -143,7 +143,7 @@ Estimates are **agent build hours / founder review hours**. `F` = founder-only (
 - Note: the client can still forge a completion by writing `progress.completed`. That's acceptable for free pilots and gets written down as a known limitation. Revisit before any credential has stakes.
 
 **A2. Synced exercise code** · wk 5 · 5h / 1.5h
-- Migration `0016_lesson_submissions.sql` follows the 2026-09-14 plan, Task 2.
+- Migration `0018_lesson_submissions.sql` follows the 2026-09-14 plan, Task 2.
 - `LessonClient` loads cloud code first when signed in, falls back to local, then to the starter code. Saves are debounced about 3s and show an inline "Saved · Not saved, retrying" status, and local edits are never dropped when the network fails.
 - `last_passed_at` is set when tests pass, which gives the scorecard a "code passing" column.
 - Acceptance: write code on device A, open on device B and see it. Offline edits survive a reload.
@@ -163,7 +163,7 @@ Estimates are **agent build hours / founder review hours**. `F` = founder-only (
 - Acceptance: numbers match a hand count on the rehearsal cohort.
 
 **A5. Private-by-default capstone** · wk 7–8 · 8h / 3h
-- Migration `0017_capstone_submissions.sql` follows the 2026-09-14 plan, Task 5, plus `updated_at` and draft/submitted status (students iterate).
+- Migration `0019_capstone_submissions.sql` follows the 2026-09-14 plan, Task 5, plus `updated_at` and draft/submitted status (students iterate).
 - The form has title, thesis, code (pre-filled from their Pyodide workspace), result summary, optional chart image and reflection. Autosave drafts.
 - There's an instructor view. Opening a student's capstone is an explicit action and gets logged.
 - Share: explicit opt-in creates an unlisted token, and revoking it 404s immediately. A student under 18 sees copy suggesting they check with a parent or guardian before sharing (E4).
@@ -439,9 +439,9 @@ Everything runs on free tiers unless listed here.
 - [ ] Confirm the partner schools' fall holidays (feeds A7)
 
 **Agents (each a branch plus PR)**
-- [ ] A1 `lesson_completions` trigger + RLS + reader (`0015`)
-- [ ] A7 skip weeks in template, RPC and teacher panel
-- [ ] A3 cohort home + join → cohort landing
+- [x] A1 `lesson_completions` trigger + RLS (`0016`, PGlite-tested). **Found and fixed:** class/roster/assignment RLS recursed on every signed-in read (`0015`)
+- [x] A7 skip weeks in template, RPC (`0017`) and teacher panel
+- [x] A3 cohort home (`/cohort/[id]`), invite links (`/join/CODE`) through sign-up/sign-in with a sanitized `next` (also closes an open redirect in `/auth/callback`), dashboard and Settings route cohort students home
 - [ ] Fix `/challenges` axe `listitem` (queued task)
 - [ ] H1 public-copy accuracy pass
 - [ ] C2 `scripts/metrics/*.sql` baseline and scorecard queries
@@ -454,12 +454,15 @@ Everything runs on free tiers unless listed here.
 |---|---|---|
 | 0001–0012 | init → cohort_launch | Shipped; **verify applied in prod** (D1) |
 | 0013 | `progress_timezone` | Shipped in code; **apply in prod** |
-| 0014 | `session_completions` | On `feat/session-sync`; **apply after merge** |
-| 0015 | `lesson_completions` (+ trigger) | Planned, A1 (was "0013" in the 2026-09-14 plan) |
-| 0016 | `lesson_submissions` | Planned, A2 (was "0014") |
-| 0017 | `capstone_submissions` | Planned, A5 (was "0015") |
-| 0018 | `classes.skip_weeks` + RPC update | Planned, A7 |
-| 0019 | Stripe event-ordering column(s) | Planned, D4 |
+| 0014 | `session_completions` | On `feat/pilot-os`; apply after merge |
+| 0015 | `fix_class_rls_recursion` | On `feat/pilot-os`. **Apply first.** Without it every signed-in read of classes/class_members/assignments errors |
+| 0016 | `lesson_completions` (+ trigger) | On `feat/pilot-os` (A1) |
+| 0017 | `cohort_skip_weeks` (+ launch_cohort v2) | On `feat/pilot-os` (A7) |
+| 0018 | `lesson_submissions` | Planned, A2 |
+| 0019 | `capstone_submissions` | Planned, A5 |
+| 0020 | Stripe event-ordering column(s) | Planned, D4 |
+
+Every migration now runs in CI through `supabase/testing/db.ts` (PGlite). A migration that doesn't apply cleanly fails `npm test`.
 
 Rule: a migration is applied to a non-prod project and RLS-checked (D3) before prod, and the feature that depends on it deploys *after* it's applied. Client code that touches a new table stays best-effort (warn, don't break) until the migration is confirmed, the way 0013 and 0014 already work.
 

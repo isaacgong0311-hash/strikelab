@@ -1,6 +1,7 @@
 "use client";
 import Link from "next/link";
 import { useState, useEffect, useCallback } from "react";
+import { useRouter } from "next/navigation";
 import { useAuth } from "@/lib/auth/AuthProvider";
 import AccessibilityControls from "@/components/accessibility/AccessibilityControls";
 
@@ -167,6 +168,7 @@ interface JoinedClass {
 }
 
 function ClassroomSettings() {
+  const router = useRouter();
   const [owned, setOwned] = useState<OwnedClass[]>([]);
   const [joined, setJoined] = useState<JoinedClass[]>([]);
   const [loaded, setLoaded] = useState(false);
@@ -229,6 +231,10 @@ function ClassroomSettings() {
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error ?? "Failed to join class");
+      if (data.isCohort) {
+        router.push(`/cohort/${data.id}`);
+        return;
+      }
       setJoinCodeInput("");
       setMessage({ text: `Joined ${data.name}.`, isError: false });
       await refresh();

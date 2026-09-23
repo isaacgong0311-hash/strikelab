@@ -77,6 +77,8 @@ export interface OwnedClass {
   launchedAt: string | null;
   /** Holiday weeks the cohort skips (YYYY-MM-DD block starts). */
   skipWeeks: string[];
+  /** Only ever returned to the class's own teacher. */
+  joinCode: string;
 }
 
 export type TeacherOwnsClassResult =
@@ -114,6 +116,7 @@ export async function requireTeacherOwnsClass(
       timezone: (klass.timezone as string | null) ?? null,
       launchedAt: (klass.launched_at as string | null) ?? null,
       skipWeeks: Array.isArray(klass.skip_weeks) ? (klass.skip_weeks as string[]) : [],
+      joinCode: klass.join_code as string,
     },
   };
 }

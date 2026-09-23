@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useId, useState } from "react";
 import {
   MAX_SKIP_WEEKS,
@@ -145,6 +146,7 @@ function ActiveCohort({ classId, cohort, onLaunched }: Props & { cohort: CohortC
         {saved.length > 0 && (
           <p>Breaks: {saved.map((d) => `week of ${readableDate(d, false)}`).join(", ")}</p>
         )}
+        <Link href={`/cohort/${classId}`} className="cohort-preview-link">Preview what students see →</Link>
         <details className="cohort-breaks-edit">
           <summary>Change break weeks</summary>
           <BreakWeeksPicker startsOn={cohort.startsOn} value={skipWeeks} onChange={setSkipWeeks} />
