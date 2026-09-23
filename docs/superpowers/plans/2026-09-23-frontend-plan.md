@@ -306,7 +306,20 @@ Founder time: most tasks are agent-built. The founder's part is choosing the hea
 
 ---
 
-## 10. First 10 days (through 2026-10-02)
+## 10. Status (2026-09-23)
+
+Shipped on `feat/clubs-first`:
+- [x] **FE-1 truth pass.** "Most popular", the "0 installs" stat and the stale announcement are gone. Pricing is Student / Club $199 / School $499 with pilots free and Pro paused. Undelivered promises (training calls, alignment guide, SSO, real-time data) are removed.
+- [x] **FE-2 clubs-first homepage** with the real cohort home as the hero visual (sample data, labeled), the six weeks, example capstones, leader tools, comparison, trust, a founder note, FAQ and CTAs.
+- [x] **FE-3 `/pilot`** with two doors: set it up now (sign-up returns to class setup) or talk first (`NEXT_PUBLIC_PILOT_CALL_URL`, email until it's set).
+- [x] **FE-5 `/demo`** (teacher and student views) and `/demo/capstone/[slug]`.
+- [x] **Navigation and IA:** visitors see For clubs & teachers · Demo · Curriculum · Pricing · Start a free pilot. `/clubs` replaces `/for-schools` (308 redirect). The footer has a "For clubs" group, and the sitemap is updated.
+- [x] Settings → Billing (Manage billing) for existing subscribers. There was no way to reach the Stripe portal before.
+- [x] The old homepage's Black-Scholes snippet claimed $3.47 for inputs that price at about $9.8. It's gone with the old hero, and the example capstone's numbers are now checked by a test.
+
+Next: FE-4 (teacher setup and home), FE-10 (Lighthouse CI budgets), FE-11 (funnel events), then FE-6/7 once pilots produce consented work and real numbers.
+
+## 11. First 10 days (through 2026-10-02)
 
 **Founder**
 - [ ] Pick the hero headline (A, B or C in §3) and approve the voice rules.
@@ -321,7 +334,7 @@ Founder time: most tasks are agent-built. The founder's part is choosing the hea
 
 ---
 
-## 11. Open questions for the founder
+## 12. Open questions for the founder (all decided 2026-09-23, see the decision log)
 
 1. **Headline:** A, B or C, or your own? It's the single most important sentence on the site.
 2. **Is `/for-teachers` worth keeping separately** (AP alignment angle), or should it merge into `/clubs`?

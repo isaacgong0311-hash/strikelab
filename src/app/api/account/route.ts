@@ -32,7 +32,7 @@ export async function DELETE(req: NextRequest) {
   const { data: sub } = await admin.from("subscriptions").select("status").eq("user_id", auth.userId).maybeSingle();
   if (sub && ["active", "trialing", "past_due"].includes(sub.status as string)) {
     return NextResponse.json(
-      { error: "Cancel your subscription first (Settings → Manage billing), then delete your account." },
+      { error: "Cancel your subscription first (Settings → Billing → Manage billing), then delete your account." },
       { status: 409 }
     );
   }

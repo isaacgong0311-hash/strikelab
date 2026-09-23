@@ -11,7 +11,10 @@ const PUBLIC_ROUTES = [
   "/sign-in",
   "/settings",
   "/pricing",
-  "/for-schools",
+  "/clubs",
+  "/pilot",
+  "/demo",
+  "/demo?view=student",
   "/challenges",
 ];
 

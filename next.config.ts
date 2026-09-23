@@ -8,6 +8,8 @@ const nextConfig: NextConfig = {
   poweredByHeader: false,
   async redirects() {
     return [
+      // The buyer page moved to /clubs (decision log 2026-09-23).
+      { source: "/for-schools", destination: "/clubs", permanent: true },
       {
         // The old *.vercel.app host serves the whole site on 200s, so Google
         // has two crawlable copies of every page. The canonical tags already

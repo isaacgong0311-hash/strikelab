@@ -53,7 +53,7 @@ const SECTIONS: { title: string; body: React.ReactNode }[] = [
     body: (
       <>
         Pro ($9/month) renews automatically until you cancel; cancel anytime
-        from the billing portal (linked from your dashboard) and you keep
+        from the billing portal (Settings → Billing) and you keep
         access through the end of the billing period you already paid for.
         The free trial doesn&rsquo;t charge you until it ends. School plans
         are billed annually and arranged directly — email{" "}

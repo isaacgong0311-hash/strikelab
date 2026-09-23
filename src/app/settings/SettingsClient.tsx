@@ -3,7 +3,43 @@ import Link from "next/link";
 import { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/lib/auth/AuthProvider";
+import { openCustomerPortal, useSubscription } from "@/lib/useSubscription";
 import AccessibilityControls from "@/components/accessibility/AccessibilityControls";
+
+/** Subscribers manage or cancel billing in the Stripe portal. Hidden for everyone else. */
+function BillingSettings() {
+  const { customerId, status, plan, hydrated } = useSubscription();
+  const [opening, setOpening] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  if (!hydrated || !customerId) return null;
+  return (
+    <section className="db-panel" style={{ marginTop: 20 }} aria-labelledby="billing-settings-title">
+      <h2 id="billing-settings-title" className="db-panel-title">Billing</h2>
+      <p className="text-xs mb-3" style={{ color: "var(--muted2)" }}>
+        {plan ? `${plan === "school" ? "School" : "Pro"} plan` : "Subscription"}
+        {status ? ` · ${status.replace("_", " ")}` : ""}. Update your card, see invoices, or cancel in the Stripe billing portal.
+      </p>
+      <button
+        type="button"
+        className="v2-btn ghost sm"
+        disabled={opening}
+        onClick={async () => {
+          setOpening(true);
+          setError(null);
+          try {
+            await openCustomerPortal();
+          } catch (err) {
+            setError(err instanceof Error ? err.message : "Couldn't open billing");
+            setOpening(false);
+          }
+        }}
+      >
+        {opening ? "Opening…" : "Manage billing →"}
+      </button>
+      {error && <p className="text-xs mt-2" role="alert" style={{ color: "var(--sl-danger, #a43b18)" }}>{error}</p>}
+    </section>
+  );
+}
 
 /**
  * Self-serve account deletion. Two-step: open the panel, type DELETE. The
@@ -326,7 +362,7 @@ function ClassroomSettings() {
   }
 
   return (
-    <section className="db-panel" style={{ marginTop: 20 }} aria-labelledby="classroom-settings-title">
+    <section id="classroom" className="db-panel" style={{ marginTop: 20 }} aria-labelledby="classroom-settings-title">
       <div className="db-panel-head">
         <h2 id="classroom-settings-title" className="db-panel-title">Classroom</h2>
       </div>
@@ -445,6 +481,7 @@ export default function SettingsClient() {
       </section>
       <DiscordSettings />
       <ClassroomSettings />
+      <BillingSettings />
       <DeleteAccount />
     </div>
   );

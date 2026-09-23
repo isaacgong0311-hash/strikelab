@@ -21,6 +21,15 @@ const SECONDARY: { href: string; label: string }[] = [
   { href: "/roadmap",  label: "Roadmap" },
 ];
 
+// Signed-out visitors are mostly club leaders, teachers and evaluators
+// (frontend plan §4): lead with the buyer pages, not the product surfaces.
+const VISITOR: { href: string; label: string }[] = [
+  { href: "/clubs",   label: "For clubs & teachers" },
+  { href: "/demo",    label: "Demo" },
+  { href: "/lessons", label: "Curriculum" },
+  { href: "/pricing", label: "Pricing" },
+];
+
 // ── Small inline SVG icons (no emojis) ───────────────────────
 function FlameIcon() {
   return (
@@ -176,19 +185,16 @@ export default function Nav() {
 
   const initial = (displayName ?? user?.email ?? "").trim().charAt(0).toUpperCase() || null;
 
-  const allLinks = [...PRIMARY, ...SECONDARY] as { href: string; label: string; pro?: boolean }[];
+  const allLinks = (user ? [...PRIMARY, ...SECONDARY] : VISITOR) as { href: string; label: string; pro?: boolean }[];
+  const primaryCount = user ? PRIMARY.length : VISITOR.length;
 
   return (
     <header className="site-header">
       {/* ─── Announcement bar ──────────────────────────────────────────────── */}
       <div className="nav-announce">
-        New &mdash;{" "}
-        <Link href="/sandbox" className="nav-announce-bold" style={{ textDecoration: "none" }}>
-          Paper-trading sandbox just shipped
-        </Link>{" "}
-        &middot;{" "}
-        <Link href="/roadmap" className="nav-announce-link">
-          What&rsquo;s next →
+        Now enrolling free pilots for this school year &middot;{" "}
+        <Link href="/pilot" className="nav-announce-link">
+          Run the lab with your club →
         </Link>
       </div>
 
@@ -207,7 +213,7 @@ export default function Nav() {
           <div className="nav-links">
             {allLinks.map((l, i) => {
               const active = isActive(l.href);
-              const isFirstSecondary = i === PRIMARY.length;
+              const isFirstSecondary = i === primaryCount;
               return (
                 <span key={l.href} className="nav-link-wrap">
                   {isFirstSecondary && <div className="nav-divider" />}
@@ -308,8 +314,8 @@ export default function Nav() {
           ) : (
             <>
               <Link href="/sign-in" className="nav-signin">Sign in</Link>
-              <Link href="/sign-up" className="nav-cta">
-                Start free <span aria-hidden="true">→</span>
+              <Link href="/pilot" className="nav-cta">
+                Start a free pilot <span aria-hidden="true">→</span>
               </Link>
             </>
           )}
@@ -387,8 +393,8 @@ export default function Nav() {
             ) : (
               <>
                 <Link href="/sign-in" className="nav-mobile-link">Sign in</Link>
-                <Link href="/sign-up" className="nav-cta" style={{ marginTop: 8, justifyContent: "center" }}>
-                  Start free <span aria-hidden="true">→</span>
+                <Link href="/pilot" className="nav-cta" style={{ marginTop: 8, justifyContent: "center" }}>
+                  Start a free pilot <span aria-hidden="true">→</span>
                 </Link>
               </>
             )}

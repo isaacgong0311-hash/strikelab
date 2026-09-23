@@ -1,7 +1,7 @@
 import { ImageResponse } from "next/og";
 import { SITE_URL } from "@/lib/site";
 
-export const alt = "StrikeLab — Learn Options Pricing & Quant Finance";
+export const alt = "StrikeLab: the technical-finance lab for high-school clubs";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
@@ -42,7 +42,7 @@ export default function OpengraphImage() {
               letterSpacing: "-0.02em",
             }}
           >
-            Learn options pricing & quant finance by building it.
+            A six-week quant lab your club can run tomorrow.
           </div>
           <div style={{ fontSize: 30, color: "#9bbfae", maxWidth: 900 }}>
             Black-Scholes, the Greeks, CAPM, and backtesting — in a real Python
