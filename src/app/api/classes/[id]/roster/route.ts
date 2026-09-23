@@ -17,6 +17,7 @@ import {
   TOTAL_TRACKS,
   TOTAL_LESSONS,
 } from "@/lib/classes";
+import { loadCohortScorecard } from "@/lib/cohorts/loadScorecard";
 
 export async function GET(_req: Request, { params }: { params: Promise<{ id: string }> }) {
   const auth = await requireUser();
@@ -31,15 +32,18 @@ export async function GET(_req: Request, { params }: { params: Promise<{ id: str
     return NextResponse.json({ error: owned.error }, { status: owned.status });
   }
 
-  const [roster, assignments] = await Promise.all([
+  const [roster, assignments, scorecard] = await Promise.all([
     getClassRoster(id),
     getClassAssignmentsWithCompletion(id),
+    loadCohortScorecard(owned.class),
   ]);
 
   return NextResponse.json({
     class: owned.class,
     roster,
     assignments,
+    // Cohort metrics are computed here, never in the browser.
+    scorecard,
     totals: { tracks: TOTAL_TRACKS, lessons: TOTAL_LESSONS },
     generatedAt: new Date().toISOString(),
   });

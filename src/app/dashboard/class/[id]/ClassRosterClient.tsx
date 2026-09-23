@@ -6,6 +6,9 @@ import { useAuth } from "@/lib/auth/AuthProvider";
 import AssignLessonsPanel from "./AssignLessonsPanel";
 import AssignmentsPanel, { type AssignmentWithCompletion } from "./AssignmentsPanel";
 import CohortLaunchPanel from "./CohortLaunchPanel";
+import { downloadCsv, toCsv } from "@/lib/csv";
+import CohortScorecard from "./CohortScorecard";
+import type { CohortScorecard as Scorecard } from "@/lib/cohorts/loadScorecard";
 
 interface RosterEntry {
   studentId: string;
@@ -82,6 +85,7 @@ export default function ClassRosterClient() {
   const [assignments, setAssignments] = useState<AssignmentWithCompletion[]>([]);
   const [totals, setTotals] = useState({ tracks: 0, lessons: 0 });
   const [generatedAt, setGeneratedAt] = useState<string | null>(null);
+  const [scorecard, setScorecard] = useState<Scorecard | null>(null);
 
   const load = useCallback(async () => {
     try {
@@ -97,6 +101,7 @@ export default function ClassRosterClient() {
       setAssignments(data.assignments ?? []);
       setTotals(data.totals ?? { tracks: 0, lessons: 0 });
       setGeneratedAt(data.generatedAt ?? null);
+      setScorecard(data.scorecard ?? null);
       setState("ready");
     } catch {
       setState("not-found");
@@ -128,16 +133,7 @@ export default function ClassRosterClient() {
       r.lastActivityDate ?? "Never",
       ...assignments.map((a) => (a.completedStudentIds.includes(r.studentId) ? "Done" : "Not yet")),
     ]);
-    const csv = [header, ...rows]
-      .map((row) => row.map((cell) => `"${cell.replace(/"/g, '""')}"`).join(","))
-      .join("\n");
-    const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `${className || "class"}-roster.csv`;
-    a.click();
-    URL.revokeObjectURL(url);
+    downloadCsv(`${className || "class"}-roster.csv`, toCsv([header, ...rows]));
   }
 
   const avgProgressPct = roster.length && totals.lessons
@@ -203,6 +199,12 @@ export default function ClassRosterClient() {
         )}
       </div>
 
+      {state === "ready" && scorecard && (
+        <div className="mb-6">
+          <CohortScorecard scorecard={scorecard} className={className} />
+        </div>
+      )}
+
       <div className="mb-6">
         <AssignLessonsPanel
           classId={classId}
@@ -213,7 +215,7 @@ export default function ClassRosterClient() {
 
       {state === "ready" && roster.length === 0 && (
         <p className="text-sm" style={{ color: "var(--muted2)" }}>
-          No students yet — share the join code from Settings.
+          No students yet. Share the invite link above.
         </p>
       )}
 

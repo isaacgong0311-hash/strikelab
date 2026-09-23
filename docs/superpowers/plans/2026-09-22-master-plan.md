@@ -155,7 +155,7 @@ Estimates are **agent build hours / founder review hours**. `F` = founder-only (
 - Empty, loading and error states are designed (B5), and it has an axe test.
 - Acceptance: a student who joins from a code on a phone is one tap from their first lesson.
 
-**A4. Instructor scorecard + cohort CSV** · wk 4 (v1), wk 12 (v2) · 6h / 2h
+**A4. Instructor scorecard + cohort CSV** · wk 4 (v1), wk 12 (v2) · 6h / 2h · **v1 shipped 2026-09-22** (`src/lib/cohorts/metrics.ts`, formula-safe CSV)
 - `src/lib/cohorts/metrics.ts`: a pure `computeCohortMetrics` exactly per `docs/gtm/metric-glossary.md`, with boundary tests (late joiner, active in week 2 but not week 4, skip weeks).
 - The roster route returns only aggregates computed on the server.
 - The scorecard shows enrolled, activated %, active this week, week-4 retained %, capstones, and **students needing help** (overdue work and no activity in 7 days).
