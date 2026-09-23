@@ -1,5 +1,9 @@
 import { defineConfig, devices } from "@playwright/test";
 
+// PLAYWRIGHT_BASE_URL points the suite at an already-running server (e.g. a
+// second dev server on another port while a parallel worktree holds 3000).
+const externalBaseURL = process.env.PLAYWRIGHT_BASE_URL;
+
 export default defineConfig({
   testDir: "./tests",
   fullyParallel: true,
@@ -8,17 +12,19 @@ export default defineConfig({
   workers: process.env.CI ? 2 : undefined,
   reporter: process.env.CI ? "github" : "list",
   use: {
-    baseURL: "http://localhost:3000",
+    baseURL: externalBaseURL ?? "http://localhost:3000",
     trace: "retain-on-failure",
     screenshot: "only-on-failure",
   },
   projects: [
     { name: "chromium", use: { ...devices["Desktop Chrome"] } },
   ],
-  webServer: {
-    command: "npm run dev",
-    url: "http://localhost:3000",
-    reuseExistingServer: !process.env.CI,
-    timeout: 120_000,
-  },
+  webServer: externalBaseURL
+    ? undefined
+    : {
+        command: "npm run dev",
+        url: "http://localhost:3000",
+        reuseExistingServer: !process.env.CI,
+        timeout: 120_000,
+      },
 });

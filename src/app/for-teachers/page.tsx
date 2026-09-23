@@ -119,8 +119,8 @@ export default function ForTeachersPage() {
           Start free →
         </Link>
         <p className="text-xs mt-3" style={{ color: "var(--muted)" }}>
-          Need 30+ seats, a curriculum alignment guide, and training calls?{" "}
-          <Link href="/for-schools" style={{ color: "var(--grass)", textDecoration: "underline", textUnderlineOffset: 3 }}>See the School plan →</Link>
+          Want a ready-made program with a weekly plan and a class scorecard?{" "}
+          <Link href="/clubs" style={{ color: "var(--grass)", textDecoration: "underline", textUnderlineOffset: 3 }}>Run it as a six-week lab with a free pilot →</Link>
         </p>
       </div>
     </div>

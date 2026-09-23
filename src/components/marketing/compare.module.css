@@ -1,0 +1,9 @@
+.scroll { margin-top: 1.5rem; overflow-x: auto; border-radius: var(--sl-radius-md); }
+.scroll:focus-visible { outline: 3px solid var(--sl-focus); outline-offset: 2px; }
+.table { width: 100%; min-width: 36rem; border-collapse: collapse; text-align: left; line-height: 1.5; }
+.table th,
+.table td { padding: 0.875rem 0.75rem; border-bottom: 1px solid var(--sl-border); vertical-align: top; }
+.table thead th { border-bottom: 2px solid var(--sl-border-strong); font-size: 0.9375rem; }
+.table thead th.us { border-bottom-color: var(--sl-brand); color: var(--sl-brand-strong); }
+.table tbody th { font-weight: 800; }
+.them { color: var(--sl-text-muted); }

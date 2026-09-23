@@ -1,27 +1,31 @@
 import type { Metadata } from "next";
-import HomeClient from "./HomeClient";
-import { SITE_URL, SITE_NAME, SITE_DESCRIPTION } from "@/lib/site";
+import HomeView from "./HomeView";
+import { SITE_URL, SITE_NAME } from "@/lib/site";
 
-const TITLE = "StrikeLab — Learn Options Pricing & Quant Finance";
+// Decision log 2026-09-23: the title is the plain category line; the hero
+// carries the promise.
+const TITLE = "StrikeLab: the technical-finance lab for high-school clubs";
+const DESCRIPTION =
+  "A ready-to-run six-week lab where students learn by coding real market models and finish with work they can show. A weekly plan and scorecard for the leader. Free for students.";
 
-// Written out rather than using pageMetadata() so the homepage keeps its
-// brand-first title verbatim — the "%s — StrikeLab" template would otherwise
-// rewrite it to "… — StrikeLab — StrikeLab".
+// The hero's sample data is relative to today; refresh it hourly.
+export const revalidate = 3600;
+
 export const metadata: Metadata = {
   title: { absolute: TITLE },
-  description: SITE_DESCRIPTION,
+  description: DESCRIPTION,
   alternates: { canonical: "/" },
   openGraph: {
     type: "website",
     siteName: SITE_NAME,
     locale: "en_US",
     title: TITLE,
-    description: SITE_DESCRIPTION,
+    description: DESCRIPTION,
     url: SITE_URL,
   },
-  twitter: { card: "summary_large_image", title: TITLE, description: SITE_DESCRIPTION },
+  twitter: { card: "summary_large_image", title: TITLE, description: DESCRIPTION },
 };
 
 export default function Page() {
-  return <HomeClient />;
+  return <HomeView />;
 }

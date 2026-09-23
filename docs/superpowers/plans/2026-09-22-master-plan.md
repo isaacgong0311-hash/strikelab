@@ -11,6 +11,7 @@
 | `plans/2026-09-13-cohort-launch-foundation.md` | Done (commit `7cfdafe`). Reference only. |
 | `plans/2026-09-14-cohort-student-experience.md` | Task-level detail for Workstream A. Migration numbers corrected below (§12). |
 | `plans/2026-09-16-duolingo-grade-product-plan.md` | Task-level detail for Workstream B, **re-sequenced** here so that it serves the pilots rather than running ahead of them. |
+| `plans/2026-09-23-frontend-plan.md` | Everything visitors, leaders, students and investors see: clubs-first homepage, pilot funnel, teacher setup, public demo, proof surfaces, YC assets. It replaces Workstream H's detail. |
 | `docs/gtm/*` | The instruments Workstreams F and G use every week. |
 | `strikelab-runway.html` | Checkbox view of the same 32 weeks. |
 

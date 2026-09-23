@@ -81,7 +81,7 @@ export const FAQ_GROUPS: FAQGroup[] = [
     items: [
       {
         q: "Is StrikeLab really free?",
-        a: `The full curriculum (all ${LESSON_COUNT} lessons), the playground, the Greek visualizer, achievements, and the paper-trading sandbox are free forever — nothing there is gated. The Pro tier ($9/mo) adds weekly coding challenges, a leaderboard, and office hours with the founder. School licenses fund the platform.`,
+        a: `The full curriculum (all ${LESSON_COUNT} lessons), the playground, the Greek visualizer, achievements, and the paper-trading sandbox are free forever — nothing there is gated. Students never pay. Clubs and schools that run the six-week lab pay after a free pilot ($199/year per club, $499/year per school instructor), and that funds the platform.`,
       },
       {
         q: "Is this safe to use as a minor?",
@@ -89,7 +89,7 @@ export const FAQ_GROUPS: FAQGroup[] = [
       },
       {
         q: "Will you ever sell my data?",
-        a: "No. We don't run ads. We don't sell user lists. The business model is freemium subscriptions + school licenses — both depend on users trusting us, so we behave accordingly. Full details at /privacy.",
+        a: "No. We don't run ads. We don't sell user lists. The business model is clubs and schools paying for the six-week lab after a free pilot, which only works if leaders and parents trust us, so we behave accordingly. Full details at /privacy.",
       },
       {
         q: "Who built this?",

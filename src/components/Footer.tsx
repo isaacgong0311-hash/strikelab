@@ -3,14 +3,22 @@ import AnimatedLink from "@/components/AnimatedLink";
 
 const NAV_GROUPS = [
   {
+    title: "For clubs",
+    links: [
+      { href: "/clubs",        label: "For clubs & teachers" },
+      { href: "/pilot",        label: "Free pilot" },
+      { href: "/demo",         label: "Demo" },
+      { href: "/for-teachers", label: "AP alignment" },
+    ],
+  },
+  {
     title: "Product",
     links: [
-      { href: "/lessons",      label: "Lessons" },
-      { href: "/playground",   label: "Playground" },
-      { href: "/dashboard",    label: "Dashboard" },
-      { href: "/blog",         label: "Blog" },
-      { href: "/for-teachers", label: "For Teachers" },
-      { href: "/for-schools",  label: "For Schools" },
+      { href: "/lessons",    label: "Lessons" },
+      { href: "/playground", label: "Playground" },
+      { href: "/sandbox",    label: "Sandbox" },
+      { href: "/dashboard",  label: "Dashboard" },
+      { href: "/blog",       label: "Blog" },
     ],
   },
   {

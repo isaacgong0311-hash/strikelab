@@ -12,4 +12,4 @@ export const SITE_URL = "https://strikelab.dev";
 
 export const SITE_NAME = "StrikeLab";
 export const SITE_DESCRIPTION =
-  "Learn options pricing and quant finance — Black-Scholes, the Greeks, CAPM — by building a real Python engine in your browser. Free for high schoolers.";
+  "The technical-finance lab for high-school clubs: students learn options pricing, risk and backtesting by coding real models in the browser, and finish with work they can show. Free for students.";

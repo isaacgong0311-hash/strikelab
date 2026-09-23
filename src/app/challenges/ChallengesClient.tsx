@@ -467,7 +467,7 @@ export default function ChallengesClient() {
               </div>
             </div>
             {subHydrated && !isPro && (
-              <Link href="/pricing" className="ch-panel-cta">Unlock with Pro →</Link>
+              <Link href="/pricing" className="ch-panel-cta">Part of Pro (paused for new sign-ups) →</Link>
             )}
           </div>
         </div>
