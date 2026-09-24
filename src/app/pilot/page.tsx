@@ -11,7 +11,8 @@ export const metadata = pageMetadata({
     "Run StrikeLab's six-week quant lab with your club this term, free. One 45–60 minute meeting a week; students code real market models and finish with a capstone.",
 });
 
-const SETUP_HREF = `/sign-up?next=${encodeURIComponent("/settings#classroom")}`;
+// Signed-out leaders are sent through sign-up and back to setup.
+const SETUP_HREF = "/teach/new?src=pilot";
 
 const FAQS = [
   { q: "Do I need a finance or coding background?", a: "No. The platform teaches; you run the meeting. Each week comes with a goal, discussion prompts, common sticking points and a message you can send your students." },

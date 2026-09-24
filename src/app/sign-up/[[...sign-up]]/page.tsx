@@ -7,6 +7,9 @@ import { TRACKS } from "@/lib/tracks";
 import BrandMark from "@/components/BrandMark";
 import AuthError from "@/components/AuthError";
 import { useNextPath } from "@/lib/auth/useNextPath";
+import styles from "./signup.module.css";
+
+type SignupRole = "student" | "leader";
 
 const TOTAL_LESSONS = TRACKS.reduce((s, t) => s + t.lessons.length, 0);
 
@@ -37,6 +40,14 @@ export default function SignUpPage() {
   const nextPath = useNextPath();
   const [checkEmail, setCheckEmail] = useState(false);
   const signupSource = useSignupSource();
+  // Leaders coming from /pilot (next=/teach/...) and students from an invite
+  // (next=/join/...) get the obvious answer preselected; anyone else picks.
+  const [roleChoice, setRoleChoice] = useState<SignupRole | null>(null);
+  const role: SignupRole | null =
+    roleChoice ?? (nextPath.startsWith("/teach") ? "leader" : nextPath.startsWith("/join") ? "student" : null);
+  // A new leader with nowhere particular to go starts class setup.
+  const destination = role === "leader" && nextPath === "/dashboard" ? "/teach/new" : nextPath;
+  const leaderFlow = nextPath.startsWith("/teach");
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -48,7 +59,7 @@ export default function SignUpPage() {
     // Fallback when Supabase isn't configured yet — keep the old local behavior.
     if (!supabase) {
       try { localStorage.setItem("sl_user", JSON.stringify({ name, email })); } catch {}
-      router.push(nextPath);
+      router.push(destination);
       return;
     }
 
@@ -56,8 +67,8 @@ export default function SignUpPage() {
       email,
       password,
       options: {
-        data: { display_name: name, full_name: name, signup_source: signupSource },
-        emailRedirectTo: `${window.location.origin}/auth/callback?next=${encodeURIComponent(nextPath)}`,
+        data: { display_name: name, full_name: name, signup_source: signupSource, signup_role: role },
+        emailRedirectTo: `${window.location.origin}/auth/callback?next=${encodeURIComponent(destination)}`,
       },
     });
 
@@ -69,7 +80,7 @@ export default function SignUpPage() {
 
     // If email confirmation is on, there's no session yet.
     if (data.session) {
-      router.push(nextPath);
+      router.push(destination);
       router.refresh();
     } else {
       setCheckEmail(true);
@@ -81,9 +92,11 @@ export default function SignUpPage() {
     const supabase = getSupabaseBrowser();
     if (!supabase) return;
     setError(null);
+    // Google can't carry signup metadata, so the callback reads this cookie.
+    if (role) document.cookie = `sl_role=${role}; path=/; max-age=3600; SameSite=Lax`;
     const { error } = await supabase.auth.signInWithOAuth({
       provider: "google",
-      options: { redirectTo: `${window.location.origin}/auth/callback?next=${encodeURIComponent(nextPath)}` },
+      options: { redirectTo: `${window.location.origin}/auth/callback?next=${encodeURIComponent(destination)}` },
     });
     if (error) setError(error.message);
   }
@@ -112,12 +125,42 @@ export default function SignUpPage() {
     <div className="auth">
       <div className="auth-card">
         <div className="auth-brand"><span className="auth-logo"><BrandMark size={34} /></span></div>
-        <h1 className="auth-title">Start learning free</h1>
-        <p className="auth-sub">All {TOTAL_LESSONS} lessons, the Python playground, and the Greek visualizer — free forever.</p>
+        {leaderFlow ? (
+          <>
+            <h1 className="auth-title">Create your leader account</h1>
+            <p className="auth-sub">Pilots are free. Setting up your class takes about three minutes.</p>
+          </>
+        ) : (
+          <>
+            <h1 className="auth-title">Start learning free</h1>
+            <p className="auth-sub">All {TOTAL_LESSONS} lessons, the Python playground, and the Greek visualizer — free forever.</p>
+          </>
+        )}
 
         <AuthError message={error} />
 
         <form onSubmit={handleSubmit} className="auth-form">
+          <fieldset className={styles.roles}>
+            <legend className="auth-label">I&apos;m signing up as</legend>
+            <div className={styles.roleOptions}>
+              {([
+                ["student", "A student"],
+                ["leader", "A club leader or teacher"],
+              ] as const).map(([value, label]) => (
+                <label key={value} className={styles.role}>
+                  <input
+                    type="radio"
+                    name="signup-role"
+                    value={value}
+                    required
+                    checked={role === value}
+                    onChange={() => setRoleChoice(value)}
+                  />
+                  <span>{label}</span>
+                </label>
+              ))}
+            </div>
+          </fieldset>
           <label className="auth-label">
             Full name
             <input
@@ -175,7 +218,7 @@ export default function SignUpPage() {
         </p>
 
         <p className="auth-alt">
-          Already have an account? <Link href={nextPath === "/dashboard" ? "/sign-in" : `/sign-in?next=${encodeURIComponent(nextPath)}`}>Sign in</Link>
+          Already have an account? <Link href={destination === "/dashboard" ? "/sign-in" : `/sign-in?next=${encodeURIComponent(destination)}`}>Sign in</Link>
         </p>
       </div>
     </div>
