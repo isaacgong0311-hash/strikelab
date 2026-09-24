@@ -4,6 +4,7 @@ import { buildDemoData, DEMO_CLASS_NAME } from "@/lib/demo/fixtures";
 import CohortHomeView from "@/app/cohort/[classId]/CohortHomeView";
 import CohortScorecard from "@/app/dashboard/class/[id]/CohortScorecard";
 import LeaderToolkit from "@/app/dashboard/class/[id]/LeaderToolkit";
+import TrackPageView from "@/components/marketing/TrackPageView";
 import styles from "./demo.module.css";
 
 export const metadata = pageMetadata({
@@ -25,6 +26,7 @@ export default async function DemoPage({ searchParams }: { searchParams: Promise
 
   return (
     <div className={styles.shell}>
+      <TrackPageView event="demo_open" props={{ view }} />
       <header className={styles.header}>
         <p className={styles.kicker}>Live demo · sample data</p>
         <h1 className={styles.title}>See a club three weeks into the lab</h1>
@@ -44,7 +46,7 @@ export default async function DemoPage({ searchParams }: { searchParams: Promise
 
       <p className={styles.banner} role="note">
         <strong>Sample data.</strong> {DEMO_CLASS_NAME} and its students are made up.{" "}
-        <Link href="/pilot">Start a free pilot</Link> to see your own club.
+        <Link href="/pilot?src=demo-banner">Start a free pilot</Link> to see your own club.
       </p>
 
       {view === "teacher" ? (
@@ -74,7 +76,7 @@ export default async function DemoPage({ searchParams }: { searchParams: Promise
         <h2 id="demo-cta-title" className={styles.ctaTitle}>Run this with your club</h2>
         <p className={styles.lede}>Free for your pilot. Setup takes about three minutes, and every student joins with one link.</p>
         <div className={styles.ctaRow}>
-          <Link href="/pilot" className={styles.primary}>Start a free pilot</Link>
+          <Link href="/pilot?src=demo" className={styles.primary}>Start a free pilot</Link>
           <Link href="/learn/inv-1.1" className={styles.secondary}>Try the first lesson</Link>
         </div>
       </section>

@@ -48,7 +48,7 @@ const TIERS = [
       "Scorecard: activation, weekly activity, who needs help, CSV export",
       "Weekly meeting plan and ready-to-send messages",
     ],
-    cta: { href: "/pilot", label: "Start a free pilot" },
+    cta: { href: "/pilot?src=pricing", label: "Start a free pilot" },
     accent: true,
   },
   {
@@ -61,7 +61,7 @@ const TIERS = [
       "Invoices and purchase orders",
       "Help completing your district's student-data agreement",
     ],
-    cta: { href: "/pilot", label: "Start a free pilot" },
+    cta: { href: "/pilot?src=pricing", label: "Start a free pilot" },
     accent: false,
   },
 ];

@@ -7,6 +7,7 @@ import { TRACKS } from "@/lib/tracks";
 import BrandMark from "@/components/BrandMark";
 import AuthError from "@/components/AuthError";
 import { useNextPath } from "@/lib/auth/useNextPath";
+import { getAttribution } from "@/lib/attribution";
 import styles from "./signup.module.css";
 
 type SignupRole = "student" | "leader";
@@ -20,7 +21,8 @@ const TOTAL_LESSONS = TRACKS.reduce((s, t) => s + t.lessons.length, 0);
 function useSignupSource() {
   const [source] = useState<string | null>(() => {
     if (typeof window === "undefined") return null;
-    return new URLSearchParams(window.location.search).get("src");
+    // First touch wins: an outreach link's ?src= beats a later CTA's tag.
+    return getAttribution().src ?? new URLSearchParams(window.location.search).get("src");
   });
   useEffect(() => {
     if (!source) return;

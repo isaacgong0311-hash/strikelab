@@ -83,4 +83,41 @@ describe("scripts/metrics", () => {
     expect(rows.length).toBeGreaterThan(5);
     expect(rows.filter((r) => r.state !== "applied")).toEqual([]);
   });
+
+  it("leader-funnel.sql follows leaders from sign-up to their first student, by source", async () => {
+    const t = await createTestDb();
+    const signup = new Date("2026-10-01T15:00:00Z").getTime();
+    const at = (minutes: number) => new Date(signup + minutes * 60_000).toISOString();
+    const leader = async (meta: object, src: string | null) => {
+      const id = await t.user();
+      await t.db.query("update auth.users set raw_user_meta_data = $2::jsonb where id = $1", [id, JSON.stringify(meta)]);
+      await t.db.query("update profiles set created_at = $2, signup_source = $3 where id = $1", [id, at(0), src]);
+      return id;
+    };
+    const fast = await leader({ signup_role: "leader" }, "email-oct");
+    await leader({ signup_role: "leader" }, "email-oct"); // signed up, never made a class
+    const legacy = await leader({}, null); // taught before the sign-up question existed
+    await leader({ signup_role: "student" }, "email-oct"); // not a leader
+    const student = await t.user();
+
+    const { rows } = await t.db.query<{ id: string }>(
+      `insert into classes (teacher_id, name, join_code, created_at, template_id, starts_on, launched_at)
+       values ($1, 'Club', 'FU2345', $2, 'quant-foundations-v1', '2026-10-26', $3) returning id`,
+      [fast, at(2), at(5)]
+    );
+    await t.db.query("insert into classes (teacher_id, name, join_code, created_at) values ($1, 'Old', 'FU2346', $2)", [legacy, at(60)]);
+    await t.db.query("insert into class_members (class_id, student_id, joined_at) values ($1, $2, $3)", [rows[0].id, student, at(24 * 60)]);
+
+    const result = (await t.db.query<Record<string, unknown>>(sql("leader-funnel.sql"))).rows;
+    const bySource = Object.fromEntries(result.map((r) => [r.source, r]));
+    const nums = (r: Record<string, unknown>, keys: string[]) => keys.map((k) => (r[k] === null ? null : Number(r[k])));
+    const counts = ["leaders", "created_class", "launched_cohort", "first_student_joined", "first_student_within_7d"];
+
+    expect(result.at(-1)?.source).toBe("All sources");
+    expect(nums(bySource["All sources"], counts)).toEqual([3, 2, 1, 1, 1]);
+    expect(nums(bySource["email-oct"], [...counts, "median_min_to_class", "median_min_to_launch", "median_hours_to_first_student"])).toEqual([
+      2, 1, 1, 1, 1, 2, 5, 24,
+    ]);
+    expect(nums(bySource["(none)"], counts)).toEqual([1, 1, 0, 0, 0]);
+  });
 });

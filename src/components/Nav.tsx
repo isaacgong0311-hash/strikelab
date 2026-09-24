@@ -204,7 +204,7 @@ export default function Nav() {
       {/* ─── Announcement bar ──────────────────────────────────────────────── */}
       <div className="nav-announce">
         Now enrolling free pilots for this school year &middot;{" "}
-        <Link href="/pilot" className="nav-announce-link">
+        <Link href="/pilot?src=announce" className="nav-announce-link">
           Run the lab with your club →
         </Link>
       </div>
@@ -325,7 +325,7 @@ export default function Nav() {
           ) : (
             <>
               <Link href="/sign-in" className="nav-signin">Sign in</Link>
-              <Link href="/pilot" className="nav-cta">
+              <Link href="/pilot?src=nav" className="nav-cta">
                 Start a free pilot <span aria-hidden="true">→</span>
               </Link>
             </>
@@ -404,7 +404,7 @@ export default function Nav() {
             ) : (
               <>
                 <Link href="/sign-in" className="nav-mobile-link">Sign in</Link>
-                <Link href="/pilot" className="nav-cta" style={{ marginTop: 8, justifyContent: "center" }}>
+                <Link href="/pilot?src=nav-mobile" className="nav-cta" style={{ marginTop: 8, justifyContent: "center" }}>
                   Start a free pilot <span aria-hidden="true">→</span>
                 </Link>
               </>
