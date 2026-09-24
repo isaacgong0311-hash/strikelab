@@ -27,6 +27,21 @@ The scorecard computes these in `src/lib/cohorts/metrics.ts` (tested in `metrics
 - **Program completed** currently means every assigned lesson by 7 days after the last week. The capstone joins the definition when capstone submissions ship (A5).
 - **Needs help:** not activated after the window closes, or overdue work plus no completion or activity for 7+ days.
 
+## Leader funnel (2026-09-23)
+
+The funnel from a leader's sign-up to their first student comes from Postgres, not analytics: run `scripts/metrics/leader-funnel.sql` (tested in `src/lib/cohorts/metricsSql.db.test.ts`).
+
+| Term | Definition | Source |
+|---|---|---|
+| **Leader** | Chose "club leader or teacher" at sign-up, or owns at least one class. | `auth.users.raw_user_meta_data ->> 'signup_role'`, `classes.teacher_id` |
+| **Source** | Where the leader came from: the first `?src=` seen in their browser session, stored at sign-up. | `profiles.signup_source` |
+| **Class created / cohort launched / first student joined** | The first time each happened across the leader's classes. | `classes.created_at`, `classes.launched_at`, `class_members.joined_at` |
+| **First student within 7 days** | A student joined one of the leader's classes within 7 days of the leader signing up (target ≥ 70%). | same |
+
+`?src=` conventions: outreach emails use `email-<batch>` (e.g. `email-oct`); site CTAs tag themselves (`home-hero`, `home-cta`, `clubs`, `clubs-cta`, `nav`, `nav-mobile`, `announce`, `demo`, `demo-banner`, `pricing`, `footer`, `pilot`). The first tag in a session wins.
+
+**Marketing events** (`src/lib/analytics.ts`, `trackMarketing`): `hero_cta{target}`, `demo_open{view}`, `pilot_page_view{src}`, `pilot_call_click{page}`, `invite_copied{what}`. They go to Vercel Analytics, which only records custom events on a paid plan, so they're inert until then (decision log 2026-09-23). No names, emails or student identifiers in event properties.
+
 ## Not yet measurable
 
 **Capstone completion** can't be computed until capstone submissions ship (master plan A5). Activation, week-N-active, week-4 retention and program completion are measurable once migration 0016 is applied in production; before that, the scorecard says "not measurable" instead of estimating. Don't approximate these from the aggregate array with invented timestamps; report them as "not yet measurable" rather than a fabricated number.

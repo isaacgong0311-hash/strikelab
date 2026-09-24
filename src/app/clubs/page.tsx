@@ -4,6 +4,7 @@ import CompareTable from "@/components/marketing/CompareTable";
 import styles from "@/components/marketing/marketing.module.css";
 import { pageMetadata } from "@/lib/seo";
 import { LAB_WEEKS, pilotCallHref } from "@/lib/marketing/lab";
+import { TrackedAnchor } from "@/components/marketing/TrackedLink";
 
 export const metadata = pageMetadata({
   path: "/clubs",
@@ -36,7 +37,7 @@ export default function ClubsPage() {
             with a capstone they can show. You get a plan for every meeting and a clear view of who&apos;s keeping up.
           </p>
           <div className={styles.ctaRow}>
-            <Link href="/pilot" className={styles.primary}>Start a free pilot</Link>
+            <Link href="/pilot?src=clubs" className={styles.primary}>Start a free pilot</Link>
             <Link href="/demo" className={styles.secondary}>See the teacher view</Link>
           </div>
           <ul className={styles.list} aria-label="Built for" style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem 1.25rem", listStyle: "none", paddingLeft: 0, marginTop: "1.75rem" }}>
@@ -110,8 +111,8 @@ export default function ClubsPage() {
           <h2 id="clubs-faq" className={styles.h2}>Questions</h2>
           <Faq items={FAQS} />
           <div className={styles.ctaRow}>
-            <Link href="/pilot" className={styles.primary}>Start a free pilot</Link>
-            <a href={pilotCallHref("clubs")} className={styles.secondary}>Talk to the founder</a>
+            <Link href="/pilot?src=clubs-cta" className={styles.primary}>Start a free pilot</Link>
+            <TrackedAnchor href={pilotCallHref("clubs")} event="pilot_call_click" eventProps={{ page: "clubs" }} className={styles.secondary}>Talk to the founder</TrackedAnchor>
           </div>
           <p className={styles.fine}>
             Teaching AP Stats or AP Calc? See <Link href="/for-teachers" className={styles.textLink}>how the lessons line up</Link>.
