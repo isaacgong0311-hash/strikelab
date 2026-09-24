@@ -71,3 +71,6 @@ thumb_render.mjs
 # playwright
 /test-results/
 /playwright-report/
+
+# Lighthouse CI reports
+.lighthouseci/
