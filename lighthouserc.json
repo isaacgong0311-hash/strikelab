@@ -1,0 +1,71 @@
+{
+  "ci": {
+    "collect": {
+      "startServerCommand": "npm run start",
+      "startServerReadyPattern": "Ready",
+      "startServerReadyTimeout": 60000,
+      "url": [
+        "http://localhost:3000/",
+        "http://localhost:3000/clubs",
+        "http://localhost:3000/pilot",
+        "http://localhost:3000/demo",
+        "http://localhost:3000/learn/inv-1.1"
+      ],
+      "numberOfRuns": 3,
+      "settings": {
+        "onlyCategories": [
+          "performance"
+        ],
+        "chromeFlags": "--no-sandbox --headless=new"
+      }
+    },
+    "upload": {
+      "target": "filesystem",
+      "outputDir": ".lighthouseci"
+    },
+    "assert": {
+      "assertMatrix": [
+        {
+          "matchingUrlPattern": ".*",
+          "assertions": {
+            "cumulative-layout-shift": [
+              "error",
+              {
+                "maxNumericValue": 0.05
+              }
+            ],
+            "largest-contentful-paint": [
+              "warn",
+              {
+                "maxNumericValue": 2000
+              }
+            ],
+            "total-byte-weight": [
+              "error",
+              {
+                "maxNumericValue": 921600
+              }
+            ],
+            "categories:performance": [
+              "error",
+              {
+                "minScore": 0.7
+              }
+            ]
+          }
+        },
+        {
+          "matchingUrlPattern": "^http://localhost:3000/(clubs|pilot|demo)?$",
+          "assertions": {
+            "resource-summary:script:size": [
+              "warn",
+              {
+                "maxNumericValue": 184320
+              }
+            ]
+          }
+        }
+      ]
+    }
+  }
+}

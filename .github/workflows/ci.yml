@@ -33,3 +33,17 @@ jobs:
 
       - name: Build
         run: npm run build
+
+      # Frontend plan FE-10. LCP and marketing-route JS are warnings until the
+      # Sentry/Supabase bundle work lands; layout shift, page weight and the
+      # overall score fail the build so things can't quietly get worse.
+      - name: Performance budgets (Lighthouse CI)
+        run: npm run lhci
+
+      - name: Upload Lighthouse reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: lighthouse-reports
+          path: .lighthouseci
+          if-no-files-found: ignore
