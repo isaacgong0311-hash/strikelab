@@ -1,4 +1,4 @@
-import { readFileSync } from "node:fs";
+import { readFileSync, readdirSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 import { createTestDb } from "../../../supabase/testing/db";
@@ -80,8 +80,10 @@ describe("scripts/metrics", () => {
     const t = await createTestDb();
     await t.db.exec(sql("baseline.sql"));
     const { rows } = await t.db.query<{ migration: string; state: string }>(sql("check-migrations.sql"));
-    expect(rows.length).toBeGreaterThan(5);
     expect(rows.filter((r) => r.state !== "applied")).toEqual([]);
+    // One row per migration file, so a new migration can't be forgotten here.
+    const files = readdirSync(join(__dirname, "..", "..", "..", "supabase", "migrations")).filter((f) => f.endsWith(".sql"));
+    expect(rows.map((r) => r.migration.slice(0, 4))).toEqual(files.map((f) => f.slice(0, 4)).sort());
   });
 
   it("leader-funnel.sql follows leaders from sign-up to their first student, by source", async () => {

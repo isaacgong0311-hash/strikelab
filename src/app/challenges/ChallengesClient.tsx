@@ -383,6 +383,7 @@ export default function ChallengesClient() {
             <div className="ch-panel-header">
               <span className="ch-panel-title">This Week&apos;s Leaderboard</span>
             </div>
+            <p style={{ fontSize: 12, color: "var(--ink-3)", margin: "0 0 6px" }}>Fastest times only. No one&apos;s name is shown.</p>
             {lbLoading ? (
               <p style={{ fontSize: 12, color: "var(--ink-3)", margin: "4px 0" }}>Loading…</p>
             ) : leaderboard.length === 0 ? (

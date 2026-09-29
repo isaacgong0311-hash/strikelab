@@ -50,12 +50,6 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Invalid elapsedSeconds" }, { status: 400 });
   }
 
-  const { data: profile } = await supabase
-    .from("profiles")
-    .select("display_name")
-    .eq("id", userId)
-    .maybeSingle();
-
   const { data: existing } = await supabase
     .from("challenge_completions")
     .select("elapsed_seconds")
@@ -71,7 +65,6 @@ export async function POST(req: NextRequest) {
     {
       user_id: userId,
       challenge_id: challenge.id,
-      display_name: profile?.display_name ?? null,
       elapsed_seconds: elapsedSeconds,
       xp: challenge.xpReward,
     },
