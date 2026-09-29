@@ -44,6 +44,10 @@ const jetbrains = JetBrains_Mono({
   variable: "--font-mono",
   subsets: ["latin"],
   weight: ["300", "400", "500", "600", "700"],
+  // Code and small labels only: not worth competing with the page's own
+  // content for bandwidth on a slow school network (work plan AG4). It
+  // still loads, with a fallback font until it arrives.
+  preload: false,
 });
 
 export const metadata: Metadata = {

@@ -7,10 +7,11 @@ import {
   useState,
   useCallback,
 } from "react";
+import { usePathname } from "next/navigation";
 import type { Session, User } from "@supabase/supabase-js";
-import * as Sentry from "@sentry/nextjs";
-import { getSupabaseBrowser } from "@/lib/supabase/client";
+import { hasSupabaseSessionCookie, loadSupabaseBrowser } from "@/lib/supabase/lazy";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
+import { setMonitoringUser } from "@/lib/monitoring";
 
 interface AuthContextValue {
   user: User | null;
@@ -36,42 +37,70 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState(isSupabaseConfigured);
+  // Signed-out visitors never load supabase-js (src/lib/supabase/lazy.ts).
+  // Re-checked on every navigation, because signing in with a password
+  // happens client-side and sets the session cookie without a reload.
+  const pathname = usePathname();
+  const [listening, setListening] = useState(false);
 
   useEffect(() => {
-    const supabase = getSupabaseBrowser();
-    if (!supabase) {
-      // isSupabaseConfigured is false here too, so `loading` is already
-      // false from its initial state — no setState needed.
-      return;
-    }
-
+    if (!isSupabaseConfigured || listening) return;
     let active = true;
-
-    supabase.auth.getSession().then(({ data }) => {
+    // Read the cookie jar (an external system) in a callback, not the effect body.
+    void Promise.resolve().then(() => {
       if (!active) return;
-      setSession(data.session);
-      setUser(data.session?.user ?? null);
-      setLoading(false);
-      // Tags Sentry events with the account so a crash report can be traced
-      // back to a user (id + email, no other PII). No-op if DSN isn't set.
-      Sentry.setUser(data.session?.user ? { id: data.session.user.id, email: data.session.user.email } : null);
+      if (hasSupabaseSessionCookie()) {
+        setLoading(true);
+        setListening(true);
+      } else {
+        // Nothing to load: leave the initial "checking" state as signed out.
+        setLoading(false);
+      }
     });
+    return () => {
+      active = false;
+    };
+  }, [pathname, listening]);
 
-    const { data: sub } = supabase.auth.onAuthStateChange((_event, newSession) => {
-      setSession(newSession);
-      setUser(newSession?.user ?? null);
-      setLoading(false);
-      Sentry.setUser(newSession?.user ? { id: newSession.user.id, email: newSession.user.email } : null);
+  useEffect(() => {
+    if (!listening) return;
+    let active = true;
+    let unsubscribe = () => {};
+
+    void loadSupabaseBrowser().then((supabase) => {
+      if (!active) return;
+      if (!supabase) {
+        setLoading(false);
+        return;
+      }
+
+      supabase.auth.getSession().then(({ data }) => {
+        if (!active) return;
+        setSession(data.session);
+        setUser(data.session?.user ?? null);
+        setLoading(false);
+        // Tags error reports with the account id (no email: most users are
+        // minors, and the id is enough to trace a crash). No-op without a DSN.
+        setMonitoringUser(data.session?.user ? { id: data.session.user.id } : null);
+      });
+
+      const { data: sub } = supabase.auth.onAuthStateChange((_event, newSession) => {
+        setSession(newSession);
+        setUser(newSession?.user ?? null);
+        setLoading(false);
+        setMonitoringUser(newSession?.user ? { id: newSession.user.id } : null);
+      });
+      unsubscribe = () => sub.subscription.unsubscribe();
     });
 
     return () => {
       active = false;
-      sub.subscription.unsubscribe();
+      unsubscribe();
     };
-  }, []);
+  }, [listening]);
 
   const signOut = useCallback(async () => {
-    const supabase = getSupabaseBrowser();
+    const supabase = await loadSupabaseBrowser();
     if (supabase) await supabase.auth.signOut();
     setUser(null);
     setSession(null);
