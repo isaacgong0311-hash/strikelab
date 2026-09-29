@@ -157,16 +157,23 @@ export default function SignUpPage() {
             </div>
           </fieldset>
           <label className="auth-label">
-            Full name
+            Your name
             <input
               className="auth-input"
               type="text"
               required
+              maxLength={60}
               value={name}
               onChange={(e) => setName(e.target.value)}
-              placeholder="Isaac Gong"
-              autoComplete="name"
+              placeholder={role === "leader" ? "Jordan Rivera" : "Alex P."}
+              autoComplete={role === "leader" ? "name" : "nickname"}
+              aria-describedby="signup-name-help"
             />
+            <span id="signup-name-help" className="auth-help">
+              {role === "leader"
+                ? "Shown on your class pages."
+                : "What your club leader will see. A first name and last initial is enough."}
+            </span>
           </label>
           <label className="auth-label">
             Email
