@@ -1,7 +1,7 @@
 # StrikeLab Work Plan: Weeks 3–8 (Sep 29 – Nov 8), from "built" to "piloting"
 
 **Date:** 2026-09-29 (runway week 3 of 32)
-**Status:** Draft for founder review
+**Status:** Adopted 2026-09-29. Agent tasks AG1–AG8 are done (see §12); founder tasks are open.
 **Horizon:** 2026-09-28 → 2026-11-08 (runway weeks 3–8), with the decisions that shape weeks 9–32
 **Relation to other docs:** The strategy (`specs/2026-09-13-strikelab-yc-company-design.md`) and the master plan (`plans/2026-09-22-master-plan.md`) are still authoritative for *what* and *why*. This plan replaces the master plan's §11 "Next 10 days". It also re-sequences weeks 3–8 around what's true today. Where the two disagree about these six weeks, this plan wins. Task IDs from the master plan (A1, D7, F2, …) and the frontend plan (FE-4, …) are reused so the history stays connected.
 
@@ -127,7 +127,7 @@ Each week has one goal, the founder's tasks, the agents' tasks, and an exit test
 - [ ] **AG2** Make the docs true: update the production-readiness checklist to migration 0021 with the P2/P3 checks, remove the stale "capstone not measurable" section from the metric glossary, add pipeline rows to the scorecard template, and mark this plan in master plan §11.
 - [ ] **AG3** Outreach kit in `docs/gtm/outreach-kit.md`: the email, text and intro-ask templates from G3, the call agenda, the qualifying questions and the new objections (G4–G5).
 
-**Exit test (Fri Oct 2):** ≥ 20 real contacts in the CRM · ≥ 3 calls booked · `check-migrations.sql` shows 0001–0021 applied in prod · a decision recorded on P2 and P3 · #32 merged.
+**Exit test (Fri Oct 2):** ≥ 20 real contacts in the CRM · ≥ 3 calls booked · `check-migrations.sql` shows 0001–0022 applied in prod · a decision recorded on P2 and P3 · #32 merged.
 
 ### Week 4 · Oct 5 – 11 · "Conversations, and the first yes"
 
@@ -254,8 +254,8 @@ Agents can't do these, because they need dashboard access. Each has a clear pass
 
 **P1. Migrations applied, in order (week 3, 1.5h).**
 1. In the Supabase SQL editor, run `scripts/metrics/check-migrations.sql`.
-2. Apply whatever is missing, in ledger order (master plan §12): **0015 first**, because without it every signed-in class read errors. Then 0013, 0014, 0016–0021.
-3. Re-run the check. **Pass:** every migration through 0021 shows as applied.
+2. Apply whatever is missing, in ledger order (master plan §12): **0015 first**, because without it every signed-in class read errors. Then 0013, 0014, 0016–0022.
+3. Re-run the check. **Pass:** every migration through 0022 shows as applied.
 4. Then as a real signed-in user in production, open `/dashboard`, a class page and `/cohort/[id]` with no errors (check Sentry too).
 
 **P2. Sign-up email that works for a whole room (week 3 decision, week 4 fix).**
@@ -301,7 +301,7 @@ Estimates are agent build hours / founder review hours. Each task ends with `npm
 | **AG2** | **Make the docs true.** `production-readiness-checklist.md` up to 0021, plus P2, P3 and P5. Metric glossary (capstone is measurable now). Pipeline rows in the scorecard template (§8). P6 smoke-test script with SQL checks. Master plan §11 points here | wk 3 | 1.5h / 0.5h | A founder could run each checklist without asking a question |
 | **AG3** | **Outreach kit** (G3–G5) in `docs/gtm/outreach-kit.md` | wk 3 | 1h / 0.5h | The founder sends from it without rewriting |
 | **AG4** | **Student-path page speed.** (1) Load the Sentry browser SDK lazily, or keep it off signed-out marketing routes (errors still reach Sentry once it loads; check the current `@sentry/nextjs` lazy-loading guidance in `node_modules`). (2) Keep `supabase-js` out of the initial bundle for signed-out visitors: server-render the signed-in state the nav needs, and import the browser client only when it's needed. (3) Re-measure with PR #34's Lighthouse setup | wk 4 | 6h / 1.5h | **Must:** `/learn/inv-1.1` and `/cohort/*` median mobile LCP ≤ 2.5s and marketing JS down ≥ 100 KB gzipped, with Sentry still catching a test error. **Want:** ≤ 2.0s, and the LHCI warnings for those routes turned into errors at the level reached |
-| **AG5** | **Sign-up resilience.** (1) The "check your email" state: plain copy ("Check your inbox and spam folder; the email comes from …"), a **Resend email** button (with a cooldown), and a hint to ask the club leader if nothing arrives within 2 minutes. (2) An IP-based limit on signed-out invite lookups (`/join/[code]`, `/api/classes/join`), reusing the `rate_limits` table with a hashed IP. This closes the gap noted in master plan §10 that the per-user limiter can't cover | wk 4 | 3h / 1h | A Playwright test covers the resend state. A unit test shows the limiter blocks the N+1th lookup within the window. No PII is stored |
+| **AG5** | **Sign-up resilience.** (1) The "check your email" state: plain copy ("Check your inbox and spam folder; the email comes from …"), a **Resend email** button (with a cooldown), and a hint to ask the club leader if nothing arrives within 2 minutes. (2) ~~An IP-based limit on signed-out invite lookups~~: decided against on 2026-09-29 (§12) | wk 4 | 3h / 1h | A Playwright test covers the resend state. A unit test shows the limiter blocks the N+1th lookup within the window. No PII is stored |
 | **AG6** | **Kickoff kit docs** (§5.4) | wk 4 | 2h / 1h | The founder can run the kickoff from these docs alone |
 | **AG7** | **Pilot operations templates:** `pilot-runbook.md` (G1), an observation-notes template keyed by lesson and step id (G4), and `pilot-report-template.md` (G6) | wk 5 | 1.5h / 0.5h | Ready before Cohort A week 1 ends |
 | **AG8** | **Pre-freeze security review:** `/security-review` on the invite, join, capstone share, teacher view and account deletion routes | wk 6 | 1h / 0.5h | Findings fixed, or recorded with a reason |
@@ -457,12 +457,74 @@ Each has a recommendation, so they can be decided in one sitting. Log them in `d
 - [ ] Kickoff; first Monday scorecard
 
 **Agents**
-- [ ] AG1 land the PR stack; close #1
-- [ ] AG2 make the docs true, plus the smoke-test script and pipeline scorecard rows
-- [ ] AG3 outreach kit
-- [ ] AG4 student-path page speed
-- [ ] AG5 sign-up resilience and signed-out join rate limit
-- [ ] AG6 kickoff kit (allowlist, device test, T-0 runbook, parent note, incident runbook)
-- [ ] AG7 pilot operations templates
-- [ ] AG8 pre-freeze security review
+- [x] AG1 verify the PR stack; close #1 (merging #32–#34 is the founder's call)
+- [x] AG2 make the docs true, plus the smoke-test script and pipeline scorecard rows
+- [x] AG3 outreach kit
+- [x] AG4 student-path page speed (partly: see §12)
+- [x] AG5 sign-up resilience (the signed-out join limiter was deliberately not built: see §12)
+- [x] AG6 kickoff kit (allowlist, device test, T-0 runbook, parent note, incident runbook) and data map
+- [x] AG7 pilot operations templates
+- [x] AG8 pre-freeze security review
 - [ ] Code freeze Fri Oct 23; after kickoff, fix only the named bottleneck
+
+---
+
+## 12. Execution log
+
+### 2026-09-29: agent tasks AG1–AG8
+
+Everything below is on branch `claude/gracious-mayer-z05kz3` (PR #35), stacked on #34.
+
+**AG1: PR stack.**
+- #32 → #33 → #34 (head `27d1e74`) all pass locally: lint; 44 files / 327 tests; build; Playwright 36/36.
+- Review found nothing blocking. The notes are on #32.
+- #1 (a stale Vercel Analytics install) is closed.
+- **Merging is yours**, in order: #32; then retarget #33 to `master` and merge once CI is green; then the same for #34; then #35.
+
+**AG2: docs.**
+- `production-readiness-checklist.md` rewritten as runbook steps P1–P7.
+- `check-migrations.sql` now covers all 22 migrations. A test fails if a new migration file isn't added to it.
+- Metric glossary corrected, with the pipeline terms added.
+- Pipeline rows added to the scorecard template.
+- New `smoke-test.md`: the whole journey with SQL checks.
+
+**AG3:** `docs/gtm/outreach-kit.md`.
+
+**AG4: page speed.** Two changes:
+- Sentry now loads after the page does (`src/lib/monitoring.ts`). Errors before that are buffered and replayed. **Verified:** an error thrown after load still reached a Sentry ingest endpoint.
+- `supabase-js` loads only when a session cookie exists (`src/lib/supabase/lazy.ts`).
+
+The JetBrains Mono font is no longer preloaded. Lighthouse (mobile, simulated slow 4G, median of 3):
+
+| Route | LCP before → after | Initial JS before → after (transferred) | Score before → after |
+|---|---|---|---|
+| `/` | 5.0s → 3.7s | 460 → 324 KB | 0.81 → 0.89 |
+| `/clubs` | 4.0s → 3.2s | 336 → 200 KB | 0.87 → 0.93 |
+| `/pilot` | 3.7s → 3.2s | 336 → 200 KB | 0.89 → 0.93 |
+| `/demo` | 5.0s → 3.5s | 343 → 206 KB | 0.81 → 0.91 |
+| `/learn/inv-1.1` | 3.3s → 2.9–3.2s | 460 → 324 KB | 0.92 → 0.93 |
+
+- Next's own first-load numbers are now the same (about 200 KB) on every route. The extra 124 KB Lighthouse shows on `/` and `/learn` is `<Link>` prefetching the lesson page's chart code after load, not part of the initial load.
+- **The "must" target (≤ 2.5s on `/learn`) is not met.** What remains is React/Next itself and 44 KB of render-blocking CSS (`globals.css`), which is FE-9's consolidation work. Not worth doing before kickoff.
+- In a real browser (4× CPU slowdown, no network throttling), LCP is 0.4–0.65s on these routes. The simulated number is dominated by bytes on a slow 4G model.
+- **Before kickoff, time the page on the partner school's actual Chromebook** (kickoff kit §2 step 6). That's the number that matters.
+
+**AG5: sign-up.**
+- "Check your email" now has sender and spam-folder help, a **Resend email** button with a 60-second cooldown, and a pointer to the club leader.
+- **Not built: a signed-out rate limit on invite lookups.** The code space is about 1.5 billion values, a hit reveals only a class name, and joining still needs an account and is rate-limited. A database limiter keyed by IP would need a new table for little gain. If abuse shows up, add a Vercel Firewall rule on `/join/*`.
+- The resend screen has no automated test, because Playwright runs without Supabase and that state needs a real sign-up. `smoke-test.md` step 1 covers it.
+
+**AG6:** `docs/gtm/kickoff-kit.md`:
+- the IT allowlist, measured by recording every host the browser contacts on the invite, session, lesson and cohort pages;
+- the device and network test;
+- the T-0 runbook with fallbacks;
+- the parent note;
+- the incident runbook.
+
+Also `docs/trust/data-map.md`, for the approval packet.
+
+**AG7:** `pilot-runbook.md`, `pilot-observation-notes.md`, `pilot-report-template.md`.
+
+**AG8:** `docs/trust/security-review-2026-09-29.md`.
+- **High, fixed:** the weekly challenge leaderboard was public with students' sign-up names and user ids readable through the public API key. That contradicted the homepage's "no public leaderboards for students". Migration `0022` (**apply it in production**) and the new route show times only.
+- **Low, fixed:** students' emails were sent to Sentry; now only the account id is.

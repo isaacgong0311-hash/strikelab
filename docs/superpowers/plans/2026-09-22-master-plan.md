@@ -444,6 +444,8 @@ Every agent-doable engineering task scheduled before the first kickoff is done a
 
 ## 11. Next 10 days (through 2026-10-02)
 
+> **Superseded 2026-09-29** by `plans/2026-09-29-work-plan-to-first-kickoff.md`, which re-sequences weeks 3–8. The list below is kept for history.
+
 **Founder**
 - [ ] Review this plan; mark changes; log the adoption in `decision-log.md`
 - [ ] Merge `feat/session-sync` (B0)
@@ -477,6 +479,7 @@ Every agent-doable engineering task scheduled before the first kickoff is done a
 | 0019 | `capstone_submissions` (+ sharing/teacher-view functions, access log) | Deployed (#29), A5 |
 | 0020 | `subscription_event_ordering` | D4 |
 | 0021 | `rate_limits` | D11 |
+| 0022 | `private_challenge_leaderboard` | Security review 2026-09-29: challenge leaderboard no longer public with names. **Apply** |
 
 `scripts/metrics/check-migrations.sql` shows which are applied. The app tolerates any of them being missing (features degrade to device-only or "not measurable"), but apply them in order.
 
