@@ -4,6 +4,7 @@ import { rangeFill } from "@/lib/rangeFill";
 import { useSearchParams } from "next/navigation";
 import dynamic from "next/dynamic";
 import GreekChart from "@/components/GreekChart";
+import { loadPythonRuntime, PYTHON_UNAVAILABLE_MESSAGE } from "@/lib/pythonRuntime";
 
 const MiniEditor = dynamic(() => import("@/components/MiniEditor"), { ssr: false });
 
@@ -188,26 +189,29 @@ export default function PlaygroundClient() {
   const [r, setR] = useState(0.05);
   const [sigma, setSigma] = useState(0.20);
   const [pyodideReady, setPyodideReady] = useState(false);
+  const [pyodideFailed, setPyodideFailed] = useState(false);
   const [refOpen, setRefOpen] = useState(false);
   const runRef = useRef<(() => void) | null>(null);
 
   useEffect(() => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const win = window as any;
-    if (win.__pyodideReady) { win.__pyodideReady.then(() => setPyodideReady(true)); return; }
-    const script = document.createElement("script");
-    script.src = "https://cdn.jsdelivr.net/pyodide/v0.26.4/full/pyodide.js";
-    win.__pyodideReady = new Promise(resolve => {
-      script.onload = async () => { const py = await win.loadPyodide(); resolve(py); setPyodideReady(true); };
-    });
-    document.head.appendChild(script);
+    let active = true;
+    loadPythonRuntime()
+      .then(() => { if (active) setPyodideReady(true); })
+      .catch(() => { if (active) setPyodideFailed(true); });
+    return () => { active = false; };
   }, []);
 
   const runAndPlot = useCallback(async () => {
     setStatus("running"); setOutput("Running…");
     try {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const pyodide = await (window as any).__pyodideReady;
+      let pyodide;
+      try {
+        pyodide = await loadPythonRuntime();
+        setPyodideReady(true); setPyodideFailed(false);
+      } catch {
+        setPyodideFailed(true);
+        setOutput(PYTHON_UNAVAILABLE_MESSAGE); setStatus("fail"); return;
+      }
       try { pyodide.runPython(code); } catch (err: unknown) {
         setOutput(err instanceof Error ? err.message : String(err));
         setStatus("fail"); return;
@@ -327,10 +331,12 @@ export default function PlaygroundClient() {
             <div className="pg-toolbar-right">
               <div className="pg-py-status" role="status" aria-live="polite">
                 <span className="pg-py-dot" style={{ background: pyodideReady ? "#22c55e" : "#64748b" }} />
-                <span>{pyodideReady ? "Python 3.11" : "Loading Python…"}</span>
+                <span>{pyodideReady ? "Python 3.11" : pyodideFailed ? "Python didn't load" : "Loading Python…"}</span>
               </div>
-              <button type="button" onClick={runAndPlot} disabled={status === "running" || !pyodideReady} className="pg-run-btn">
-                {!pyodideReady ? (
+              <button type="button" onClick={runAndPlot} disabled={status === "running" || (!pyodideReady && !pyodideFailed)} className="pg-run-btn">
+                {pyodideFailed && !pyodideReady ? (
+                  <><span>↻</span> Try again</>
+                ) : !pyodideReady ? (
                   <><span className="pg-spin">◌</span> Loading Python…</>
                 ) : status === "running" ? (
                   <><span className="pg-spin">◌</span> Running…</>

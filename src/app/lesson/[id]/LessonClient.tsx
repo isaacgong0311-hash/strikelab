@@ -24,6 +24,7 @@ import FlameIcon from "@/components/FlameIcon";
 import Dialog from "@/components/ui/Dialog";
 
 import { CODE_SYNC_LABELS, useSyncedCode } from "@/lib/submissions/useSyncedCode";
+import { loadPythonRuntime } from "@/lib/pythonRuntime";
 
 const MiniEditor = dynamic(() => import("@/components/MiniEditor"), { ssr: false });
 
@@ -301,8 +302,7 @@ export default function LessonClient({ lesson, sections, chunks, prev, next, tra
     setOutput("Running tests…");
 
     try {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const pyodide = await (window as any).__pyodideReady;
+      const pyodide = await loadPythonRuntime();
       pyodide.runPython(code);
       pyodide.runPython(lesson.exercise.testFn);
       setOutput("✓ All tests passed!");
@@ -724,21 +724,11 @@ export default function LessonClient({ lesson, sections, chunks, prev, next, tra
 }
 
 function PyodideLoader() {
-  if (typeof window === "undefined") return null;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  if ((window as any).__pyodideReady) return null;
-
-  const script = document.createElement("script");
-  script.src = "https://cdn.jsdelivr.net/pyodide/v0.26.4/full/pyodide.js";
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  (window as any).__pyodideReady = new Promise((resolve) => {
-    script.onload = async () => {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const pyodide = await (window as any).loadPyodide();
-      resolve(pyodide);
-    };
-  });
-  document.head.appendChild(script);
-
+  // Start loading Python as soon as the exercise is on screen, so Run is fast.
+  useEffect(() => {
+    loadPythonRuntime().catch(() => {
+      // Reported when the student clicks Run, which retries.
+    });
+  }, []);
   return null;
 }

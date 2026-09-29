@@ -5,6 +5,7 @@ import Link from "next/link";
 import { getCurrentChallenge, getNextChallengeDate } from "@/lib/challenges";
 import { trackUpgradeClick } from "@/lib/analytics";
 import { startCheckout, useSubscription } from "@/lib/useSubscription";
+import { loadPythonRuntime } from "@/lib/pythonRuntime";
 
 const MiniEditor = dynamic(() => import("@/components/MiniEditor"), { ssr: false });
 
@@ -36,20 +37,9 @@ function useCountdown(targetMs: number) {
 // ── Pyodide ──────────────────────────────────────────────────────────────────
 function usePyodide() {
   useEffect(() => {
-    if (typeof window === "undefined") return;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    if ((window as any).__pyodideReady) return;
-    const script = document.createElement("script");
-    script.src = "https://cdn.jsdelivr.net/pyodide/v0.26.4/full/pyodide.js";
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (window as any).__pyodideReady = new Promise(resolve => {
-      script.onload = async () => {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const py = await (window as any).loadPyodide();
-        resolve(py);
-      };
+    loadPythonRuntime().catch(() => {
+      // Reported when the student clicks Run, which retries.
     });
-    document.head.appendChild(script);
   }, []);
 }
 
@@ -164,8 +154,7 @@ export default function ChallengesClient() {
   const runCode = useCallback(async function runCode() {
     setStatus("running"); setOutput("Running tests…"); setAttempts(n => n + 1);
     try {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const pyodide = await (window as any).__pyodideReady;
+      const pyodide = await loadPythonRuntime();
       pyodide.runPython(code);
       pyodide.runPython(challenge.testCode);
       setOutput("All tests passed!");
