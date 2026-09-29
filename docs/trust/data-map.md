@@ -19,11 +19,11 @@ Enforced in the database with row-level security (RLS): each rule below is a dat
 | Data | Where (table) | Personal? | The student | Their club leader | Anyone else |
 |---|---|---|---|---|---|
 | Email, password hash (or Google sign-in) | Supabase Auth | Yes | Yes | **No** | No |
-| Display name (what they typed at sign-up) | `profiles` | Yes | Yes | Yes (roster, scorecard) | No |
+| Display name (what they typed at sign-up; the form suggests a first name and last initial) | `profiles` | Yes | Yes | Yes (roster, scorecard, kickoff view) | No |
 | How they found StrikeLab (`?src=` tag) | `profiles.signup_source` | No | Yes | No | No |
 | Lessons completed, XP, streak, timezone | `progress` | Activity | Yes | Number of lessons and tracks completed, and last-active date (not XP or streak) | No |
 | When each lesson was completed (server clock) | `lesson_completions` | Activity | Yes | Yes, for class members | No |
-| Short-session results (accuracy, time) | `session_completions` | Activity | Yes | No | No |
+| Short-session results (accuracy, time) | `session_completions` | Activity | Yes | Only whether they finished the first short lesson (kickoff live view); never accuracy or time | No |
 | Exercise code | `lesson_submissions` | Student work | Yes | Yes, for class members | No |
 | Capstone (title, thesis, code, results, reflection) | `capstone_submissions` | Student work | Yes | Opens it explicitly; **each view is logged and shown to the student** | Only via a share link the student creates: no name, and it stops working when they turn sharing off |
 | Log of teacher views of a capstone | `capstone_access_log` | Activity | Yes | No | No |
@@ -49,7 +49,7 @@ Enforced in the database with row-level security (RLS): each rule below is a dat
 | Google | "Continue with Google" (only if used) | The sign-in itself |
 | Stripe | Payments (never used by students in a pilot) | The payer's checkout details, handled entirely by Stripe |
 | Web3Forms | Newsletter sign-up (only if used) | The email address entered |
-| jsDelivr | Delivers the in-browser Python runtime (Pyodide) | A normal file download (IP address); no account data |
+| jsDelivr | A backup source for the in-browser Python runtime, used only if strikelab.dev's own copy fails to load | A normal file download (IP address); no account data |
 | Discord | Only if a student connects their own server's webhook | Lesson and achievement names posted to that server |
 
 Resend (sign-up emails) will join this list if production-readiness P2 chooses custom SMTP.

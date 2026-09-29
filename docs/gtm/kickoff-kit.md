@@ -23,7 +23,7 @@ Send this to the school's IT contact as soon as a pilot has a date. Fill in `[pr
 > |---|---|---|
 > | `strikelab.dev` | The site itself (including its built-in page analytics) | Yes |
 > | `[project-ref].supabase.co` | Sign-in and saving students' progress | Yes |
-> | `cdn.jsdelivr.net` | The in-browser Python runtime used by the coding exercises (`/pyodide/…`) | Yes, from week 3 |
+> | `cdn.jsdelivr.net` | A backup copy of the in-browser Python runtime, used only if strikelab.dev's own copy fails | Optional |
 > | `accounts.google.com` | Only if students use "Continue with Google" | Optional |
 > | `*.ingest.sentry.io` | Anonymous error reports that help us fix bugs | Optional: blocking it breaks nothing |
 >
@@ -39,7 +39,7 @@ Do this **at the school, on the school network, on the kind of device students w
 | 2 | Sign up as a test student with the method chosen in production-readiness P2/P3 | The account works; if email confirmation is on, the email arrives within 1 minute | Email: check spam and P2. Google: "this app is blocked" means the district restricts third-party apps, so use email |
 | 3 | Join, and land on the cohort home | "This week" shows week 1 and one Start button | Screenshot it and send it to the founder |
 | 4 | Finish session `inv-1.1` | The summary screen shows | Note where it stuck |
-| 5 | Open `/lesson/3` and click **Run** on the exercise | Python loads (the first time can take 5–20s) and tests run | It never loads: `cdn.jsdelivr.net` is blocked. Week 1–2 don't need it; get it allowed before week 3 |
+| 5 | Open `/lesson/3` and click **Run** on the exercise | Python loads (the first time downloads about 13 MB and can take 5–30s on school Wi-Fi) and tests run | "Python couldn't load": the filter blocks large downloads from `strikelab.dev/pyodide/`. Weeks 1–2 don't need it; get it allowed before week 3 |
 | 6 | **Time** how long the cohort home takes to appear on a fresh load | Under about 3s | Tell the founder the device model and the time |
 | 7 | In the Supabase SQL editor, check that the test student has a `lesson_completions` row (smoke-test step 3's query) | One row | Measurement is broken: stop, and fix before kickoff |
 | 8 | Delete the test account (Settings → Delete my account) | Gone | — |
@@ -54,6 +54,7 @@ Log the result (date, device model, pass/fail per step) in the CRM notes for tha
 
 - [ ] The leader's class is launched (`/teach` shows it with the right start date and break weeks).
 - [ ] Printed join cards (from the invite page, one per 2–3 students) or the invite link on the projector.
+- [ ] The leader's **invite page** (`/teach/<class>/invite`) is open on their laptop. Its "During your first meeting" panel shows, live, who has joined and who has finished the first short lesson, with students still at "Joined" listed first.
 - [ ] You're signed in as the founder on a second device with the class scorecard open.
 - [ ] You know who can turn off email confirmation in Supabase, and how (P2 fallback), and it takes under 2 minutes.
 - [ ] Backup: the join code written on the board, for anyone whose camera won't scan.
@@ -65,7 +66,7 @@ Log the result (date, device model, pass/fail per step) in the CRM notes for tha
 | −15 | Projector on; join card up; test the room's Wi-Fi once | Founder |
 | 0–5 | Welcome. "For six weeks, you'll learn how professionals price risk, by building the models yourself, and finish with a project you can show." | Leader |
 | 5–15 | **Everyone joins.** Scan the card, sign up with the email you actually check, confirm the email. Walk the room: the most common problems are a mistyped email and a confirmation email in spam | Founder circulates |
-| 15–35 | **First session together** (`inv-1.1`, about 5 minutes), then keep going through `inv-1.2` and `inv-1.3`. Fast students help neighbors | Everyone |
+| 15–35 | **First session together** (`inv-1.1`, about 5 minutes), then keep going through `inv-1.2` and `inv-1.3`. Fast students help neighbors. Walk to whoever the live panel still shows at "Joined" | Everyone |
 | 35–40 | Show the cohort home: "This is where each week's work appears. This week: three short lessons, due [date]." | Leader |
 | 40–45 | Closing question, out loud: "Why would anyone hold more than one stock?" (the week-1 objective) | Leader |
 
@@ -76,7 +77,7 @@ Log the result (date, device model, pass/fail per step) in the CRM notes for tha
 | Confirmation emails aren't arriving for several students | Wait 2 minutes, then have them tap **Resend email**. If they still don't arrive, turn off "Confirm email" in Supabase (P2) and have them sign up again. Log it as an incident |
 | A student has no phone or device | Pair them with someone, and they sign up on the leader's device at the end or at home that evening. Note their name for the leader |
 | A student is under 13 | They don't create an account. The leader decides whether they can follow along on a partner's screen |
-| Python is blocked on the network | Week 1 has no code. Carry on, and get `cdn.jsdelivr.net` allowed before week 3 |
+| Python is blocked on the network | Week 1 has no code. Carry on, and get `strikelab.dev/pyodide/` allowed before week 3 |
 | The site is down | Check the Vercel dashboard. If the last deploy broke it, roll back (§5). Otherwise switch the meeting to discussion using the facilitator guide's week-1 prompts, and have students join that evening |
 
 ### After the meeting (same day)

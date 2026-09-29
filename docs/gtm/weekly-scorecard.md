@@ -1,6 +1,6 @@
 # Weekly Scorecard
 
-Fill this in once a week, every week. Until the first cohort runs, fill in the **pipeline** rows (definitions in `metric-glossary.md`); once a cohort is running, fill in both. Ten minutes, same day each week (Friday afternoon is a good habit). Terms are defined in `metric-glossary.md`.
+Fill this in once a week, every week. Until the first cohort runs, fill in the **pipeline** rows (definitions in `metric-glossary.md`; `npm run pipeline` prints them from `crm.csv`); once a cohort is running, fill in both. Ten minutes, same day each week (Friday afternoon is a good habit). Terms are defined in `metric-glossary.md`.
 
 Copy the row template below to the bottom of the log each week — don't edit past weeks.
 

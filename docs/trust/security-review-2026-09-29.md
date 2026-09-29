@@ -22,7 +22,7 @@ Method: read each route and the RLS policies and security-definer functions behi
 | 3 | The signed-out invite page (`/join/[code]`) looks up a class by code and shows its name, without a rate limit. | Low | **Accepted.** Codes are 6 characters from 34 symbols (about 1.5 billion values), a hit reveals only a class name, and joining still needs an account and is rate-limited per account. If abuse ever shows up in the logs, add a Vercel Firewall rate-limit rule on `/join/*`. A per-IP limiter in the database would need a new table for little gain. |
 | 4 | `signup_role` (student or leader) lives in user metadata, which users can edit. | Info | **OK as is.** It only chooses the nav layout. Every teacher permission comes from `classes.teacher_id` in RLS and `requireTeacherOwnsClass`. **Rule: never use `signup_role` for authorization.** |
 | 5 | Invite links use the request's host header (`src/lib/requestOrigin.ts`). | Info | **OK on Vercel**, which sets the host. The link is only shown to the class's own teacher. |
-| 6 | Sign-up asks for "Full name", which becomes the name leaders see. | Info (minimization) | **Recommendation, not changed:** relabel it "Your name (as your club leader knows you)", so students don't feel obliged to give a full legal name. Decide with the next sign-up copy change. |
+| 6 | Sign-up asks for "Full name", which becomes the name leaders see. | Info (minimization) | **Fixed (mega plan Q3):** the field is now "Your name", with the hint "What your club leader will see. A first name and last initial is enough." |
 
 ## Checked and fine
 

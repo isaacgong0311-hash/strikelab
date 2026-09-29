@@ -155,3 +155,31 @@ One email, with everything a sponsor, principal or IT person asks for:
 - Under 20% replies after 20 messages: the message is wrong. Rewrite it around what leaders said in discovery, and push harder on introductions.
 - Calls but no yeses: ask directly, "What would make this a yes?", and log the answer as an objection.
 - Yeses stuck in approval: they're spring leads. Look harder for path-A clubs for the fall.
+
+---
+
+## 7. CRM rules (so `npm run pipeline` can count)
+
+`npm run pipeline` reads `crm.csv` and prints this week's pipeline rows for `weekly-scorecard.md`, plus a **follow up today** list (open leads with no contact for 3+ days). It only works if every row follows these rules:
+
+- **`status` is the furthest stage the leader has reached**, from this list:
+
+  | Status | Meaning |
+  |---|---|
+  | `to_contact` | On the list, not messaged yet |
+  | `contacted` | Messaged personally |
+  | `replied` | Answered (including "no") |
+  | `call_booked` | A call is on the calendar |
+  | `call_held` | The call happened |
+  | `verbal_yes` | Said they'll run it, and named a week-1 date |
+  | `locked` | Verbal yes, plus approval done or not needed, plus the date on both calendars |
+  | `running` | The cohort has started |
+  | `completed` | The cohort has finished |
+  | `committed` | A signed, dated, priced commitment for next term |
+  | `paid` | Money received |
+
+- **When a lead ends, keep its status** and write `closed: <reason>` in `next_action` (`closed: no_response`, `closed: not_now (re-ask Nov 16)`, `closed: declined`). The funnel then still shows how far they got.
+- **`source`** is one of `own_school`, `own_teacher`, `warm_intro`, `referral` (these count as warm), `cold_email`, `event`.
+- **Approval path** goes in `notes` as `path:A`, `path:B` or `path:C`.
+- **`last_contact`** is `YYYY-MM-DD`, updated on every touch.
+- Rows starting with `EXAMPLE` are ignored. Delete them once real rows exist.

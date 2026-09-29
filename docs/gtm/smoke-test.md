@@ -69,7 +69,7 @@ order by completed_at;
 
 1. On the laptop, sign in as the student (in a private window). Open `/lesson/3` (Black-Scholes, which has a Python exercise) and type a comment in the code. Wait for **Saved**.
 2. On the phone, open the same lesson. The comment is there.
-3. Click **Run**. Python loads and the tests run. (If Python never loads on a school network, that's the `cdn.jsdelivr.net` block. See the IT allowlist in `kickoff-kit.md`.)
+3. Click **Run**. Python loads and the tests run. (If it says "Python couldn't load" on a school network, the filter is blocking the runtime download from `strikelab.dev/pyodide/`. See the IT allowlist in `kickoff-kit.md`.)
 
 ```sql
 select lesson_id, updated_at, last_passed_at, length(code) as chars

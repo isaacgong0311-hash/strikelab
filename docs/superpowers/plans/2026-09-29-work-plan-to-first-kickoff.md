@@ -420,7 +420,7 @@ The master plan's risk register still applies. New or changed here:
 | Production is missing migrations while dependent code is live | **Unknown → verify** | Critical (signed-in class pages error; activation unmeasurable) | P1 this week | Sentry errors on `/dashboard` or class routes |
 | Confirmation emails don't arrive for a room of students | **High** on default Supabase email | Critical at kickoff | P2 custom SMTP or confirmation off; AG5 resend; T-0 fallback | Any sign-up in testing waits more than 60s for email |
 | School Google accounts can't sign in | High for under-18 school accounts | High | Email is the default; Google only after the device test | "This app is blocked" during the test |
-| School filter blocks jsdelivr or Supabase | Medium | High (lessons don't run) | IT allowlist; T-7 test; week 1 doesn't need code | Exercise spinner never finishes in the device test |
+| School filter blocks jsdelivr or Supabase | Medium → **Low for Python** (served from strikelab.dev since mega plan Q1) | High (lessons don't run) | IT allowlist; T-7 test; week 1 doesn't need code | Exercise spinner never finishes in the device test |
 | Slow first load on Chromebooks | High (LCP 3.5–4.6s measured) | Medium (friction exactly where activation happens) | AG4 | Lighthouse; the timed test at T-7 |
 | No fall leader by Oct 16 | **Medium-High** (zero contacts at week 3) | High | Warm-first outreach at 2× the pace; path-A qualification; Plan B ready | < 3 calls by Oct 2 |
 | Stacked PRs drift into conflicts | Medium | Low-Medium | AG1 this week | Any new commit to `master` before they merge |
