@@ -9,6 +9,7 @@ import AuthError from "@/components/AuthError";
 import { useNextPath } from "@/lib/auth/useNextPath";
 import { getAttribution } from "@/lib/attribution";
 import styles from "./signup.module.css";
+import CheckEmail from "./CheckEmail";
 
 type SignupRole = "student" | "leader";
 
@@ -107,19 +108,11 @@ export default function SignUpPage() {
 
   if (checkEmail) {
     return (
-      <div className="auth">
-        <div className="auth-card">
-          <div className="auth-brand"><span className="auth-logo"><BrandMark size={34} /></span></div>
-          <h1 className="auth-title">Check your email</h1>
-          <p className="auth-sub">
-            We sent a confirmation link to <strong>{email}</strong>. Click it to
-            activate your account, then sign in.
-          </p>
-          <p className="auth-alt">
-            <Link href="/sign-in">Back to sign in</Link>
-          </p>
-        </div>
-      </div>
+      <CheckEmail
+        email={email}
+        redirectTo={`${window.location.origin}/auth/callback?next=${encodeURIComponent(destination)}`}
+        signInHref={destination === "/dashboard" ? "/sign-in" : `/sign-in?next=${encodeURIComponent(destination)}`}
+      />
     );
   }
 
