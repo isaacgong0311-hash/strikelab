@@ -5,7 +5,11 @@ import { useRouter } from "next/navigation";
 import { TRACKS, getAllLessons } from "@/lib/tracks";
 import { useProgress, getLevel, getXpToNextLevel, XP_LEVELS } from "@/lib/useProgress";
 import { useAuth } from "@/lib/auth/AuthProvider";
+import { useCohortHome } from "@/lib/cohorts/useCohortHome";
+import { continueHref, hasStarted, nextLesson as nextLessonFor } from "@/lib/nextStep";
+import { useSessionResults } from "@/lib/sessions/useSessionResults";
 import FlameIcon from "@/components/FlameIcon";
+import TrophyIcon from "@/components/TrophyIcon";
 import ActivityHeatmap from "@/components/ActivityHeatmap";
 import { ACHIEVEMENTS, isUnlocked } from "@/lib/achievements";
 
@@ -14,6 +18,24 @@ const LEVEL_COLORS: Record<string, string> = {
   Intermediate: "var(--grass)",
   Advanced:     "var(--coral)",
 };
+
+// ── Small icons (replacing the ✓ △ ◆ ◉ placeholder glyphs) ──
+const iconProps = { width: 16, height: 16, viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: 2, strokeLinecap: "round", strokeLinejoin: "round", "aria-hidden": true, focusable: false } as const;
+function CheckIcon() {
+  return <svg {...iconProps}><path d="M20 6 9 17l-5-5" /></svg>;
+}
+function DiamondIcon() {
+  return <svg {...iconProps}><path d="M12 2 22 12 12 22 2 12Z" /></svg>;
+}
+function LevelIcon() {
+  return <svg {...iconProps}><path d="M4 20v-4M10 20v-8M16 20V8M22 20V4" /></svg>;
+}
+function PathIcon() {
+  return <svg {...iconProps}><circle cx="6" cy="19" r="2" /><circle cx="18" cy="5" r="2" /><path d="M8 19h7a3.5 3.5 0 0 0 0-7H9a3.5 3.5 0 0 1 0-7h7" /></svg>;
+}
+function CodeIcon() {
+  return <svg {...iconProps}><path d="m16 18 6-6-6-6M8 6l-6 6 6 6" /></svg>;
+}
 
 // ── SVG circular progress ring ──────────────────────────────
 function XPRing({ pct, color, size = 130 }: { pct: number; color: string; size?: number }) {
@@ -105,30 +127,21 @@ export default function DashboardClient() {
   const { progress: xpProgress, needed: xpNeeded } = getXpToNextLevel(xp);
   const levelNum = XP_LEVELS.findIndex(l => l.label === level.label) + 1;
 
-  const nextLesson = hydrated
-    ? allLessons.find(l => !completed.has(l.id)) ?? allLessons[0]
-    : allLessons[0];
+  const sessionResults = useSessionResults();
+  const nextLesson = hydrated ? nextLessonFor(completed) : allLessons[0];
+  // One next step for every button on this page: the next bite-sized session
+  // when the lesson has them, else the long-form page (src/lib/nextStep.ts).
+  const nextHref = continueHref(hydrated ? completed : new Set<string>(), sessionResults);
+  // "Welcome back" only for someone who has been here: a first-time visitor
+  // was being greeted as a returning user (frontend work plan A4).
+  const started = hydrated && hasStarted(completed, sessionResults);
 
   const unlockedAch = hydrated ? ACHIEVEMENTS.filter(a => isUnlocked(a, completed)).length : 0;
 
-  const { displayName, user } = useAuth();
+  const { displayName, user, loading: authLoading } = useAuth();
   // A student in a launched pilot cohort gets one primary action: their
   // cohort home. Everyone else keeps "Continue" into the curriculum.
-  const [cohort, setCohort] = useState<{ id: string; name: string } | null>(null);
-  useEffect(() => {
-    if (!user) return;
-    let active = true;
-    fetch("/api/classes/joined")
-      .then((res) => (res.ok ? res.json() : { classes: [] }))
-      .then((data: { classes?: { id: string; name: string; isCohort?: boolean }[] }) => {
-        const first = data.classes?.find((c) => c.isCohort);
-        if (active && first) setCohort({ id: first.id, name: first.name });
-      })
-      .catch(() => {});
-    return () => {
-      active = false;
-    };
-  }, [user]);
+  const cohort = useCohortHome(user?.id);
   const [localName, setLocalName] = useState<string | null>(null);
   useEffect(() => {
     // Prefer the authenticated profile name; only fall back to legacy
@@ -163,12 +176,14 @@ export default function DashboardClient() {
             ) : "Learning Dashboard"}
           </div>
           <h1 className="db-hero-h">
-            {firstName ? `Welcome back, ${firstName}` : "Welcome back"}
+            {!started ? "Start here" : firstName ? `Welcome back, ${firstName}` : "Welcome back"}
           </h1>
           <p className="db-hero-sub">
-            {completedCount === 0
-              ? `${totalLessons} lessons ahead of you — start anywhere`
-              : `${completedCount} of ${totalLessons} lessons complete · ${overallPct}% of the way through`}
+            {!started
+              ? `${totalLessons} lessons, starting from what a stock is. No finance or coding background needed.`
+              : completedCount === 0
+                ? `You've started lesson 1 · ${totalLessons} lessons in all`
+                : `${completedCount} of ${totalLessons} lessons complete · ${overallPct}% of the way through`}
           </p>
           <div className="db-hero-actions">
             {cohort ? (
@@ -176,11 +191,14 @@ export default function DashboardClient() {
                 This week in {cohort.name} <span>→</span>
               </Link>
             ) : (
-              <Link href={nextLesson ? `/lesson/${nextLesson.id}` : "/lessons"} className="db-cta-btn">
-                {completedCount === 0 ? "Start learning" : "Continue"} <span>→</span>
+              <Link href={nextHref} className="db-cta-btn">
+                {started ? "Continue" : "Start lesson 1"} <span>→</span>
               </Link>
             )}
             <Link href="/lessons" className="db-ghost-btn">View learning path</Link>
+            {!authLoading && !user && (
+              <Link href="/sign-in?next=/dashboard" className="db-ghost-btn">Sign in to sync</Link>
+            )}
           </div>
         </div>
         <div className="db-hero-progress-wrap">
@@ -191,22 +209,22 @@ export default function DashboardClient() {
       {/* ── METRIC TILES ─────────────────────────────────── */}
       <div className="db-metrics">
         <div className="db-metric">
-          <div className="db-metric-icon" aria-hidden="true" style={{ background: "var(--grass-tint)", color: "var(--grass)" }}>✓</div>
+          <div className="db-metric-icon" aria-hidden="true" style={{ background: "var(--grass-tint)", color: "var(--grass)" }}><CheckIcon /></div>
           <div className="db-metric-v" style={{ color: "var(--grass)" }}>{completedCount}</div>
           <div className="db-metric-l">Lessons done</div>
         </div>
         <div className="db-metric">
-          <div className="db-metric-icon" aria-hidden="true" style={{ background: "var(--coral-tint)", color: "var(--coral)" }}>△</div>
+          <div className="db-metric-icon" aria-hidden="true" style={{ background: "var(--coral-tint)", color: "var(--coral)" }}><FlameIcon size={16} /></div>
           <div className="db-metric-v" style={{ color: "var(--coral)" }}>{hydrated ? streak : 0}</div>
           <div className="db-metric-l">Day streak</div>
         </div>
         <div className="db-metric">
-          <div className="db-metric-icon" aria-hidden="true" style={{ background: "rgba(251,191,36,0.12)", color: "var(--amber)" }}>◆</div>
+          <div className="db-metric-icon" aria-hidden="true" style={{ background: "rgba(251,191,36,0.12)", color: "var(--amber)" }}><DiamondIcon /></div>
           <div className="db-metric-v" style={{ color: "var(--amber)" }}>{hydrated ? xp.toLocaleString() : "0"}</div>
           <div className="db-metric-l">Total XP</div>
         </div>
         <div className="db-metric">
-          <div className="db-metric-icon" aria-hidden="true" style={{ background: `${level.color}18`, color: level.color }}>◉</div>
+          <div className="db-metric-icon" aria-hidden="true" style={{ background: `${level.color}18`, color: level.color }}><LevelIcon /></div>
           <div className="db-metric-v" style={{ color: level.color, fontSize: 20 }}>{level.label}</div>
           <div className="db-metric-l">Level {levelNum}</div>
         </div>
@@ -420,23 +438,20 @@ export default function DashboardClient() {
               <span className="db-pill">1 exercise</span>
             </>}
           </div>
-          <Link
-            href={nextLesson ? `/lesson/${nextLesson.id}` : "/lessons"}
-            className="db-feat-btn"
-          >
-            {completedCount === 0 ? "Start" : "Continue"} <span>→</span>
+          <Link href={nextHref} className="db-feat-btn">
+            {started ? "Continue" : "Start"} <span>→</span>
           </Link>
         </div>
 
         {/* Quick actions */}
         <div className="db-actions">
           {[
-            { href: "/lessons",    glyph: "≡", title: "Learning path",    sub: "Duolingo-style path view",  ic: "var(--grass)",   bg: "var(--grass-tint)" },
-            { href: "/playground", glyph: "∂", title: "Playground",       sub: "Live Black-Scholes sandbox", ic: "var(--sky)",     bg: "var(--sky-tint)" },
-            { href: "/roadmap",    glyph: "→", title: "Roadmap",          sub: "What's shipping next",       ic: "var(--coral)",   bg: "var(--coral-tint)" },
+            { href: "/lessons",    icon: <PathIcon />,            title: "Learning path",    sub: "Every lesson, in order",      ic: "var(--grass)",   bg: "var(--grass-tint)" },
+            { href: "/playground", icon: <CodeIcon />,            title: "Playground",       sub: "Live Black-Scholes sandbox", ic: "var(--sky)",     bg: "var(--sky-tint)" },
+            { href: "/challenges", icon: <TrophyIcon size={16} />, title: "Weekly challenge", sub: "A new problem every Monday", ic: "var(--coral)",   bg: "var(--coral-tint)" },
           ].map(q => (
             <Link key={q.href} href={q.href} className="db-action">
-              <span className="db-action-icon" style={{ background: q.bg, color: q.ic }}>{q.glyph}</span>
+              <span className="db-action-icon" aria-hidden="true" style={{ background: q.bg, color: q.ic }}>{q.icon}</span>
               <div className="db-action-copy">
                 <div className="db-action-t">{q.title}</div>
                 <div className="db-action-s">{q.sub}</div>

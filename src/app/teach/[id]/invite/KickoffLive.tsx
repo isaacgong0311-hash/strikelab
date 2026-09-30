@@ -1,6 +1,6 @@
 "use client";
-import { useEffect, useState } from "react";
-import type { KickoffLive as KickoffLiveData, KickoffStage } from "@/lib/teach/kickoffLive";
+import { useEffect, useState, type ReactNode } from "react";
+import type { KickoffLive as KickoffLiveData, KickoffStage } from "@/lib/teach/kickoffSummary";
 import styles from "../../teach.module.css";
 
 const POLL_MS = 10_000;
@@ -56,6 +56,29 @@ export default function KickoffLive({ classId }: { classId: string }) {
     };
   }, [classId]);
 
+  const status = failed
+    ? "Couldn't refresh. Retrying…"
+    : updatedAt
+      ? `Updated ${updatedAt.toLocaleTimeString([], { hour: "numeric", minute: "2-digit", second: "2-digit" })}`
+      : null;
+  return <KickoffLiveView live={live} failed={failed} status={status} />;
+}
+
+/**
+ * The panel itself, fed by the poller above or, on /demo, by a made-up
+ * meeting (src/lib/demo/kickoffDemo.ts), so the two can't drift apart.
+ */
+export function KickoffLiveView({
+  live,
+  failed = false,
+  status,
+  controls,
+}: {
+  live: KickoffLiveData | null;
+  failed?: boolean;
+  status: string | null;
+  controls?: ReactNode;
+}) {
   return (
     <section className={styles.panel} aria-labelledby="live-title">
       <div>
@@ -65,6 +88,7 @@ export default function KickoffLive({ classId }: { classId: string }) {
           know who to help.
         </p>
       </div>
+      {controls}
 
       {live === null ? (
         <p className={styles.muted} role="status">{failed ? "Couldn't load who's joined. Retrying…" : "Loading…"}</p>
@@ -98,9 +122,7 @@ export default function KickoffLive({ classId }: { classId: string }) {
             </ul>
           )}
 
-          <p className={styles.muted}>
-            {failed ? "Couldn't refresh. Retrying…" : updatedAt ? `Updated ${updatedAt.toLocaleTimeString([], { hour: "numeric", minute: "2-digit", second: "2-digit" })}` : null}
-          </p>
+          <p className={styles.muted}>{status}</p>
         </>
       )}
     </section>

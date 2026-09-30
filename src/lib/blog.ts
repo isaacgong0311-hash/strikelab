@@ -41,7 +41,7 @@ export function getAllBlogPosts(): BlogPost[] {
         content,
       };
     })
-    // Newest first — matches how /lessons and /roadmap order their own lists.
+    // Newest first — matches how /lessons orders its own list.
     .sort((a, b) => (a.frontmatter.date < b.frontmatter.date ? 1 : -1));
 }
 

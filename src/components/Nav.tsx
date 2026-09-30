@@ -4,26 +4,33 @@ import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { useProgress } from "@/lib/useProgress";
 import { useAuth } from "@/lib/auth/AuthProvider";
+import { continueHref } from "@/lib/nextStep";
+import { useSessionResults } from "@/lib/sessions/useSessionResults";
+import { useCohortHome } from "@/lib/cohorts/useCohortHome";
+import { isFocusRoute } from "@/lib/focusRoutes";
 import BrandMark from "@/components/BrandMark";
 import AccessibilityMenu from "@/components/accessibility/AccessibilityMenu";
 
-const PRIMARY: { href: string; label: string; pro?: boolean }[] = [
-  { href: "/dashboard",   label: "Dashboard" },
+type NavLink = { href: string; label: string };
+
+// Signed-in students: the "Continue" button leads, then the learning
+// surfaces (frontend master plan §4). The dashboard stays one click away on
+// the streak and XP pills and in the account menu.
+const PRIMARY: NavLink[] = [
   { href: "/lessons",     label: "Lessons" },
   { href: "/playground",  label: "Playground" },
   { href: "/sandbox",     label: "Sandbox" },
-  { href: "/challenges",  label: "Challenges", pro: true },
 ];
 
-const SECONDARY: { href: string; label: string }[] = [
-  { href: "/pricing",  label: "Pricing" },
-  { href: "/about",    label: "About" },
-  { href: "/roadmap",  label: "Roadmap" },
+const SECONDARY: NavLink[] = [
+  { href: "/challenges", label: "Challenges" },
+  { href: "/pricing",    label: "Pricing" },
+  { href: "/about",      label: "About" },
 ];
 
 // Leaders (signup_role, set at sign-up or when they first create a class)
 // lead with their classes; the student surfaces stay one menu away.
-const TEACHER: { href: string; label: string }[] = [
+const TEACHER: NavLink[] = [
   { href: "/teach",     label: "My classes" },
   { href: "/lessons",   label: "Curriculum" },
   { href: "/demo",      label: "Demo" },
@@ -32,7 +39,7 @@ const TEACHER: { href: string; label: string }[] = [
 
 // Signed-out visitors are students and club leaders alike (decision log
 // 2026-09-30): the learning surfaces first, then one clear door for leaders.
-const VISITOR: { href: string; label: string }[] = [
+const VISITOR: NavLink[] = [
   { href: "/lessons",    label: "Lessons" },
   { href: "/playground", label: "Playground" },
   { href: "/clubs",      label: "For clubs & teachers" },
@@ -90,8 +97,18 @@ export default function Nav() {
   const path = usePathname();
   const router = useRouter();
   const isActive = (href: string) => path === href || path.startsWith(href + "/");
-  const { xp, streak, hydrated } = useProgress();
+  const { xp, streak, hydrated, completed } = useProgress();
   const { user, displayName, signOut } = useAuth();
+  const sessionResults = useSessionResults();
+  const isLeader = user?.user_metadata?.signup_role === "leader";
+  // Students get one primary action: their cohort's week if they're in one,
+  // otherwise their next session in the curriculum.
+  const cohort = useCohortHome(user && !isLeader ? user.id : null);
+  const studentCta = !user || isLeader
+    ? null
+    : cohort
+      ? { href: `/cohort/${cohort.id}`, label: "This week" }
+      : { href: hydrated ? continueHref(completed, sessionResults) : "/lessons", label: "Continue" };
   // Rendered on the server for these paths (no layout shift for visitors),
   // then hidden once a signed-in user is known.
   const showAnnounce = ANNOUNCE_PATHS.has(path) && !user;
@@ -202,10 +219,14 @@ export default function Nav() {
 
   const initial = (displayName ?? user?.email ?? "").trim().charAt(0).toUpperCase() || null;
 
-  const isLeader = user?.user_metadata?.signup_role === "leader";
   const primary = !user ? VISITOR : isLeader ? TEACHER : PRIMARY;
-  const allLinks = (user ? [...primary, ...SECONDARY] : VISITOR) as { href: string; label: string; pro?: boolean }[];
+  const secondary = !user ? [] : isLeader ? SECONDARY.filter((l) => l.href !== "/challenges") : SECONDARY;
+  const allLinks = [...primary, ...secondary];
   const primaryCount = primary.length;
+
+  // The lesson player has its own bar; the site header would take ~110px of
+  // a phone screen and offer links out of the task.
+  if (isFocusRoute(path)) return null;
 
   return (
     <header className="site-header">
@@ -243,9 +264,6 @@ export default function Nav() {
                     aria-current={active ? "page" : undefined}
                   >
                     {l.label}
-                    {"pro" in l && l.pro && (
-                      <span className="nav-pro-badge">PRO</span>
-                    )}
                   </Link>
                 </span>
               );
@@ -296,6 +314,12 @@ export default function Nav() {
             <GitHubIcon />
             <span>GitHub</span>
           </a>
+
+          {studentCta && (
+            <Link href={studentCta.href} className="nav-cta">
+              {studentCta.label} <span aria-hidden="true">→</span>
+            </Link>
+          )}
 
           {user ? (
             <div className="nav-account" ref={accountRef}>
@@ -376,7 +400,6 @@ export default function Nav() {
                   onClick={() => setMenuOpen(false)}
                 >
                   {l.label}
-                  {"pro" in l && l.pro && <span className="nav-pro-badge">PRO</span>}
                 </Link>
               ))}
             </div>
@@ -401,6 +424,11 @@ export default function Nav() {
             </a>
             {user ? (
               <>
+                {studentCta && (
+                  <Link href={studentCta.href} className="nav-cta" style={{ marginTop: 8, justifyContent: "center" }}>
+                    {studentCta.label} <span aria-hidden="true">→</span>
+                  </Link>
+                )}
                 {displayName && (
                   <Link href="/dashboard" className="nav-mobile-link" title={user.email ?? undefined}>
                     {displayName}

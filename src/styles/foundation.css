@@ -129,17 +129,6 @@
 .a11y-reset { width: fit-content; min-height: 36px; padding: 0.45rem 0.7rem; border: 1px solid var(--sl-border-strong); border-radius: var(--sl-radius-sm); background: var(--sl-surface); color: var(--sl-text); font-weight: 700; cursor: pointer; }
 .a11y-reset:disabled { opacity: 0.5; }
 
-:root[data-ui="v3"] .sk-track-card {
-  border-color: var(--sl-border);
-  border-radius: var(--sl-radius-lg);
-  box-shadow: var(--sl-shadow-1);
-}
-:root[data-ui="v3"] .sk-track-card.open { border-color: var(--sl-border-strong); }
-:root[data-ui="v3"] .sk-track-panel[aria-hidden="true"] { visibility: hidden; }
-:root[data-ui="v3"] .sk-lessons > li { list-style: none; }
-:root[data-ui="v3"] .sk-lessons > li + li { margin-top: 0.625rem; }
-:root[data-ui="v3"] .sk-lesson { min-height: var(--sl-tap); }
-
 .dpath-next {
   margin-top: 1rem;
   min-height: 4rem;

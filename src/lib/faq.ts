@@ -47,7 +47,7 @@ export const FAQ_GROUPS: FAQGroup[] = [
       },
       {
         q: "Will there be more advanced content?",
-        a: "Yes — all five Greeks (Delta through Rho), Implied Volatility, Option Strategies, and Binomial Trees are all live already. Next up: a bridge into VaR, GARCH, and Monte Carlo for the Quant Investing track. See /roadmap for what's shipping and when.",
+        a: "Yes — all five Greeks (Delta through Rho), Implied Volatility, Option Strategies, and Binomial Trees are all live already. Next up: a bridge into VaR, GARCH, and Monte Carlo for the Quant Investing track.",
       },
       {
         q: "Can I use this for AP Stats / AP Calc?",
@@ -64,7 +64,7 @@ export const FAQ_GROUPS: FAQGroup[] = [
       },
       {
         q: "Is my code saved?",
-        a: "Your code edits save on your device as you type. If you sign in, your code, lesson completions, XP, and streaks also sync to your account automatically (free for everyone, not a Pro feature), so you can start an exercise on a school computer and finish it at home.",
+        a: "Your code edits save on your device as you type. If you sign in, your code, lesson completions, XP, and streaks also sync to your account automatically (free for everyone), so you can start an exercise on a school computer and finish it at home.",
       },
       {
         q: "Is the pricing engine open source?",

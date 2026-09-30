@@ -2,9 +2,8 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import dynamic from "next/dynamic";
 import Link from "next/link";
-import { getCurrentChallenge, getNextChallengeDate } from "@/lib/challenges";
-import { trackUpgradeClick } from "@/lib/analytics";
-import { startCheckout, useSubscription } from "@/lib/useSubscription";
+import { WEEKLY_CHALLENGES, getCurrentChallenge, getNextChallengeDate } from "@/lib/challenges";
+import { useAuth } from "@/lib/auth/AuthProvider";
 import { loadPythonRuntime } from "@/lib/pythonRuntime";
 
 const MiniEditor = dynamic(() => import("@/components/MiniEditor"), { ssr: false });
@@ -68,12 +67,6 @@ function formatElapsed(seconds: number): string {
   return m > 0 ? `${m}m ${String(s).padStart(2, "0")}s` : `${s}s`;
 }
 
-const ARCHIVE = [
-  { title: "Vega Surface",      done: true  },
-  { title: "Put-Call Arbitrage",done: false },
-  { title: "American Put Tree", done: false },
-];
-
 const DIFFICULTY_STYLES: Record<string, { bg: string; color: string }> = {
   easy:   { bg: "var(--grass-tint)",  color: "var(--grass)" },
   medium: { bg: "var(--amber-tint)", color: "var(--amber)" },
@@ -121,8 +114,10 @@ export default function ChallengesClient() {
   const [status, setStatus] = useState<"idle" | "running" | "pass" | "fail">("idle");
   const [attempts, setAttempts] = useState(0);
   const [showHint, setShowHint] = useState(false);
-  const { isPro, hydrated: subHydrated } = useSubscription();
-  const [checkoutLoading, setCheckoutLoading] = useState(false);
+  // Challenges are free for everyone (frontend master plan FW-24). Running
+  // needs no account; a signed-in student's time goes on the leaderboard.
+  const { user, loading: authLoading } = useAuth();
+  const signedIn = Boolean(user);
 
   const [leaderboard, setLeaderboard] = useState<LeaderboardEntry[]>([]);
   const [lbLoading, setLbLoading] = useState(true);
@@ -157,10 +152,10 @@ export default function ChallengesClient() {
       const pyodide = await loadPythonRuntime();
       pyodide.runPython(code);
       pyodide.runPython(challenge.testCode);
-      setOutput("All tests passed!");
+      setOutput(signedIn ? "All tests passed!" : "All tests passed! Sign in to put your time on the leaderboard.");
       setStatus("pass");
 
-      if (isPro && !submittedRef.current) {
+      if (signedIn && !submittedRef.current) {
         submittedRef.current = true;
         const elapsedSeconds = Math.max(1, Math.round((Date.now() - startTimeRef.current) / 1000));
         fetch("/api/challenges/complete", {
@@ -175,7 +170,7 @@ export default function ChallengesClient() {
       setOutput(err instanceof Error ? err.message : String(err));
       setStatus("fail");
     }
-  }, [challenge.id, challenge.testCode, code, isPro]);
+  }, [challenge.id, challenge.testCode, code, signedIn]);
   useEffect(() => {
     runRef.current = runCode;
   }, [runCode]);
@@ -188,18 +183,6 @@ export default function ChallengesClient() {
     return () => window.removeEventListener("keydown", handler);
   }, []);
 
-  async function handleUpgrade(source: string) {
-    trackUpgradeClick(source);
-    setCheckoutLoading(true);
-    try {
-      await startCheckout("pro");
-    } catch (err: unknown) {
-      setCheckoutLoading(false);
-      setOutput(err instanceof Error ? err.message : "Could not start checkout.");
-      setStatus("fail");
-    }
-  }
-
   return (
     <div className="ch-root">
 
@@ -207,9 +190,9 @@ export default function ChallengesClient() {
       <div className="ch-header">
         <div className="ch-header-left">
           <div className="ch-eyebrow">
-            <span className="ch-pro-badge">Pro</span>
-            <span className="ch-divider">·</span>
             <span>Weekly Challenge</span>
+            <span className="ch-divider">·</span>
+            <span>Free</span>
           </div>
           <h1 className="ch-title">{challenge.title}</h1>
           <div className="ch-tags">
@@ -304,33 +287,18 @@ export default function ChallengesClient() {
 
               {/* Run bar */}
               <div className="ch-run-bar">
-                {!subHydrated ? (
-                  <button disabled className="ch-run-btn" style={{ opacity: 0.5 }}>
-                    ▶ Run Tests
+                <div className="ch-run-left">
+                  <button onClick={runCode} disabled={status==="running"} className="ch-run-btn">
+                    {status==="running"
+                      ? <><span className="ch-spin">◌</span> Running…</>
+                      : <>▶ Run Tests <kbd className="ch-kbd">⌘↵</kbd></>}
                   </button>
-                ) : isPro ? (
-                  <div className="ch-run-left">
-                    <button onClick={runCode} disabled={status==="running"} className="ch-run-btn">
-                      {status==="running"
-                        ? <><span className="ch-spin">◌</span> Running…</>
-                        : <>▶ Run Tests <kbd className="ch-kbd">⌘↵</kbd></>}
+                  {attempts >= 3 && !showHint && status !== "pass" && (
+                    <button onClick={() => setShowHint(true)} className="ch-hint-btn">
+                      Show hint
                     </button>
-                    {attempts >= 3 && !showHint && status !== "pass" && (
-                      <button onClick={() => setShowHint(true)} className="ch-hint-btn">
-                        Show hint
-                      </button>
-                    )}
-                  </div>
-                ) : (
-                  <button
-                    type="button"
-                    onClick={() => handleUpgrade("challenges_run_btn")}
-                    disabled={checkoutLoading}
-                    className="ch-run-btn"
-                  >
-                    {checkoutLoading ? "Redirecting…" : "Unlock with Pro → Start free trial"}
-                  </button>
-                )}
+                  )}
+                </div>
                 {attempts > 0 && (
                   <span className="ch-attempts">{attempts} attempt{attempts > 1 ? "s" : ""}</span>
                 )}
@@ -401,42 +369,37 @@ export default function ChallengesClient() {
                 })}
               </div>
             )}
-            {subHydrated && !isPro && (
+            {!authLoading && !signedIn && (
               <div className="ch-panel-footer">
-                <button
-                  type="button"
-                  onClick={() => handleUpgrade("challenges_leaderboard")}
-                  disabled={checkoutLoading}
-                  className="ch-upgrade-link"
-                >
-                  {checkoutLoading ? "Redirecting…" : "Upgrade to compete →"}
-                </button>
+                <Link href="/sign-in?next=/challenges" className="ch-upgrade-link">
+                  Sign in to record your time →
+                </Link>
               </div>
             )}
           </div>
 
-          {/* Archive */}
+          {/* Rotation: the real list, one per week, in order */}
           <div className="ch-panel">
             <div className="ch-panel-header">
-              <span className="ch-panel-title">Challenge Archive</span>
-              {subHydrated && !isPro && <span className="ch-pro-tag">Pro</span>}
+              <span className="ch-panel-title">In Rotation</span>
             </div>
-            <div className="ch-archive">
-              {ARCHIVE.map(item => (
-                <div key={item.title} className={`ch-archive-row ${item.done ? "done" : ""}`}>
-                  <div className="ch-archive-status" style={{
-                    background: item.done ? "rgba(34,197,94,0.14)" : "var(--bg2)",
-                    color: item.done ? "var(--grass)" : "var(--ink-3)",
-                  }}>
-                    {item.done ? "✓" : "—"}
-                  </div>
-                  <span className="ch-archive-title">{item.title}</span>
-                </div>
-              ))}
-            </div>
-            {subHydrated && !isPro && (
-              <p className="ch-archive-note">Pro members access all past challenges.</p>
-            )}
+            <ol className="ch-archive">
+              {WEEKLY_CHALLENGES.map(item => {
+                const current = item.id === challenge.id;
+                return (
+                  <li key={item.id} className={`ch-archive-row ${current ? "done" : ""}`} aria-current={current ? "true" : undefined}>
+                    <div className="ch-archive-status" style={{
+                      background: current ? "rgba(34,197,94,0.14)" : "var(--bg2)",
+                      color: current ? "var(--grass)" : "var(--ink-3)",
+                    }} aria-hidden="true">
+                      {current ? "▶" : "·"}
+                    </div>
+                    <span className="ch-archive-title">{item.title}{current && <span className="sl-visually-hidden"> (this week)</span>}</span>
+                  </li>
+                );
+              })}
+            </ol>
+            <p className="ch-archive-note">A new challenge every Monday. Each one comes back around every {WEEKLY_CHALLENGES.length} weeks.</p>
           </div>
 
           {/* Stats card */}
@@ -456,9 +419,6 @@ export default function ChallengesClient() {
                 <div className="ch-stat-l">Bonus XP</div>
               </div>
             </div>
-            {subHydrated && !isPro && (
-              <Link href="/pricing" className="ch-panel-cta">Part of Pro (paused for new sign-ups) →</Link>
-            )}
           </div>
         </div>
       </div>

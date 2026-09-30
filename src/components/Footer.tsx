@@ -26,7 +26,6 @@ const NAV_GROUPS = [
     links: [
       { href: "/about",   label: "About" },
       { href: "/pricing", label: "Pricing" },
-      { href: "/roadmap", label: "Roadmap" },
       { href: "/faq",     label: "FAQ" },
       { href: "/privacy", label: "Privacy Policy" },
       { href: "/terms",   label: "Terms of Service" },

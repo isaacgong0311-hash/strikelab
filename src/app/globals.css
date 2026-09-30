@@ -484,10 +484,13 @@ input[type="range"]::-moz-range-track {
 .v2-foot-link { color: var(--fg-mute); transition: color 180ms ease; }
 .v2-foot-link:hover { color: var(--fg); }
 
-/* ─── Page-load fade-in (applied to <main>) ──────────────────────────── */
+/* ─── Page-load entrance (applied to <main>) ─────────────────────────── */
+/* Movement only, no fade: Chrome doesn't count opacity-0 content as painted,
+   so fading <main> in held back first paint and LCP on every page (and left
+   the header-less lesson player with no first paint at all). */
 @keyframes v2pageIn {
-  0%   { opacity: 0; transform: translateY(8px); }
-  100% { opacity: 1; transform: translateY(0); }
+  0%   { transform: translateY(8px); }
+  100% { transform: translateY(0); }
 }
 main { animation: v2pageIn 0.5s cubic-bezier(.2,.7,.3,1) both; }
 
@@ -1029,412 +1032,6 @@ main { animation: v2pageIn 0.5s cubic-bezier(.2,.7,.3,1) both; }
 .sl-nav-avatar:hover { filter: brightness(1.06); }
 
 /* ════════════════════════════════════════════════════════════════════════════
-   LANDING v3 — HYBRID  ·  "Friendly quant textbook"  (sk- namespace)
-   Dark hero + CTA, warm light body, refined-emerald pressable buttons.
-   Scoped to .sk-home / body:has(.sk-home) so dark app pages are untouched.
-   ════════════════════════════════════════════════════════════════════════════ */
-
-/* Flip shared Nav + Footer to the light theme on the home route only */
-body:has(.sk-home) {
-  /* Must track the :root surface ramp — this block shadows every one of those
-     tokens, so leaving it on the old cream values would keep the landing page
-     beige while the rest of the app went neutral. */
-  --nav-bg: #f2f2f0; /* opaque — see the :root note on scroll bleed-through */
-  --bg: #f2f2f0;  --bg2: #e9e9e6;
-  --fg: #1c1917;  --fg-mute: #44403c;  --fg-faint: #57534e;
-  --muted: #57534e;  --muted2: #44403c;
-  --border: #cfcfc9;  --border-hi: #b0b0a9;  --border-hover: #94948d;
-
-  /* Landing palette (also visible to Nav/Footer CTAs) */
-  --paper: #f2f2f0;  --paper-2: #ffffff;  --paper-3: #f8f8f7;
-  --ink: #1c1917;  --ink-2: #44403c;  --ink-3: #57534e;
-  --line: #cfcfc9;  --line-2: #b0b0a9;
-  /* Must track the :root accent ramp above — see the note there. */
-  --grass: #147038;  --grass-d: #0d5a2c;  --grass-tint: #e6f6ec;
-  --amber: #92400e;  --amber-tint: #f7eed4;
-  --sky: #1d4ed8;  --sky-tint: #e7eefc;
-  --coral: #ad3a0a;  --coral-tint: #fde9e4;
-  --night: #0f1411;  --night-2: #161d18;
-}
-body:has(.sk-home) .v2-bg-grid,
-body:has(.sk-home) .v2-bg-vignette { display: none; }
-
-/* Green pressable CTA used in the nav on the home route */
-.sk-nav-cta {
-  display: inline-flex; align-items: center; gap: 6px;
-  padding: 9px 16px; border-radius: var(--r-sm);
-  font-family: var(--font-ui); font-weight: 700; font-size: 13px; letter-spacing: -0.01em;
-  background: var(--grass); color: #fff;
-  box-shadow: 0 2px 0 var(--grass-d);
-  transition: transform .08s ease, box-shadow .08s ease, filter .15s ease;
-}
-.sk-nav-cta:hover { filter: brightness(1.05); }
-.sk-nav-cta:active { transform: translateY(2px); box-shadow: 0 1px 0 var(--grass-d); }
-
-/* ── Shell ─────────────────────────────────────────────────────────────── */
-.sk-home {
-  position: relative; z-index: 1;
-  color: var(--ink);
-  font-family: var(--font-ui), system-ui, sans-serif;
-  font-size: 16px; line-height: 1.6;
-  -webkit-font-smoothing: antialiased;
-  /* faint warm graph-paper texture, scrolls with the page */
-  background:
-    linear-gradient(rgba(22,32,28,0.028) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(22,32,28,0.028) 1px, transparent 1px),
-    var(--paper);
-  background-size: 27px 27px, 27px 27px, auto;
-}
-.sk-home ::selection { background: var(--grass); color: #fff; }
-.sk-container { max-width: 1120px; margin: 0 auto; padding: 0 28px; }
-.sk-section { padding: 92px 0; }
-.sk-section-alt { background: rgba(22,32,28,0.018); border-block: 1px solid var(--line); }
-
-/* ── Shared bits ───────────────────────────────────────────────────────── */
-.sk-kicker {
-  font-family: var(--font-mono); font-size: 12px;
-  letter-spacing: 0.16em; text-transform: uppercase; color: var(--ink-3);
-}
-.sk-tag {
-  display: inline-flex; align-items: center; gap: 9px;
-  padding: 7px 15px; border-radius: var(--r-full);
-  background: var(--paper-2); border: 1px solid var(--line-2);
-  font-family: var(--font-ui); font-weight: 600; font-size: 13px; color: var(--ink-2);
-}
-.sk-tag .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--grass); }
-.sk-tag.dark {
-  background: rgba(255,255,255,0.06); border-color: rgba(255,255,255,0.16);
-  color: rgba(255,255,255,0.82);
-}
-
-/* Buttons — chunky + pressable */
-.sk-btn {
-  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
-  padding: 14px 22px; border-radius: var(--r-md);
-  font-family: var(--font-ui); font-weight: 700; font-size: 15px; letter-spacing: -0.01em;
-  background: var(--grass); color: #fff; border: none; cursor: pointer;
-  box-shadow: 0 2px 0 var(--grass-d);
-  transition: transform .08s ease, box-shadow .08s ease, filter .15s ease;
-}
-.sk-btn:hover { filter: brightness(1.05); }
-.sk-btn:active { transform: translateY(3px); box-shadow: 0 1px 0 var(--grass-d); }
-.sk-btn .arr { transition: transform .15s ease; }
-.sk-btn:hover .arr { transform: translateX(3px); }
-.sk-btn.ghost {
-  background: var(--paper-2); color: var(--ink);
-  border: 1px solid var(--line-2); box-shadow: 0 2px 0 var(--line-2);
-}
-.sk-btn.ghost:active { transform: translateY(3px); box-shadow: 0 1px 0 var(--line-2); }
-.sk-btn.dark { background: rgba(255,255,255,0.07); color: #fff; border: 1px solid rgba(255,255,255,0.2); box-shadow: 0 4px 0 rgba(0,0,0,0.35); }
-.sk-btn.dark:active { transform: translateY(3px); box-shadow: 0 1px 0 rgba(0,0,0,0.35); }
-
-/* Section headings */
-.sk-eyebrow { display: inline-flex; align-items: center; gap: 10px; margin-bottom: 18px; }
-.sk-h2 {
-  font-family: var(--font-display), Georgia, serif; font-weight: 600;
-  font-size: clamp(32px, 4.2vw, 48px); letter-spacing: -0.022em; line-height: 1.04;
-  color: var(--ink);
-}
-.sk-h2 em { font-style: italic; color: var(--grass); }
-.sk-lead { font-size: 18px; line-height: 1.6; color: var(--ink-2); max-width: 540px; margin-top: 18px; }
-.sk-center { text-align: center; max-width: 640px; margin: 0 auto 52px; }
-.sk-center .sk-lead { margin-left: auto; margin-right: auto; }
-.sk-center .sk-eyebrow { justify-content: center; }
-
-/* ── HERO (dark) ───────────────────────────────────────────────────────── */
-.sk-hero {
-  position: relative; overflow: hidden;
-  background: var(--night); color: #fff;
-  padding: 80px 0 96px;
-}
-.sk-hero::before {
-  content: ''; position: absolute; inset: 0; pointer-events: none;
-  background-image:
-    linear-gradient(rgba(255,255,255,0.045) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255,255,255,0.045) 1px, transparent 1px);
-  background-size: 27px 27px;
-  -webkit-mask-image: radial-gradient(120% 90% at 70% 10%, #000 0%, transparent 70%);
-  mask-image: radial-gradient(120% 90% at 70% 10%, #000 0%, transparent 70%);
-}
-.sk-hero-grid {
-  position: relative; z-index: 1;
-  display: grid; grid-template-columns: 1.06fr 0.94fr; gap: 56px; align-items: center;
-}
-.sk-hero-h {
-  font-family: var(--font-display), Georgia, serif; font-weight: 600;
-  font-size: clamp(44px, 6vw, 78px); line-height: 1.0; letter-spacing: -0.028em;
-  color: #fff; margin: 20px 0 22px;
-}
-.sk-hero-h em { font-style: italic; color: #fff; position: relative; white-space: nowrap; }
-.sk-hero-h em .sk-squiggle {
-  position: absolute; left: 0; right: 0; bottom: -0.22em; width: 100%; height: 0.34em; color: var(--grass);
-}
-.sk-hero-sub { font-size: 18px; line-height: 1.62; color: rgba(255,255,255,0.66); max-width: 500px; margin-bottom: 30px; }
-.sk-hero-cta { display: flex; gap: 14px; flex-wrap: wrap; margin-bottom: 14px; }
-.sk-hero-trust {
-  font-family: var(--font-mono);
-  font-size: 11px;
-  letter-spacing: 0.04em;
-  color: rgba(255,255,255,0.42);
-  margin-bottom: 34px;
-}
-/* Full-width band under both hero columns. Distributed rather than packed
-   left, with a hairline above, so it reads as the base of the hero instead of
-   a trailing item in the text column. */
-.sk-facts {
-  display: flex; flex-wrap: wrap; gap: 30px;
-  justify-content: space-between;
-  margin-top: 56px;
-  padding-top: 30px;
-  border-top: 1px solid rgba(255,255,255,0.12);
-}
-.sk-fact { flex: 1 1 auto; min-width: 120px; }
-@media (max-width: 720px) {
-  .sk-facts { gap: 22px 30px; margin-top: 40px; padding-top: 24px; }
-  .sk-fact { flex: 0 0 calc(50% - 15px); }
-}
-.sk-fact b { font-family: var(--font-display), Georgia, serif; font-weight: 600; font-size: 27px; color: #fff; display: block; line-height: 1; }
-.sk-fact span { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: rgba(255,255,255,0.5); margin-top: 7px; display: block; }
-
-/* Hero visual — light notebook card on the dark hero */
-.sk-hero-visual { position: relative; }
-
-/* Ambient Spline layer (see src/components/SplineScene.tsx).
-   Deliberately bled out past the code card on every side so the 3D reads as
-   atmosphere behind the product rather than a boxed-in widget, and feathered
-   with a radial mask so the canvas never shows a hard rectangular edge against
-   the hero's dark ground. `.sk-hero` already sets overflow:hidden, so the
-   negative insets can't introduce horizontal scroll on small screens.
-   Renders nothing at all when no scene is configured. */
-.sk-hero-spline {
-  position: absolute;
-  inset: -18% -12% -18% -28%;
-  z-index: 0;
-  pointer-events: none;
-  -webkit-mask-image: radial-gradient(70% 60% at 55% 50%, #000 32%, transparent 78%);
-  mask-image: radial-gradient(70% 60% at 55% 50%, #000 32%, transparent 78%);
-}
-
-/* Both hero props sit above the 3D. The code card is the message; the canvas
-   is wallpaper. */
-.sk-hero-visual > .sk-codecard { position: relative; }
-.sk-hero-visual > .sk-codecard,
-.sk-hero-visual > .sk-result-chip { z-index: 1; }
-.sk-codecard {
-  background: var(--paper-2); border: 1px solid rgba(0,0,0,0.06); border-radius: var(--r-lg);
-  box-shadow: 0 30px 60px -28px rgba(0,0,0,0.6); overflow: hidden; transform: rotate(-1.1deg);
-  max-width: 470px; margin-left: auto;
-}
-.sk-codecard-bar {
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 15px 18px; background: var(--paper-3); border-bottom: 1px solid var(--line);
-}
-.sk-codecard-name { font-family: var(--font-mono); font-size: 12px; color: var(--ink-2); }
-.sk-codecard-tag { font-family: var(--font-mono); font-size: 11px; color: var(--grass); background: var(--grass-tint); padding: 3px 9px; border-radius: var(--r-full); }
-/* 12px/1.7 was small for the one piece of code on the landing page, and it
-   left the card at 233px against a 548px text column — a lot of dead air
-   either side once centred. Larger type reads better and closes most of that
-   gap; 13.5px keeps the longest line inside the column without wrapping. */
-.sk-code { padding: 24px 20px 28px; font-family: var(--font-mono); font-size: 13.5px; line-height: 1.95; color: var(--ink); }
-.sk-code .row { display: flex; white-space: pre; }
-.sk-code .ln { color: var(--ink-3); width: 16px; flex-shrink: 0; text-align: right; margin-right: 14px; user-select: none; }
-.sk-code .k  { color: var(--coral); }
-.sk-code .v  { color: var(--sky); }
-.sk-code .c  { color: var(--ink-3); font-style: italic; }
-.sk-code .fn { color: var(--grass); font-weight: 600; }
-.sk-code .s  { color: var(--amber); }
-.sk-result-chip {
-  position: absolute; right: 14px; bottom: -18px;
-  background: var(--night-2); color: #fff; border: 1px solid rgba(255,255,255,0.1);
-  border-radius: var(--r-md); padding: 11px 15px; transform: rotate(2deg);
-  box-shadow: 0 18px 34px -16px rgba(0,0,0,0.7);
-  font-family: var(--font-mono); font-size: 12px; display: flex; align-items: center; gap: 10px;
-}
-.sk-result-chip .ok { color: #5fd39b; }
-.sk-result-chip b { color: #fff; font-weight: 600; }
-
-/* ── CURRICULUM (light) ────────────────────────────────────────────────── */
-.sk-curr { display: grid; grid-template-columns: 330px 1fr; gap: 56px; align-items: start; }
-.sk-curr-meta { margin: 26px 0 28px; }
-.sk-curr-meta div { display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid var(--line); font-size: 15px; color: var(--ink-2); }
-.sk-curr-meta b { color: var(--ink); font-weight: 600; }
-/* Lesson rows read as a connected path rather than a stack of identical
-   cards. Twenty-one flat rows in a row is a wall; a spine running through the
-   numbered nodes turns the same list into a route you're partway along, which
-   is the whole reason Duolingo's tree works. */
-.sk-lessons { display: flex; flex-direction: column; gap: 10px; }
-
-.sk-lesson {
-  position: relative;
-  display: grid; grid-template-columns: 44px 1fr auto auto; align-items: center; gap: 18px;
-  padding: 15px 18px; border-radius: var(--r-lg); background: var(--paper-2);
-  border: 1px solid var(--line); box-shadow: 0 1px 2px rgba(28,25,23,0.05);
-  transition: transform .18s cubic-bezier(.2,.7,.3,1),
-              box-shadow .18s cubic-bezier(.2,.7,.3,1),
-              border-color .15s ease;
-}
-
-/* The spine. Sits behind the node, spanning this row's node down to the next
-   one — hence :not(:last-child), so the path stops at the final lesson
-   instead of trailing into nothing. */
-.sk-lesson:not(:last-child)::after {
-  content: "";
-  position: absolute;
-  left: 37px;
-  top: 55px;
-  bottom: -25px;
-  width: 2px;
-  background: var(--line-2);
-  z-index: 0;
-}
-
-.sk-lesson:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 14px 26px -14px rgba(40,30,10,0.32);
-  border-color: var(--line-2);
-}
-
-.sk-lesson-num {
-  position: relative; z-index: 1;
-  width: 40px; height: 40px;
-  border-radius: 50%;
-  display: grid; place-items: center;
-  font-family: var(--font-mono); font-weight: 700; font-size: 14px;
-  background: var(--grass-tint); color: var(--grass);
-  /* Ring in the page colour so the node sits *on* the spine rather than the
-     spine running through it. Deliberately not a tinted ring: each track sets
-     its own node colour inline (blue / green / coral), so a hardcoded green
-     halo would clash on two of the three. */
-  border: 2px solid var(--paper-2);
-  transition: transform .18s cubic-bezier(.34,1.4,.64,1), filter .15s ease;
-}
-/* Scale and deepen rather than recolour — recolouring would override the
-   per-track inline background and make every track's hover look green. */
-.sk-lesson:hover .sk-lesson-num {
-  transform: scale(1.12);
-  filter: saturate(1.5) brightness(0.97);
-}
-
-/* Rows fade up on load, staggered, so the list assembles instead of appearing
-   as a block. Capped at 8 — past that the last rows would wait too long, and
-   they're below the fold anyway. */
-@keyframes sk-row-in {
-  from { opacity: 0; transform: translateY(10px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-.sk-lesson { animation: sk-row-in .42s cubic-bezier(.2,.7,.3,1) both; }
-.sk-lesson:nth-child(1) { animation-delay: .02s; }
-.sk-lesson:nth-child(2) { animation-delay: .06s; }
-.sk-lesson:nth-child(3) { animation-delay: .10s; }
-.sk-lesson:nth-child(4) { animation-delay: .14s; }
-.sk-lesson:nth-child(5) { animation-delay: .18s; }
-.sk-lesson:nth-child(6) { animation-delay: .22s; }
-.sk-lesson:nth-child(7) { animation-delay: .26s; }
-.sk-lesson:nth-child(n+8) { animation-delay: .30s; }
-
-@media (prefers-reduced-motion: reduce) {
-  .sk-lesson { animation: none; }
-  .sk-lesson:hover { transform: none; }
-  .sk-lesson:hover .sk-lesson-num { transform: none; }
-}
-.sk-lesson.soon { opacity: 0.62; }
-.sk-lesson.soon .sk-lesson-num { background: var(--paper-3); color: var(--ink-3); }
-.sk-lesson-t { font-family: var(--font-display), Georgia, serif; font-weight: 600; font-size: 19px; color: var(--ink); letter-spacing: -0.012em; line-height: 1.15; }
-.sk-lesson-t .sub { display: block; font-family: var(--font-ui); font-weight: 400; font-size: 13px; color: var(--ink-3); margin-top: 3px; letter-spacing: 0; }
-.sk-pill { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; padding: 5px 11px; border-radius: var(--r-full); white-space: nowrap; }
-.sk-pill.live { background: var(--grass-tint); color: var(--grass); }
-.sk-pill.soon { background: var(--paper-3); color: var(--ink-3); border: 1px solid var(--line); }
-.sk-lesson .arr { color: var(--ink-3); transition: color .15s ease, transform .15s ease; }
-.sk-lesson:hover .arr { color: var(--grass); transform: translateX(2px); }
-
-/* ── GREEKS (light) ────────────────────────────────────────────────────── */
-.sk-greeks { display: grid; grid-template-columns: 0.92fr 1.08fr; gap: 56px; align-items: center; }
-.sk-greeks-copy p { font-size: 16px; line-height: 1.72; color: var(--ink-2); margin-bottom: 15px; max-width: 460px; }
-.sk-ticket {
-  background: var(--paper-2); border: 1px solid var(--line); border-radius: var(--r-xl);
-  box-shadow: 0 28px 56px -32px rgba(40,30,10,0.32); overflow: hidden;
-}
-.sk-ticket-head {
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 15px 20px; background: var(--night); color: #fff; font-family: var(--font-mono); font-size: 12px;
-}
-.sk-ticket-head .px { color: #fff; font-weight: 600; }
-.sk-ticket-head .px b { color: #5fd39b; }
-.sk-ticket-body { padding: 6px 20px 14px; }
-.sk-grow { display: grid; grid-template-columns: 38px 1fr auto; align-items: center; gap: 14px; padding: 14px 0; border-bottom: 1px solid var(--line); }
-.sk-grow:last-child { border-bottom: 0; }
-.sk-gsym { width: 36px; height: 36px; border-radius: var(--r-sm); display: grid; place-items: center; font-family: var(--font-display), Georgia, serif; font-size: 19px; }
-.sk-grow.d .sk-gsym { background: var(--grass-tint); color: var(--grass); }
-.sk-grow.g .sk-gsym { background: var(--sky-tint); color: var(--sky); }
-.sk-grow.t .sk-gsym { background: var(--coral-tint); color: var(--coral); }
-.sk-grow.v .sk-gsym { background: var(--amber-tint); color: var(--amber); }
-.sk-grow.r .sk-gsym { background: var(--paper-3); color: var(--ink-2); }
-.sk-gname { font-weight: 700; font-size: 14px; color: var(--ink); }
-/* `display: block` is load-bearing: this and .sk-gname are adjacent inline
-   spans with no whitespace between them in the JSX, so the ticket rendered as
-   "Deltamoves per $1 of underlying". The existing margin-top shows it was
-   always meant to sit under the name, matching the lesson-row title/subtitle. */
-.sk-gnote { display: block; font-size: 13px; color: var(--ink-3); margin-top: 1px; }
-.sk-gval { font-family: var(--font-mono); font-weight: 600; font-size: 15px; color: var(--ink); }
-
-/* ── TOOLS (light) ─────────────────────────────────────────────────────── */
-.sk-tools { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
-.sk-tool {
-  background: var(--paper-2); border: 1px solid var(--line); border-radius: var(--r-xl);
-  padding: 28px 26px; box-shadow: 0 1px 2px rgba(28,25,23,0.05);
-  transition: transform .12s ease, box-shadow .12s ease;
-}
-.sk-tool:hover { transform: translateY(-3px); box-shadow: 0 14px 26px -14px rgba(40,30,10,0.26); }
-.sk-tool-icon { width: 50px; height: 50px; border-radius: var(--r-lg); display: grid; place-items: center; font-family: var(--font-display), Georgia, serif; font-size: 25px; margin-bottom: 18px; }
-.sk-tool:nth-child(1) .sk-tool-icon { background: var(--grass-tint); color: var(--grass); }
-.sk-tool:nth-child(2) .sk-tool-icon { background: var(--sky-tint); color: var(--sky); }
-.sk-tool:nth-child(3) .sk-tool-icon { background: var(--coral-tint); color: var(--coral); }
-.sk-tool h3 { font-family: var(--font-display), Georgia, serif; font-weight: 600; font-size: 20px; color: var(--ink); margin-bottom: 10px; letter-spacing: -0.012em; }
-.sk-tool p { font-size: 15px; line-height: 1.62; color: var(--ink-2); }
-.sk-tool a { color: var(--grass); font-weight: 600; }
-.sk-tool a:hover { text-decoration: underline; text-underline-offset: 3px; }
-
-/* ── CTA (dark card bookend) ───────────────────────────────────────────── */
-.sk-cta { padding: 40px 0 96px; }
-.sk-cta-card { position: relative; overflow: hidden; background: var(--night); border-radius: var(--r-xl); padding: 64px 40px; }
-.sk-cta-card::before {
-  content: ''; position: absolute; inset: 0; pointer-events: none;
-  background-image:
-    linear-gradient(rgba(255,255,255,0.045) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255,255,255,0.045) 1px, transparent 1px);
-  background-size: 27px 27px;
-  -webkit-mask-image: radial-gradient(100% 100% at 50% 0%, #000 0%, transparent 75%);
-  mask-image: radial-gradient(100% 100% at 50% 0%, #000 0%, transparent 75%);
-}
-.sk-cta-inner { position: relative; z-index: 1; max-width: 560px; margin: 0 auto; text-align: center; }
-.sk-cta-kicker { font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.18em; text-transform: uppercase; color: rgba(255,255,255,0.5); margin-bottom: 18px; }
-.sk-cta-h { font-family: var(--font-display), Georgia, serif; font-weight: 600; font-size: clamp(34px, 5vw, 54px); color: #fff; letter-spacing: -0.022em; line-height: 1.04; margin-bottom: 16px; }
-.sk-cta-h em { font-style: italic; color: var(--grass); }
-.sk-cta-p { font-size: 17px; line-height: 1.6; color: rgba(255,255,255,0.68); margin-bottom: 28px; }
-.sk-cta-btns { display: inline-flex; gap: 13px; flex-wrap: wrap; justify-content: center; }
-.sk-newsletter { margin-top: 38px; padding-top: 30px; border-top: 1px solid rgba(255,255,255,0.12); }
-.sk-nl-label { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(255,255,255,0.5); margin-bottom: 14px; }
-.sk-nl-form { display: flex; gap: 10px; max-width: 420px; margin: 0 auto; }
-.sk-nl-form input {
-  flex: 1; min-width: 0; padding: 13px 16px; border-radius: var(--r-md);
-  border: 1px solid rgba(255,255,255,0.2); background: rgba(255,255,255,0.06); color: #fff;
-  font-family: var(--font-ui); font-size: 14px; outline: none;
-  transition: border-color .15s ease;
-}
-.sk-nl-form input:focus { border-color: var(--grass); }
-.sk-nl-form input::placeholder { color: rgba(255,255,255,0.4); }
-.sk-nl-form .sk-btn { flex-shrink: 0; }
-.sk-nl-done { font-family: var(--font-ui), system-ui, sans-serif; font-weight: 600; font-size: 14px; color: #5fd39b; text-align: center; padding: 6px 0; }
-
-/* ── Responsive ────────────────────────────────────────────────────────── */
-@media (max-width: 920px) {
-  .sk-hero-grid, .sk-curr, .sk-greeks { grid-template-columns: 1fr; gap: 40px; }
-  .sk-tools { grid-template-columns: 1fr; }
-  .sk-hero-visual { max-width: 460px; }
-  .sk-greeks .sk-ticket { order: 2; }
-}
-
-/* ════════════════════════════════════════════════════════════════════════════
    DUOLINGO-STYLE LESSON PATH  (/lessons)
    ════════════════════════════════════════════════════════════════════════════ */
 .dpath { max-width: 660px; margin: 0 auto; padding: 36px 20px 90px; font-family: var(--font-ui), system-ui, sans-serif; }
@@ -1748,16 +1345,6 @@ body:has(.sk-home) .v2-bg-vignette { display: none; }
   font-weight: 600;
   border-bottom-color: var(--grass);
 }
-.nav-pro-badge {
-  font-size: 8px;
-  font-weight: 800;
-  letter-spacing: 0.08em;
-  padding: 2px 5px;
-  border-radius: var(--r-full);
-  background: var(--amber-tint);
-  color: var(--amber);
-  text-transform: uppercase;
-}
 
 /* Right side */
 .nav-right {
@@ -2026,22 +1613,6 @@ body:has(.sk-home) .v2-bg-vignette { display: none; }
   color: var(--ink) !important;
 }
 
-/* sk-btn (homepage) — stronger contrast */
-.sk-btn {
-  font-family: var(--font-ui) !important;
-  font-weight: 700 !important;
-  letter-spacing: -0.01em !important;
-  border: 2px solid transparent !important;
-}
-.sk-btn.ghost {
-  border: 2px solid rgba(250,250,249,0.4) !important;
-}
-.sk-btn.ghost.dark {
-  border: 2px solid rgba(250,250,249,0.35) !important;
-  background: rgba(250,250,249,0.1) !important;
-  color: #fafaf9 !important;
-}
-
 /* db- dashboard buttons */
 .db-cta-btn {
   font-family: var(--font-ui) !important;
@@ -2063,11 +1634,6 @@ body:has(.sk-home) .v2-bg-vignette { display: none; }
 /* ── Font overrides — apply Syne to all headings ── */
 h1, h2, h3, h4 {
   font-family: var(--font-display), system-ui, sans-serif;
-}
-.sk-hero-h, .sk-h2 {
-  font-family: var(--font-display) !important;
-  font-weight: 800 !important;
-  letter-spacing: -0.035em !important;
 }
 .db-hero-h, .db-section-title, .db-ring-name,
 .db-track-title, .db-feat-title {
@@ -3979,21 +3545,10 @@ h1, h2, h3, h4 {
 .cp-explain { animation: cp-explain-in .26s ease-out both; }
 
 /* Shared entrance easing for hero elements. */
-@keyframes sk-fade-up {
-  from { opacity: 0; transform: translateY(14px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
 /* Hero: headline, sub, actions and stats cascade in on load. */
-.sk-hero .sk-tag { animation: sk-fade-up .5s cubic-bezier(.2,.7,.3,1) .02s both; }
-.sk-hero-h { animation: sk-fade-up .55s cubic-bezier(.2,.7,.3,1) .08s both; }
-.sk-hero-sub   { animation: sk-fade-up .55s cubic-bezier(.2,.7,.3,1) .16s both; }
-.sk-hero-cta   { animation: sk-fade-up .55s cubic-bezier(.2,.7,.3,1) .24s both; }
-.sk-hero-trust { animation: sk-fade-up .5s  cubic-bezier(.2,.7,.3,1) .3s  both; }
-.sk-facts      { animation: sk-fade-up .55s cubic-bezier(.2,.7,.3,1) .32s both; }
-.sk-codecard   { animation: sk-fade-up .6s  cubic-bezier(.2,.7,.3,1) .18s both; }
 
 /* Every card that lifts should lift the same way. */
-.sk-card, .sk-grow-card, .v2-card {
+.v2-card {
   transition: transform .18s cubic-bezier(.2,.7,.3,1),
               box-shadow .18s cubic-bezier(.2,.7,.3,1),
               border-color .15s ease;
@@ -4015,9 +3570,7 @@ h1, h2, h3, h4 {
 .lt-item:hover { transform: translateX(2px); }
 
 @media (prefers-reduced-motion: reduce) {
-  .cp.correct, .cp.wrong, .cp-opt.is-correct, .cp-explain,
-  .sk-hero .sk-tag, .sk-hero-h, .sk-hero-sub,
-  .sk-hero-cta, .sk-hero-trust, .sk-facts, .sk-codecard {
+  .cp.correct, .cp.wrong, .cp-opt.is-correct, .cp-explain {
     animation: none !important;
   }
   .lt-item:hover { transform: none; }
@@ -4032,122 +3585,11 @@ h1, h2, h3, h4 {
    crawlers and deep links still resolve.
    ══════════════════════════════════════════════════════════════════════════ */
 
-.sk-tracks { display: flex; flex-direction: column; gap: 14px; }
-
-.sk-track-card {
-  border: 1px solid var(--line);
-  border-radius: var(--r-xl);
-  background: var(--paper-2);
-  box-shadow: 0 1px 2px rgba(28,25,23,0.05);
-  overflow: hidden;
-  transition: border-color .18s ease, box-shadow .18s ease;
-}
-.sk-track-card:hover { border-color: var(--line-2); }
-.sk-track-card.open { box-shadow: 0 10px 28px -18px rgba(40,30,10,0.3); }
-
-.sk-track-head {
-  width: 100%;
-  display: grid;
-  grid-template-columns: 46px minmax(0, 1fr) auto 20px;
-  align-items: center;
-  gap: 16px;
-  padding: 18px 20px;
-  background: none;
-  border: 0;
-  cursor: pointer;
-  text-align: left;
-  font: inherit;
-}
-.sk-track-head:hover { background: var(--paper-3); }
-.sk-track-head:focus-visible { outline: 2px solid var(--grass); outline-offset: -2px; }
-
-.sk-track-glyph {
-  width: 46px; height: 46px;
-  border-radius: var(--r-md);
-  display: grid; place-items: center;
-  font-family: var(--font-display), Georgia, serif;
-  font-size: 22px; font-weight: 600;
-}
-
-.sk-track-main { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
-.sk-track-titles { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
-.sk-track-level {
-  font-family: var(--font-mono); font-size: 10px; font-weight: 700;
-  letter-spacing: 0.12em; text-transform: uppercase;
-  padding: 3px 9px; border-radius: var(--r-full);
-}
-.sk-track-name {
-  font-family: var(--font-display), Georgia, serif;
-  font-size: 21px; font-weight: 700; color: var(--ink);
-  letter-spacing: -0.02em; line-height: 1.15;
-}
-.sk-track-sub { font-size: 13.5px; color: var(--ink-3); line-height: 1.45; }
-
-.sk-track-meta {
-  display: flex; flex-direction: column; align-items: flex-end; gap: 2px;
-  font-family: var(--font-mono); font-size: 11px; color: var(--ink-3);
-  white-space: nowrap;
-}
-.sk-track-count { color: var(--ink-2); font-weight: 600; }
-
-.sk-track-chev {
-  font-size: 24px; line-height: 1; color: var(--ink-3);
-  transform: rotate(90deg);
-  transition: transform .24s cubic-bezier(.2,.7,.3,1), color .15s ease;
-  justify-self: center;
-}
-.sk-track-card.open .sk-track-chev { transform: rotate(-90deg); color: var(--ink-2); }
-
 /* grid-template-rows 0fr -> 1fr animates height without needing a measured
    pixel value, and keeps the panel's children mounted the whole time. */
-.sk-track-panel {
-  display: grid;
-  grid-template-rows: 0fr;
-  transition: grid-template-rows .32s cubic-bezier(.2,.7,.3,1);
-}
-.sk-track-card.open .sk-track-panel { grid-template-rows: 1fr; }
-.sk-track-panel-inner { overflow: hidden; }
-.sk-track-card .sk-lessons { padding: 2px 20px 20px; }
 
 /* Rows already stagger in on page load; inside a panel that would replay on
    every expand and feel laggy, so opt them out here. */
-.sk-track-panel .sk-lesson { animation: none; }
-
-@media (prefers-reduced-motion: reduce) {
-  .sk-track-panel { transition: none; }
-  .sk-track-chev { transition: none; }
-}
-
-@media (max-width: 620px) {
-  .sk-track-head { grid-template-columns: 40px minmax(0, 1fr) 20px; gap: 12px; padding: 15px 16px; }
-  .sk-track-meta { display: none; }
-  .sk-track-glyph { width: 40px; height: 40px; font-size: 19px; }
-  .sk-track-name { font-size: 18px; }
-  .sk-track-card .sk-lessons { padding: 2px 14px 16px; }
-
-  /* Four columns (node, title, pill, arrow) left the title ~90px wide on a
-     phone, wrapping one word per line. Drop the arrow (the whole row is the
-     link), tuck the duration under the title, and clamp the subtitle. */
-  .sk-lesson {
-    grid-template-columns: 36px minmax(0, 1fr);
-    grid-template-areas: "num title" "num pill";
-    column-gap: 12px;
-    row-gap: 6px;
-    padding: 12px 14px;
-  }
-  .sk-lesson-num { grid-area: num; width: 36px; height: 36px; font-size: 12px; }
-  .sk-lesson-t { grid-area: title; font-size: 16px; }
-  .sk-lesson-t .sub {
-    font-size: 12.5px;
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-  }
-  .sk-lesson .sk-pill { grid-area: pill; justify-self: start; padding: 3px 8px; font-size: 9.5px; }
-  .sk-lesson .arr { display: none; }
-  .sk-lesson:not(:last-child)::after { display: none; }
-}
 
 /* ══════════════════════════════════════════════════════════════════════════
    NUMERALS
@@ -4156,20 +3598,24 @@ h1, h2, h3, h4 {
    jittering as values change. Applied to the display face too, since the big
    dashboard stats are set in it.
    ══════════════════════════════════════════════════════════════════════════ */
-.sk-fact b,
-.db-metric-n, .db-metric-icon, .db-level-lbl, .db-tab-prog,
-.lt-pct, .cp-label,
-.sk-pill, .sk-track-count, .sk-track-mins,
-.sk-lesson-num, .ch-lb-time, .ch-lb-xp, .ch-stat-n,
-.sl-quiz-score, .db-ring-pct {
+.db-metric-n,
+.db-metric-icon,
+.db-level-lbl,
+.db-tab-prog,
+.lt-pct,
+.cp-label,
+.ch-lb-time,
+.ch-lb-xp,
+.ch-stat-n,
+.sl-quiz-score,
+.db-ring-pct {
   font-variant-numeric: tabular-nums;
   font-feature-settings: "tnum" 1, "zero" 1;
 }
 
 /* Code and anything mono gets a slashed zero, which is the whole point of a
    coding face — 0 and O are indistinguishable otherwise. */
-code, pre, .sk-code, .ai-code, .ai-inline, .pr-output,
-[class*="font-mono"], .cm-editor {
+code, pre, .ai-code, .ai-inline, .pr-output, [class*="font-mono"], .cm-editor {
   font-feature-settings: "zero" 1, "calt" 1;
 }
 
@@ -4181,39 +3627,7 @@ code, pre, .sk-code, .ai-code, .ai-inline, .pr-output,
    behind the lesson rows without competing with them.
    ══════════════════════════════════════════════════════════════════════════ */
 
-.sk-track-panel-inner {
-  position: relative;
-  overflow: hidden;
-  /* Call-option payoff — flat, then the kink at the strike, then linear.
-     The single most recognisable shape in the subject. */
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='190' height='130' viewBox='0 0 190 130'%3E%3Cg fill='none' stroke='%23cfcfc9' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M18 108 H174' stroke-width='2' opacity='.55'/%3E%3Cpath d='M18 108 V16' stroke-width='2' opacity='.55'/%3E%3Cpath d='M26 88 H92 L160 30' stroke-width='4'/%3E%3C/g%3E%3C/svg%3E");
-  background-repeat: no-repeat;
-  background-position: right 18px bottom 14px;
-  background-size: 190px 130px;
-}
-
 /* The track's own glyph, oversized and faint, anchored top-right. Uses the
    track colour so each path reads as its own place. */
-.sk-track-deco {
-  position: absolute;
-  top: -26px;
-  right: 22px;
-  font-family: var(--font-display), Georgia, serif;
-  font-size: 190px;
-  font-weight: 800;
-  line-height: 1;
-  opacity: 0.05;
-  pointer-events: none;
-  user-select: none;
-  z-index: 0;
-}
 
 /* Lesson rows must stay above the scenery. */
-.sk-track-panel-inner .sk-lessons { position: relative; z-index: 1; }
-
-@media (max-width: 720px) {
-  /* On a phone the rows fill the width and the art would only show through
-     the text. Scenery is a wide-viewport luxury. */
-  .sk-track-panel-inner { background-image: none; }
-  .sk-track-deco { display: none; }
-}
