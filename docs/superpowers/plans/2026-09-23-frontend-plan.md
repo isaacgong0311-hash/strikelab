@@ -323,7 +323,10 @@ Shipped on `feat/teach`:
 Shipped on `feat/funnel`:
 - [x] **FE-11 funnel measurement, Postgres-first.** `scripts/metrics/leader-funnel.sql` gives leader sign-up → class → launch → first student, with medians and the 7-day rate by source, and a PGlite test covers it. First-touch `?src=` is captured with the UTM params and stored at sign-up, and every pilot CTA tags itself. Marketing events (`hero_cta`, `demo_open`, `pilot_page_view`, `pilot_call_click`, `invite_copied`) go through `trackMarketing` and are inert until a paid Vercel plan. Definitions are in `docs/gtm/metric-glossary.md`.
 
-Next: FE-10 (Lighthouse CI budgets), then FE-6/7 once pilots produce consented work and real numbers.
+Shipped on `feat/perf-gates`:
+- [x] **FE-10 Lighthouse CI.** `lighthouserc.json` runs on `/`, `/clubs`, `/pilot`, `/demo` and `/learn/inv-1.1` (mobile preset, 3 runs) after every CI build, and the reports are uploaded as an artifact. Layout shift (≤ 0.05), page weight (≤ 900 KB) and performance score (≥ 0.7) fail the build. LCP ≤ 2.0s and marketing JS ≤ 180 KB are **warnings for now**, because the first measurement (2026-09-23, local production build) is LCP 3.5–4.5s and 336–460 KB of JS gzipped. Pyodide, CodeMirror and Recharts are already off the marketing routes. Most of the rest is `@sentry/nextjs` (about 130 KB gzipped with react-dom) and `supabase-js` (about 63 KB) loading on every page, including for signed-out visitors. Shrinking those is the follow-up, and then both warnings become errors.
+
+Next: the Sentry/Supabase bundle work above, then FE-6/7 once pilots produce consented work and real numbers.
 
 ## 11. First 10 days (through 2026-10-02)
 
