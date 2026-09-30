@@ -288,9 +288,7 @@ function ClassroomSettings() {
   const [owned, setOwned] = useState<OwnedClass[]>([]);
   const [joined, setJoined] = useState<JoinedClass[]>([]);
   const [loaded, setLoaded] = useState(false);
-  const [newClassName, setNewClassName] = useState("");
   const [joinCodeInput, setJoinCodeInput] = useState("");
-  const [creating, setCreating] = useState(false);
   const [joining, setJoining] = useState(false);
   const [message, setMessage] = useState<{ text: string; isError: boolean } | null>(null);
 
@@ -313,27 +311,6 @@ function ClassroomSettings() {
     const id = window.setTimeout(() => { refresh(); }, 0);
     return () => window.clearTimeout(id);
   }, [refresh]);
-
-  async function createClass(e: React.FormEvent) {
-    e.preventDefault();
-    setMessage(null);
-    setCreating(true);
-    try {
-      const res = await fetch("/api/classes", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name: newClassName }),
-      });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error ?? "Failed to create class");
-      setNewClassName("");
-      await refresh();
-    } catch (err) {
-      setMessage({ text: err instanceof Error ? err.message : "Failed to create class", isError: true });
-    } finally {
-      setCreating(false);
-    }
-  }
 
   async function joinClass(e: React.FormEvent) {
     e.preventDefault();
@@ -367,8 +344,9 @@ function ClassroomSettings() {
         <h2 id="classroom-settings-title" className="db-panel-title">Classroom</h2>
       </div>
       <p className="text-xs leading-relaxed mb-4" style={{ color: "var(--muted2)" }}>
-        Teaching a class? Create one and share the join code with your students to see
-        their progress in one place. Taking a class? Enter the code your teacher gave you.
+        Leading a club or class? Set it up and manage it from{" "}
+        <Link href="/teach" style={{ color: "var(--ink)", fontWeight: 600 }}>My classes</Link>.
+        Taking a class? Enter the code your teacher gave you.
       </p>
 
       {!loaded ? (
@@ -397,24 +375,9 @@ function ClassroomSettings() {
                 ))}
               </div>
             )}
-            <form onSubmit={createClass} className="flex gap-2 flex-wrap">
-              <label htmlFor="new-class-name" className="text-xs font-semibold" style={{ color: "var(--ink-2)", flexBasis: "100%" }}>
-                New class name
-              </label>
-              <input
-                id="new-class-name"
-                className="auth-input"
-                style={{ flex: "1 1 220px" }}
-                type="text"
-                required
-                placeholder="Class name, e.g. 3rd Period AP Stats"
-                value={newClassName}
-                onChange={(e) => setNewClassName(e.target.value)}
-              />
-              <button type="submit" disabled={creating} className="v2-btn sm">
-                {creating ? "Creating…" : "Create class"}
-              </button>
-            </form>
+            <Link href={owned.length > 0 ? "/teach" : "/teach/new"} className="v2-btn sm">
+              {owned.length > 0 ? "All my classes →" : "Set up a class →"}
+            </Link>
           </div>
 
           <div>

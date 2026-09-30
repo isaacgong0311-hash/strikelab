@@ -35,6 +35,15 @@ export async function GET(request: NextRequest) {
           }
           cookieStore.delete("sl_src");
         }
+        // Same for the student/leader choice (drives nav and landing).
+        const pendingRole = cookieStore.get("sl_role")?.value;
+        if (pendingRole === "leader" || pendingRole === "student") {
+          const { data: userData } = await supabase.auth.getUser();
+          if (userData.user && !userData.user.user_metadata?.signup_role) {
+            await supabase.auth.updateUser({ data: { signup_role: pendingRole } });
+          }
+          cookieStore.delete("sl_role");
+        }
         return NextResponse.redirect(`${origin}${next}`);
       }
     }

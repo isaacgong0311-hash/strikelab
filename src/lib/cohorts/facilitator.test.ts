@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { QUANT_FOUNDATIONS_TEMPLATE } from "./template";
-import { FACILITATOR_WEEKS, nudgeMessage, weeklyMessage } from "./facilitator";
+import { FACILITATOR_WEEKS, inviteMessage, nudgeMessage, weeklyMessage } from "./facilitator";
 
 describe("facilitator content", () => {
   it("covers every template week", () => {
@@ -29,5 +29,13 @@ describe("facilitator content", () => {
     expect(msg.startsWith("Hi Ava!")).toBe(true);
     expect(msg).toContain("completely fine");
     expect(nudgeMessage({ firstName: " ", cohortUrl: "u" }).startsWith("Hi there!")).toBe(true);
+  });
+
+  it("builds the invite message with the start week and join link", () => {
+    const msg = inviteMessage({ className: "Math Club", startsOn: "2026-10-26", joinUrl: "https://strikelab.dev/join/ABC234" });
+    expect(msg).toContain("Math Club is running the Quant Foundations Lab");
+    expect(msg).toContain("week of Mon, Oct 26");
+    expect(msg).toContain("https://strikelab.dev/join/ABC234");
+    expect(inviteMessage({ className: "X", startsOn: null, joinUrl: "u" })).not.toContain("We start");
   });
 });

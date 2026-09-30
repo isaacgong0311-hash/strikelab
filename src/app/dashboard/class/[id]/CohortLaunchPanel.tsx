@@ -1,14 +1,10 @@
 "use client";
 
 import Link from "next/link";
-import { useId, useState } from "react";
-import {
-  MAX_SKIP_WEEKS,
-  QUANT_FOUNDATIONS_TEMPLATE,
-  cohortWeekWindows,
-  pruneSkipWeeks,
-  skipWeekOptions,
-} from "@/lib/cohorts/template";
+import { useState } from "react";
+import { QUANT_FOUNDATIONS_TEMPLATE } from "@/lib/cohorts/template";
+import { TIMEZONES, endDate, postLaunch, readableDate } from "@/lib/cohorts/launch";
+import BreakWeeksPicker from "@/components/cohort/BreakWeeksPicker";
 
 interface CohortClass {
   templateId: string | null;
@@ -21,91 +17,6 @@ interface Props {
   classId: string;
   cohort: CohortClass;
   onLaunched: () => void;
-}
-
-const TIMEZONES = [
-  "America/Chicago",
-  "America/New_York",
-  "America/Denver",
-  "America/Los_Angeles",
-  "America/Phoenix",
-];
-
-function readableDate(value: string, withYear = true): string {
-  return new Intl.DateTimeFormat("en-US", {
-    month: withYear ? "long" : "short",
-    day: "numeric",
-    ...(withYear ? { year: "numeric" } : {}),
-    timeZone: "UTC",
-  }).format(new Date(`${value}T12:00:00Z`));
-}
-
-/** Last day of the program for a start date and break list, or null if either is invalid. */
-function endDate(startsOn: string, skipWeeks: string[]): string | null {
-  try {
-    return cohortWeekWindows(startsOn, skipWeeks).at(-1)?.endsOn ?? null;
-  } catch {
-    return null;
-  }
-}
-
-async function postLaunch(classId: string, body: { startsOn: string; timezone: string; skipWeeks: string[] }) {
-  const response = await fetch(`/api/classes/${classId}/launch`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(body),
-  });
-  const json = await response.json().catch(() => ({}));
-  if (!response.ok) throw new Error(json.error ?? "Failed to launch cohort");
-}
-
-/**
- * Holiday weeks to skip. Only weeks inside the program are offered, and the
- * list grows as breaks push the end date back.
- */
-function BreakWeeksPicker({
-  startsOn,
-  value,
-  onChange,
-}: {
-  startsOn: string;
-  value: string[];
-  onChange: (next: string[]) => void;
-}) {
-  const hintId = useId();
-  const end = endDate(startsOn, value);
-  if (!end) return null;
-  const options = skipWeekOptions(startsOn).filter((d) => d <= end || value.includes(d));
-  const full = value.length >= MAX_SKIP_WEEKS;
-
-  function toggle(week: string, checked: boolean) {
-    onChange(pruneSkipWeeks(startsOn, checked ? [...value, week] : value.filter((d) => d !== week)));
-  }
-
-  return (
-    <fieldset className="cohort-breaks" aria-describedby={hintId}>
-      <legend>Break weeks <em>optional</em></legend>
-      <div className="cohort-breaks-options">
-        {options.map((week) => {
-          const checked = value.includes(week);
-          return (
-            <label key={week} className="cohort-break-option">
-              <input
-                type="checkbox"
-                checked={checked}
-                disabled={!checked && full}
-                onChange={(event) => toggle(week, event.target.checked)}
-              />
-              <span>Week of {readableDate(week, false)}</span>
-            </label>
-          );
-        })}
-      </div>
-      <small id={hintId}>
-        Nothing is due on a break, and it doesn&apos;t count against retention. Up to {MAX_SKIP_WEEKS}.
-      </small>
-    </fieldset>
-  );
 }
 
 function ActiveCohort({ classId, cohort, onLaunched }: Props & { cohort: CohortClass & { startsOn: string } }) {

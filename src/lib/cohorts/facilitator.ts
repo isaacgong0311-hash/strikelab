@@ -97,3 +97,9 @@ export function nudgeMessage(input: { firstName: string; cohortUrl: string }): s
   const name = input.firstName.trim() || "there";
   return `Hi ${name}! Just checking in: you're a little behind in the Quant Foundations Lab, which is completely fine. The next step is waiting for you here, and it only takes a few minutes: ${input.cohortUrl}\nIf you're stuck on something, tell me and we'll sort it out at the next meeting.`;
 }
+
+/** The first message a leader sends: what this is, when it starts, and the join link. */
+export function inviteMessage(input: { className: string; startsOn: string | null; joinUrl: string }): string {
+  const when = input.startsOn ? `We start the week of ${shortDate(input.startsOn)}. ` : "";
+  return `${input.className} is running the Quant Foundations Lab on StrikeLab: six weeks of short lessons where you code real market models (option pricing, backtests, risk) in the browser, and finish with a capstone you can show. It's free.\n\n${when}Join here before our first meeting (it takes a minute, and you'll need to be 13 or older): ${input.joinUrl}`;
+}

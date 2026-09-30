@@ -21,6 +21,15 @@ const SECONDARY: { href: string; label: string }[] = [
   { href: "/roadmap",  label: "Roadmap" },
 ];
 
+// Leaders (signup_role, set at sign-up or when they first create a class)
+// lead with their classes; the student surfaces stay one menu away.
+const TEACHER: { href: string; label: string }[] = [
+  { href: "/teach",     label: "My classes" },
+  { href: "/lessons",   label: "Curriculum" },
+  { href: "/demo",      label: "Demo" },
+  { href: "/dashboard", label: "Dashboard" },
+];
+
 // Signed-out visitors are mostly club leaders, teachers and evaluators
 // (frontend plan §4): lead with the buyer pages, not the product surfaces.
 const VISITOR: { href: string; label: string }[] = [
@@ -185,8 +194,10 @@ export default function Nav() {
 
   const initial = (displayName ?? user?.email ?? "").trim().charAt(0).toUpperCase() || null;
 
-  const allLinks = (user ? [...PRIMARY, ...SECONDARY] : VISITOR) as { href: string; label: string; pro?: boolean }[];
-  const primaryCount = user ? PRIMARY.length : VISITOR.length;
+  const isLeader = user?.user_metadata?.signup_role === "leader";
+  const primary = !user ? VISITOR : isLeader ? TEACHER : PRIMARY;
+  const allLinks = (user ? [...primary, ...SECONDARY] : VISITOR) as { href: string; label: string; pro?: boolean }[];
+  const primaryCount = primary.length;
 
   return (
     <header className="site-header">
