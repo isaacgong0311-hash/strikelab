@@ -3,6 +3,8 @@ import Faq from "@/components/marketing/Faq";
 import styles from "@/components/marketing/marketing.module.css";
 import { pageMetadata } from "@/lib/seo";
 import { LAB_WEEKS, pilotCallHref } from "@/lib/marketing/lab";
+import { TrackedAnchor } from "@/components/marketing/TrackedLink";
+import TrackPageView from "@/components/marketing/TrackPageView";
 
 export const metadata = pageMetadata({
   path: "/pilot",
@@ -26,6 +28,7 @@ const FAQS = [
 export default function PilotPage() {
   return (
     <div className={styles.page}>
+      <TrackPageView event="pilot_page_view" />
       <section className={styles.section}>
         <div className={styles.wrap}>
           <p className={styles.kicker}>Free pilot · this term</p>
@@ -37,7 +40,7 @@ export default function PilotPage() {
           </p>
           <div className={styles.ctaRow}>
             <Link href={SETUP_HREF} className={styles.primary}>Set it up now</Link>
-            <a href={pilotCallHref("pilot")} className={styles.secondary}>Talk to the founder first</a>
+            <TrackedAnchor href={pilotCallHref("pilot")} event="pilot_call_click" eventProps={{ page: "pilot" }} className={styles.secondary}>Talk to the founder first</TrackedAnchor>
           </div>
           <p className={styles.fine}>
             Setup takes a few minutes. Want to look around first? <Link href="/demo" className={styles.textLink}>See the demo</Link>.
@@ -119,7 +122,7 @@ export default function PilotPage() {
           <Faq items={FAQS} />
           <div className={`${styles.ctaRow}`}>
             <Link href={SETUP_HREF} className={styles.primary}>Set it up now</Link>
-            <a href={pilotCallHref("pilot-faq")} className={styles.secondary}>Talk to the founder</a>
+            <TrackedAnchor href={pilotCallHref("pilot-faq")} event="pilot_call_click" eventProps={{ page: "pilot-faq" }} className={styles.secondary}>Talk to the founder</TrackedAnchor>
           </div>
         </div>
       </section>

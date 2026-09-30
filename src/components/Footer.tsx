@@ -6,7 +6,7 @@ const NAV_GROUPS = [
     title: "For clubs",
     links: [
       { href: "/clubs",        label: "For clubs & teachers" },
-      { href: "/pilot",        label: "Free pilot" },
+      { href: "/pilot?src=footer", label: "Free pilot" },
       { href: "/demo",         label: "Demo" },
       { href: "/for-teachers", label: "AP alignment" },
     ],

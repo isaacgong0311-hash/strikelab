@@ -320,7 +320,10 @@ Shipped on `feat/clubs-first`:
 Shipped on `feat/teach`:
 - [x] **FE-4 teacher setup and home.** Sign-up asks "student or club leader/teacher" (preselected from context) and stores `signup_role` in user metadata, so no migration. `/teach/new` has two screens (name, then dates and break weeks), and `/teach/[id]/invite` is the third: the invite link, a copy-ready first message, a printable join card with a server-rendered QR code, and a kickoff checklist. `/teach` shows one card per class with where it is in the six weeks, honest numbers and one next action. Leaders' nav leads with "My classes". `/pilot` "Set it up now" goes to `/teach/new?src=pilot`, and class creation moved out of Settings.
 
-Next: FE-11 (funnel measurement, Postgres-first), FE-10 (Lighthouse CI budgets), then FE-6/7 once pilots produce consented work and real numbers.
+Shipped on `feat/funnel`:
+- [x] **FE-11 funnel measurement, Postgres-first.** `scripts/metrics/leader-funnel.sql` gives leader sign-up → class → launch → first student, with medians and the 7-day rate by source, and a PGlite test covers it. First-touch `?src=` is captured with the UTM params and stored at sign-up, and every pilot CTA tags itself. Marketing events (`hero_cta`, `demo_open`, `pilot_page_view`, `pilot_call_click`, `invite_copied`) go through `trackMarketing` and are inert until a paid Vercel plan. Definitions are in `docs/gtm/metric-glossary.md`.
+
+Next: FE-10 (Lighthouse CI budgets), then FE-6/7 once pilots produce consented work and real numbers.
 
 ## 11. First 10 days (through 2026-10-02)
 

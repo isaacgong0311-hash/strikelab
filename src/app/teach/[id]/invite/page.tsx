@@ -57,7 +57,7 @@ export default async function InvitePage({
         <h2 id="link-title" className={styles.sectionTitle}>Invite link</h2>
         <div className={styles.linkBox}>
           <code>{joinUrl}</code>
-          <CopyButton text={joinUrl} label="Copy link" className={styles.secondary} />
+          <CopyButton text={joinUrl} label="Copy link" className={styles.secondary} event="invite_copied" eventProps={{ what: "link" }} />
         </div>
         <p className={styles.muted}>
           Students open it, sign up (13 or older), and land on this week&apos;s work. The join code is{" "}
@@ -69,7 +69,7 @@ export default async function InvitePage({
         <h2 id="message-title" className={styles.sectionTitle}>A first message to send</h2>
         <textarea className={styles.message} readOnly defaultValue={message} aria-labelledby="message-title" />
         <div className={styles.actions}>
-          <CopyButton text={message} label="Copy message" className={styles.secondary} />
+          <CopyButton text={message} label="Copy message" className={styles.secondary} event="invite_copied" eventProps={{ what: "message" }} />
         </div>
       </section>
 

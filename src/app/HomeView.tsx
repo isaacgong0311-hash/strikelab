@@ -8,6 +8,7 @@ import { buildDemoData, DEMO_CLASS_NAME } from "@/lib/demo/fixtures";
 import { EXAMPLE_CAPSTONES } from "@/lib/demo/exampleCapstones";
 import { getCapstonePrompt } from "@/lib/capstone/prompts";
 import { LAB_WEEKS, pilotCallHref } from "@/lib/marketing/lab";
+import TrackedLink, { TrackedAnchor } from "@/components/marketing/TrackedLink";
 
 const FAQS = [
   { q: "Who is StrikeLab for?", a: "High-school math, coding, investing, economics and DECA clubs, and teachers who want an applied project for AP Stats, Calc or CS. Students are 13–18." },
@@ -39,8 +40,8 @@ export default function HomeView() {
               Free for students.
             </p>
             <div className={styles.ctaRow}>
-              <Link href="/pilot" className={styles.primary}>Start a free pilot</Link>
-              <Link href="/demo" className={styles.secondary}>See the teacher view</Link>
+              <TrackedLink href="/pilot?src=home-hero" event="hero_cta" eventProps={{ target: "pilot" }} className={styles.primary}>Start a free pilot</TrackedLink>
+              <TrackedLink href="/demo" event="hero_cta" eventProps={{ target: "demo" }} className={styles.secondary}>See the teacher view</TrackedLink>
             </div>
             <p className={styles.fine}>
               Student? <Link href="/learn/inv-1.1" className={styles.textLink}>Try the first lesson</Link>, no signup needed.
@@ -221,8 +222,8 @@ export default function HomeView() {
           <h2 id="home-cta" className={styles.h2}>Run the lab with your club this term</h2>
           <p className={styles.lede}>The pilot is free, setup takes minutes, and you can talk to the founder first.</p>
           <div className={styles.ctaRow}>
-            <Link href="/pilot" className={styles.primary}>Start a free pilot</Link>
-            <a href={pilotCallHref("home")} className={styles.secondary}>Talk to the founder</a>
+            <Link href="/pilot?src=home-cta" className={styles.primary}>Start a free pilot</Link>
+            <TrackedAnchor href={pilotCallHref("home")} event="pilot_call_click" eventProps={{ page: "home" }} className={styles.secondary}>Talk to the founder</TrackedAnchor>
           </div>
           <p className={styles.fine}>
             Student on your own? <Link href="/learn/inv-1.1" className={styles.textLink}>Start the first lesson</Link> or{" "}

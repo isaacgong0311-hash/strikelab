@@ -81,3 +81,30 @@ export function trackStepAnswered(sessionId: string, stepId: string, kind: strin
 export function trackSessionComplete(sessionId: string, accuracy: number, durationMs: number) {
   track("session_complete", { sessionId, accuracy, durationSec: Math.round(durationMs / 1000) });
 }
+
+// ─── Leader funnel (frontend plan FE-11) ──────────────────────────────────────
+//
+// Custom events only record on a paid Vercel plan; until then these are
+// no-ops in production. The pilot's real funnel numbers come from Postgres
+// (scripts/metrics/leader-funnel.sql), not from here. Never put names,
+// emails or anything that identifies a student in these properties.
+
+export type MarketingEvent = "hero_cta" | "demo_open" | "pilot_page_view" | "pilot_call_click" | "invite_copied";
+
+// A page's own effects run before the root <Analytics /> sets up window.va,
+// so an on-mount event would be dropped. Create the same queue the library
+// does; its script drains it when it loads.
+function ensureQueue() {
+  if (typeof window === "undefined") return;
+  const w = window as unknown as { va?: (...params: unknown[]) => void; vaq?: unknown[][] };
+  w.va ??= (...params) => {
+    (w.vaq ??= []).push(params);
+  };
+}
+
+export function trackMarketing(event: MarketingEvent, props: Record<string, string> = {}) {
+  ensureQueue();
+  // Explicit props win over first-touch attribution (e.g. the page-view src).
+  track(event, { ...getAttribution(), ...props });
+}
+

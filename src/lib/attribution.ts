@@ -11,6 +11,8 @@ interface Attribution {
   source?: string;
   campaign?: string;
   medium?: string;
+  /** Our own ?src= tag (outreach emails, CTAs), alongside UTM params. */
+  src?: string;
 }
 
 /** Call once, client-side, as early as possible (see src/instrumentation-client.ts). */
@@ -23,8 +25,9 @@ export function captureAttribution() {
       source: params.get("utm_source") ?? undefined,
       campaign: params.get("utm_campaign") ?? undefined,
       medium: params.get("utm_medium") ?? undefined,
+      src: params.get("src")?.slice(0, 64) ?? undefined,
     };
-    if (!attribution.source && !attribution.campaign && !attribution.medium) return;
+    if (!attribution.source && !attribution.campaign && !attribution.medium && !attribution.src) return;
     sessionStorage.setItem(KEY, JSON.stringify(attribution));
   } catch {
     // sessionStorage unavailable (private browsing, etc.) — skip silently
