@@ -1,7 +1,7 @@
 # StrikeLab Frontend Work Plan: Sep 30, 2026 → Apr 2027
 
 **Date:** 2026-09-30 (runway week 3)
-**Status:** Active. This replaces the *sequencing* of `2026-09-23-frontend-plan.md`, whose positioning, voice, information architecture and principles (§1, §3, §4, §8) still hold. Where the two disagree about what to do next, this plan wins.
+**Status:** Absorbed into `2026-09-30-frontend-master-plan.md`, which now sets the order of work. This plan's audit (A1–A12) and item numbers (FW-1 to FW-22) stay valid and are referenced there. Originally: this replaces the *sequencing* of `2026-09-23-frontend-plan.md`, whose positioning, voice, information architecture and principles (§1, §3, §4, §8) still hold. Where the two disagree about what to do next, this plan wins.
 **Update, same day:** the homepage now serves **both** independent students and club leaders (decision log 2026-09-30): two doors in the hero, the old student sections restored, and a section for leaders. That shipped FW-1 (the hero no longer has an overlapping card; the scorecard sits beside the phone in the leaders' section), FW-2 (the banner shows only on marketing pages, to signed-out visitors) and FW-5 (the footer copy). Every number on the homepage is computed (`src/lib/marketing/heroExample.ts`, tested).
 **Fits inside:** the mega plan's gates and the sprint (`2026-09-30-sprint-to-go-no-go.md`). **Code freeze is Fri Oct 23.** Frontend work never outranks getting a leader.
 
