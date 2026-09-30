@@ -30,14 +30,19 @@ const TEACHER: { href: string; label: string }[] = [
   { href: "/dashboard", label: "Dashboard" },
 ];
 
-// Signed-out visitors are mostly club leaders, teachers and evaluators
-// (frontend plan §4): lead with the buyer pages, not the product surfaces.
+// Signed-out visitors are students and club leaders alike (decision log
+// 2026-09-30): the learning surfaces first, then one clear door for leaders.
 const VISITOR: { href: string; label: string }[] = [
-  { href: "/clubs",   label: "For clubs & teachers" },
-  { href: "/demo",    label: "Demo" },
-  { href: "/lessons", label: "Curriculum" },
-  { href: "/pricing", label: "Pricing" },
+  { href: "/lessons",    label: "Lessons" },
+  { href: "/playground", label: "Playground" },
+  { href: "/clubs",      label: "For clubs & teachers" },
+  { href: "/demo",       label: "Demo" },
+  { href: "/pricing",    label: "Pricing" },
 ];
+
+// The leaders' announcement shows only on these marketing pages, never in a
+// lesson, a cohort or a leader's own pages (frontend work plan FW-2).
+const ANNOUNCE_PATHS = new Set(["/", "/lessons", "/pricing", "/about", "/faq"]);
 
 // ── Small inline SVG icons (no emojis) ───────────────────────
 function FlameIcon() {
@@ -87,6 +92,9 @@ export default function Nav() {
   const isActive = (href: string) => path === href || path.startsWith(href + "/");
   const { xp, streak, hydrated } = useProgress();
   const { user, displayName, signOut } = useAuth();
+  // Rendered on the server for these paths (no layout shift for visitors),
+  // then hidden once a signed-in user is known.
+  const showAnnounce = ANNOUNCE_PATHS.has(path) && !user;
   // Gates the gamification pills — see the note at their render site.
   const hasProgress = xp > 0 || streak > 0;
   const [menuOpen, setMenuOpen] = useState(false);
@@ -202,12 +210,13 @@ export default function Nav() {
   return (
     <header className="site-header">
       {/* ─── Announcement bar ──────────────────────────────────────────────── */}
-      <div className="nav-announce">
-        Now enrolling free pilots for this school year &middot;{" "}
-        <Link href="/pilot?src=announce" className="nav-announce-link">
-          Run the lab with your club →
-        </Link>
-      </div>
+      {showAnnounce && (
+        <div className="nav-announce">
+          <Link href="/pilot?src=announce" className="nav-announce-link">
+            Clubs &amp; teachers: free pilots this fall →
+          </Link>
+        </div>
+      )}
 
       {/* ─── Main nav ──────────────────────────────────────────────────────── */}
       <nav className={`nav-bar${scrolled ? " is-scrolled" : ""}`} aria-label="Primary navigation">
@@ -325,8 +334,8 @@ export default function Nav() {
           ) : (
             <>
               <Link href="/sign-in" className="nav-signin">Sign in</Link>
-              <Link href="/pilot?src=nav" className="nav-cta">
-                Start a free pilot <span aria-hidden="true">→</span>
+              <Link href="/learn/inv-1.1?src=nav" className="nav-cta">
+                Start lesson 1 <span aria-hidden="true">→</span>
               </Link>
             </>
           )}
@@ -404,8 +413,11 @@ export default function Nav() {
             ) : (
               <>
                 <Link href="/sign-in" className="nav-mobile-link">Sign in</Link>
-                <Link href="/pilot?src=nav-mobile" className="nav-cta" style={{ marginTop: 8, justifyContent: "center" }}>
-                  Start a free pilot <span aria-hidden="true">→</span>
+                <Link href="/learn/inv-1.1?src=nav-mobile" className="nav-cta" style={{ marginTop: 8, justifyContent: "center" }}>
+                  Start lesson 1 <span aria-hidden="true">→</span>
+                </Link>
+                <Link href="/pilot?src=nav-mobile" className="nav-mobile-link">
+                  Clubs &amp; teachers: start a free pilot
                 </Link>
               </>
             )}

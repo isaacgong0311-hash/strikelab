@@ -2,11 +2,11 @@ import type { Metadata } from "next";
 import HomeView from "./HomeView";
 import { SITE_URL, SITE_NAME } from "@/lib/site";
 
-// Decision log 2026-09-23: the title is the plain category line; the hero
-// carries the promise.
-const TITLE = "StrikeLab: the technical-finance lab for high-school clubs";
+// Decision log 2026-09-30: one homepage for independent students and club
+// leaders; the title leads with what everyone does here.
+const TITLE = "StrikeLab: learn quant finance by building it";
 const DESCRIPTION =
-  "A ready-to-run six-week lab where students learn by coding real market models and finish with work they can show. A weekly plan and scorecard for the leader. Free for students.";
+  "Price options, code the Greeks and backtest strategies in real Python, right in the browser. Free for high-school students, and ready to run as a six-week lab for clubs and classes.";
 
 // The hero's sample data is relative to today; refresh it hourly.
 export const revalidate = 3600;

@@ -6,40 +6,47 @@
 }
 .heroGrid { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr); gap: clamp(2rem, 5vw, 4rem); align-items: center; }
 
-.heroVisual { position: relative; margin: 0; }
-.phone {
-  width: min(100%, 24rem);
-  max-height: 34rem;
+.heroVisual { position: relative; margin: 0; min-width: 0; }
+/* Hero code card: a static snapshot of lesson 3's exercise. The output is
+   computed by src/lib/marketing/heroExample.ts, never typed by hand. */
+.code {
+  width: min(100%, 34rem);
   margin: 0 auto;
   overflow: hidden;
-  border: 1px solid var(--sl-border);
-  border-radius: 2rem;
-  background: var(--sl-canvas);
+  border-radius: var(--sl-radius-xl);
+  background: #1f2430;
+  color: #e6e8ee;
   box-shadow: var(--sl-shadow-2);
-  pointer-events: none;
-  user-select: none;
-  /* Fade the bottom of the long page instead of hard-cropping it. */
-  mask-image: linear-gradient(to bottom, #000 78%, transparent);
 }
-.peek {
-  position: absolute;
-  left: max(-1rem, calc(50% - 15rem));
-  bottom: 3.25rem;
+.codeBar {
   display: flex;
-  flex-direction: column;
-  gap: 0.25rem;
-  padding: 0.875rem 1rem;
-  border: 1px solid var(--sl-border);
-  border-radius: var(--sl-radius-lg);
-  background: color-mix(in srgb, var(--sl-surface) 92%, transparent);
-  backdrop-filter: blur(10px);
-  box-shadow: var(--sl-shadow-2);
-  font-size: 0.875rem;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.625rem 1rem;
+  border-bottom: 1px solid rgb(255 255 255 / 0.08);
+  font-size: 0.75rem;
 }
-.peekLabel { color: var(--sl-text-subtle); font-weight: 800; font-size: 0.6875rem; letter-spacing: 0.06em; text-transform: uppercase; }
-.peekRow { display: flex; gap: 1rem; }
-.peekRow b { font: 800 1.25rem/1 var(--sl-font-display); color: var(--sl-brand-strong); }
-.peekHelp { color: var(--sl-warning); font-weight: 700; }
+.codeFile { color: #aab1c2; font-family: var(--font-mono), ui-monospace, monospace; }
+.codePass { color: #7ee2a0; font-weight: 700; }
+.codeBody {
+  margin: 0;
+  padding: 1rem;
+  overflow-x: auto;
+  font: 0.8125rem/1.65 var(--font-mono), ui-monospace, monospace;
+  white-space: pre;
+}
+@media (max-width: 30rem) { .codeBody { font-size: 0.6875rem; } }
+.kw { color: #c792ea; }
+.fn { color: #82aaff; }
+.num { color: #f78c6c; }
+.codeOut {
+  padding: 0.75rem 1rem;
+  border-top: 1px solid rgb(255 255 255 / 0.08);
+  font: 700 1rem/1.4 var(--font-mono), ui-monospace, monospace;
+  color: #7ee2a0;
+}
+.codeOutLabel { margin-right: 0.5rem; color: #aab1c2; font-weight: 400; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.06em; }
 .caption { margin-top: 0.875rem; text-align: center; color: var(--sl-text-subtle); font-size: 0.8125rem; }
 
 .weeks { list-style: none; margin: 1.75rem 0 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 19rem), 1fr)); gap: 0.75rem 1.5rem; }
@@ -98,11 +105,130 @@
 .quote footer { margin-top: 0.75rem; color: var(--sl-text-subtle); font-weight: 700; }
 
 @media (max-width: 860px) {
-  .heroGrid { grid-template-columns: 1fr; }
-  .phone { max-height: 26rem; }
-  .peek { left: 0; bottom: 3rem; }
+  /* minmax(0, …) so the code card scrolls inside itself instead of widening the page. */
+  .heroGrid { grid-template-columns: minmax(0, 1fr); }
 }
 @media (prefers-reduced-motion: reduce) {
-  .capstone { transition: none; }
+  .capstone, .track { transition: none; }
   .capstone:hover { transform: none; }
 }
+
+/* The path: one card per track. */
+.track {
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+  padding: 1.25rem;
+  border: 1px solid var(--sl-border);
+  border-radius: var(--sl-radius-lg);
+  background: var(--sl-surface);
+  color: var(--sl-text);
+  text-decoration: none;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+.track:hover { border-color: var(--sl-brand); box-shadow: var(--sl-shadow-1); }
+.track:focus-visible { outline: 3px solid var(--sl-focus); outline-offset: 2px; }
+.trackLevel { color: var(--sl-brand-strong); font-size: 0.75rem; font-weight: 800; letter-spacing: 0.06em; text-transform: uppercase; }
+.trackTitle { font: 800 1.25rem/1.25 var(--sl-font-display); }
+.trackSub { color: var(--sl-text-subtle); }
+
+/* For clubs: one band, text beside its buttons on wide screens. */
+.clubs { display: grid; grid-template-columns: minmax(0, 1.4fr) auto; gap: 1.5rem 3rem; align-items: center; }
+@media (max-width: 52rem) { .clubs { grid-template-columns: 1fr; } }
+
+/* ── Hero doors: one per audience, equal weight ─────────────────── */
+.doors { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 15rem), 1fr)); gap: 0.875rem; margin-top: 1.75rem; }
+.door {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 1.125rem 1.125rem 1rem;
+  border: 1px solid var(--sl-border);
+  border-radius: var(--sl-radius-lg);
+  background: color-mix(in srgb, var(--sl-surface) 88%, transparent);
+  box-shadow: var(--sl-shadow-1);
+}
+.doorWho { font: 800 1rem/1.3 var(--sl-font-display); color: var(--sl-text); }
+.doorWhat { color: var(--sl-text-subtle); font-size: 0.9375rem; line-height: 1.5; }
+.doorActions { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem 1rem; margin-top: auto; padding-top: 0.25rem; }
+.doorLink { color: var(--sl-brand-strong); font-weight: 700; text-decoration: underline; text-underline-offset: 3px; }
+.doorLink:hover { color: var(--sl-brand); }
+
+/* ── Facts strip ─────────────────────────────────────────────────── */
+.facts { border-block: 1px solid var(--sl-border); background: var(--sl-surface); }
+.factList { list-style: none; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0.5rem; padding-block: 1.125rem; margin-block: 0; color: var(--sl-text-subtle); }
+.factList li { text-align: center; }
+.factList b { display: block; font: 800 1.5rem/1.2 var(--sl-font-display); color: var(--sl-text); }
+@media (max-width: 40rem) { .factList { grid-template-columns: repeat(2, minmax(0, 1fr)); row-gap: 1rem; } }
+
+/* Text beside a visual, stacked on narrow screens. */
+.split { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: clamp(2rem, 5vw, 4rem); align-items: center; }
+@media (max-width: 860px) { .split { grid-template-columns: minmax(0, 1fr); } }
+
+.trackMore { margin-top: auto; padding-top: 0.5rem; color: var(--sl-brand-strong); font-weight: 700; }
+
+/* ── Greeks ticket ───────────────────────────────────────────────── */
+.ticket {
+  border: 1px solid var(--sl-border);
+  border-radius: var(--sl-radius-xl);
+  background: var(--sl-surface);
+  box-shadow: var(--sl-shadow-2);
+  overflow: hidden;
+}
+.ticketHead {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 1rem;
+  padding: 1rem 1.25rem;
+  border-bottom: 1px solid var(--sl-border);
+  color: var(--sl-text-subtle);
+  font-size: 0.875rem;
+  font-weight: 700;
+}
+.ticketHead b { font: 800 1.375rem/1 var(--sl-font-display); color: var(--sl-text); }
+.greekList { margin: 0; }
+.greek { display: grid; grid-template-columns: 8rem 1fr; gap: 1rem; align-items: baseline; padding: 0.75rem 1.25rem; border-bottom: 1px solid var(--sl-border); }
+.greek dt { font-weight: 800; }
+.greek dd { margin: 0; display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.25rem 0.75rem; }
+.greekSym { display: inline-block; width: 1.25rem; color: var(--sl-brand-strong); font-family: var(--sl-font-display); }
+.greekVal { font: 700 1.0625rem/1.2 var(--font-mono), ui-monospace, monospace; font-variant-numeric: tabular-nums; }
+.greekNote { color: var(--sl-text-subtle); font-size: 0.875rem; }
+.ticketFoot { margin: 0; padding: 0.75rem 1.25rem; color: var(--sl-text-subtle); font-size: 0.8125rem; }
+@media (max-width: 30rem) { .greek { grid-template-columns: 1fr; gap: 0.25rem; } }
+
+/* ── Clubs visual: the student's week, with the scorecard beside it ─ */
+.clubVisual { position: relative; margin: 0; display: grid; justify-items: center; gap: 0.875rem; }
+.phone {
+  width: min(100%, 22rem);
+  max-height: 30rem;
+  overflow: hidden;
+  border: 1px solid var(--sl-border);
+  border-radius: 2rem;
+  background: var(--sl-canvas);
+  box-shadow: var(--sl-shadow-2);
+  pointer-events: none;
+  user-select: none;
+  mask-image: linear-gradient(to bottom, #000 80%, transparent);
+}
+.scorecard {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: center;
+  gap: 0.375rem 1rem;
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--sl-border);
+  border-radius: var(--sl-radius-lg);
+  background: var(--sl-surface);
+  box-shadow: var(--sl-shadow-1);
+  font-size: 0.875rem;
+}
+.scorecard b { font: 800 1.125rem/1 var(--sl-font-display); color: var(--sl-brand-strong); }
+.scorecardLabel { width: 100%; text-align: center; color: var(--sl-text-subtle); font-weight: 800; font-size: 0.6875rem; letter-spacing: 0.06em; text-transform: uppercase; }
+.scorecardHelp { color: var(--sl-warning); font-weight: 700; }
+
+.weekTitle { margin: 0; font: 800 1rem/1.3 var(--sl-font-display); }
+.weekBody { margin: 0.125rem 0 0; color: var(--sl-text-subtle); font-size: 0.9375rem; line-height: 1.5; }
+
+.centerRow { justify-content: center; }
