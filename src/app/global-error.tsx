@@ -1,7 +1,7 @@
 "use client";
 
-import * as Sentry from "@sentry/nextjs";
 import { useEffect } from "react";
+import { captureError } from "@/lib/monitoring";
 
 /**
  * Next.js App Router's root error boundary — catches render errors that
@@ -19,7 +19,7 @@ export default function GlobalError({
   error: Error & { digest?: string };
 }) {
   useEffect(() => {
-    Sentry.captureException(error);
+    captureError(error);
   }, [error]);
 
   return (

@@ -2,13 +2,15 @@
  * GET /api/challenges/leaderboard — the current weekly challenge's top times,
  * plus the caller's own solved/xp/rank if they're signed in.
  *
- * challenge_completions has a public SELECT policy, so this works for
- * signed-out visitors too (they just get `you: null`).
+ * No names: students are 13–18, so rows are ranks, times and XP, with the
+ * caller's own row labelled "You" (src/lib/challengeLeaderboard.ts). Works
+ * for signed-out visitors too (they just get `you: null`).
  */
 import { NextResponse } from "next/server";
 import { getSupabaseServer } from "@/lib/supabase/server";
 import { requireUser } from "@/lib/supabase/requireUser";
 import { getCurrentChallenge } from "@/lib/challenges";
+import { loadLeaderboardRows, toLeaderboard } from "@/lib/challengeLeaderboard";
 
 const TOP_N = 10;
 
@@ -19,53 +21,27 @@ export async function GET() {
   }
 
   const challenge = getCurrentChallenge();
+  const auth = await requireUser();
+  const signedIn = !("error" in auth);
 
-  const { data: rows, error } = await supabase
-    .from("challenge_completions")
-    .select("user_id, display_name, elapsed_seconds, xp")
-    .eq("challenge_id", challenge.id)
-    .order("elapsed_seconds", { ascending: true })
-    .limit(TOP_N);
-
-  if (error) {
-    console.error("[challenges/leaderboard] read failed:", error.message);
+  const rows = await loadLeaderboardRows(signedIn ? auth.supabase : supabase, challenge.id, signedIn ? auth.userId : null, TOP_N);
+  if (!rows) {
     return NextResponse.json({ error: "Could not load leaderboard" }, { status: 500 });
   }
+  const { leaderboard, yourRank } = toLeaderboard(rows, TOP_N);
 
-  const leaderboard = (rows ?? []).map((row, i) => ({
-    rank: i + 1,
-    name: row.display_name?.trim() || "Anonymous",
-    elapsedSeconds: row.elapsed_seconds,
-    xp: row.xp,
-  }));
-
-  const auth = await requireUser();
   let you: { solved: number; bonusXp: number; rank: number | null } | null = null;
-
-  if (!("error" in auth)) {
+  if (signedIn) {
     const { data: mine } = await auth.supabase
       .from("challenge_completions")
       .select("xp")
       .eq("user_id", auth.userId);
 
-    const solved = mine?.length ?? 0;
-    const bonusXp = (mine ?? []).reduce((sum, r) => sum + r.xp, 0);
-
-    let rank: number | null = null;
-    const inTop = rows?.findIndex((r) => r.user_id === auth.userId) ?? -1;
-    if (inTop >= 0) {
-      rank = inTop + 1;
-    } else {
-      const { data: allForChallenge } = await supabase
-        .from("challenge_completions")
-        .select("user_id")
-        .eq("challenge_id", challenge.id)
-        .order("elapsed_seconds", { ascending: true });
-      const idx = allForChallenge?.findIndex((r) => r.user_id === auth.userId) ?? -1;
-      rank = idx >= 0 ? idx + 1 : null;
-    }
-
-    you = { solved, bonusXp, rank };
+    you = {
+      solved: mine?.length ?? 0,
+      bonusXp: (mine ?? []).reduce((sum, r) => sum + r.xp, 0),
+      rank: yourRank,
+    };
   }
 
   return NextResponse.json({ challengeId: challenge.id, leaderboard, you });

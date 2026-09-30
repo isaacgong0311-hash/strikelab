@@ -74,3 +74,6 @@ thumb_render.mjs
 
 # Lighthouse CI reports
 .lighthouseci/
+
+# Copied from node_modules/pyodide at dev/build time (scripts/copy-pyodide.mjs)
+/public/pyodide/

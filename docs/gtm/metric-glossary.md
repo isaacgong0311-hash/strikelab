@@ -24,7 +24,7 @@ The scorecard computes these in `src/lib/cohorts/metrics.ts` (tested in `metrics
 - **Activated** counts the first assigned lesson finished *by the end of the 7-day window*, including before it (e.g. a student who did lesson 1 the week before kickoff). While the window is still open, a student is "pending", not "not activated".
 - **Break weeks** (`classes.skip_weeks`) aren't cohort weeks: activity during a break counts toward no week, and week 4 is the fourth *program* week.
 - **Unknown dates:** completions recorded before timestamps existed (`completed_at` NULL) count toward lessons done, but never toward activation or weekly activity.
-- **Program completed** currently means every assigned lesson by 7 days after the last week. The capstone joins the definition when capstone submissions ship (A5).
+- **Program completed** means every assigned lesson done *and* the capstone submitted, both by 7 days after the last week. Before migration 0019 (capstones) is applied, the capstone part is ignored.
 - **Needs help:** not activated after the window closes, or overdue work plus no completion or activity for 7+ days.
 
 ## Leader funnel (2026-09-23)
@@ -42,6 +42,20 @@ The funnel from a leader's sign-up to their first student comes from Postgres, n
 
 **Marketing events** (`src/lib/analytics.ts`, `trackMarketing`): `hero_cta{target}`, `demo_open{view}`, `pilot_page_view{src}`, `pilot_call_click{page}`, `invite_copied{what}`. They go to Vercel Analytics, which only records custom events on a paid plan, so they're inert until then (decision log 2026-09-23). No names, emails or student identifiers in event properties.
 
-## Not yet measurable
+## What needs which migration
 
-**Capstone completion** can't be computed until capstone submissions ship (master plan A5). Activation, week-N-active, week-4 retention and program completion are measurable once migration 0016 is applied in production; before that, the scorecard says "not measurable" instead of estimating. Don't approximate these from the aggregate array with invented timestamps; report them as "not yet measurable" rather than a fabricated number.
+Every metric above is measurable once migrations 0016 (lesson completions) and 0019 (capstones) are applied in production; `scripts/metrics/check-migrations.sql` says whether they are. Until then the scorecard says "not measurable" instead of estimating. Don't approximate activation or retention from the aggregate `progress.completed` array with invented timestamps: report "not yet measurable" rather than a fabricated number.
+
+## Pipeline metrics (before any cohort runs)
+
+Until the first cohort starts, the weekly scorecard tracks the leader pipeline instead (work plan 2026-09-29 §8). All of these are counted from `crm.csv`, by hand, every Friday.
+
+| Term | Definition |
+|---|---|
+| **Contact touched** | A named leader received a personal message (email, text, in person) from the founder. A mass email or a post doesn't count. |
+| **Warm contact** | The leader already knows the founder, or someone who knows both made the introduction. |
+| **Reply** | The leader answered, including "no". |
+| **Call held** | A conversation actually happened (15 minutes or more), not just booked. |
+| **Verbal yes with a date** | The leader said they'll run it and named a week-1 date. |
+| **Locked pilot** | A verbal yes, plus approval done or confirmed not needed, plus the date on both calendars. |
+| **Approval path** | A = no approval needed; B = sponsor or principal sign-off; C = district vendor or data-privacy review (work plan §2.4). |

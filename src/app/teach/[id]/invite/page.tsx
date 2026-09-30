@@ -10,6 +10,7 @@ import { readableDate } from "@/lib/cohorts/launch";
 import CopyButton from "@/components/cohort/CopyButton";
 import Stepper from "../../Stepper";
 import PrintButton from "./PrintButton";
+import KickoffLive from "./KickoffLive";
 import styles from "../../teach.module.css";
 
 export const metadata = privatePageMetadata({
@@ -64,6 +65,8 @@ export default async function InvitePage({
           <strong>{klass.joinCode}</strong> if someone would rather type it.
         </p>
       </section>
+
+      <KickoffLive classId={klass.id} />
 
       <section className={styles.panel} aria-labelledby="message-title">
         <h2 id="message-title" className={styles.sectionTitle}>A first message to send</h2>

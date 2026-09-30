@@ -16,6 +16,9 @@ const eslintConfig = defineConfig([
     // tsconfig, Next 14) that happens to live in this repo. It isn't part
     // of the StrikeLab app and shouldn't be swept into its lint run.
     "finpath/**",
+    // The Python runtime, copied from node_modules at dev/build time
+    // (scripts/copy-pyodide.mjs): vendor code, not ours.
+    "public/pyodide/**",
   ]),
 ]);
 

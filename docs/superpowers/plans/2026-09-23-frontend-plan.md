@@ -1,3 +1,5 @@
+> **Sequencing superseded 2026-09-30** by `2026-09-30-frontend-work-plan.md` (audit + phased FW-1…FW-22). Positioning, voice, IA and principles here still apply.
+
 # StrikeLab Frontend Plan: from "learning site" to "company a YC partner gets in 10 seconds"
 
 **Date:** 2026-09-23 (runway week 2)

@@ -1,7 +1,7 @@
 "use client";
 import { useState, useEffect, useCallback, useRef } from "react";
 import { useAuth } from "@/lib/auth/AuthProvider";
-import { getSupabaseBrowser } from "@/lib/supabase/client";
+import { loadSupabaseBrowser } from "@/lib/supabase/lazy";
 import {
   fetchRemoteProgress,
   upsertRemoteProgress,
@@ -104,11 +104,12 @@ export function useProgress() {
   // 2. When a user signs in, reconcile local <-> cloud and keep userId ref.
   useEffect(() => {
     userIdRef.current = user?.id ?? null;
-    const supabase = getSupabaseBrowser();
-    if (!user || !supabase) return;
+    if (!user) return;
 
     let active = true;
     (async () => {
+      const supabase = await loadSupabaseBrowser();
+      if (!supabase || !active) return;
       const remote = await fetchRemoteProgress(supabase, user.id);
       const local = readLocal() ?? DEFAULT_STATE;
       const merged = remote ? mergeProgress(remote, local) : local;
@@ -150,10 +151,9 @@ export function useProgress() {
       writeLocal(next);
 
       // Persist to the cloud if signed in (fire-and-forget).
-      const supabase = getSupabaseBrowser();
       const uid = userIdRef.current;
-      if (supabase && uid) {
-        void upsertRemoteProgress(supabase, uid, next);
+      if (uid) {
+        void loadSupabaseBrowser().then((supabase) => supabase && upsertRemoteProgress(supabase, uid, next));
       }
 
       return next;

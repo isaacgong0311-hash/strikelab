@@ -4,7 +4,7 @@ import Link from "next/link";
 import { Fragment, useEffect, useRef, useState, type FormEvent, type ReactNode } from "react";
 import { useProgress } from "@/lib/useProgress";
 import { useAuth } from "@/lib/auth/AuthProvider";
-import { getSupabaseBrowser } from "@/lib/supabase/client";
+import { loadSupabaseBrowser } from "@/lib/supabase/lazy";
 import { pushSessionResults } from "@/lib/sessions/sync";
 import {
   advance,
@@ -104,9 +104,9 @@ export default function SessionPlayer({ session, lessonTitle, sessionIds, nextSe
     // lesson, so finishing sessions after reading the lesson can't double it.
     const earnedXp = !wasFinished && isLessonFinished(session.lessonId, results) && !completed.has(session.lessonId);
     if (earnedXp) markComplete(session.lessonId);
-    const supabase = getSupabaseBrowser();
-    if (supabase && user && !before[session.id]) {
-      void pushSessionResults(supabase, user.id, { [session.id]: results[session.id] });
+    if (user && !before[session.id]) {
+      const result = results[session.id];
+      void loadSupabaseBrowser().then((supabase) => supabase && pushSessionResults(supabase, user.id, { [session.id]: result }));
     }
     trackSessionComplete(session.id, accuracy, durationMs);
     setSummary({ accuracy, durationMs, lessonJustFinished: earnedXp, results });

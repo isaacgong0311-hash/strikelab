@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useAuth } from "@/lib/auth/AuthProvider";
-import { getSupabaseBrowser } from "@/lib/supabase/client";
+import { loadSupabaseBrowser } from "@/lib/supabase/lazy";
 import {
   chooseInitialCode,
   fetchSubmission,
@@ -42,7 +42,7 @@ export function useSyncedCode(lessonId: string, starterCode: string) {
       window.clearTimeout(timerRef.current);
       timerRef.current = null;
     }
-    const supabase = getSupabaseBrowser();
+    const supabase = await loadSupabaseBrowser();
     const userId = userIdRef.current;
     const copy = pendingRef.current ?? (passed ? readLocalCode(lessonId) : null);
     if (!supabase || !userId || !cloudRef.current || !copy) return;
@@ -67,9 +67,10 @@ export function useSyncedCode(lessonId: string, starterCode: string) {
   // Reconcile with the account copy when a student is (or becomes) signed in.
   useEffect(() => {
     userIdRef.current = user?.id ?? null;
-    const supabase = getSupabaseBrowser();
     let active = true;
     (async () => {
+      const supabase = user ? await loadSupabaseBrowser() : null;
+      if (!active) return;
       if (!user || !supabase) {
         cloudRef.current = false;
         if (active) setStatus("signed-out");

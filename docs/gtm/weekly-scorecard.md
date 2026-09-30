@@ -1,6 +1,6 @@
 # Weekly Scorecard
 
-Fill this in once a week, every week, starting the week the first pilot launches. Ten minutes, same day each week (Friday afternoon is a good habit). Terms are defined in `metric-glossary.md`.
+Fill this in once a week, every week. Until the first cohort runs, fill in the **pipeline** rows (definitions in `metric-glossary.md`; `npm run pipeline` prints them from `crm.csv`); once a cohort is running, fill in both. Ten minutes, same day each week (Friday afternoon is a good habit). Terms are defined in `metric-glossary.md`.
 
 Copy the row template below to the bottom of the log each week — don't edit past weeks.
 
@@ -8,6 +8,17 @@ Copy the row template below to the bottom of the log each week — don't edit pa
 
 ```
 ### Week of YYYY-MM-DD
+
+| Pipeline | Value |
+|---|---|
+| Contacts touched (cumulative) | |
+| Warm share of contacts | |
+| Replies (cumulative) | |
+| Calls held (cumulative) | |
+| Verbal yeses with a date | |
+| Locked pilots | |
+| Leaders by approval path (A / B / C) | |
+| Founder hours: GTM / product / review / pilot support | |
 
 | Metric | Value |
 |---|---|
