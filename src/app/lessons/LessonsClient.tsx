@@ -6,19 +6,12 @@ import FlameIcon from "@/components/FlameIcon";
 import TrophyIcon from "@/components/TrophyIcon";
 import ConstructionIcon from "@/components/ConstructionIcon";
 import PathScenery, { sceneryForIndex, ChestIcon } from "@/components/PathScenery";
-import { getLessonSessions, resumeSession, type SessionResults } from "@/lib/sessions";
+import { getLessonSessions } from "@/lib/sessions";
+import { lessonHref } from "@/lib/nextStep";
 import { useSessionResults } from "@/lib/sessions/useSessionResults";
 
 const OFFSETS = [0, 44, 62, 44, 0, -44, -62, -44];
 
-/**
- * Where a lesson node points. Unfinished lessons that have bite-sized
- * sessions open the next session; everything else opens the long-form page.
- */
-function lessonHref(lessonId: string, done: boolean, results: SessionResults): string {
-  const next = done ? undefined : resumeSession(lessonId, results);
-  return next ? `/learn/${next.id}` : `/lesson/${lessonId}`;
-}
 
 /** Fraction-of-sessions ring drawn around an unfinished node. */
 function SessionRing({ done, total }: { done: number; total: number }) {
@@ -47,9 +40,8 @@ const LEVEL_COLORS: Record<string, string> = {
   Advanced:     "var(--coral)",
 };
 
-// Roadmap items ("planned"/"in-progress" on /roadmap) shown as a preview
-// past each track's finish line — the path keeps going, it's just not paved
-// yet. Update alongside ROADMAP in src/app/roadmap/page.tsx.
+// Planned content shown as a preview past each track's finish line — the
+// path keeps going, it's just not paved yet.
 const COMING_SOON: Record<string, string> = {
   quant: "VaR, GARCH & Monte Carlo",
 };

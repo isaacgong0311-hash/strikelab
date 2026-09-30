@@ -4,7 +4,8 @@
 
 .shell {
   width: min(100%, 44rem);
-  min-height: calc(100dvh - 72px);
+  /* The site header and footer are hidden here (src/lib/focusRoutes.ts). */
+  min-height: 100dvh;
   margin: 0 auto;
   display: flex;
   flex-direction: column;
@@ -15,7 +16,7 @@
 /* ── Top bar ─────────────────────────────────────────────────── */
 .top {
   display: grid;
-  grid-template-columns: auto 1fr auto;
+  grid-template-columns: auto 1fr auto auto;
   align-items: center;
   gap: 0.875rem;
 }

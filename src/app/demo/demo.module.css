@@ -86,3 +86,8 @@
 .secondary { border: 1px solid var(--sl-border-strong); background: var(--sl-surface); color: var(--sl-text); }
 .primary:focus-visible,
 .secondary:focus-visible { outline: 3px solid var(--sl-focus); outline-offset: 3px; }
+
+/* Kickoff panel controls (KickoffDemo.tsx) */
+.kickoffControls { display: flex; flex-wrap: wrap; align-items: center; gap: 0.75rem 1.25rem; }
+.kickoffSlider { display: flex; flex: 1 1 14rem; flex-direction: column; gap: 0.25rem; color: var(--sl-text-muted); font-size: 0.875rem; font-weight: 700; }
+.kickoffSlider input { width: 100%; accent-color: var(--sl-brand); }

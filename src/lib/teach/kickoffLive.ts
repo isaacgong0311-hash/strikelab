@@ -1,6 +1,9 @@
 import { getSupabaseAdmin } from "@/lib/supabase/admin";
 import { getLessonSessions } from "@/lib/sessions";
 import { QUANT_FOUNDATIONS_TEMPLATE } from "@/lib/cohorts/template";
+import { summarizeKickoff, type KickoffLive } from "./kickoffSummary";
+
+export { summarizeKickoff, type KickoffLive, type KickoffStage } from "./kickoffSummary";
 
 /**
  * The kickoff live view (mega plan Q2): during the first meeting, the leader
@@ -9,42 +12,6 @@ import { QUANT_FOUNDATIONS_TEMPLATE } from "@/lib/cohorts/template";
  */
 export const FIRST_LESSON_ID = QUANT_FOUNDATIONS_TEMPLATE.weeks[0].lessonIds[0];
 export const FIRST_SESSION_ID = getLessonSessions(FIRST_LESSON_ID)[0]?.id ?? null;
-
-export type KickoffStage = "joined" | "first-session" | "first-lesson";
-
-export interface KickoffLive {
-  joined: number;
-  finishedFirstSession: number;
-  finishedFirstLesson: number;
-  students: { name: string; stage: KickoffStage }[];
-}
-
-const STAGE_ORDER: Record<KickoffStage, number> = { joined: 0, "first-session": 1, "first-lesson": 2 };
-
-/** Pure: who is where. Students still at "joined" come first, since they're the ones to help. */
-export function summarizeKickoff(input: {
-  memberIds: string[];
-  names: Map<string, string>;
-  finishedSession: Set<string>;
-  finishedLesson: Set<string>;
-}): KickoffLive {
-  const students = input.memberIds.map((id) => {
-    const stage: KickoffStage = input.finishedLesson.has(id)
-      ? "first-lesson"
-      : input.finishedSession.has(id)
-        ? "first-session"
-        : "joined";
-    return { name: input.names.get(id) || "StrikeLab student", stage };
-  });
-  students.sort((a, b) => STAGE_ORDER[a.stage] - STAGE_ORDER[b.stage] || a.name.localeCompare(b.name));
-  return {
-    joined: students.length,
-    // Finishing the lesson means its first session was finished too.
-    finishedFirstSession: students.filter((s) => s.stage !== "joined").length,
-    finishedFirstLesson: students.filter((s) => s.stage === "first-lesson").length,
-    students,
-  };
-}
 
 /**
  * Reads across the class's students with the admin client, so it must only

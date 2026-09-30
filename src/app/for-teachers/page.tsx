@@ -22,7 +22,7 @@ const CLASSROOM_NOTES: Record<string, string> = {
   options:
     "The closest fit for AP Statistics (probability distributions, expected value) and AP Calculus AB/BC (derivatives — every Greek is literally a partial derivative of the Black-Scholes formula). Assign it as an applied-math capstone: students derive the formula, then implement it in Python and watch the curves move.",
   quant:
-    "Best suited to a AMC/AIME-track student working independently, or a CS/stats elective with room for a short project — CAPM, backtesting, and portfolio optimization each stand alone and don't require finishing the other two.",
+    "Best suited to an AMC/AIME-track student working independently, or a CS/stats elective with room for a short project — CAPM, backtesting, and portfolio optimization each stand alone and don't require finishing the other two.",
 };
 
 const AP_ALIGNMENT = [
@@ -39,7 +39,7 @@ const AP_ALIGNMENT = [
   {
     course: "AMC/AIME preparation",
     detail:
-      "The curriculum was built for a AIME-qualifier audience and doesn't dumb down the math — but it also doesn't assume a finance background. Strong problem-solvers who already like math tend to move through it quickly.",
+      "The math isn't watered down, and no finance background is assumed. Strong problem-solvers who already like math tend to move through it quickly.",
   },
 ];
 
@@ -102,21 +102,17 @@ export default function ForTeachersPage() {
         ))}
       </div>
 
-      {/* Testimonials — placeholder copy, ready to swap for real quotes once
-          we have them. Structure (name, role, school) is set so this is a
-          content edit, not a rebuild, when quotes come in. */}
       <div className="p-6 rounded-lg border text-center" style={{ borderColor: "var(--border)", background: "var(--bg2)" }}>
         <p className="text-sm mb-4" style={{ color: "var(--muted2)" }}>
-          Create a free account, then head to Settings → Classroom to make a class and get
-          a join code — students see their roster progress at a glance, no site license
-          required.
+          Make a class in a minute with a free teacher account: you get an invite link and a
+          QR code to share, and you see each student&rsquo;s progress. Students never pay.
         </p>
         <Link
-          href="/sign-up?src=for-teachers"
+          href="/sign-up?next=/teach/new&src=for-teachers"
           className="text-sm px-4 py-2 font-medium transition-colors hover:opacity-80"
           style={{ background: "var(--grass)", color: "#fff", fontFamily: "var(--font-mono)", borderRadius: 10, boxShadow: "0 3px 0 var(--grass-d)" }}
         >
-          Start free →
+          Make a class →
         </Link>
         <p className="text-xs mt-3" style={{ color: "var(--muted)" }}>
           Want a ready-made program with a weekly plan and a class scorecard?{" "}

@@ -102,11 +102,7 @@ const SECTIONS: { title: string; body: React.ReactNode }[] = [
     title: "Changes",
     body: (
       <>
-        We&rsquo;ll update these terms as the product changes (see the{" "}
-        <Link href="/roadmap" className="underline underline-offset-2" style={{ color: "var(--grass)" }}>
-          roadmap
-        </Link>{" "}
-        for what&rsquo;s coming). Material changes will be noted on this page
+        We&rsquo;ll update these terms as the product changes. Material changes will be noted on this page
         with an updated date.
       </>
     ),

@@ -4,6 +4,7 @@ import "./globals.css";
 import "../styles/tokens.css";
 import "../styles/foundation.css";
 import Nav from "@/components/Nav";
+import SiteFooterSlot from "@/components/SiteFooterSlot";
 import Footer from "@/components/Footer";
 import V2Animator from "@/components/V2Animator";
 import { Analytics } from "@vercel/analytics/react";
@@ -173,7 +174,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             <a className="sl-skip-link" href="#main-content">Skip to main content</a>
             <Nav />
             <main id="main-content" tabIndex={-1} className="flex-1 relative" style={{ zIndex: 1 }}>{children}</main>
-            <Footer />
+            <SiteFooterSlot><Footer /></SiteFooterSlot>
           </AuthProvider>
         </AccessibilityProvider>
         <Analytics />

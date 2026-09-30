@@ -2,6 +2,16 @@
 
 **Date:** 2026-09-30 (runway week 3), written after #36 (the homepage for both students and club leaders) merged.
 **Status:** Active. This is the single frontend plan.
+**Update, Sep 30 (Phase A, first pass):** shipped in #37:
+- FW-3: the focused player, with its own exit and accessibility menu.
+- FW-4: an honest dashboard greeting and real icons.
+- FW-6: the kickoff panel on `/demo`.
+- FW-7 and FW-34: Chromebook checks. Python is ready in 12–15s on a 4× throttled CPU against the production build.
+- FW-24: free challenges and `/roadmap` retired.
+- FW-25: role nav with a "Continue" / "This week" button.
+- FW-31: Spline removed, plus 196 unused `.sk-*` rules; `globals.css` is 4,219 → 3,630 lines.
+
+Found along the way: `<main>` faded in from opacity 0 on every page, which held back first paint. It now slides in without fading. FW-28 waits for its decision-log review date (Nov 18).
 - It **absorbs** `2026-09-30-frontend-work-plan.md`. That plan's audit (A1–A12) and item numbers (FW-1 to FW-22) stay valid and are referenced here. Where the two disagree, this plan wins.
 - `2026-09-23-frontend-plan.md` still holds for voice and principles. Its clubs-only positioning is replaced by §2 below.
 
@@ -166,7 +176,7 @@ Estimates are **agent build hours / founder review minutes**. Every item ships a
 
 | # | Item | Why | Acceptance | Est. | When |
 |---|---|---|---|---|---|
-| **FW-28** | **One leaders' page:** add an "Or assign single lessons" section to `/clubs` with the unique content from `/for-teachers`, then redirect `/for-teachers` to `/clubs` | Two leaders' pages split search traffic and outreach links, and `/for-teachers` still uses the old styling (Tailwind plus inline styles) | `/for-teachers` returns 308 to `/clubs`; sitemap updated; no internal links to the old URL | 1h / 5m | Phase A |
+| **FW-28** | **One leaders' page** (deferred to Nov 18 by the 2026-09-23 decision-log row; its wrong setup instructions are fixed): add an "Or assign single lessons" section to `/clubs` with the unique content from `/for-teachers`, then redirect `/for-teachers` to `/clubs` | Two leaders' pages split search traffic and outreach links, and `/for-teachers` still uses the old styling (Tailwind plus inline styles) | `/for-teachers` returns 308 to `/clubs`; sitemap updated; no internal links to the old URL | 1h / 5m | Phase A |
 | FW-9 | **Titles and meta:** one pattern, "Page — StrikeLab"; the homepage is the only exception | A11 | Every title matches the pattern | 0.5h | Phase B |
 | FW-15 | **Proof components** (outcome strip, quote cards), rendered only from sourced data | Honest proof | Only after ≥ 1 cohort completes, with consent | 4h | Phase D |
 | FW-16 | Case-study page | A leader's consent | — | 3h | Phase D |

@@ -4,6 +4,8 @@ import Link from "next/link";
 import { Fragment, useEffect, useRef, useState, type FormEvent, type ReactNode } from "react";
 import { useProgress } from "@/lib/useProgress";
 import { useAuth } from "@/lib/auth/AuthProvider";
+import { useCohortHome } from "@/lib/cohorts/useCohortHome";
+import AccessibilityMenu from "@/components/accessibility/AccessibilityMenu";
 import { loadSupabaseBrowser } from "@/lib/supabase/lazy";
 import { pushSessionResults } from "@/lib/sessions/sync";
 import {
@@ -62,6 +64,11 @@ export default function SessionPlayer({ session, lessonTitle, sessionIds, nextSe
 
   const { completed, markComplete } = useProgress();
   const { user } = useAuth();
+  // ✕ leaves the task for where the student came from: their cohort's week,
+  // or the path map.
+  const cohort = useCohortHome(user?.id);
+  const exitHref = cohort ? `/cohort/${cohort.id}` : "/lessons";
+  const exitLabel = cohort ? `Exit session and return to ${cohort.name}` : "Exit session and return to your path";
   const startedAt = useRef<number | null>(null);
   const headingRef = useRef<HTMLHeadingElement>(null);
   const continueRef = useRef<HTMLButtonElement>(null);
@@ -238,7 +245,7 @@ export default function SessionPlayer({ session, lessonTitle, sessionIds, nextSe
   return (
     <div className={styles.shell}>
       <header className={styles.top}>
-        <Link href={lessonHref} className={styles.close} aria-label={`Exit session and return to ${lessonTitle}`}>
+        <Link href={exitHref} className={styles.close} aria-label={exitLabel}>
           <span aria-hidden="true">×</span>
         </Link>
         <div
@@ -254,6 +261,7 @@ export default function SessionPlayer({ session, lessonTitle, sessionIds, nextSe
         <span className={styles.count}>
           {sessionNumber}/{sessionIds.length}
         </span>
+        <AccessibilityMenu />
       </header>
 
       <form ref={formRef} className={styles.stage} onSubmit={onSubmit} noValidate>
