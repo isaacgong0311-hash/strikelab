@@ -1,7 +1,7 @@
 # StrikeLab Work Plan: Weeks 3–8 (Sep 29 – Nov 8), from "built" to "piloting"
 
 **Date:** 2026-09-29 (runway week 3 of 32)
-**Status:** Adopted 2026-09-29. Agent tasks AG1–AG8 are done (see §12); founder tasks are open.
+**Status:** Adopted 2026-09-29. **Day-level schedule for Sep 30 – Oct 16 superseded by `2026-09-30-sprint-to-go-no-go.md`** (same gates, re-cut targets). Agent tasks AG1–AG8 are done (see §12); founder tasks are open.
 **Horizon:** 2026-09-28 → 2026-11-08 (runway weeks 3–8), with the decisions that shape weeks 9–32
 **Relation to other docs:** The strategy (`specs/2026-09-13-strikelab-yc-company-design.md`) and the master plan (`plans/2026-09-22-master-plan.md`) are still authoritative for *what* and *why*. This plan replaces the master plan's §11 "Next 10 days". It also re-sequences weeks 3–8 around what's true today. Where the two disagree about these six weeks, this plan wins. Task IDs from the master plan (A1, D7, F2, …) and the frontend plan (FE-4, …) are reused so the history stays connected.
 
