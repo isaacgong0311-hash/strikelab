@@ -12,4 +12,4 @@ export const SITE_URL = "https://strikelab.dev";
 
 export const SITE_NAME = "StrikeLab";
 export const SITE_DESCRIPTION =
-  "The technical-finance lab for high-school clubs: students learn options pricing, risk and backtesting by coding real models in the browser, and finish with work they can show. Free for students.";
+  "Learn quant finance by building it: high-school students price options, code the Greeks and backtest strategies in real Python in the browser, on their own or as a six-week lab with their club. Free for students.";

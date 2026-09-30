@@ -59,11 +59,11 @@ export default function Footer() {
             </span>
           </div>
           <p className="text-xs leading-relaxed mb-5 max-w-xs" style={{ color: "var(--fg-mute)" }}>
-            A browser-based quant finance curriculum for high schoolers.
-            Free forever for students. Built by a freshman AIME qualifier.
+            Learn quant finance by building it: lessons, real Python and a
+            six-week lab for clubs. Free for students.
           </p>
           <div className="flex gap-2 flex-wrap mb-5">
-            {["Free forever", "MIT open source", "No install"].map((tag) => (
+            {["Free for students", "Runs in your browser", "Private by default"].map((tag) => (
               <span
                 key={tag}
                 className="text-[10px] px-2 py-0.5 rounded-full"

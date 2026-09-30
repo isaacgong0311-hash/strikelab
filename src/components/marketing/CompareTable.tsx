@@ -2,7 +2,7 @@ import { COMPARE } from "@/lib/marketing/lab";
 import styles from "./compare.module.css";
 
 /** Stock games and finance-literacy courses vs StrikeLab. */
-export default function CompareTable() {
+export default function CompareTable({ rows = COMPARE }: { rows?: readonly (readonly [string, string, string])[] }) {
   return (
     <div className={styles.scroll} tabIndex={0} role="region" aria-label="Comparison">
       <table className={styles.table}>
@@ -14,7 +14,7 @@ export default function CompareTable() {
           </tr>
         </thead>
         <tbody>
-          {COMPARE.map(([q, them, us]) => (
+          {rows.map(([q, them, us]) => (
             <tr key={q}>
               <th scope="row">{q}</th>
               <td className={styles.them}>{them}</td>
