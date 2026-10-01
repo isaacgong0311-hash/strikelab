@@ -14,6 +14,7 @@
     "test:watch": "vitest",
     "lhci": "lhci autorun",
     "pipeline": "node scripts/metrics/pipeline.mjs",
+    "support": "node scripts/metrics/support.mjs",
     "test:a11y": "playwright test tests/accessibility",
     "test:e2e": "playwright test",
     "electron:dev": "concurrently --kill-others \"npm run dev\" \"wait-on http://localhost:3000 && cross-env NODE_ENV=development electron .\"",

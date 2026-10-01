@@ -9,7 +9,7 @@
 -- timestamps (NULL, recorded before tracking began) never count here.
 
 with cohorts as (
-  select c.id, c.name, c.starts_on, coalesce(c.timezone, 'UTC') as tz,
+  select c.id, c.name, c.teacher_id, c.starts_on, coalesce(c.timezone, 'UTC') as tz,
          coalesce(c.skip_weeks, '{}') as skip_weeks,
          (now() at time zone coalesce(c.timezone, 'UTC'))::date as today
   from public.classes c
@@ -68,6 +68,7 @@ flags as (
 )
 select
   k.name as cohort,
+  coalesce(nullif((select p.signup_source from public.profiles p where p.id = k.teacher_id), ''), '(none)') as leader_source,
   k.today as as_of,
   coalesce((select 'week ' || w.week from weeks w where w.class_id = k.id and k.today between w.starts_on and w.ends_on),
            case when k.today < k.starts_on then 'not started'
@@ -86,5 +87,5 @@ select
                   / nullif(count(*) filter (where f.activated), 0)) end as week4_retained_pct
 from cohorts k
 left join flags f on f.class_id = k.id
-group by k.id, k.name, k.today, k.starts_on
+group by k.id, k.name, k.teacher_id, k.today, k.starts_on
 order by k.starts_on, k.name;
