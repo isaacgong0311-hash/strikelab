@@ -1,5 +1,7 @@
 # Money & quota paths audit
 
+> **Update 2026-10-01:** both gaps below are closed in the code. The Stripe webhook now records `last_event_created` (migration [0020](../supabase/migrations/0020_subscription_event_ordering.sql)) and applies an update only if it is not older than the stored event, and the certificate route catches Postgres `23505` and returns the existing certificate. The table is kept as written for the history.
+
 Sprint 0.2 deliverable (see the Runway to 500 plan, Phase 0). Every code path
 that mutates a ledger, a quota counter, or a paid entitlement, and whether
 it's guarded against concurrent/duplicate requests by a DB constraint, an

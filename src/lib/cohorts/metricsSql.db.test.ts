@@ -18,6 +18,7 @@ describe("scripts/metrics", () => {
     const startsOn = addDaysToKey(today, -31);
     const skipWeeks = [addDaysToKey(startsOn, 7)];
     const teacher = await t.user();
+    await t.db.query("update profiles set signup_source = 'email-oct' where id = $1", [teacher]);
     const students = [await t.user(), await t.user(), await t.user(), await t.user()];
 
     const { rows } = await t.db.query<{ id: string }>(
@@ -65,6 +66,7 @@ describe("scripts/metrics", () => {
 
     expect(ts.status).toEqual({ kind: "week", week: 4 });
     expect(row.status).toBe("week 4");
+    expect(row.leader_source).toBe("email-oct");
     expect(Number(row.enrolled)).toBe(ts.enrolled);
     expect(Number(row.activated)).toBe(ts.activated.count);
     expect(Number(row.activation_pending)).toBe(ts.activated.pending);
@@ -74,6 +76,43 @@ describe("scripts/metrics", () => {
     expect(Number(row.week4_retained_pct)).toBe(ts.week4Retained?.pct);
     // And the fixture exercises something: 2 activated, 2 active now, 1 retained.
     expect([ts.activated.count, ts.activeThisWeek, ts.week4Retained?.count]).toEqual([2, 2, 1]);
+  });
+
+  it("growth.sql charts cohorts, active students and submitted capstones by week", async () => {
+    const t = await createTestDb();
+    const TZ = "UTC";
+    const today = localDateKey(new Date(), TZ);
+    const startsOn = addDaysToKey(today, -14); // launched two-plus weeks ago
+    const teacher = await t.user();
+    const [s1, s2] = [await t.user(), await t.user()];
+    const { rows } = await t.db.query<{ id: string }>(
+      `insert into classes (teacher_id, name, join_code, template_id, starts_on, timezone)
+       values ($1, 'Club', 'GR2345', 'quant-foundations-v1', $2, $3) returning id`,
+      [teacher, startsOn, TZ]
+    );
+    const classId = rows[0].id;
+    for (const r of buildCohortSchedule(startsOn, [])) {
+      await t.db.query("insert into assignments (class_id, lesson_id, week_number, position, due_on) values ($1, $2, $3, $4, $5)", [
+        classId, r.lessonId, r.weekNumber, r.position, r.dueOn,
+      ]);
+    }
+    const noon = (day: string) => new Date(`${day}T12:00:00Z`).toISOString();
+    for (const s of [s1, s2]) {
+      await t.db.query("insert into class_members (class_id, student_id, joined_at) values ($1, $2, $3)", [classId, s, noon(startsOn)]);
+    }
+    // s1 completes an assigned lesson this week; s2 only a lesson the cohort never assigned, which doesn't count.
+    await t.db.query("insert into lesson_completions (user_id, lesson_id, completed_at) values ($1, 'inv-1', $3), ($2, '8', $3)", [s1, s2, new Date().toISOString()]);
+    await t.db.query(
+      `insert into capstone_submissions (user_id, class_id, prompt_id, status, submitted_at) values ($1, $2, 'open', 'submitted', now()), ($3, $2, 'open', 'draft', null)`,
+      [s1, classId, s2]
+    );
+
+    const series = (await t.db.query<Record<string, unknown>>(sql("growth.sql"))).rows;
+    expect(series.length).toBeGreaterThanOrEqual(3);
+    const last = series.at(-1)!;
+    expect([last.cohorts_launched, last.enrolled_cum, last.active_students, last.capstones_cum].map(Number)).toEqual([1, 2, 1, 1]);
+    // The first week had no capstones yet, so growth is undefined there rather than a made-up number.
+    expect(series[0].capstones_wow_pct).toBeNull();
   });
 
   it("baseline.sql and check-migrations.sql run against the full schema", async () => {

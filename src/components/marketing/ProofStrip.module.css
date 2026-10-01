@@ -1,0 +1,36 @@
+.strip {
+  max-width: 64rem;
+  margin: 0 auto;
+  padding: 1.5rem 1rem;
+}
+.list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr));
+  gap: 1rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.item {
+  background: var(--paper-2);
+  border: 1px solid var(--line);
+  border-radius: 1rem;
+  padding: 1rem;
+}
+.value {
+  font-family: var(--font-display), Georgia, serif;
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--grass);
+  margin: 0;
+}
+.label {
+  font-size: 0.875rem;
+  color: var(--ink-2);
+  margin: 0.25rem 0 0.5rem;
+}
+.source {
+  font-size: 0.75rem;
+  color: var(--ink-3);
+  margin: 0;
+}
