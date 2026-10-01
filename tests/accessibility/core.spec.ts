@@ -15,10 +15,12 @@ const PUBLIC_ROUTES = [
   "/pilot",
   "/demo",
   "/demo?view=student",
+  "/demo?view=tour",
   "/teach",
   "/teach/new",
   "/sign-up?next=%2Fteach%2Fnew",
   "/challenges",
+  "/trust",
 ];
 
 async function waitForClientShell(page: import("@playwright/test").Page) {
