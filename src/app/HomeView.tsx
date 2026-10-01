@@ -1,6 +1,6 @@
-import ProofStrip from "@/components/marketing/ProofStrip";
 import Link from "next/link";
 import Faq from "@/components/marketing/Faq";
+import ProofStrip from "@/components/marketing/ProofStrip";
 import CompareTable from "@/components/marketing/CompareTable";
 import styles from "@/components/marketing/marketing.module.css";
 import home from "./home.module.css";

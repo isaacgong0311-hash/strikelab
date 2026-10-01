@@ -37,6 +37,7 @@ Students sign up with email and a password, then confirm through a link (`src/ap
 
 - [ ] Vercel → Project → Settings → Environment Variables (Production) has `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY`, `NEXT_PUBLIC_SITE_URL` (= `https://strikelab.dev`), `GROQ_API_KEY`, `NEXT_PUBLIC_SENTRY_DSN` and `OPS_DISCORD_WEBHOOK_URL`.
 - [ ] Optional: `NEXT_PUBLIC_PILOT_CALL_URL` = your Cal.com link, so `/pilot` "Talk first" books a call instead of opening email.
+- [ ] `FOUNDER_USER_IDS` = your own Supabase user id (Supabase → Authentication → Users → your row → UID). It unlocks `/admin/metrics` for you only; everyone else gets a 404. Sign in and open `strikelab.dev/admin/metrics` to check.
 - [ ] **Sentry:** trigger a test error (for example, temporarily open a URL that throws on a preview deploy, or use Sentry's "send test event"). It shows up in the dashboard within a few minutes.
 - [ ] **Discord ops alert:** a test message reaches the channel (Settings → Discord in the app, or a request error on a preview).
 - [ ] **Uptime:** a free monitor (e.g. UptimeRobot or Better Stack's free tier) on `/`, `/cohort` and `/api/progress`, alerting your phone.
