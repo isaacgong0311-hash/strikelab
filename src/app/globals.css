@@ -92,9 +92,12 @@
   --mono:  var(--font-mono, "Courier New", monospace);
   --sans:  var(--font-sans, system-ui, sans-serif);
 
-  --font-sans:  var(--font-sans, system-ui, sans-serif);
-  --font-serif: var(--font-serif, Georgia, serif);
-  --font-mono:  var(--font-mono, "Courier New", monospace);
+  /* Don't redeclare --font-mono, --font-sans or --font-serif here.
+     --font-mono comes from next/font (JetBrains Mono, layout.tsx) and the
+     other two from Tailwind's theme (system-ui and Georgia stacks). They
+     were once declared here in terms of themselves, which is a cycle: all
+     three computed to nothing, so code and labels set in --font-mono or
+     --sl-font-code fell back to the UI font. */
 }
 
 /* Marquee ticker */
@@ -2876,7 +2879,6 @@ h1, h2, h3, h4 {
   position: absolute;
   right: 18px;
   top: -40px;
-  font-family: var(--font-serif);
   font-size: 150px;
   line-height: 1;
   color: color-mix(in srgb, var(--grass) 7%, transparent);

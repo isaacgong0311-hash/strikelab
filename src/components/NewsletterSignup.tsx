@@ -95,7 +95,6 @@ export default function NewsletterSignup() {
                   borderColor: "var(--border2)",
                   background: "var(--paper-3)",
                   color: "var(--ink)",
-                  fontFamily: "var(--font-sans)",
                 }}
               />
               <button

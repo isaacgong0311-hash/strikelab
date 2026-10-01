@@ -108,7 +108,6 @@ export default function AboutPage() {
           style={{
             background: "linear-gradient(135deg, #0b1828, #1a2f5e)",
             borderColor: "var(--border2)",
-            fontFamily: "var(--font-serif)",
             fontStyle: "italic",
             color: "var(--grass)",
           }}
@@ -181,7 +180,7 @@ export default function AboutPage() {
               </div>
               <h3
                 className="font-semibold mb-2"
-                style={{ fontFamily: "var(--font-serif)" }}
+                style={{ fontFamily: "var(--sl-font-body)" }}
               >
                 {v.title}
               </h3>

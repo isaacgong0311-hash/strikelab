@@ -118,7 +118,7 @@ export default function Footer() {
         >
           © 2026 StrikeLab · Free & Open Source · MIT License
         </span>
-        <span className="text-[11px]" style={{ color: "var(--fg-mute)", fontFamily: "var(--font-serif)", fontStyle: "italic" }}>
+        <span className="text-[11px]" style={{ color: "var(--fg-mute)", fontStyle: "italic" }}>
           &ldquo;Quant finance shouldn&rsquo;t require the right zip code.&rdquo;
         </span>
       </div>

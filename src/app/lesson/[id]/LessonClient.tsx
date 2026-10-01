@@ -529,7 +529,7 @@ export default function LessonClient({ lesson, sections, chunks, prev, next, tra
 
           {/* Run bar */}
           <div
-            className="px-5 py-3 flex items-center justify-between border-t gap-3"
+            className="px-5 py-3 flex flex-wrap items-center justify-between border-t gap-3"
             style={{ borderColor: "var(--border)", background: "var(--bg2)" }}
           >
             <div className="flex items-center gap-2">
