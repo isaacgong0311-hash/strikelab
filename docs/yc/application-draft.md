@@ -51,13 +51,13 @@ Draft thesis, to be tested against interviews: the existing options teach studen
 `[NO PROOF YET: replace with 3–5 specific things learned from ≥ 30 conversations (plan Y2.2). Delete anything a generic edtech pitch would also say.]`
 
 **Who are your competitors? What do you understand about them that they don't?**
-`[Draft from plan Y3.2 competition map, sourced.]` Starting set from the company design spec §2: stock-market simulators and financial-literacy curricula (teacher dashboards, standards alignment, classroom join flows), and learning-to-opportunity programs such as Forage and QuantConnect's Quant League. Positioning: StrikeLab wins on rigorous, code-first technical finance and inspectable student work, not on generic investing content or on having a simulator.
+`[See docs/yc/competition-map.md (v0, figures unverified until the founder checks each link).]` Starting set from the company design spec §2: stock-market simulators and financial-literacy curricula (teacher dashboards, standards alignment, classroom join flows), and learning-to-opportunity programs such as Forage and QuantConnect's Quant League. Positioning: StrikeLab wins on rigorous, code-first technical finance and inspectable student work, not on generic investing content or on having a simulator.
 
 **How do you make money? How much?**
 Rung 1: club and school licenses ($199 / $499 per year), which prove willingness to pay and are the distribution engine. Rung 2: district agreements. Rung 3: parent-paid summer cohorts. Rung 4: sponsor-funded seats for schools that lack quant exposure. Rung 5 (later, opt-in only): verified student portfolios for programs and employers. Source: mega plan §8. State plainly that license revenue alone is small and which rung has evidence. `[NO PROOF YET beyond rung 1 hypothesis]`
 
 **How big can this get? Market size.**
-`[NEEDS SOURCED WORKSHEET: plan Y3.1. Bottom-up: US high schools × share with a relevant club × price × realistic penetration. Do not publish an unsourced TAM.]`
+Draft from `docs/yc/market-sizing.md` (v0; check every link first): about 27,000 US high schools; if 25–50% have a club that could host the lab, at a $300 blended price that is $2.0M–$4.1M a year **if every one paid**, and roughly $0.1M–$0.6M at a mature 5–15% paying share. So licenses are the wedge and the proof of willingness to pay; districts, sponsored seats and summer cohorts are what could make it large, and the pilots are what will size them. `[NEEDS FOUNDER: confirm the sourced inputs; decide how much of this to say.]`
 
 **Why will this be a large company, not a small one?** (five sentences)
 `[NEEDS FOUNDER: plan Y3.4. Wedge → repeated cohorts → district agreements → sponsored seats → verified record of what students can build. Mark which links are unproven.]`
