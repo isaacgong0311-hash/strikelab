@@ -36,6 +36,10 @@ function readSystemPreferences(): SystemAccessibilityPreferences {
 export default function AccessibilityProvider({ children }: { children: React.ReactNode }) {
   const [preferences, setPreferences] = useState<AccessibilityPreferences>(DEFAULT_ACCESSIBILITY_PREFERENCES);
   const [system, setSystem] = useState<SystemAccessibilityPreferences>(DEFAULT_SYSTEM);
+  // Until the stored and system preferences are read, the boot script's
+  // <html data-motion/data-contrast> is the truth: writing the defaults over
+  // it would flash full motion at reduced-motion users on every page load.
+  const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
     document.documentElement.dataset.clientReady = "true";
@@ -45,6 +49,7 @@ export default function AccessibilityProvider({ children }: { children: React.Re
     const id = window.setTimeout(() => {
       setPreferences(parseAccessibilityPreferences(localStorage.getItem(ACCESSIBILITY_STORAGE_KEY)));
       refresh();
+      setLoaded(true);
     }, 0);
     motion.addEventListener("change", refresh);
     contrast.addEventListener("change", refresh);
@@ -62,10 +67,11 @@ export default function AccessibilityProvider({ children }: { children: React.Re
   );
 
   useEffect(() => {
+    if (!loaded) return;
     const root = document.documentElement;
     root.dataset.motion = resolved.reduceMotion ? "reduce" : "full";
     root.dataset.contrast = resolved.enhancedContrast ? "more" : "standard";
-  }, [resolved]);
+  }, [resolved, loaded]);
 
   const setPreference = useCallback(<K extends keyof AccessibilityPreferences>(
     key: K,

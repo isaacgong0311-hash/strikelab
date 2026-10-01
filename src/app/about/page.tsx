@@ -1,6 +1,7 @@
 import Eyebrow from "@/components/Eyebrow";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import JsonLd from "@/components/JsonLd";
+import ProofStrip from "@/components/marketing/ProofStrip";
 import { pageMetadata, breadcrumbJsonLd } from "@/lib/seo";
 
 export const metadata = pageMetadata({
@@ -96,6 +97,9 @@ export default function AboutPage() {
           you&rsquo;re looking at is the version I wish I&rsquo;d had a year ago.
         </p>
       </div>
+
+      {/* Sourced pilot outcomes; renders nothing until real, consented numbers exist (src/lib/proof/data.ts). */}
+      <ProofStrip />
 
       {/* Founder card */}
       <div
