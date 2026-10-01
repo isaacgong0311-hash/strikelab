@@ -1,10 +1,20 @@
 # StrikeLab
 
-**Browser-based quantitative finance education for high schoolers.**
+**A six-week technical-finance lab that high-school clubs can run, where students code real market models in the browser and finish with a capstone they can show.**
 
-StrikeLab teaches quant finance by making students *build* the engine — not just read about it. Work through 23 lessons across three tracks, from what a stock is to a working Black-Scholes engine to CAPM and backtesting, implement the pricing functions in an in-browser Python playground, and watch the Greek curves update live as you drag sliders.
+A club leader launches a cohort from a fixed template in minutes, shares an invite link, and watches a scorecard (activation, weekly activity, week-4 retention, who needs help). Students work through lessons (Black-Scholes, the Greeks, backtesting) in an in-browser Python editor with nothing to install, and submit a private capstone. Everything is free for students; pilots are free for clubs.
+
+**Status (2026-10-01):** the product and the pilot operating system are built and tested; no leader-run cohort has started yet. Where the company stands, what it has to prove, and the plan:
+- Proof thresholds and strategy: [`docs/superpowers/specs/2026-09-13-strikelab-yc-company-design.md`](docs/superpowers/specs/2026-09-13-strikelab-yc-company-design.md)
+- The plan and gates: [`docs/superpowers/plans/2026-09-29-mega-plan.md`](docs/superpowers/plans/2026-09-29-mega-plan.md)
+- YC readiness: [`docs/superpowers/plans/2026-10-01-yc-readiness-plan.md`](docs/superpowers/plans/2026-10-01-yc-readiness-plan.md)
+- Pilot instruments: [`docs/gtm/`](docs/gtm/)
+
+**Try it in two minutes:** open [strikelab.dev/demo](https://strikelab.dev/demo) for the leader and student views, or start lesson 1 at [strikelab.dev](https://strikelab.dev).
 
 Live → **[strikelab.dev](https://strikelab.dev)** · Free · Open source · MIT license
+
+Earlier hackathon material (the paper-trading submission writeup and the unrelated FinPath app) lives in [`archive/`](archive/).
 
 ---
 

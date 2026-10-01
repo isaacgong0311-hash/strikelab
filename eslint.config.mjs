@@ -12,10 +12,10 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
-    // finpath/ is a separate, unrelated project (its own package.json,
+    // archive/finpath is a separate, unrelated project (its own package.json,
     // tsconfig, Next 14) that happens to live in this repo. It isn't part
     // of the StrikeLab app and shouldn't be swept into its lint run.
-    "finpath/**",
+    "archive/**",
     // The Python runtime, copied from node_modules at dev/build time
     // (scripts/copy-pyodide.mjs): vendor code, not ours.
     "public/pyodide/**",

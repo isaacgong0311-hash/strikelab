@@ -89,7 +89,7 @@ The pilot plan produces the traction. This track makes it *legible* to someone w
 | # | Task | Owner | Trigger | Done when |
 |---|---|---|---|---|
 | Y1.1 | **Pick the one growth metric and chart it weekly.** Default: *students who submitted a capstone in a leader-run cohort* (the north star). Backup before any capstone exists: *activated students in leader-run cohorts*. Plot cumulative and week over week in the Friday scorecard | F | Oct 9 | A chart exists in `weekly-scorecard.md` with ≥ 3 points |
-| Y1.2 | **Everything by cohort and by source.** `?src=` attribution is already stored; confirm the scorecard splits by source and by leader-run vs founder-run | A | Q10 trigger | The metrics page shows both splits |
+| Y1.2 | **(Done 2026-10-01: `leader_source` on `weekly-scorecard.sql`, new `growth.sql`.)** **Everything by cohort and by source.** `?src=` attribution is already stored; confirm the scorecard splits by source and by leader-run vs founder-run | A | Q10 trigger | The metrics page shows both splits |
 | Y1.3 | **Leader-run vs founder-run flag.** YC will ask "does it work without you?" Record for every cohort who actually ran the weekly meetings | F | Oct 26 | Every cohort row says who ran it |
 | Y1.4 | **Weekly founder update** to 3–5 advisors/supporters: three numbers, one lesson, one ask. This also builds the paper trail YC asks about | F | Nov 1 | 4 consecutive updates sent |
 | Y1.5 | **A referral ledger.** Each leader asked "who else should run this?" within 48 hours of the end-of-pilot interview; referrals logged in `crm.csv` with `source: referral` | F | First end-of-pilot interview | ≥ 3 referrals recorded (a proof threshold) |
@@ -126,7 +126,7 @@ The product is already good. The job is to make it **hold up under a partner's 1
 |---|---|---|---|---|
 | Y4.1 | **The 2-minute demo script** on the real journey: leader creates a cohort → students join → a student ships a pricing function → the scorecard updates → a capstone. Uses real (consented) or clearly-labeled example data. Never fabricated student work | A drafts, F records | Oct 25 (v0); Apr 1 (final) | A script with timings, a recording, and a "what if the demo fails" fallback |
 | Y4.2 | **The live product never embarrasses us.** Uptime monitor, Sentry alerts (P4), staging (P5), the smoke test (P6), and a bad-network fallback for the demo (Python bundle served from strikelab.dev, already done in Q1) | F + A | G2 | The checks in `production-readiness-checklist.md` all pass |
-| Y4.3 | **A support-hours log per cohort.** Track every founder minute spent unblocking a cohort. YC will ask how much hand-holding it takes; the mega plan's target is falling hours per cohort | F | Cohort A | A number per cohort in the scorecard |
+| Y4.3 | **(Done 2026-10-01: `docs/gtm/cohorts.csv`, `support-log.csv`, `npm run support`. Y1.3 is the `run_by` column.)** **A support-hours log per cohort.** Track every founder minute spent unblocking a cohort. YC will ask how much hand-holding it takes; the mega plan's target is falling hours per cohort | F | Cohort A | A number per cohort in the scorecard |
 | Y4.4 | **The `burden` items from the build queue** (Q10–Q12, Q14, Q17), taken only when the scorecard says so. Don't add features to look bigger | A | Per queue triggers | See mega plan §7 |
 | Y4.5 | **A public proof page** (Q18/Q19): outcomes strip and one consented case study. Only after consent (E8). Nothing invented | A | Consent from ≥ 1 leader | Live and every number links to its source |
 
@@ -187,10 +187,10 @@ YC partners rarely read the code, but investors, school IT reviewers and technic
 
 | # | Task | Owner | When | Done when |
 |---|---|---|---|---|
-| Y9.1 | **Repo tells one story.** The repo root also holds `finpath/` (a separate hackathon app), `marketing/`, Electron/Capacitor files, `SUBMISSION.md`. Move the unrelated pieces to an `archive/` folder or a separate repo, and make `README.md` open with the pilot product and the proof | A | Winter build (Dec 21) | README answers: what is it, who runs it, what has it proven, how to try it in 2 minutes |
+| Y9.1 | **(Done 2026-10-01: `finpath/` and `SUBMISSION.md` moved to `archive/`; README leads with the pilot. Electron/Capacitor stay because `package.json` scripts use them; `marketing/` holds outreach drafts.)** **Repo tells one story.** The repo root also holds `finpath/` (a separate hackathon app), `marketing/`, Electron/Capacitor files, `SUBMISSION.md`. Move the unrelated pieces to an `archive/` folder or a separate repo, and make `README.md` open with the pilot product and the proof | A | Winter build (Dec 21) | README answers: what is it, who runs it, what has it proven, how to try it in 2 minutes |
 | Y9.2 | **Public numbers match the repo.** Test counts, lesson counts, "23 lessons" etc. checked against reality before any public claim | A | Each gate | A one-line check in the gate checklist |
 | Y9.3 | **Keep CI green and the budgets enforced.** 346 tests, accessibility, Lighthouse budgets | A | Always | No red `master` |
-| Y9.4 | **Close the known risks in `docs/money-paths-audit.md`.** The Stripe webhook ordering gap and the certificate race are documented; fix them before the first payment | A | Before Q20/Q21 | Fixed with tests |
+| Y9.4 | **(Already fixed: migration 0020 and the `23505` handler; audit doc updated 2026-10-01.)** **Close the known risks in `docs/money-paths-audit.md`.** The Stripe webhook ordering gap and the certificate race are documented; fix them before the first payment | A | Before Q20/Q21 | Fixed with tests |
 | Y9.5 | **Security and privacy posture one-pager** for school IT: where data lives, who can see it, retention, deletion, subprocessors, incident process. Built from `docs/trust/` | A | Before a district-review pilot | One page, no compliance claims without Y6.4 |
 | Y9.6 | **A backup and restore drill** for the production database; Supabase Pro only when the trigger in the mega plan §13 fires | F + A | Before cohort A | A restore tested once |
 
