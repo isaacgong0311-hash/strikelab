@@ -12,6 +12,15 @@
   color: var(--sl-text);
 }
 
+/* The site header is hidden on the player, so the page's own text has to be
+   the first contentful paint. The global 0.5s fade-in on <main> runs on the
+   compositor and Chrome never reports a first contentful paint for it
+   (Lighthouse: NO_FCP). Paint the player immediately; the step has its own
+   entrance animation below. */
+:global(main):has(.shell) {
+  animation: none;
+}
+
 /* ── Top bar ─────────────────────────────────────────────────── */
 .top {
   display: grid;
