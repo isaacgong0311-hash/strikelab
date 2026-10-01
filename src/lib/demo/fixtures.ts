@@ -7,8 +7,9 @@ import { getLessonById } from "@/lib/tracks";
 /**
  * "Demo Club": fictional sample data for /demo and the homepage, run through
  * the SAME pure functions the real cohort home and scorecard use, so the demo
- * can't drift from the product. Dates are relative to today (mid week 3) so
- * it always looks current. Names are invented and the UI labels it as sample
+ * can't drift from the product. Dates are relative to today (mid week 3 by
+ * default; the guided tour asks for other points in the program) so it
+ * always looks current. Names are invented and the UI labels it as sample
  * data everywhere it appears.
  */
 export const DEMO_CLASS_NAME = "Demo Club";
@@ -39,9 +40,29 @@ export interface DemoData {
   assignments: { lessonId: string; lessonTitle: string; weekNumber: number; position: number; dueOn: string }[];
 }
 
-export function buildDemoData(now: Date = new Date()): DemoData {
+/** Day 16 is Tuesday-ish of week 3: the default everywhere except the guided tour. */
+export const DEMO_DEFAULT_DAYS_IN = 16;
+
+/**
+ * Sample capstones by how far into the program the club is: none in weeks
+ * 1-2, two keen students (one draft, one submitted) from week 3, and in the
+ * last week everyone on pace has submitted. Ids are example slugs.
+ */
+function demoCapstone(studentId: string, pace: number, daysIn: number, today: string) {
+  if (daysIn < 14) return null;
+  if (daysIn >= 38) {
+    if (pace >= 1.0) return { id: studentId === "s3" ? "backtest" : "option-pricing", status: "submitted" as const, submittedAt: noonIso(addDaysToKey(today, -2)) };
+    if (pace >= 0.8) return { id: "option-pricing", status: "draft" as const, submittedAt: null };
+    return null;
+  }
+  if (studentId === "s1") return { id: "option-pricing", status: "draft" as const, submittedAt: null };
+  if (studentId === "s3") return { id: "backtest", status: "submitted" as const, submittedAt: noonIso(addDaysToKey(today, -1)) };
+  return null;
+}
+
+export function buildDemoData(now: Date = new Date(), { daysIn = DEMO_DEFAULT_DAYS_IN }: { daysIn?: number } = {}): DemoData {
   const today = localDateKey(now, DEMO_TZ);
-  const startsOn = addDaysToKey(today, -16); // Tuesday-ish of week 3
+  const startsOn = addDaysToKey(today, -daysIn);
   const schedule = buildCohortSchedule(startsOn);
   const assignments = schedule.map((r) => ({
     lessonId: r.lessonId,
@@ -70,13 +91,7 @@ export function buildDemoData(now: Date = new Date()): DemoData {
       studentId: s.id,
       displayName: s.name,
       joinedAt: noonIso(startsOn),
-      // Two keen students started capstones early; ids are example slugs.
-      capstone:
-        s.id === "s1"
-          ? { id: "option-pricing", status: "draft" as const, submittedAt: null }
-          : s.id === "s3"
-            ? { id: "backtest", status: "submitted" as const, submittedAt: noonIso(addDaysToKey(today, -1)) }
-            : null,
+      capstone: demoCapstone(s.id, s.pace, daysIn, today),
     })),
     completions,
     now,

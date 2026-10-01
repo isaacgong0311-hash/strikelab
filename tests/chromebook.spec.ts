@@ -9,6 +9,7 @@ const ROUTES = [
   { path: "/", name: "home" },
   { path: "/demo", name: "demo-teacher" },
   { path: "/demo?view=student", name: "demo-student" },
+  { path: "/demo?view=tour", name: "demo-tour" },
   { path: "/learn/inv-1.1", name: "player" },
   { path: "/lesson/3", name: "lesson" },
   { path: "/sign-up", name: "sign-up" },
