@@ -21,11 +21,11 @@
 |---|---|---|
 | FW-1 Hero fix | **Shipped** | The homepage was rebuilt on Sep 30 (decision log); the scorecard now sits in its own section beside the phone |
 | FW-2 Banner only where it belongs | **Shipped** (verify on phone) | `Nav.tsx`: `ANNOUNCE_PATHS` and `!user` gate the announcement bar |
-| FW-3 Focused lesson player | **Open** | `Nav` is mounted in `layout.tsx` for every route, including `/learn/*`; no player-specific bar |
-| FW-4 Honest empty dashboard | **Open** | `DashboardClient.tsx:166` still renders "Welcome back" with no name |
+| FW-3 Focused lesson player | **Shipped 2026-10-01** | `Nav` is mounted in `layout.tsx` for every route, including `/learn/*`; no player-specific bar |
+| FW-4 Honest empty dashboard | **Shipped 2026-10-01** | `DashboardClient.tsx:166` still renders "Welcome back" with no name |
 | FW-5 Footer in the clubs voice | **Shipped** | `Footer.tsx`: "Free for students", "Runs in your browser", "Private by default" |
-| FW-6 Kickoff live view in `/demo` | **Open** | `/demo` renders `CohortScorecard`, `CohortHomeView` and `LeaderToolkit`, not `KickoffLive` |
-| FW-7 Chromebook (1366×768) sweep | **Open** | No such viewport in the Playwright config |
+| FW-6 Kickoff live view in `/demo` | **Shipped 2026-10-01** | `/demo` renders `CohortScorecard`, `CohortHomeView` and `LeaderToolkit`, not `KickoffLive` |
+| FW-7 Chromebook (1366×768) sweep | **Shipped 2026-10-01** | No such viewport in the Playwright config |
 | FW-8 to FW-22 | Per the Sep 30 phases | Unchanged |
 
 ---
@@ -56,13 +56,13 @@ Finish the four open Sep 30 items first (they fix what students and leaders see 
 
 | # | Item | Change | Acceptance | Est. |
 |---|---|---|---|---|
-| **FW-3** | Focused lesson player *(carried)* | On `/learn/*`, hide the site header and show the player's own bar (✕, progress). ✕ goes to the cohort home for cohort students, else the learning path | Content starts ≤ 64px from the top at 375px; ✕ reachable by keyboard and labelled; axe clean | 3h / 15m |
-| **FW-4** | Honest empty dashboard *(carried)* | "Start here" with one button for no progress; "Sign in to sync" when signed out; "Welcome back" only for returning users; inline SVG icons | A new visitor never sees "Welcome back"; a returning user still does | 2h / 10m |
-| **FW-6** | Kickoff live view in `/demo` *(carried)* | A "Kickoff day" panel renders the real `KickoffLive` component from sample data, with a stepper from 0 to 10 students joined, labelled sample data, no network calls | Visible on `/demo`; axe clean | 2h / 10m |
-| **FW-7** | Chromebook sweep *(carried)* | Add 1366×768 to the screenshot sweep for `/`, `/demo`, `/learn/inv-1.1`, `/lesson/3`, sign-up | Committed screenshots; nothing clipped | 1.5h / 10m |
-| **FY-1** | **Error and recovery screens** | Add `src/app/error.tsx` and `global-error.tsx` (report to Sentry, offer "Try again" and "Go home"); a per-route `loading` state for `/teach` and `/cohort`; a clear offline/Python-failed message in the lesson player | Forced runtime error shows a friendly page, not a blank screen; one Playwright test per screen | 3h / 10m |
-| **FY-2** | **Link previews and metadata audit** | Check `opengraph-image.tsx` and the `layout.tsx` Open Graph and Twitter metadata against the new homepage sentence; make the preview show the one-sentence description; set one title pattern ("Page — StrikeLab"; the homepage is the only exception) (FW-9) | Pasting the URL into a messaging app and a social card shows the right text and image | 1.5h / 5m |
-| **FY-3** | **The proof data file and component** | `src/lib/proof/data.ts` holds sourced entries only (value, label, cohort, source file path, as-of date). A `ProofStrip` component renders **nothing** when there are no entries; a unit test fails the build if any entry lacks a source or a date, or if a number is rounded up. Wire it into the homepage and `/about` | With no entries, the pages look as they do today; with a test entry, the strip renders with its source link; the lint test fails on an unsourced entry | 3h / 15m |
+| **FW-3** | ✅ Done 2026-10-01. Focused lesson player *(carried)* | On `/learn/*`, hide the site header and show the player's own bar (✕, progress). ✕ goes to the cohort home for cohort students, else the learning path | Content starts ≤ 64px from the top at 375px; ✕ reachable by keyboard and labelled; axe clean | 3h / 15m |
+| **FW-4** | ✅ Done 2026-10-01. Honest empty dashboard *(carried)* | "Start here" with one button for no progress; "Sign in to sync" when signed out; "Welcome back" only for returning users; inline SVG icons | A new visitor never sees "Welcome back"; a returning user still does | 2h / 10m |
+| **FW-6** | ✅ Done 2026-10-01. Kickoff live view in `/demo` *(carried)* | A "Kickoff day" panel renders the real `KickoffLive` component from sample data, with a stepper from 0 to 10 students joined, labelled sample data, no network calls | Visible on `/demo`; axe clean | 2h / 10m |
+| **FW-7** | ✅ Done 2026-10-01. Chromebook sweep *(carried)* | Add 1366×768 to the screenshot sweep for `/`, `/demo`, `/learn/inv-1.1`, `/lesson/3`, sign-up | Committed screenshots; nothing clipped | 1.5h / 10m |
+| **FY-1** | ✅ Done 2026-10-01 (added `error.tsx`; `global-error.tsx` already existed and was kept; per-route loading states not added). **Error and recovery screens** | Add `src/app/error.tsx` and `global-error.tsx` (report to Sentry, offer "Try again" and "Go home"); a per-route `loading` state for `/teach` and `/cohort`; a clear offline/Python-failed message in the lesson player | Forced runtime error shows a friendly page, not a blank screen; one Playwright test per screen | 3h / 10m |
+| **FY-2** | ✅ Done 2026-10-01 (homepage already matched; site-wide defaults aligned; other page titles not yet unified). **Link previews and metadata audit** | Check `opengraph-image.tsx` and the `layout.tsx` Open Graph and Twitter metadata against the new homepage sentence; make the preview show the one-sentence description; set one title pattern ("Page — StrikeLab"; the homepage is the only exception) (FW-9) | Pasting the URL into a messaging app and a social card shows the right text and image | 1.5h / 5m |
+| **FY-3** | ✅ Done 2026-10-01 (on the homepage; not yet on `/about`). **The proof data file and component** | `src/lib/proof/data.ts` holds sourced entries only (value, label, cohort, source file path, as-of date). A `ProofStrip` component renders **nothing** when there are no entries; a unit test fails the build if any entry lacks a source or a date, or if a number is rounded up. Wire it into the homepage and `/about` | With no entries, the pages look as they do today; with a test entry, the strip renders with its source link; the lint test fails on an unsourced entry | 3h / 15m |
 
 **Total:** about 16 agent hours, **under an hour of founder review.**
 **Two PRs:** (1) FW-3, FW-4, FW-6, FW-7; (2) FY-1, FY-2, FY-3.
@@ -155,3 +155,4 @@ Same list as the Sep 30 plan §7 (dark mode, a rebrand, a mascot, WebGL hero, a 
 | Date | Change |
 |---|---|
 | 2026-10-01 | Created. Status of FW-1 to FW-7 checked against the code. |
+| 2026-10-01 | Phase A built: FW-3, FW-4, FW-6, FW-7, FY-1, FY-2 (partly), FY-3. Tests: 18 + 25 Playwright, unit tests for each. |

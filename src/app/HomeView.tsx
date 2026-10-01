@@ -1,3 +1,4 @@
+import ProofStrip from "@/components/marketing/ProofStrip";
 import Link from "next/link";
 import Faq from "@/components/marketing/Faq";
 import CompareTable from "@/components/marketing/CompareTable";
@@ -93,6 +94,8 @@ export default function HomeView() {
           </figure>
         </div>
       </section>
+
+      <ProofStrip />
 
       {/* ── Facts (all true, all derived) ────────────────── */}
       <div className={home.facts}>

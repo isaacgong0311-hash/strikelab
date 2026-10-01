@@ -4,7 +4,7 @@
 
 .shell {
   width: min(100%, 44rem);
-  min-height: calc(100dvh - 72px);
+  min-height: 100dvh;
   margin: 0 auto;
   display: flex;
   flex-direction: column;

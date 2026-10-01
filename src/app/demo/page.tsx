@@ -5,6 +5,7 @@ import CohortHomeView from "@/app/cohort/[classId]/CohortHomeView";
 import CohortScorecard from "@/app/dashboard/class/[id]/CohortScorecard";
 import LeaderToolkit from "@/app/dashboard/class/[id]/LeaderToolkit";
 import TrackPageView from "@/components/marketing/TrackPageView";
+import DemoKickoff from "./DemoKickoff";
 import styles from "./demo.module.css";
 
 export const metadata = pageMetadata({
@@ -57,6 +58,7 @@ export default async function DemoPage({ searchParams }: { searchParams: Promise
             classId="demo"
             capstoneHrefPrefix="/demo/capstone/"
           />
+          <DemoKickoff />
           <LeaderToolkit classId="demo" metrics={demo.metrics} assignments={demo.assignments} />
         </div>
       ) : (

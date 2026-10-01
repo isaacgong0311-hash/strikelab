@@ -94,6 +94,19 @@ function CertificateCTA({ trackId, color }: { trackId: string; color: string }) 
   );
 }
 
+// Inline SVG icons for the metric tiles (replacing placeholder text glyphs).
+const ICON_PROPS = { width: 18, height: 18, viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: 2.2, strokeLinecap: "round", strokeLinejoin: "round", "aria-hidden": true } as const;
+const CheckIcon = () => (<svg {...ICON_PROPS}><path d="M5 12.5l4.5 4.5L19 7.5" /></svg>);
+const FlameGlyph = () => (<svg {...ICON_PROPS}><path d="M12 3c1 3.5 5 5.5 5 10a5 5 0 0 1-10 0c0-2 1-3 2-4 .5 1.5 1.5 2 2 2 0-3-1-5 1-8z" /></svg>);
+const XpIcon = () => (<svg {...ICON_PROPS}><path d="M12 3l2.6 5.6 6.1.7-4.5 4.2 1.2 6L12 16.6 6.6 19.5l1.2-6L3.3 9.3l6.1-.7z" /></svg>);
+const LevelIcon = () => (<svg {...ICON_PROPS}><circle cx="12" cy="12" r="8" /><circle cx="12" cy="12" r="3" /></svg>);
+
+/** "Welcome back" only for someone who has actually been here; a new visitor is told where to start. */
+export function dashboardHeading(firstName: string | null, hasProgress: boolean): string {
+  if (hasProgress) return firstName ? `Welcome back, ${firstName}` : "Welcome back";
+  return firstName ? `Welcome, ${firstName}` : "Start here";
+}
+
 export default function DashboardClient() {
   const { completed, hydrated, xp, streak, activityByDate } = useProgress();
   const allLessons = getAllLessons();
@@ -163,7 +176,7 @@ export default function DashboardClient() {
             ) : "Learning Dashboard"}
           </div>
           <h1 className="db-hero-h">
-            {firstName ? `Welcome back, ${firstName}` : "Welcome back"}
+            {dashboardHeading(firstName, hydrated && (completedCount > 0 || xp > 0 || streak > 0))}
           </h1>
           <p className="db-hero-sub">
             {completedCount === 0
@@ -181,6 +194,9 @@ export default function DashboardClient() {
               </Link>
             )}
             <Link href="/lessons" className="db-ghost-btn">View learning path</Link>
+            {hydrated && !user && (
+              <Link href="/sign-in?next=%2Fdashboard" className="db-ghost-btn">Sign in to sync your progress</Link>
+            )}
           </div>
         </div>
         <div className="db-hero-progress-wrap">
@@ -191,22 +207,22 @@ export default function DashboardClient() {
       {/* ── METRIC TILES ─────────────────────────────────── */}
       <div className="db-metrics">
         <div className="db-metric">
-          <div className="db-metric-icon" aria-hidden="true" style={{ background: "var(--grass-tint)", color: "var(--grass)" }}>✓</div>
+          <div className="db-metric-icon" aria-hidden="true" style={{ background: "var(--grass-tint)", color: "var(--grass)" }}><CheckIcon /></div>
           <div className="db-metric-v" style={{ color: "var(--grass)" }}>{completedCount}</div>
           <div className="db-metric-l">Lessons done</div>
         </div>
         <div className="db-metric">
-          <div className="db-metric-icon" aria-hidden="true" style={{ background: "var(--coral-tint)", color: "var(--coral)" }}>△</div>
+          <div className="db-metric-icon" aria-hidden="true" style={{ background: "var(--coral-tint)", color: "var(--coral)" }}><FlameGlyph /></div>
           <div className="db-metric-v" style={{ color: "var(--coral)" }}>{hydrated ? streak : 0}</div>
           <div className="db-metric-l">Day streak</div>
         </div>
         <div className="db-metric">
-          <div className="db-metric-icon" aria-hidden="true" style={{ background: "rgba(251,191,36,0.12)", color: "var(--amber)" }}>◆</div>
+          <div className="db-metric-icon" aria-hidden="true" style={{ background: "rgba(251,191,36,0.12)", color: "var(--amber)" }}><XpIcon /></div>
           <div className="db-metric-v" style={{ color: "var(--amber)" }}>{hydrated ? xp.toLocaleString() : "0"}</div>
           <div className="db-metric-l">Total XP</div>
         </div>
         <div className="db-metric">
-          <div className="db-metric-icon" aria-hidden="true" style={{ background: `${level.color}18`, color: level.color }}>◉</div>
+          <div className="db-metric-icon" aria-hidden="true" style={{ background: `${level.color}18`, color: level.color }}><LevelIcon /></div>
           <div className="db-metric-v" style={{ color: level.color, fontSize: 20 }}>{level.label}</div>
           <div className="db-metric-l">Level {levelNum}</div>
         </div>

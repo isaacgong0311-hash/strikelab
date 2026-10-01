@@ -15,7 +15,7 @@ export const DEMO_CLASS_NAME = "Demo Club";
 export const DEMO_TZ = "America/Chicago";
 
 // Invented first names + last initials; none refer to real people.
-const STUDENTS = [
+export const STUDENTS = [
   { id: "s1", name: "Maya R.", pace: 1.2 },
   { id: "s2", name: "Jonah K.", pace: 1.0 },
   { id: "s3", name: "Priya S.", pace: 1.1 },

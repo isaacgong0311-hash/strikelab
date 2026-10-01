@@ -4,6 +4,7 @@ import "./globals.css";
 import "../styles/tokens.css";
 import "../styles/foundation.css";
 import Nav from "@/components/Nav";
+import HideOnPlayer from "@/components/HideOnPlayer";
 import Footer from "@/components/Footer";
 import V2Animator from "@/components/V2Animator";
 import { Analytics } from "@vercel/analytics/react";
@@ -53,7 +54,7 @@ const jetbrains = JetBrains_Mono({
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
-    default: "StrikeLab — Learn Options Pricing & Quant Finance",
+    default: "StrikeLab — Learn quant finance by building it",
     template: "%s — StrikeLab",
   },
   description: SITE_DESCRIPTION,
@@ -86,14 +87,14 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     siteName: SITE_NAME,
-    title: "StrikeLab — Learn Options Pricing & Quant Finance",
+    title: "StrikeLab — Learn quant finance by building it",
     description: SITE_DESCRIPTION,
     url: SITE_URL,
     locale: "en_US",
   },
   twitter: {
     card: "summary_large_image",
-    title: "StrikeLab — Learn Options Pricing & Quant Finance",
+    title: "StrikeLab — Learn quant finance by building it",
     description: SITE_DESCRIPTION,
   },
   robots: {
@@ -171,9 +172,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <AuthProvider>
             <V2Animator />
             <a className="sl-skip-link" href="#main-content">Skip to main content</a>
-            <Nav />
+            <HideOnPlayer><Nav /></HideOnPlayer>
             <main id="main-content" tabIndex={-1} className="flex-1 relative" style={{ zIndex: 1 }}>{children}</main>
-            <Footer />
+            <HideOnPlayer><Footer /></HideOnPlayer>
           </AuthProvider>
         </AccessibilityProvider>
         <Analytics />
