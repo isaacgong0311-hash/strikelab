@@ -74,7 +74,7 @@ Only what the scorecard or an observation note asks for (Sep 30 plan §4, Phase 
 
 | # | Item | Trigger | Est. |
 |---|---|---|---|
-| **FY-4** | **Founder metrics page** (`/admin/metrics`, founder emails only; mega plan Q10). Charts: the weekly growth series, per-cohort activation and retention, support hours, the leader funnel. Built from `growth.sql`, `weekly-scorecard.sql`, `leader-funnel.sql` and the CSVs; read the `dataviz` skill before writing the charts; no names, aggregates only | The first real cohort is running | 6h / 20m |
+| **FY-4** | ✅ Done 2026-10-01, before the code freeze rather than during the pilots (`/admin/metrics`: KPI row, two weekly charts, the weekly and per-cohort tables; `weeklyGrowth()` is tested row for row against `growth.sql`; gated by `FOUNDER_USER_IDS`). **Founder metrics page** (`/admin/metrics`, founder emails only; mega plan Q10). Charts: the weekly growth series, per-cohort activation and retention, support hours, the leader funnel. Built from `growth.sql`, `weekly-scorecard.sql`, `leader-funnel.sql` and the CSVs; read the `dataviz` skill before writing the charts; no names, aggregates only | The first real cohort is running | 6h / 20m |
 | **FY-5** | **A sign-up and join journey on a throwaway account**, run by hand on a phone and a school-sized laptop each week of the pilot, with screenshots in `pilot-observation-notes.md` | Always, during pilots | 30m of founder time a week |
 | **FW-8** | Visual regression on `/demo` at 375 and 1366px (carried) | — | 2h |
 
@@ -157,3 +157,4 @@ Same list as the Sep 30 plan §7 (dark mode, a rebrand, a mascot, WebGL hero, a 
 | 2026-10-01 | Created. Status of FW-1 to FW-7 checked against the code. |
 | 2026-10-01 | Phase A built: FW-3, FW-4, FW-6, FW-7, FY-1, FY-2 (partly), FY-3. Tests: 18 + 25 Playwright, unit tests for each. |
 | 2026-10-01 | Second pass: loading skeletons, proof strip on `/about`, the guided demo (FY-6) and `/trust` (FY-7) pulled forward. Found and fixed an accessibility-provider race that flashed full motion at reduced-motion users on every load. Found that `--font-mono` is self-referencing in `globals.css`, so JetBrains Mono never renders; left for a separate change because fixing it adds a font download to every page. |
+| 2026-10-01 | FY-4 founder metrics page built before the freeze. Chart colors checked with the dataviz palette validator: the brand green passes on the white card; the high-contrast theme's darker green fails the lightness band, so chart marks use the passing green directly. |
