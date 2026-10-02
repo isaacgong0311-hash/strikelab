@@ -217,7 +217,7 @@ Create `src/app/lesson/[id]/lessonMath.module.css`:
    :global because the markup comes from KaTeX, not from us. */
 .content :global(.katex-display) { overflow-x: auto; overflow-y: hidden; padding: 0.25rem 0; }
 ```
-In `src/app/lesson/[id]/LessonClient.tsx`, add the import after `import { loadPythonRuntime } from "@/lib/pythonRuntime";`:
+In `src/app/lesson/[id]/LessonClient.tsx`, add the import after the `@/lib/pythonRuntime` import (and the `PythonWarmup` import, if BV-X6 has landed):
 ```tsx
 import mathStyles from "./lessonMath.module.css";
 ```

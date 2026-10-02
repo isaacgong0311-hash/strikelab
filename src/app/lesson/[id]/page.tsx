@@ -6,6 +6,8 @@ import { breadcrumbJsonLd, isoDuration } from "@/lib/seo";
 import JsonLd from "@/components/JsonLd";
 import LessonClient from "./LessonClient";
 import { buildLessonToc } from "@/lib/lessonToc";
+import "katex/dist/katex.min.css";
+import { renderMathInHtml } from "@/lib/math/renderMath";
 
 export async function generateStaticParams() {
   return getAllLessons().map((l) => ({ id: l.id }));
@@ -88,7 +90,9 @@ export default async function LessonPage({ params }: { params: Promise<{ id: str
 
   // Section ids are injected here rather than client-side so deep links work
   // on first paint and the anchors exist for crawlers.
-  const toc = buildLessonToc(ctx.lesson.content);
+  // Maths is typeset here, on the server, so KaTeX never ships to the client
+  // and the formulas are in the prerendered HTML.
+  const toc = buildLessonToc(renderMathInHtml(ctx.lesson.content));
 
   // Gives Google the Home › Lessons › Lesson trail to show under the result
   // instead of a bare URL.

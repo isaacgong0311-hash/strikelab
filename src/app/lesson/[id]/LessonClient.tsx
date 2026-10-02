@@ -26,6 +26,7 @@ import Dialog from "@/components/ui/Dialog";
 import { CODE_SYNC_LABELS, useSyncedCode } from "@/lib/submissions/useSyncedCode";
 import { isPythonRuntimeReady, loadPythonRuntime } from "@/lib/pythonRuntime";
 import PythonWarmup from "@/components/PythonWarmup";
+import mathStyles from "./lessonMath.module.css";
 
 const MiniEditor = dynamic(() => import("@/components/MiniEditor"), { ssr: false });
 
@@ -428,7 +429,7 @@ export default function LessonClient({ lesson, sections, chunks, prev, next, tra
             read the whole lesson without once being asked to retrieve any of
             it. Each one now lands while its section is still fresh. */}
         <div
-          className="v2-rise lesson-content mb-8 pb-8"
+          className={`v2-rise lesson-content mb-8 pb-8 ${mathStyles.content}`}
           style={{ borderBottom: "1px solid var(--border)", transitionDelay: "80ms" }}
         >
           {chunks.map((chunk, i) => (
