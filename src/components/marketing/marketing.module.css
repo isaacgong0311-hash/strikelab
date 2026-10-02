@@ -11,6 +11,10 @@
 
 .kicker { margin: 0 0 0.625rem; color: var(--sl-brand); font-weight: 800; font-size: 0.8125rem; letter-spacing: 0.08em; text-transform: uppercase; }
 .h1 { margin: 0; font: 800 clamp(2.25rem, 6.2vw, 4rem) / 1.02 var(--sl-font-display); letter-spacing: -0.03em; text-wrap: balance; }
+/* Jakarta's period sits loose at display size and weight 800; set it like a
+   kerning pair. -0.06em closes the gap without touching the t's hooked foot
+   (-0.1em touches, -0.14em hides the period under it). */
+.stop { margin-inline-start: -0.06em; }
 .h2 { margin: 0; font: 800 clamp(1.75rem, 4.2vw, 2.625rem) / 1.08 var(--sl-font-display); letter-spacing: -0.02em; text-wrap: balance; }
 .h3 { margin: 0; font: 800 1.1875rem/1.3 var(--sl-font-display); }
 .lede { margin: 1rem 0 0; max-width: 40rem; color: var(--sl-text-muted); font-size: clamp(1.0625rem, 2.2vw, 1.25rem); line-height: 1.6; text-wrap: pretty; }

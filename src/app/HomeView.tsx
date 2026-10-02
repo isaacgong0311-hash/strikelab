@@ -44,7 +44,7 @@ export default function HomeView() {
         <div className={`${styles.wrap} ${home.heroGrid}`}>
           <div>
             <p className={styles.kicker}>Quant finance for high school</p>
-            <h1 className={styles.h1}>Learn quant finance by building it.</h1>
+            <h1 className={styles.h1}>Learn quant finance by building it<span className={styles.stop}>.</span></h1>
             <p className={styles.lede}>
               Price options, code the Greeks and backtest strategies in real Python, right in the browser. Free for
               students, and ready to run as a six-week lab for your club or class.
