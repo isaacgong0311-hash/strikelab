@@ -77,3 +77,6 @@ thumb_render.mjs
 
 # Copied from node_modules/pyodide at dev/build time (scripts/copy-pyodide.mjs)
 /public/pyodide/
+
+# release zips downloaded by scripts/fonts/build_fonts.py
+/.font-cache/
