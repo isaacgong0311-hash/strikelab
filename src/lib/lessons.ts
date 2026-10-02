@@ -324,7 +324,7 @@ print("Tests passed!")
         { label: "Khan Academy — Normal distributions", url: "https://www.khanacademy.org/math/statistics-probability/modeling-distributions-of-data/normal-distributions-library" },
       ],
     },
-    content: `
+    content: String.raw`
 <h2>The Nobel Prize Formula</h2>
 <p>On May 1, 1973 — just five days after the CBOE opened for trading — the <em>Journal of Political Economy</em> published "The Pricing of Options and Corporate Liabilities" by Fischer Black and Myron Scholes. Two journals had already rejected it. In 1997, Scholes and Robert Merton shared the Nobel Prize in Economics for the work (Black had passed away in 1995 and Nobels aren't awarded posthumously), with the committee calling it "a major contribution to economic sciences" — which undersells it a bit, honestly.</p>
 <p>What the formula actually did was give options a real, theoretical price for the first time. Before 1973, pricing an option was mostly a matter of feel and negotiation. After 1973, there was an actual number to anchor around — and within a few years, nearly every options trader on the planet was using some version of it. The CBOE went as far as handing traders on its floor calculators pre-programmed with the formula.</p>
@@ -344,17 +344,13 @@ print("Tests passed!")
 <p>From there, the option's price is simply the expected payoff under this risk-neutral world, discounted back at the risk-free rate.</p>
 
 <h2>The Black-Scholes Formula</h2>
-<p>Take the expected value of max(S<sub>T</sub> − K, 0) under that log-normal distribution, discount it, and out comes the formula everyone knows:</p>
-<blockquote>
-  <strong>C = S · N(d₁) − K · e<sup>−rT</sup> · N(d₂)</strong><br/>
-  <strong>P = K · e<sup>−rT</sup> · N(−d₂) − S · N(−d₁)</strong>
-</blockquote>
+<p>Take the expected value of <span class="tex">\max(S_T - K,\, 0)</span> under that log-normal distribution, discount it, and out comes the formula everyone knows:</p>
+<div class="tex-block">C = S\,N(d_1) - K e^{-rT} N(d_2)</div>
+<div class="tex-block">P = K e^{-rT} N(-d_2) - S\,N(-d_1)</div>
 <p>where:</p>
-<ul>
-  <li>d₁ = [ln(S/K) + (r + σ²/2)·T] / (σ·√T)</li>
-  <li>d₂ = d₁ − σ·√T = [ln(S/K) + (r − σ²/2)·T] / (σ·√T)</li>
-  <li>N(·) is the standard normal CDF — the probability a standard normal variable falls below a given value</li>
-</ul>
+<div class="tex-block">d_1 = \frac{\ln(S/K) + \left(r + \tfrac{\sigma^2}{2}\right)T}{\sigma\sqrt{T}}</div>
+<div class="tex-block">d_2 = d_1 - \sigma\sqrt{T} = \frac{\ln(S/K) + \left(r - \tfrac{\sigma^2}{2}\right)T}{\sigma\sqrt{T}}</div>
+<p><span class="tex">N(\cdot)</span> is the standard normal CDF — the probability a standard normal variable falls below a given value.</p>
 
 <h2>Interpreting Each Term</h2>
 <p>The formula isn't just symbol-pushing — each piece has a clean, readable meaning. For a call:</p>
