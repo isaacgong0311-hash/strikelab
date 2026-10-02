@@ -128,9 +128,9 @@ export const INV5_SESSIONS: Session[] = [
         title: "Raw returns are a trap",
         body: [
           "A fund that made 20% by taking huge risks isn't obviously better than one that made a steady 12%.",
-          "The **Sharpe ratio** compares funds fairly by asking how much extra return each unit of risk bought.",
+          "The **Sharpe ratio** compares funds fairly by asking how much extra return each unit of risk bought: return minus the risk-free rate, divided by volatility.",
         ],
-        formula: "Sharpe = (Rₚ − R_risk-free) ÷ σₚ",
+        formulaTex: String.raw`\text{Sharpe} = \frac{R_p - R_f}{\sigma_p}`,
       },
       {
         kind: "numeric",

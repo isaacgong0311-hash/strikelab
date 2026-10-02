@@ -46,9 +46,11 @@ interface Props {
   lessonTitle: string;
   sessionIds: string[];
   nextSessionId: string | null;
+  /** Server-typeset formulas, keyed by step id. */
+  formulaHtml: Record<string, string>;
 }
 
-export default function SessionPlayer({ session, lessonTitle, sessionIds, nextSessionId }: Props) {
+export default function SessionPlayer({ session, lessonTitle, sessionIds, nextSessionId, formulaHtml }: Props) {
   const { steps } = session;
   const lessonHref = `/lesson/${session.lessonId}`;
   const sessionNumber = sessionIds.indexOf(session.id) + 1;
@@ -272,7 +274,11 @@ export default function SessionPlayer({ session, lessonTitle, sessionIds, nextSe
                   <RichText text={p} />
                 </p>
               ))}
-              {step.formula ? <p className={styles.formula}>{step.formula}</p> : null}
+              {formulaHtml[step.id] ? (
+                <div className={styles.formulaMath} dangerouslySetInnerHTML={{ __html: formulaHtml[step.id] }} />
+              ) : step.formula ? (
+                <p className={styles.formula}>{step.formula}</p>
+              ) : null}
               {step.compare ? (
                 <div className={styles.compare}>
                   {step.compare.map((col) => (

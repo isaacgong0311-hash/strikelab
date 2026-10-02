@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import { renderTex } from "@/lib/math/renderMath";
 import { getAllLessons } from "@/lib/tracks";
 import { getLessonSessions, getNextSession, isLessonFinished, resumeSession, SESSIONS } from "./index";
 
@@ -32,6 +33,8 @@ describe("session content", () => {
         it(`${step.id} is well-formed`, () => {
           if (step.kind === "explain") {
             for (const paragraph of step.body) expect(wordCount(paragraph)).toBeLessThanOrEqual(50);
+            expect(step.formula && step.formulaTex, "use formula or formulaTex, not both").toBeFalsy();
+            if (step.formulaTex) expect(() => renderTex(step.formulaTex!, true)).not.toThrow();
           } else if (step.kind === "mcq") {
             // Only explain bodies render **bold**; elsewhere it shows literally.
             for (const text of [step.question, step.explanation, ...step.options]) expect(text).not.toContain("**");
