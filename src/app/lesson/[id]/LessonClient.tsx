@@ -33,12 +33,14 @@ const MiniEditor = dynamic(() => import("@/components/MiniEditor"), { ssr: false
 // Exercise code persistence (localStorage first, synced to the account when
 // signed in) lives in useSyncedCode.
 
+type LessonLink = Pick<Lesson, "id" | "title">;
+
 interface Props {
-  lesson: Lesson;
+  lesson: Omit<Lesson, "content">;
   sections: TocSection[];
   chunks: string[];
-  prev: Lesson | null;
-  next: Lesson | null;
+  prev: LessonLink | null;
+  next: LessonLink | null;
   trackId: string;
   trackTitle: string;
   positionInTrack: number;
@@ -152,7 +154,7 @@ function CelebrationOverlay({
   onClose,
 }: {
   lessonTitle: string;
-  nextLesson: Lesson | null;
+  nextLesson: LessonLink | null;
   streak: number;
   onClose: () => void;
 }) {
