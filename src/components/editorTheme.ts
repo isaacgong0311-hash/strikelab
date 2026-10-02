@@ -44,6 +44,9 @@ const accessibleGutters = EditorView.theme(
     // Set on the elements themselves: a ".cm-gutters" rule here ties on
     // specificity with One Dark's and loses on stylesheet order.
     ".cm-gutters .cm-gutterElement": { color: stone },
+    // CodeMirror's base theme sets `monospace`, which is a different font on
+    // every OS (Cousine on ChromeOS, Consolas on Windows). Use ours.
+    ".cm-scroller": { fontFamily: "var(--sl-font-code)" },
   },
   { dark: true }
 );

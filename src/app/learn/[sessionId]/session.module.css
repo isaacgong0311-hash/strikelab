@@ -123,6 +123,9 @@
   color: var(--sl-brand-strong);
   font: 600 clamp(0.95rem, 2.4vw, 1.05rem)/1.5 var(--sl-font-code);
 }
+/* Typeset maths: same panel as .formula, but KaTeX sets its own font. */
+.formulaMath { margin: 1rem 0 0; padding: 0.75rem 1rem; overflow-x: auto; border: 1px solid color-mix(in srgb, var(--sl-brand) 30%, transparent); border-radius: var(--sl-radius-md); background: var(--sl-brand-soft); color: var(--sl-brand-strong); }
+.formulaMath :global(.katex-display) { margin: 0; }
 
 .compare {
   display: grid;

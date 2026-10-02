@@ -3,6 +3,8 @@ import { notFound } from "next/navigation";
 import { getLessonContext } from "@/lib/tracks";
 import { getLessonSessions, getNextSession, getSession, SESSIONS } from "@/lib/sessions";
 import SessionPlayer from "./SessionPlayer";
+import "katex/dist/katex.min.css";
+import { renderTex } from "@/lib/math/renderMath";
 
 export async function generateStaticParams() {
   return SESSIONS.map((s) => ({ sessionId: s.id }));
@@ -29,6 +31,14 @@ export default async function LearnSessionPage({ params }: { params: Promise<{ s
 
   const lessonSessions = getLessonSessions(session.lessonId);
 
+  // Formulas are typeset here, on the server, so KaTeX stays out of the
+  // client bundle; the player just places the HTML.
+  const formulaHtml = Object.fromEntries(
+    session.steps.flatMap((step) =>
+      step.kind === "explain" && step.formulaTex ? [[step.id, renderTex(step.formulaTex, true)] as const] : []
+    )
+  );
+
   return (
     <SessionPlayer
       key={session.id}
@@ -36,6 +46,7 @@ export default async function LearnSessionPage({ params }: { params: Promise<{ s
       lessonTitle={ctx.lesson.title}
       sessionIds={lessonSessions.map((s) => s.id)}
       nextSessionId={getNextSession(session.id)?.id ?? null}
+      formulaHtml={formulaHtml}
     />
   );
 }

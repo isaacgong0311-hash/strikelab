@@ -18,7 +18,7 @@
   padding: 1rem;
 }
 .value {
-  font-family: var(--font-display), Georgia, serif;
+  font-family: var(--sl-font-display), Georgia, serif;
   font-size: 2rem;
   font-weight: 700;
   color: var(--grass);

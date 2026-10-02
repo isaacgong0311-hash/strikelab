@@ -24,10 +24,13 @@
   --sl-danger-soft: #fbe9e2;
   --sl-success: #14733c;
 
-  /* Type */
-  --sl-font-display: var(--font-display), "Plus Jakarta Sans", system-ui, sans-serif;
-  --sl-font-body: var(--font-ui), Inter, system-ui, sans-serif;
-  --sl-font-code: var(--font-mono), "JetBrains Mono", ui-monospace, monospace;
+  /* Type. --font-ui and --font-mono already end in generic families (the
+     `fallback` options in layout.tsx). Display falls back to Inter: Jakarta
+     has no Greek, so a Δ or σ in a heading comes from Inter instead of the
+     device's serif. */
+  --sl-font-display: var(--font-display), var(--font-ui);
+  --sl-font-body: var(--font-ui);
+  --sl-font-code: var(--font-mono);
   --sl-leading-tight: 1.08;
   --sl-leading-body: 1.65;
 

@@ -70,7 +70,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
       <Eyebrow>Blog</Eyebrow>
       <h1
         className="text-4xl font-semibold mb-3 leading-tight"
-        style={{ fontFamily: "var(--font-display)", color: "var(--ink)" }}
+        style={{ fontFamily: "var(--sl-font-display)", color: "var(--ink)" }}
       >
         {post.frontmatter.title}
       </h1>

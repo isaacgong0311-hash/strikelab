@@ -13,7 +13,7 @@ export default function NotFound() {
       <Eyebrow className="mb-3">404</Eyebrow>
       <div
         style={{
-          fontFamily: "var(--font-display), Georgia, serif",
+          fontFamily: "var(--sl-font-display), Georgia, serif",
           fontSize: "72px",
           fontWeight: 800,
           letterSpacing: "-0.03em",
@@ -26,7 +26,7 @@ export default function NotFound() {
       </div>
       <h1
         className="text-3xl font-semibold mb-3"
-        style={{ fontFamily: "var(--font-display)", color: "var(--ink)" }}
+        style={{ fontFamily: "var(--sl-font-display)", color: "var(--ink)" }}
       >
         This page doesn&rsquo;t exist.
       </h1>

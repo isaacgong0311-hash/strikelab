@@ -92,7 +92,7 @@
   gap: 0.75rem;
 }
 .kickoffTitle {
-  font-family: var(--font-display), Georgia, serif;
+  font-family: var(--sl-font-display), Georgia, serif;
   font-size: 1.25rem;
   font-weight: 600;
   color: var(--ink);

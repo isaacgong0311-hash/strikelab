@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Fragment, useEffect, useRef, useState, type FormEvent, type ReactNode } from "react";
+import { Fragment, useEffect, useMemo, useRef, useState, type FormEvent, type ReactNode } from "react";
 import { useProgress } from "@/lib/useProgress";
 import { useAuth } from "@/lib/auth/AuthProvider";
 import { loadSupabaseBrowser } from "@/lib/supabase/lazy";
@@ -46,9 +46,17 @@ interface Props {
   lessonTitle: string;
   sessionIds: string[];
   nextSessionId: string | null;
+  /** Server-typeset formulas, keyed by step id. */
+  formulaHtml: Record<string, string>;
 }
 
-export default function SessionPlayer({ session, lessonTitle, sessionIds, nextSessionId }: Props) {
+export default function SessionPlayer({ session, lessonTitle, sessionIds, nextSessionId, formulaHtml }: Props) {
+  // Stable { __html } objects: React 19 re-sets innerHTML whenever this prop's
+  // identity changes, which would rebuild the typeset formula on every render.
+  const formulaMarkup = useMemo(
+    () => Object.fromEntries(Object.entries(formulaHtml).map(([id, __html]) => [id, { __html }])),
+    [formulaHtml],
+  );
   const { steps } = session;
   const lessonHref = `/lesson/${session.lessonId}`;
   const sessionNumber = sessionIds.indexOf(session.id) + 1;
@@ -272,7 +280,11 @@ export default function SessionPlayer({ session, lessonTitle, sessionIds, nextSe
                   <RichText text={p} />
                 </p>
               ))}
-              {step.formula ? <p className={styles.formula}>{step.formula}</p> : null}
+              {formulaMarkup[step.id] ? (
+                <div className={styles.formulaMath} dangerouslySetInnerHTML={formulaMarkup[step.id]} />
+              ) : step.formula ? (
+                <p className={styles.formula}>{step.formula}</p>
+              ) : null}
               {step.compare ? (
                 <div className={styles.compare}>
                   {step.compare.map((col) => (

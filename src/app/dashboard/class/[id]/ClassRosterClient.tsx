@@ -66,7 +66,7 @@ function SignInPrompt() {
     <div className="max-w-md mx-auto px-6 py-24 text-center">
       <h1
         className="text-2xl font-semibold mb-3"
-        style={{ fontFamily: "var(--font-display)", color: "var(--ink)" }}
+        style={{ fontFamily: "var(--sl-font-display)", color: "var(--ink)" }}
       >
         Sign in to view this class
       </h1>
@@ -157,7 +157,7 @@ export default function ClassRosterClient() {
       <div className="max-w-md mx-auto px-6 py-24 text-center">
         <h1
           className="text-2xl font-semibold mb-3"
-          style={{ fontFamily: "var(--font-display)", color: "var(--ink)" }}
+          style={{ fontFamily: "var(--sl-font-display)", color: "var(--ink)" }}
         >
           Class not found
         </h1>
@@ -175,7 +175,7 @@ export default function ClassRosterClient() {
         <div>
           <h1
             className="text-3xl font-semibold mb-2"
-            style={{ fontFamily: "var(--font-display)", color: "var(--ink)" }}
+            style={{ fontFamily: "var(--sl-font-display)", color: "var(--ink)" }}
           >
             {state === "loading" ? "Loading…" : className}
           </h1>

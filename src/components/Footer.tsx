@@ -54,7 +54,7 @@ export default function Footer() {
         <div className="col-span-2">
           <div className="flex items-center gap-2.5 mb-4">
             <span style={{ color: "var(--fg)", display: "grid" }}><BrandMark size={26} /></span>
-            <span style={{ fontFamily: "var(--font-display)", fontStyle: "italic", color: "var(--fg)", fontSize: "1.15rem", fontWeight: 600 }}>
+            <span style={{ fontFamily: "var(--sl-font-display)", fontStyle: "italic", color: "var(--fg)", fontSize: "1.15rem", fontWeight: 600 }}>
               Strike<span style={{ fontStyle: "normal", fontWeight: 600 }}>Lab</span>
             </span>
           </div>
@@ -118,7 +118,7 @@ export default function Footer() {
         >
           © 2026 StrikeLab · Free & Open Source · MIT License
         </span>
-        <span className="text-[11px]" style={{ color: "var(--fg-mute)", fontFamily: "var(--font-serif)", fontStyle: "italic" }}>
+        <span className="text-[11px]" style={{ color: "var(--fg-mute)", fontStyle: "italic" }}>
           &ldquo;Quant finance shouldn&rsquo;t require the right zip code.&rdquo;
         </span>
       </div>

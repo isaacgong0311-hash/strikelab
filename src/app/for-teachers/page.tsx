@@ -53,7 +53,7 @@ export default function ForTeachersPage() {
         <Eyebrow>For Teachers</Eyebrow>
         <h1
           className="text-4xl font-semibold mb-3 leading-tight"
-          style={{ fontFamily: "var(--font-display)", color: "var(--ink)" }}
+          style={{ fontFamily: "var(--sl-font-display)", color: "var(--ink)" }}
         >
           Free curriculum you can assign this week
         </h1>
@@ -66,7 +66,7 @@ export default function ForTeachersPage() {
 
       <h2
         className="text-xl font-semibold mb-4"
-        style={{ fontFamily: "var(--font-display)", color: "var(--ink)" }}
+        style={{ fontFamily: "var(--sl-font-display)", color: "var(--ink)" }}
       >
         Curriculum alignment
       </h2>
@@ -81,7 +81,7 @@ export default function ForTeachersPage() {
 
       <h2
         className="text-xl font-semibold mb-4"
-        style={{ fontFamily: "var(--font-display)", color: "var(--ink)" }}
+        style={{ fontFamily: "var(--sl-font-display)", color: "var(--ink)" }}
       >
         How each track fits into a course
       </h2>

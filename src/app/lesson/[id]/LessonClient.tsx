@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useRef, useCallback, useMemo } from "react";
 import Link from "next/link";
 import type { Lesson, FormulaSandboxConfig, LessonVisual } from "@/lib/lessons";
 import { QUIZZES, type QuizQuestion } from "@/lib/quizzes";
@@ -24,19 +24,23 @@ import FlameIcon from "@/components/FlameIcon";
 import Dialog from "@/components/ui/Dialog";
 
 import { CODE_SYNC_LABELS, useSyncedCode } from "@/lib/submissions/useSyncedCode";
-import { loadPythonRuntime } from "@/lib/pythonRuntime";
+import { isPythonRuntimeReady, loadPythonRuntime } from "@/lib/pythonRuntime";
+import PythonWarmup from "@/components/PythonWarmup";
+import mathStyles from "./lessonMath.module.css";
 
 const MiniEditor = dynamic(() => import("@/components/MiniEditor"), { ssr: false });
 
 // Exercise code persistence (localStorage first, synced to the account when
 // signed in) lives in useSyncedCode.
 
+type LessonLink = Pick<Lesson, "id" | "title">;
+
 interface Props {
-  lesson: Lesson;
+  lesson: Omit<Lesson, "content">;
   sections: TocSection[];
   chunks: string[];
-  prev: Lesson | null;
-  next: Lesson | null;
+  prev: LessonLink | null;
+  next: LessonLink | null;
   trackId: string;
   trackTitle: string;
   positionInTrack: number;
@@ -150,7 +154,7 @@ function CelebrationOverlay({
   onClose,
 }: {
   lessonTitle: string;
-  nextLesson: Lesson | null;
+  nextLesson: LessonLink | null;
   streak: number;
   onClose: () => void;
 }) {
@@ -210,6 +214,11 @@ function CelebrationOverlay({
 // ─── Main lesson component ────────────────────────────────────────────────────
 
 export default function LessonClient({ lesson, sections, chunks, prev, next, trackId, trackTitle, positionInTrack, trackLength, related }: Props) {
+  // One stable { __html } per chunk. React 19 compares this prop by object
+  // identity, so a fresh literal on each render rewrote every section's
+  // innerHTML whenever the lesson re-rendered (a checkpoint answer, progress
+  // loading): formulas rebuilt, selection lost, a late second LCP.
+  const chunkHtml = useMemo(() => chunks.map((__html) => ({ __html })), [chunks]);
   // Investing Fundamentals has no coding exercise — the track's own pitch is
   // "no finance background required, just curiosity and pre-algebra," and
   // every one of its lessons already has a no-code drag-slider
@@ -299,10 +308,11 @@ export default function LessonClient({ lesson, sections, chunks, prev, next, tra
 
   const runCode = useCallback(async () => {
     setStatus("running");
-    setOutput("Running tests…");
+    setOutput(isPythonRuntimeReady() ? "Running tests…" : "Starting Python… the first run takes a few seconds.");
 
     try {
       const pyodide = await loadPythonRuntime();
+      setOutput("Running tests…");
       pyodide.runPython(code);
       pyodide.runPython(lesson.exercise.testFn);
       setOutput("✓ All tests passed!");
@@ -396,7 +406,7 @@ export default function LessonClient({ lesson, sections, chunks, prev, next, tra
           <Eyebrow>{trackTitle} · Lesson {positionInTrack} of {trackLength}</Eyebrow>
           <h1
             className="text-3xl font-semibold mb-1"
-            style={{ fontFamily: "var(--font-display)", color: "var(--ink)" }}
+            style={{ fontFamily: "var(--sl-font-display)", color: "var(--ink)" }}
           >
             {lesson.title}
           </h1>
@@ -426,12 +436,12 @@ export default function LessonClient({ lesson, sections, chunks, prev, next, tra
             read the whole lesson without once being asked to retrieve any of
             it. Each one now lands while its section is still fresh. */}
         <div
-          className="v2-rise lesson-content mb-8 pb-8"
+          className={`v2-rise lesson-content mb-8 pb-8 ${mathStyles.content}`}
           style={{ borderBottom: "1px solid var(--border)", transitionDelay: "80ms" }}
         >
-          {chunks.map((chunk, i) => (
+          {chunkHtml.map((html, i) => (
             <div key={i}>
-              <div dangerouslySetInnerHTML={{ __html: chunk }} />
+              <div dangerouslySetInnerHTML={html} />
               {sandboxFor.has(i) && (
                 <FormulaSandbox config={sandboxFor.get(i)!} />
               )}
@@ -472,6 +482,7 @@ export default function LessonClient({ lesson, sections, chunks, prev, next, tra
             transition: "border-color 0.25s, opacity 600ms cubic-bezier(.2,.7,.3,1), transform 600ms cubic-bezier(.2,.7,.3,1)",
           }}
         >
+          <PythonWarmup />
           {/* Exercise header */}
           <div
             className="px-5 py-3 flex items-center justify-between border-b"
@@ -481,7 +492,7 @@ export default function LessonClient({ lesson, sections, chunks, prev, next, tra
               <h2
                 id="coding-exercise-title"
                 className="text-sm font-semibold"
-                style={{ fontFamily: "var(--font-display)", color: "var(--ink)" }}
+                style={{ fontFamily: "var(--sl-font-display)", color: "var(--ink)" }}
               >
                 Coding Exercise
               </h2>
@@ -529,7 +540,7 @@ export default function LessonClient({ lesson, sections, chunks, prev, next, tra
 
           {/* Run bar */}
           <div
-            className="px-5 py-3 flex items-center justify-between border-t gap-3"
+            className="px-5 py-3 flex flex-wrap items-center justify-between border-t gap-3"
             style={{ borderColor: "var(--border)", background: "var(--bg2)" }}
           >
             <div className="flex items-center gap-2">
@@ -655,10 +666,6 @@ export default function LessonClient({ lesson, sections, chunks, prev, next, tra
         </section>
         )}
 
-        {/* Pyodide loader — only needed when there's a Python exercise on
-            the page (Options/Quant). Loading a WASM Python runtime for an
-            Investing lesson that has no code editor was pure waste. */}
-        {hasCodingExercise && <PyodideLoader />}
 
         {/* Related lessons — same track, nearest-position-first, excluding
             prev/next (those already have their own nav buttons below). */}
@@ -723,12 +730,4 @@ export default function LessonClient({ lesson, sections, chunks, prev, next, tra
   );
 }
 
-function PyodideLoader() {
-  // Start loading Python as soon as the exercise is on screen, so Run is fast.
-  useEffect(() => {
-    loadPythonRuntime().catch(() => {
-      // Reported when the student clicks Run, which retries.
-    });
-  }, []);
-  return null;
-}
+
