@@ -5,7 +5,8 @@ import Link from "next/link";
 import { getCurrentChallenge, getNextChallengeDate } from "@/lib/challenges";
 import { trackUpgradeClick } from "@/lib/analytics";
 import { startCheckout, useSubscription } from "@/lib/useSubscription";
-import { loadPythonRuntime } from "@/lib/pythonRuntime";
+import { isPythonRuntimeReady, loadPythonRuntime } from "@/lib/pythonRuntime";
+import PythonWarmup from "@/components/PythonWarmup";
 
 const MiniEditor = dynamic(() => import("@/components/MiniEditor"), { ssr: false });
 
@@ -34,14 +35,6 @@ function useCountdown(targetMs: number) {
   return timeLeft;
 }
 
-// ── Pyodide ──────────────────────────────────────────────────────────────────
-function usePyodide() {
-  useEffect(() => {
-    loadPythonRuntime().catch(() => {
-      // Reported when the student clicks Run, which retries.
-    });
-  }, []);
-}
 
 // ── Rank badge ────────────────────────────────────────────────────────────────
 const RANK_STYLES: Record<number, { bg: string; color: string; label: string }> = {
@@ -114,7 +107,6 @@ export default function ChallengesClient() {
   const challenge = getCurrentChallenge();
   const nextDate = getNextChallengeDate();
   const countdown = useCountdown(nextDate.getTime());
-  usePyodide();
 
   const [code, setCode] = useState(challenge.starterCode);
   const [output, setOutput] = useState("");
@@ -152,9 +144,11 @@ export default function ChallengesClient() {
   }, [lbRefreshKey]);
 
   const runCode = useCallback(async function runCode() {
-    setStatus("running"); setOutput("Running tests…"); setAttempts(n => n + 1);
+    setStatus("running"); setAttempts(n => n + 1);
+    setOutput(isPythonRuntimeReady() ? "Running tests…" : "Starting Python… the first run takes a few seconds.");
     try {
       const pyodide = await loadPythonRuntime();
+      setOutput("Running tests…");
       pyodide.runPython(code);
       pyodide.runPython(challenge.testCode);
       setOutput("All tests passed!");
@@ -300,6 +294,7 @@ export default function ChallengesClient() {
                 <span className="ch-py-badge">Python · runs in browser</span>
               </div>
 
+              <PythonWarmup />
               <MiniEditor value={code} onChange={setCode} />
 
               {/* Run bar */}

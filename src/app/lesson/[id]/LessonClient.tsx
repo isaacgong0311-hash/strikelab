@@ -24,7 +24,8 @@ import FlameIcon from "@/components/FlameIcon";
 import Dialog from "@/components/ui/Dialog";
 
 import { CODE_SYNC_LABELS, useSyncedCode } from "@/lib/submissions/useSyncedCode";
-import { loadPythonRuntime } from "@/lib/pythonRuntime";
+import { isPythonRuntimeReady, loadPythonRuntime } from "@/lib/pythonRuntime";
+import PythonWarmup from "@/components/PythonWarmup";
 
 const MiniEditor = dynamic(() => import("@/components/MiniEditor"), { ssr: false });
 
@@ -299,10 +300,11 @@ export default function LessonClient({ lesson, sections, chunks, prev, next, tra
 
   const runCode = useCallback(async () => {
     setStatus("running");
-    setOutput("Running tests…");
+    setOutput(isPythonRuntimeReady() ? "Running tests…" : "Starting Python… the first run takes a few seconds.");
 
     try {
       const pyodide = await loadPythonRuntime();
+      setOutput("Running tests…");
       pyodide.runPython(code);
       pyodide.runPython(lesson.exercise.testFn);
       setOutput("✓ All tests passed!");
@@ -472,6 +474,7 @@ export default function LessonClient({ lesson, sections, chunks, prev, next, tra
             transition: "border-color 0.25s, opacity 600ms cubic-bezier(.2,.7,.3,1), transform 600ms cubic-bezier(.2,.7,.3,1)",
           }}
         >
+          <PythonWarmup />
           {/* Exercise header */}
           <div
             className="px-5 py-3 flex items-center justify-between border-b"
@@ -655,10 +658,6 @@ export default function LessonClient({ lesson, sections, chunks, prev, next, tra
         </section>
         )}
 
-        {/* Pyodide loader — only needed when there's a Python exercise on
-            the page (Options/Quant). Loading a WASM Python runtime for an
-            Investing lesson that has no code editor was pure waste. */}
-        {hasCodingExercise && <PyodideLoader />}
 
         {/* Related lessons — same track, nearest-position-first, excluding
             prev/next (those already have their own nav buttons below). */}
@@ -723,12 +722,4 @@ export default function LessonClient({ lesson, sections, chunks, prev, next, tra
   );
 }
 
-function PyodideLoader() {
-  // Start loading Python as soon as the exercise is on screen, so Run is fast.
-  useEffect(() => {
-    loadPythonRuntime().catch(() => {
-      // Reported when the student clicks Run, which retries.
-    });
-  }, []);
-  return null;
-}
+
