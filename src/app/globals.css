@@ -4165,14 +4165,18 @@ h1, h2, h3, h4 {
 .sk-lesson-num, .ch-lb-time, .ch-lb-xp, .ch-stat-n,
 .sl-quiz-score, .db-ring-pct {
   font-variant-numeric: tabular-nums;
-  font-feature-settings: "tnum" 1, "zero" 1;
+  /* No "zero" here. Google's Inter never had the feature, so these stats
+     have always shown a plain 0; our Inter does have it, and a slashed zero
+     in a big stat isn't the look. */
+  font-feature-settings: "tnum" 1;
 }
 
 /* Code and anything mono gets a slashed zero, which is the whole point of a
-   coding face — 0 and O are indistinguishable otherwise. */
+   coding face — 0 and O are indistinguishable otherwise. No "calt": the
+   coding ligatures are cut out of the font file itself. */
 code, pre, .sk-code, .ai-code, .ai-inline, .pr-output,
 [class*="font-mono"], .cm-editor {
-  font-feature-settings: "zero" 1, "calt" 1;
+  font-feature-settings: "zero" 1;
 }
 
 /* ══════════════════════════════════════════════════════════════════════════
