@@ -9,6 +9,19 @@ StrikeLab uses a student-first “premium learning lab” visual language: calm 
 - `src/components/ui/` contains accessible controls and display primitives. Import the individual component file directly rather than using a barrel.
 - Route-specific layout belongs in a co-located CSS module. Existing selectors in `src/app/globals.css`, `sandbox.css`, and `pg-ch.css` are a compatibility layer and should be deleted as their routes migrate.
 
+## Type
+
+| Face | Token | Job |
+|---|---|---|
+| Plus Jakarta Sans | `--sl-font-display` | Headings and big display numbers |
+| Inter | `--sl-font-body` | Everything people read or press |
+| JetBrains Mono | `--sl-font-code` | Code, formulas written as code, data, the eyebrow label |
+
+- Use the `--sl-font-*` tokens, never the raw `--font-*` variables: the tokens end in generic families and send Greek in headings to Inter.
+- Inter and JetBrains Mono are self-hosted subsets built by `scripts/fonts/build_fonts.py` from pinned upstream releases. To add a character, add it to `UNICODES` there, re-run the script and commit the woff2 files. Jakarta comes from `next/font/google`; don't give it a `fallback` option (see `layout.tsx`).
+- JetBrains Mono ships without ligatures. Slashed zero is on for code only.
+- `tests/fonts.spec.ts` fails if text on a core route is painted by a font we don't ship. `scripts/audit/type-audit.mjs` prints the typography numbers for any build.
+
 ## Interaction rules
 
 - Essential content is visible in the server-rendered document. Motion may enhance visible content after hydration but must never be required to reveal it.

@@ -300,6 +300,7 @@ Everything in the Sep 30 plan §7 still holds: dark mode, a rebrand, a mascot, a
 
 | Date | Change |
 |---|---|
+| 2026-10-02 | **Batch 1 shipped** (BV-T1, T2, T3, T8) on PR #40: fonts on every Lighthouse URL 117.6 → 93.5 KB; system-painted elements 481 → 0 on the audit routes; `/` back to perf 0.91, LCP 3,436 ms; CLS 0. 57/57 Playwright, 369 unit tests. |
 | 2026-10-02 | All three step-level plans validated by applying their code verbatim, then reverting: type foundation (57/57 Playwright on dev), maths (99 unit and 10 Playwright tests; added a 320px overflow fix the trial exposed), order step (97 unit and 8 Playwright tests). |
 | 2026-10-02 | Added B15 and BV-X6 after validating the maths plan: Lighthouse showed `/lesson/3` at 6.7 MB because the Python runtime loads on open. |
 | 2026-10-02 | Created from the Oct 2 audit and research. Batch 1 validated by a trial build: 38/38 Playwright tests, fonts on `/` 117.6 → 93.5 KB, system-painted elements 600 → 15. The trial was reverted; batch 1 is still to do. |
