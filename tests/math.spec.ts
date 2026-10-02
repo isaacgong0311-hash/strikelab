@@ -33,3 +33,28 @@ test("a session step shows its formula typeset", async ({ page }) => {
   await expect(page.locator(".katex-display")).toBeVisible();
   await expect(page.locator(".katex-display .mfrac")).toBeVisible();
 });
+
+// React 19 compares dangerouslySetInnerHTML by object identity, so a fresh
+// { __html } on every render rewrote each section's innerHTML whenever the
+// lesson re-rendered: the typeset formulas were torn down and rebuilt, any
+// text selection was lost, and the rebuilt first paragraph counted as a new,
+// later LCP. Answering a checkpoint re-renders the lesson.
+test("re-rendering the lesson keeps its typeset body in place", async ({ page }) => {
+  await page.goto("/lesson/3", { waitUntil: "networkidle" });
+  await expect(page.locator("html")).toHaveAttribute("data-client-ready", "true");
+  await page.evaluate(() => {
+    const w = window as unknown as { __probe: Element[] };
+    w.__probe = [
+      document.querySelector(".lesson-content p")!,
+      document.querySelector(".lesson-content .katex-display")!,
+    ];
+  });
+
+  await page.getByRole("complementary", { name: "Checkpoint 1" }).getByRole("button").first().click();
+  await expect(page.getByRole("complementary", { name: "Checkpoint 1" }).locator(".cp-explain")).toBeVisible();
+
+  const connected = await page.evaluate(() =>
+    (window as unknown as { __probe: Element[] }).__probe.map((el) => el.isConnected),
+  );
+  expect(connected, "[first paragraph, first formula] still in the document").toEqual([true, true]);
+});

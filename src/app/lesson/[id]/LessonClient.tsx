@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useRef, useCallback, useMemo } from "react";
 import Link from "next/link";
 import type { Lesson, FormulaSandboxConfig, LessonVisual } from "@/lib/lessons";
 import { QUIZZES, type QuizQuestion } from "@/lib/quizzes";
@@ -214,6 +214,11 @@ function CelebrationOverlay({
 // ─── Main lesson component ────────────────────────────────────────────────────
 
 export default function LessonClient({ lesson, sections, chunks, prev, next, trackId, trackTitle, positionInTrack, trackLength, related }: Props) {
+  // One stable { __html } per chunk. React 19 compares this prop by object
+  // identity, so a fresh literal on each render rewrote every section's
+  // innerHTML whenever the lesson re-rendered (a checkpoint answer, progress
+  // loading): formulas rebuilt, selection lost, a late second LCP.
+  const chunkHtml = useMemo(() => chunks.map((__html) => ({ __html })), [chunks]);
   // Investing Fundamentals has no coding exercise — the track's own pitch is
   // "no finance background required, just curiosity and pre-algebra," and
   // every one of its lessons already has a no-code drag-slider
@@ -434,9 +439,9 @@ export default function LessonClient({ lesson, sections, chunks, prev, next, tra
           className={`v2-rise lesson-content mb-8 pb-8 ${mathStyles.content}`}
           style={{ borderBottom: "1px solid var(--border)", transitionDelay: "80ms" }}
         >
-          {chunks.map((chunk, i) => (
+          {chunkHtml.map((html, i) => (
             <div key={i}>
-              <div dangerouslySetInnerHTML={{ __html: chunk }} />
+              <div dangerouslySetInnerHTML={html} />
               {sandboxFor.has(i) && (
                 <FormulaSandbox config={sandboxFor.get(i)!} />
               )}
