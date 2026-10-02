@@ -300,6 +300,7 @@ Everything in the Sep 30 plan §7 still holds: dark mode, a rebrand, a mascot, a
 
 | Date | Change |
 |---|---|
+| 2026-10-02 | **BV-X6, BV-T4 and BV-P4 shipped** on PR #40. Python now loads when the exercise is near: `/lesson/3` went from 6.7 MB to 826 KB and is in `lighthouserc.json`. Lesson 3's formulas and the Sharpe step are typeset (KaTeX at build time, HTML + MathML). Measuring the maths exposed an existing bug: React 19 rebuilt every lesson section's innerHTML on each re-render (fixed with memoised `{ __html }`, and lesson props trimmed). `/lesson/3` perf 0.79–0.82 in LHCI, CLS 0; `/` 0.91. 62/62 Playwright, 376 unit tests. Side finding for FW-11: `main`'s `v2pageIn` fade starts at opacity 0, so Chrome never counts page content as LCP and lab LCP is measured on the header brand. Details in the maths plan's execution notes. |
 | 2026-10-02 | **Batch 1 shipped** (BV-T1, T2, T3, T8) on PR #40: fonts on every Lighthouse URL 117.6 → 93.5 KB; system-painted elements 481 → 0 on the audit routes; `/` back to perf 0.91, LCP 3,436 ms; CLS 0. 57/57 Playwright, 369 unit tests. |
 | 2026-10-02 | All three step-level plans validated by applying their code verbatim, then reverting: type foundation (57/57 Playwright on dev), maths (99 unit and 10 Playwright tests; added a 320px overflow fix the trial exposed), order step (97 unit and 8 Playwright tests). |
 | 2026-10-02 | Added B15 and BV-X6 after validating the maths plan: Lighthouse showed `/lesson/3` at 6.7 MB because the Python runtime loads on open. |

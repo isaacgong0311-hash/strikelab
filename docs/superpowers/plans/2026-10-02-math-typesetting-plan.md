@@ -562,3 +562,33 @@ In the PR description, include:
 - before and after screenshots of `/lesson/3` at 375px and 1366px, showing the formula block;
 - the maths font bytes from Step 1;
 - the convention for the next lessons: TeX in `<span class="tex">` and `<div class="tex-block">`, content as `String.raw`, no maths in `<h2>`.
+
+---
+
+### Execution notes (2026-10-02)
+
+Shipped on PR #40 after BV-X6, which added `/lesson/3` to `lighthouserc.json`.
+
+**What the maths cost.** On a local production build, 5 Lighthouse runs each:
+
+| `/lesson/3` | Perf | LCP (simulated) |
+|---|---|---|
+| BV-X6 only, no maths | 0.75–0.81 | 4.2–5.5 s |
+| Maths, as first built | 0.73–0.74 | 5.8–5.9 s |
+| Maths with KaTeX CSS and fonts blocked | 0.74–0.77 | 5.3–5.9 s |
+| Maths + the two fixes below | 0.78–0.84 | 3.5–4.4 s |
+
+The KaTeX stylesheet and fonts account for about 0.03 of the drop. A lazy-loaded stylesheet was tried and rejected:
+- it saved the same 0.03;
+- unstyled formulas overflowed at 1366px before the CSS arrived;
+- the observer that loads the CSS missed formula nodes React had replaced.
+
+**The real cause** was an existing bug that the heavier markup made worse. React 19 compares `dangerouslySetInnerHTML` by object identity, not by the `__html` string. `LessonClient` built a fresh `{ __html: chunk }` on every render, so each re-render after hydration (progress loading, a checkpoint answer) rewrote every section's innerHTML. The rebuilt first paragraph then counted as a new, late LCP.
+
+Two fixes:
+- `f33db6b` memoises the objects in `LessonClient` and `SessionPlayer`. `tests/math.spec.ts` now checks that answering a checkpoint keeps the same paragraph and formula nodes.
+- `faff5b0` stops sending the raw lesson text and prev/next lessons to the client. `/lesson/3` HTML went from 46.1 to 38.6 KB gzipped.
+
+**Convention for client components:** pass `dangerouslySetInnerHTML` a memoised object, never an inline `{{ __html }}`.
+
+**Side finding, not fixed here.** `main` plays the `v2pageIn` fade from opacity 0. Chrome does not count paints under it as LCP, so on every page the LCP element is the header brand, not the page content. Lab LCP therefore understates when content appears. Recorded against FW-11 in the roadmap.
