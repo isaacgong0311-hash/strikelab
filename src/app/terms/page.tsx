@@ -139,7 +139,7 @@ export default function TermsPage() {
       <Eyebrow>Legal</Eyebrow>
       <h1
         className="text-4xl font-semibold mb-3 leading-tight"
-        style={{ fontFamily: "var(--font-display)", color: "var(--ink)" }}
+        style={{ fontFamily: "var(--sl-font-display)", color: "var(--ink)" }}
       >
         Terms of Service
       </h1>
@@ -156,7 +156,7 @@ export default function TermsPage() {
           <div key={s.title}>
             <h2
               className="text-lg font-semibold mb-2.5"
-              style={{ fontFamily: "var(--font-display)", color: "var(--ink)" }}
+              style={{ fontFamily: "var(--sl-font-display)", color: "var(--ink)" }}
             >
               {s.title}
             </h2>

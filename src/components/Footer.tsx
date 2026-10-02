@@ -54,7 +54,7 @@ export default function Footer() {
         <div className="col-span-2">
           <div className="flex items-center gap-2.5 mb-4">
             <span style={{ color: "var(--fg)", display: "grid" }}><BrandMark size={26} /></span>
-            <span style={{ fontFamily: "var(--font-display)", fontStyle: "italic", color: "var(--fg)", fontSize: "1.15rem", fontWeight: 600 }}>
+            <span style={{ fontFamily: "var(--sl-font-display)", fontStyle: "italic", color: "var(--fg)", fontSize: "1.15rem", fontWeight: 600 }}>
               Strike<span style={{ fontStyle: "normal", fontWeight: 600 }}>Lab</span>
             </span>
           </div>

@@ -82,7 +82,7 @@ export default function RoadmapPage() {
         <Eyebrow>Roadmap</Eyebrow>
         <h1
           className="text-4xl font-semibold mb-3 leading-tight"
-          style={{ fontFamily: "var(--font-display)", color: "var(--ink)" }}
+          style={{ fontFamily: "var(--sl-font-display)", color: "var(--ink)" }}
         >
           What we&rsquo;re building next
         </h1>
@@ -156,7 +156,7 @@ export default function RoadmapPage() {
                     <div className="flex items-start justify-between gap-3 mb-1.5">
                       <h3
                         className="text-sm font-semibold"
-                        style={{ fontFamily: "var(--font-display)", color: "var(--ink)" }}
+                        style={{ fontFamily: "var(--sl-font-display)", color: "var(--ink)" }}
                       >
                         {item.title}
                       </h3>
@@ -189,7 +189,7 @@ export default function RoadmapPage() {
       >
         <h2
           className="text-lg font-semibold text-white mb-2"
-          style={{ fontFamily: "var(--font-display)", color: "var(--ink)" }}
+          style={{ fontFamily: "var(--sl-font-display)", color: "var(--ink)" }}
         >
           Have a feature request?
         </h2>

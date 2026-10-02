@@ -10,7 +10,7 @@ export default function FAQClient() {
     <div className="max-w-3xl mx-auto px-6 py-10">
       <div className="v2-page-head mb-8" data-v2-head style={{ padding: 0, border: 0 }}>
         <Eyebrow>FAQ</Eyebrow>
-        <h1 className="text-4xl font-semibold mb-3" style={{ fontFamily: "var(--font-display)", color: "var(--ink)" }}>
+        <h1 className="text-4xl font-semibold mb-3" style={{ fontFamily: "var(--sl-font-display)", color: "var(--ink)" }}>
           Frequently asked questions
         </h1>
         <p className="text-sm" style={{ color: "var(--muted2)" }}>
@@ -38,7 +38,7 @@ export default function FAQClient() {
                       onClick={() => setOpen(isOpen ? null : key)}
                       className="w-full flex items-center justify-between gap-3 px-4 py-3.5 text-left transition-colors hover:bg-black/[0.03]"
                     >
-                      <span className="text-sm font-semibold" style={{ fontFamily: "var(--font-display)", color: "var(--ink)" }}>
+                      <span className="text-sm font-semibold" style={{ fontFamily: "var(--sl-font-display)", color: "var(--ink)" }}>
                         {item.q}
                       </span>
                       <span

@@ -77,7 +77,7 @@ export default async function CertificatePage({
 
         <h1
           className="text-3xl font-semibold mb-2"
-          style={{ fontFamily: "var(--font-display)", color: "var(--ink)" }}
+          style={{ fontFamily: "var(--sl-font-display)", color: "var(--ink)" }}
         >
           {cert.displayName}
         </h1>
@@ -86,7 +86,7 @@ export default async function CertificatePage({
         </p>
         <div
           className="text-2xl font-semibold mb-10"
-          style={{ fontFamily: "var(--font-display)", color: "var(--grass)" }}
+          style={{ fontFamily: "var(--sl-font-display)", color: "var(--grass)" }}
         >
           {cert.trackTitle}
         </div>

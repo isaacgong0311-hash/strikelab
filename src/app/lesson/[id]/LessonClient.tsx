@@ -396,7 +396,7 @@ export default function LessonClient({ lesson, sections, chunks, prev, next, tra
           <Eyebrow>{trackTitle} · Lesson {positionInTrack} of {trackLength}</Eyebrow>
           <h1
             className="text-3xl font-semibold mb-1"
-            style={{ fontFamily: "var(--font-display)", color: "var(--ink)" }}
+            style={{ fontFamily: "var(--sl-font-display)", color: "var(--ink)" }}
           >
             {lesson.title}
           </h1>
@@ -481,7 +481,7 @@ export default function LessonClient({ lesson, sections, chunks, prev, next, tra
               <h2
                 id="coding-exercise-title"
                 className="text-sm font-semibold"
-                style={{ fontFamily: "var(--font-display)", color: "var(--ink)" }}
+                style={{ fontFamily: "var(--sl-font-display)", color: "var(--ink)" }}
               >
                 Coding Exercise
               </h2>
