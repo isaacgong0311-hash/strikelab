@@ -24,7 +24,9 @@ async function paintedText(page: Page): Promise<{ text: string; fonts: string[] 
   const texts = await page.evaluate(() => {
     const out: string[] = [];
     for (const el of document.body.querySelectorAll("*")) {
-      if (el.closest("script, style, noscript, svg")) continue;
+      // .katex-mathml is KaTeX's MathML copy for screen readers. It's clipped
+      // out of view, and Chrome draws it with whatever maths font it finds.
+      if (el.closest("script, style, noscript, svg, .katex-mathml")) continue;
       const own = [...el.childNodes]
         .filter((n) => n.nodeType === Node.TEXT_NODE)
         .map((n) => n.textContent ?? "")

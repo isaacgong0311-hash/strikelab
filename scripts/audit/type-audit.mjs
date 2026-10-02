@@ -26,7 +26,8 @@ function collect() {
   const rows = [];
   let i = 0;
   for (const el of document.body.querySelectorAll("*")) {
-    if (["SCRIPT", "STYLE", "NOSCRIPT", "TEMPLATE"].includes(el.tagName) || el.closest("svg")) continue;
+    // .katex-mathml is the screen-reader copy of each formula, clipped out of view.
+    if (["SCRIPT", "STYLE", "NOSCRIPT", "TEMPLATE"].includes(el.tagName) || el.closest("svg, .katex-mathml")) continue;
     if (![...el.childNodes].some((n) => n.nodeType === 3 && n.textContent.trim())) continue;
     const cs = getComputedStyle(el);
     const box = el.getBoundingClientRect();

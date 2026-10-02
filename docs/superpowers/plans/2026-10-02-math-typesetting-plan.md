@@ -524,7 +524,23 @@ Expected (measured on a trial build, 2026-10-02), about 49 KB of maths fonts:
 ```
 Also expected: CLS 0.
 
-- [ ] **Step 2: Run everything CI runs**
+- [ ] **Step 2: Teach the font guard about KaTeX's MathML**
+
+If `tests/fonts.spec.ts` exists (type-foundation plan), it now fails on `/lesson/3` with strays like `"max" -> Liberation Serif`. That text is inside `.katex-mathml`, KaTeX's MathML copy for screen readers. It is clipped out of view, and Chrome draws it with whatever maths font it finds.
+
+In `tests/fonts.spec.ts`, replace:
+```ts
+      if (el.closest("script, style, noscript, svg")) continue;
+```
+with:
+```ts
+      // .katex-mathml is KaTeX's MathML copy for screen readers. It's clipped
+      // out of view, and Chrome draws it with whatever maths font it finds.
+      if (el.closest("script, style, noscript, svg, .katex-mathml")) continue;
+```
+Make the same exclusion in `scripts/audit/type-audit.mjs`, where it skips `svg`.
+
+- [ ] **Step 3: Run everything CI runs**
 
 ```bash
 npm run lint
@@ -540,7 +556,7 @@ Expected:
 
 If `tests/fonts.spec.ts` (from the type-foundation plan) exists, it already allows `KaTeX_*`.
 
-- [ ] **Step 3: Open the PR**
+- [ ] **Step 4: Open the PR**
 
 In the PR description, include:
 - before and after screenshots of `/lesson/3` at 375px and 1366px, showing the formula block;
