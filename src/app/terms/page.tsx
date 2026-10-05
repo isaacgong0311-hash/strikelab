@@ -137,10 +137,7 @@ export default function TermsPage() {
       <Breadcrumbs trail={[{ name: "Terms of Service", path: "/terms" }]} />
 
       <Eyebrow>Legal</Eyebrow>
-      <h1
-        className="text-4xl font-semibold mb-3 leading-tight"
-        style={{ fontFamily: "var(--sl-font-display)", color: "var(--ink)" }}
-      >
+      <h1 className="sl-page-title mb-3">
         Terms of Service
       </h1>
       <p className="text-sm mb-12" style={{ color: "var(--ink-3)" }}>

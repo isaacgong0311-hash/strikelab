@@ -9,7 +9,7 @@
 }
 .header { display: flex; flex-direction: column; gap: 0.5rem; }
 .kicker { margin: 0; color: var(--sl-brand); font-weight: 800; font-size: 0.8125rem; letter-spacing: 0.08em; text-transform: uppercase; }
-.title { margin: 0; font: 800 clamp(1.875rem, 5vw, 2.75rem) / 1.08 var(--sl-font-display); letter-spacing: -0.02em; text-wrap: balance; }
+.title { margin: 0; font: 800 clamp(1.75rem, 4.5vw, 2.5rem) / 1.1 var(--sl-font-display); letter-spacing: -0.025em; text-wrap: balance; }
 .lede { margin: 0; max-width: 42rem; color: var(--sl-text-muted); font-size: 1.0625rem; line-height: var(--sl-leading-body); }
 
 .tabs {

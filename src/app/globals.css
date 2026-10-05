@@ -135,15 +135,18 @@ code, pre, .mono {
 }
 
 /* ── Lesson rich text ─────────────────────────────────────────────────────── */
+/* Section headings were a synthesized italic: Plus Jakarta Sans ships no italic
+   face here, so the browser slanted the upright letters. They are now a real
+   bold at a size that reads as a heading, not as slightly larger body text. */
 .lesson-content h2 {
-  font-family: var(--font-serif);
-  font-size: 1.2rem;
-  font-weight: 600;
-  font-style: italic;
+  font-size: 1.35rem;
+  font-weight: 700;
+  font-style: normal;
+  line-height: 1.25;
   color: var(--fg);
   margin-top: 2.25rem;
   margin-bottom: 0.6rem;
-  letter-spacing: -0.01em;
+  letter-spacing: -0.015em;
 }
 /* NOT `.lesson-content h2:first-child` — each section is rendered into its
    own isolated wrapper div (see the chunk-splitting in LessonClient.tsx /
@@ -155,11 +158,15 @@ code, pre, .mono {
    the divider now apply uniformly; the lesson header above the first
    section already has its own bottom spacing, so the first section doesn't
    need special-casing. */
+/* Body text is 17px at about 70 characters a line (60ch of Inter), with
+   leading that doesn't pull the eye off the line. It was 15.4px at a median of
+   86 characters and 1.85 leading, which is why long lessons felt like walls. */
 .lesson-content p {
   color: #3d453f;
-  line-height: 1.85;
-  margin-bottom: 1rem;
-  font-size: 0.96rem;
+  line-height: 1.7;
+  margin-bottom: 1.1rem;
+  font-size: 1.0625rem;
+  max-width: 60ch;
 }
 .lesson-content ul {
   list-style: none;
@@ -167,8 +174,10 @@ code, pre, .mono {
   margin-bottom: 1rem;
   display: flex;
   flex-direction: column;
-  gap: 0.4rem;
-  font-size: 0.96rem;
+  gap: 0.45rem;
+  font-size: 1.0625rem;
+  line-height: 1.6;
+  max-width: 60ch;
   padding-left: 0;
 }
 .lesson-content ul li::before {
@@ -184,12 +193,11 @@ code, pre, .mono {
   background: var(--grass-tint);
   border-radius: 0 8px 8px 0;
   font-family: var(--font-mono);
-  font-size: 0.82rem;
-  line-height: 1.85;
+  font-size: 0.875rem;
+  line-height: 1.7;
+  max-width: 60ch;
 }
 .lesson-content strong { color: var(--fg); font-weight: 700; }
-/* The Ctrl/⌘ + Enter hint means nothing on a phone, which has no such key. */
-@media (pointer: coarse) { .kbd-hint { display: none; } }
 .lesson-content em { color: #2c352f; font-style: italic; }
 .lesson-content sup { font-size: 0.7em; vertical-align: super; }
 .lesson-content code {
@@ -201,6 +209,10 @@ code, pre, .mono {
   border-radius: var(--r-xs);
   border: 1px solid var(--border);
 }
+
+/* The Ctrl/⌘ + Enter hint on the Run button means nothing on a phone, which has no such key. */
+@media (pointer: coarse) { .kbd-hint { display: none; } }
+
 /* Fenced code blocks (```python from MDX) — the inline `code` rule above only
    covers backtick spans. Without this, a <pre><code> block has no wrap and
    no scroll container, so a long line (e.g. an import + function signature)
@@ -1454,7 +1466,7 @@ body:has(.sk-home) .v2-bg-vignette { display: none; }
 .dpath { max-width: 660px; margin: 0 auto; padding: 36px 20px 90px; font-family: var(--font-ui), system-ui, sans-serif; }
 .dpath-head { margin-bottom: 24px; }
 .dpath-head-row { display: flex; justify-content: space-between; align-items: flex-end; gap: 16px; flex-wrap: wrap; margin-bottom: 16px; }
-.dpath-title { font-family: var(--sl-font-display), Georgia, serif; font-weight: 600; font-size: clamp(28px, 5vw, 40px); letter-spacing: -0.02em; color: var(--ink); margin-top: 8px; }
+.dpath-title { font-family: var(--sl-font-display), Georgia, serif; font-weight: 800; font-size: clamp(1.75rem, 4.5vw, 2.5rem); line-height: 1.1; letter-spacing: -0.025em; color: var(--ink); margin-top: 8px; }
 .dpath-stats { display: flex; gap: 10px; }
 .dstat {
   display: flex; flex-direction: column; align-items: center; gap: 1px;
@@ -1645,7 +1657,7 @@ body:has(.sk-home) .v2-bg-vignette { display: none; }
 .auth-card { width: 100%; max-width: 420px; background: var(--card); border: 1px solid var(--line); border-radius: var(--r-xl); padding: 40px 36px; box-shadow: 0 16px 44px -26px rgba(40,30,10,.32); }
 .auth-brand { display: flex; justify-content: center; margin-bottom: 18px; }
 .auth-logo { width: 56px; height: 56px; border-radius: var(--r-lg); display: grid; place-items: center; background: var(--grass-tint); color: var(--grass); font-family: var(--sl-font-display), Georgia, serif; font-size: 30px; }
-.auth-title { font-family: var(--sl-font-display), Georgia, serif; font-weight: 600; font-size: 28px; text-align: center; color: var(--ink); letter-spacing: -0.02em; }
+.auth-title { font-family: var(--sl-font-display), Georgia, serif; font-weight: 800; font-size: 1.75rem; line-height: 1.15; text-align: center; color: var(--ink); letter-spacing: -0.025em; }
 .auth-sub { text-align: center; font-size: 14px; line-height: 1.5; color: var(--ink-2); margin: 8px auto 26px; max-width: 320px; }
 .auth-form { display: flex; flex-direction: column; gap: 15px; }
 .auth-label { display: flex; flex-direction: column; gap: 7px; font-size: 13px; font-weight: 600; color: var(--ink-2); }

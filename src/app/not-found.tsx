@@ -24,10 +24,7 @@ export default function NotFound() {
       >
         ∄
       </div>
-      <h1
-        className="text-3xl font-semibold mb-3"
-        style={{ fontFamily: "var(--sl-font-display)", color: "var(--ink)" }}
-      >
+      <h1 className="sl-page-title mb-3">
         This page doesn&rsquo;t exist.
       </h1>
       <p className="text-sm leading-relaxed mb-8 max-w-md mx-auto" style={{ color: "var(--ink-2)" }}>

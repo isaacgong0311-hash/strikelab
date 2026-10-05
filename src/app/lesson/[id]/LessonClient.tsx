@@ -406,10 +406,7 @@ export default function LessonClient({ lesson, sections, chunks, prev, next, tra
           )}
 
           <Eyebrow>{trackTitle} · Lesson {positionInTrack} of {trackLength}</Eyebrow>
-          <h1
-            className="text-3xl font-semibold mb-1"
-            style={{ fontFamily: "var(--sl-font-display)", color: "var(--ink)" }}
-          >
+          <h1 className="sl-page-title mb-1">
             {lesson.title}
           </h1>
           <p className="text-sm" style={{ color: "var(--muted)", fontFamily: "var(--font-mono)" }}>

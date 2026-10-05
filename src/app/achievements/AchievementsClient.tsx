@@ -13,10 +13,7 @@ export default function AchievementsClient() {
       <div className="flex items-end justify-between gap-4 flex-wrap mb-10">
         <div>
           <Eyebrow>Progress</Eyebrow>
-          <h1
-            className="text-4xl font-semibold leading-tight"
-            style={{ fontFamily: "var(--sl-font-display)", color: "var(--ink)" }}
-          >
+          <h1 className="sl-page-title">
             Achievements
           </h1>
           <p className="text-sm mt-2" style={{ color: "var(--ink-2)" }}>

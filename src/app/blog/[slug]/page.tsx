@@ -68,10 +68,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
       <Breadcrumbs trail={trail} />
 
       <Eyebrow>Blog</Eyebrow>
-      <h1
-        className="text-4xl font-semibold mb-3 leading-tight"
-        style={{ fontFamily: "var(--sl-font-display)", color: "var(--ink)" }}
-      >
+      <h1 className="sl-page-title mb-3">
         {post.frontmatter.title}
       </h1>
       <div

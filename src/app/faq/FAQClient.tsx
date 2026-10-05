@@ -10,7 +10,7 @@ export default function FAQClient() {
     <div className="max-w-3xl mx-auto px-6 py-10">
       <div className="v2-page-head mb-8" data-v2-head style={{ padding: 0, border: 0 }}>
         <Eyebrow>FAQ</Eyebrow>
-        <h1 className="text-4xl font-semibold mb-3" style={{ fontFamily: "var(--sl-font-display)", color: "var(--ink)" }}>
+        <h1 className="sl-page-title mb-3">
           Frequently asked questions
         </h1>
         <p className="text-sm" style={{ color: "var(--muted2)" }}>

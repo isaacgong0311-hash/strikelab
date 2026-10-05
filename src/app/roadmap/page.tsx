@@ -80,10 +80,7 @@ export default function RoadmapPage() {
       {/* Header */}
       <div className="mb-10 v2-page-head" data-v2-head>
         <Eyebrow>Roadmap</Eyebrow>
-        <h1
-          className="text-4xl font-semibold mb-3 leading-tight"
-          style={{ fontFamily: "var(--sl-font-display)", color: "var(--ink)" }}
-        >
+        <h1 className="sl-page-title mb-3">
           What we&rsquo;re building next
         </h1>
         <p className="text-sm leading-relaxed max-w-2xl" style={{ color: "var(--muted2)" }}>

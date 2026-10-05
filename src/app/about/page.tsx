@@ -80,10 +80,7 @@ export default function AboutPage() {
       {/* Hero */}
       <div className="v2-page-head mb-14" data-v2-head style={{ padding: 0, border: 0 }}>
         <Eyebrow>About</Eyebrow>
-        <h1
-          className="text-4xl font-semibold mb-5 leading-tight"
-          style={{ fontFamily: "var(--sl-font-display)", color: "var(--ink)" }}
-        >
+        <h1 className="sl-page-title mb-5">
           Built by a high schooler<br />
           for{" "}
           <span className="not-italic font-bold text-[#16201c]">

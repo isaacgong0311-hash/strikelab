@@ -51,10 +51,7 @@ export default function ForTeachersPage() {
 
       <div className="mb-10 v2-page-head" data-v2-head>
         <Eyebrow>For Teachers</Eyebrow>
-        <h1
-          className="text-4xl font-semibold mb-3 leading-tight"
-          style={{ fontFamily: "var(--sl-font-display)", color: "var(--ink)" }}
-        >
+        <h1 className="sl-page-title mb-3">
           Free curriculum you can assign this week
         </h1>
         <p className="text-sm leading-relaxed max-w-2xl" style={{ color: "var(--muted2)" }}>
