@@ -51,8 +51,10 @@ export default function ActivityHeatmap({
     return acc;
   }, []);
 
+  // The grid scrolls sideways on a phone, so it has to take focus for keyboard
+  // users; the role and name say what they landed on.
   return (
-    <div className="ah" aria-describedby="activity-summary">
+    <div className="ah" role="group" aria-label="Daily activity" aria-describedby="activity-summary" tabIndex={0}>
       <p id="activity-summary" className="sl-visually-hidden">
         {activityDates.length} active days and {totalLessons} lesson {totalLessons === 1 ? "completion" : "completions"} recorded.
       </p>
