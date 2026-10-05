@@ -107,13 +107,22 @@ Two things this review's own tooling cannot show: the sweep's "controls under 24
 - Pro stays hidden: `PRO_SALES_OPEN = false` in `src/lib/proSales.ts`. Challenges stays subscriber-only, with an explanation. Opening it to everyone is a separate call (decision 1).
 - A question gets one retry: `MAX_ATTEMPTS = 2` in `src/lib/sessions/engine.ts` (decision 2).
 
-### Batch B: the student's first minute (next PR)
+### Batch B: the student's first minute (done, PR #40)
 
-U9 U13 U14 U15 U16, then the player's visual layer (U24). Needs a small design pass for the finish screen, the dashboard's empty state and the form errors. Acceptance: a first-time visitor sees no zeros, gets a reward at the end of a session and a reason to sign up.
+U9 U13 U14 U15 U16. What was built:
+- **U9:** the finish screen says how many sessions remain to finish the lesson (and earn 100 XP, if not yet earned). XP is awarded once per lesson, so a per-session "+XP" would have been untrue. Signed-out students see "saved on this device only" and a link to create a free account.
+- **U16:** a first visit shows no zero stats. The dashboard leads with one action; the path page says "Start here" until there is progress (a finished lesson, XP, a streak, or a finished session).
+- **U13:** sign-up and sign-in validate on submit with a tested validator, show every problem inline, announced and linked to its field, and focus the first one.
+- **U14:** the "Aa" button is now the half-filled-circle display icon.
+- **U15:** `/for-teachers` offers "Start a free pilot" and the teacher demo above the fold.
+
+Result (production build): 91 Playwright tests, 394 unit tests, 0 serious axe page-views of 44, Lighthouse unchanged.
+
+Still open from this batch's theme: **U24** (the player's visual layer: the first step is text on a mostly empty screen, and on a 1366px screen the Continue button sits far from the text). That is design work that needs your eye, so it moves to batch C with **U8**.
 
 ### Batch C: one type system, then the decisions
 
-U10 U17 (BV-T5, BV-T6) as one change across all routes, so the two generations of pages become one. Then the product calls: U23 (sandbox preview), U25 (dark mode), U26.
+U10 U17 (BV-T5, BV-T6) as one change across all routes, so the two generations of pages become one. U24 and U8 (the player's visual layer and its feedback panel). Then the product calls: U23 (sandbox preview), U25 (dark mode), U26.
 
 ### Decisions needed from the founder
 
