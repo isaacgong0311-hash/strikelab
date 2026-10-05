@@ -62,6 +62,23 @@ export default function ForTeachersPage() {
           Assign a single lesson as homework, a full track as a unit, or point strong
           students at it independently — it&rsquo;s built to work at any of those scales.
         </p>
+        {/* A teacher decides on this page, so the next step is here, not only at the bottom. */}
+        <div className="flex flex-wrap items-center gap-3 mt-6">
+          <Link
+            href="/pilot?src=for-teachers"
+            className="text-sm px-4 py-2.5 font-medium transition-colors hover:opacity-80"
+            style={{ background: "var(--grass)", color: "#fff", fontFamily: "var(--font-mono)", borderRadius: 10, boxShadow: "0 3px 0 var(--grass-d)" }}
+          >
+            Start a free pilot →
+          </Link>
+          <Link
+            href="/demo"
+            className="text-sm px-4 py-2.5 font-medium transition-colors hover:opacity-80"
+            style={{ color: "var(--ink)", fontFamily: "var(--font-mono)", border: "1px solid var(--border-hi)", borderRadius: 10 }}
+          >
+            See the teacher view
+          </Link>
+        </div>
       </div>
 
       <h2
