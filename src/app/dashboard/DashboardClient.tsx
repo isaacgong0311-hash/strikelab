@@ -162,6 +162,11 @@ export default function DashboardClient() {
 
   const [activeTrackIdx, setActiveTrackIdx] = useState(0);
 
+  // A first visit used to open on ten zero-value widgets (0 lessons, 0 streak,
+  // 0 XP, "Novice", an empty heatmap) under the one thing to do. Stats are
+  // shown once there is something to count.
+  const hasProgress = hydrated && (completedCount > 0 || xp > 0 || streak > 0);
+
   return (
     <div className="db">
 
@@ -176,7 +181,7 @@ export default function DashboardClient() {
             ) : "Learning Dashboard"}
           </div>
           <h1 className="db-hero-h">
-            {dashboardHeading(firstName, hydrated && (completedCount > 0 || xp > 0 || streak > 0))}
+            {dashboardHeading(firstName, hasProgress)}
           </h1>
           <p className="db-hero-sub">
             {completedCount === 0
@@ -204,6 +209,8 @@ export default function DashboardClient() {
         </div>
       </div>
 
+      {hasProgress && (
+        <>
       {/* ── METRIC TILES ─────────────────────────────────── */}
       <div className="db-metrics">
         <div className="db-metric">
@@ -309,6 +316,8 @@ export default function DashboardClient() {
         <ActivityHeatmap activityByDate={activityByDate ?? {}} />
         <p className="db-panel-note">Finish at least one lesson each day to grow your streak.</p>
       </div>
+        </>
+      )}
 
       {/* ── CURRICULUM PROGRESS ──────────────────────────── */}
       <div className="db-section-head">

@@ -64,6 +64,11 @@ export default function LessonsClient() {
     : 0;
 
   const pct = totalLessons ? (doneCount / totalLessons) * 100 : 0;
+  // A first visit used to open on "0 streak, 0 XP": two numbers that can only
+  // disappoint. They appear once there is something to count, and the first
+  // action says "Start", not "Continue".
+  // Finished sessions count too: a student part-way through a lesson has begun.
+  const hasProgress = hydrated && (doneCount > 0 || xp > 0 || streak > 0 || Object.keys(sessionResults).length > 0);
   const nextLesson = hydrated
     ? TRACKS.flatMap((track) => track.lessons).find((lesson) => !completed.has(lesson.id))
     : TRACKS[0]?.lessons[0];
@@ -78,16 +83,20 @@ export default function LessonsClient() {
             <h1 className="dpath-title">Your learning path</h1>
           </div>
           <div className="dpath-stats">
-            <div className="dstat">
-              <FlameIcon className="i" size={13} style={{ color: "var(--coral)" }} />
-              <b>{hydrated ? streak : 0}</b>
-              <span className="l">streak</span>
-            </div>
-            <div className="dstat">
-              <span className="i">✦</span>
-              <b>{hydrated ? xp : 0}</b>
-              <span className="l">XP</span>
-            </div>
+            {hasProgress && (
+              <>
+                <div className="dstat">
+                  <FlameIcon className="i" size={13} style={{ color: "var(--coral)" }} />
+                  <b>{streak}</b>
+                  <span className="l">streak</span>
+                </div>
+                <div className="dstat">
+                  <span className="i">✦</span>
+                  <b>{xp}</b>
+                  <span className="l">XP</span>
+                </div>
+              </>
+            )}
             <div className="dstat">
               <b>{doneCount}/{totalLessons}</b>
               <span className="l">done</span>
@@ -108,8 +117,8 @@ export default function LessonsClient() {
         </div>
         {nextLesson && (
           <Link href={lessonHref(nextLesson.id, false, sessionResults)} className="dpath-next">
-            <span><small>Recommended next</small><strong>{nextLesson.title}</strong></span>
-            <span aria-hidden="true">Continue →</span>
+            <span><small>{hasProgress ? "Recommended next" : "Start here"}</small><strong>{nextLesson.title}</strong></span>
+            <span aria-hidden="true">{hasProgress ? "Continue →" : "Start →"}</span>
           </Link>
         )}
       </div>
