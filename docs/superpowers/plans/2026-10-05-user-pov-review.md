@@ -122,7 +122,13 @@ Still open from this batch's theme: **U24** (the player's visual layer: the firs
 
 ### Batch C: one type system, then the decisions
 
-U10 U17 (BV-T5, BV-T6) as one change across all routes, so the two generations of pages become one. U24 and U8 (the player's visual layer and its feedback panel). Then the product calls: U23 (sandbox preview), U25 (dark mode), U26.
+**Done (PR #40): U10 and U17.**
+- **U10:** every page title now shares one weight (800), one leading (1.1) and one size scale. H1 sizes across the 22 checked routes went from six distinct values at three weights/leadings (26–64px) to four, each with a reason: 64 marketing hero, 40 page title, 28 card title (sign-in, sign-up, settings gate), 26 tool pages (kept small on purpose so the tool is on the first screen). `tests/page-titles.spec.ts` checks every route. This covers the title part of roadmap **BV-T5**; the rest of the type scale (45 distinct font sizes, 414 text elements under 12px) is still open there.
+- **U17:** lesson body is 17px (was 15.4px) at a median of 72 characters per line (was 86; target 60–75) with 1.7 leading (was 1.85), and section headings are real bold instead of a synthesized italic. This is **BV-T6**.
+
+**Still open:**
+- **U24 and U8:** the player's visual layer (the first step is text on a mostly empty screen; on a 1366px screen Continue sits far from the text) and its feedback panel. Design work: it wants a visual for each explain step, which is roadmap **BV-P2/B12**.
+- **U23** sandbox preview, **U25** dark mode, **U26** unused preloaded CSS: product calls (decisions 3 and 4 below).
 
 ### Decisions needed from the founder
 
