@@ -12,8 +12,10 @@ import {
   gradeMcq,
   gradeNumeric,
   isFinished,
+  parseSavedRun,
   progressFraction,
   startRun,
+  willRetry,
 } from "@/lib/sessions/engine";
 import {
   isLessonFinished,
@@ -77,6 +79,35 @@ export default function SessionPlayer({ session, lessonTitle, sessionIds, nextSe
   const formRef = useRef<HTMLFormElement>(null);
 
   const finished = isFinished(run);
+
+  // A reload (a dropped tab, a phone call, a refresh) used to send the student
+  // back to step 1. The run is kept for the length of the tab and cleared when
+  // it finishes, so a replay starts fresh. Resuming happens in an effect rather
+  // than in the state initialiser so the first client render still matches the
+  // server's HTML.
+  const runKey = `sl:session-run:${session.id}`;
+  useEffect(() => {
+    // Deferred, like the other storage reads in this app, so it isn't a
+    // synchronous setState in the effect body.
+    const id = window.setTimeout(() => {
+      try {
+        const saved = parseSavedRun(JSON.parse(sessionStorage.getItem(runKey) ?? "null"), steps.length);
+        if (saved) setRun(saved);
+      } catch {
+        // Storage blocked or the value is corrupt: start from the top.
+      }
+    }, 0);
+    return () => window.clearTimeout(id);
+  }, [runKey, steps.length]);
+  useEffect(() => {
+    try {
+      if (finished) sessionStorage.removeItem(runKey);
+      else if (run.position > 0) sessionStorage.setItem(runKey, JSON.stringify(run));
+    } catch {
+      // Not being able to remember the place is no reason to break the step.
+    }
+  }, [run, finished, runKey]);
+
   const step: Step | undefined = steps[run.queue[run.position]];
   const isRetry = run.queue.slice(0, run.position).includes(run.queue[run.position]);
   const progress = progressFraction(run, steps);
@@ -259,8 +290,10 @@ export default function SessionPlayer({ session, lessonTitle, sessionIds, nextSe
         >
           <div className={styles.fill} style={{ transform: `scaleX(${progress})` }} />
         </div>
-        <span className={styles.count}>
-          {sessionNumber}/{sessionIds.length}
+        {/* Not a visible "1/3": next to a progress bar it reads as a step
+            count, but it is this session's place in the lesson. */}
+        <span className="sl-visually-hidden">
+          Session {sessionNumber} of {sessionIds.length}
         </span>
       </header>
 
@@ -371,7 +404,7 @@ export default function SessionPlayer({ session, lessonTitle, sessionIds, nextSe
                 </p>
                 <p className={styles.feedbackBody}>
                   {step.explanation}
-                  {lastCorrect ? "" : " You'll see this one again before the session ends."}
+                  {lastCorrect ? "" : willRetry(run, steps) ? " You'll see this one again before the session ends." : " We'll move on; the full lesson goes deeper on this."}
                 </p>
               </>
             ) : null}
