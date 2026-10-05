@@ -15,6 +15,10 @@
 :root[data-ui="v3"] h3 {
   font-family: var(--sl-font-display);
   text-wrap: balance;
+  /* Headings are set at weight 700-800 with -0.02 to -0.03em tracking, which
+     leaves the word space about a letter wide: "Run it" reads as "Runit". A
+     little word-spacing opens it back up without loosening the letters. */
+  word-spacing: 0.08em;
 }
 
 :root[data-ui="v3"] p,

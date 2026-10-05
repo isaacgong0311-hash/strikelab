@@ -220,7 +220,7 @@ export default function HomeView() {
         <div className={`${styles.wrap} ${home.split}`}>
           <div>
             <p className={styles.kicker}>For clubs and teachers</p>
-            <h2 id="home-clubs" className={styles.h2}>Run it as a six-week lab. No prep.</h2>
+            <h2 id="home-clubs" className={styles.h2}>Run it as a <span style={{ whiteSpace: "nowrap" }}>six-week</span> lab. No prep.</h2>
             <p className={styles.lede}>
               Launch in minutes, share one invite link, and meet once a week. Students work one short step at a time; you
               see who&apos;s keeping up.
