@@ -209,6 +209,10 @@ export default function SessionPlayer({ session, lessonTitle, sessionIds, nextSe
 
   if (finished) {
     const lessonDone = summary ? isLessonFinished(session.lessonId, summary.results) : false;
+    // XP is awarded once, when the last session of a lesson is finished, so the
+    // honest reward for this one is how close it brings the student to that.
+    const sessionsLeft = sessionIds.filter((id) => !summary?.results[id]).length;
+    const xpStillToEarn = !completed.has(session.lessonId);
     return (
       <div className={styles.shell}>
         <section className={styles.done} aria-labelledby="session-done-title">
@@ -249,6 +253,12 @@ export default function SessionPlayer({ session, lessonTitle, sessionIds, nextSe
               );
             })}
           </ol>
+          {summary && !lessonDone && sessionsLeft > 0 ? (
+            <p className={styles.goal}>
+              {sessionsLeft} more {sessionsLeft === 1 ? "session" : "sessions"} to finish the lesson
+              {xpStillToEarn ? " and earn 100 XP" : ""}.
+            </p>
+          ) : null}
           <div className={styles.doneActions}>
             {nextSessionId ? (
               <Link href={`/learn/${nextSessionId}`} className={styles.primary}>
@@ -263,6 +273,13 @@ export default function SessionPlayer({ session, lessonTitle, sessionIds, nextSe
               Read the full lesson
             </Link>
           </div>
+          {user ? null : (
+            <p className={styles.saveNote}>
+              Your progress is saved on this device only.{" "}
+              <Link href={`/sign-up?next=${encodeURIComponent("/lessons")}`}>Create a free account</Link> to keep it
+              on every device.
+            </p>
+          )}
         </section>
       </div>
     );

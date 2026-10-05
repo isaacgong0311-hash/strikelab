@@ -74,6 +74,12 @@ test("a learner can finish a session with the keyboard, retrying a missed questi
   await expect(page.getByRole("heading", { level: 1, name: "Session complete!" })).toBeVisible();
   await expect(page.getByText("67%")).toBeVisible(); // 2 of 3 questions right first time
   await expect(page.getByRole("link", { name: "Next session" })).toHaveAttribute("href", "/learn/inv-1.2");
+  // The reward for a session is how close it brings the student to the lesson's
+  // XP (awarded once, at the end), and a signed-out student is told where their
+  // progress lives and how to keep it.
+  await expect(page.getByText("2 more sessions to finish the lesson and earn 100 XP.")).toBeVisible();
+  await expect(page.getByText("saved on this device only")).toBeVisible();
+  await expect(page.getByRole("link", { name: "Create a free account" })).toHaveAttribute("href", /\/sign-up\?next=/);
   await shot(page, "5-complete");
 
   // The lesson page now offers to continue where the learner left off.
