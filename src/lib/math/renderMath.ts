@@ -26,12 +26,21 @@ function decodeEntities(tex: string): string {
 }
 
 export function renderTex(tex: string, displayMode: boolean): string {
-  return katex.renderToString(decodeEntities(tex.trim()), {
+  const html = katex.renderToString(decodeEntities(tex.trim()), {
     displayMode,
     output: "htmlAndMathml",
     throwOnError: true,
     strict: "error",
   });
+  // A display formula sets on one line and scrolls inside its own block when a
+  // phone is too narrow (see lessonMath.module.css). A scrollable region has to
+  // be reachable by keyboard, and a bare tab stop needs a name.
+  return displayMode
+    ? html.replace(
+        '<span class="katex-display">',
+        '<span class="katex-display" tabindex="0" role="group" aria-label="Formula. Scrolls sideways if it does not fit.">',
+      )
+    : html;
 }
 
 export function renderMathInHtml(html: string): string {

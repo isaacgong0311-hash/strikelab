@@ -21,6 +21,15 @@ describe("renderMathInHtml", () => {
     expect(out).toContain("<mfrac>");
   });
 
+  it("makes display maths a labelled, keyboard-focusable region, since long formulas scroll on a phone", () => {
+    const out = renderTex(String.raw`d_1 = \frac{1}{2}`, true);
+    expect(out).toMatch(/<span class="katex-display" tabindex="0" role="group" aria-label="[^"]+">/);
+  });
+
+  it("leaves inline maths out of the tab order", () => {
+    expect(renderTex("d_1", false)).not.toContain("tabindex");
+  });
+
   it("decodes the HTML entities authors need around < and >", () => {
     expect(renderMathInHtml('<span class="tex">S_T &gt; K</span>')).toContain("<mo>&gt;</mo>");
   });

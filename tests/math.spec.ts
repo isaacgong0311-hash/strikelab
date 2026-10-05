@@ -26,12 +26,30 @@ test("long formulas scroll inside their block on a narrow phone", async ({ page 
   await expect(page.locator(".lesson-content .katex-display").first()).toBeVisible();
   const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
   expect(overflow, "page scrolls sideways").toBeLessThanOrEqual(0);
+
+  // A formula that scrolls has to be reachable by keyboard, or axe flags it
+  // (scrollable-region-focusable). The desktop test above never scrolls one.
+  const results = await new AxeBuilder({ page }).include(".lesson-content").analyze();
+  const blocking = results.violations.filter((v) => v.impact === "critical" || v.impact === "serious");
+  expect(blocking, blocking.map((v) => `${v.id}: ${v.help}`).join("\n")).toEqual([]);
+  const scrolling = page.locator(".lesson-content .katex-display", { has: page.locator(".mfrac") }).first();
+  await scrolling.focus();
+  await expect(scrolling).toBeFocused();
 });
 
 test("a session step shows its formula typeset", async ({ page }) => {
   await page.goto("/learn/inv-5.3", { waitUntil: "networkidle" });
   await expect(page.locator(".katex-display")).toBeVisible();
   await expect(page.locator(".katex-display .mfrac")).toBeVisible();
+});
+
+test("a session formula stays axe-clean on a narrow phone", async ({ page }) => {
+  await page.setViewportSize({ width: 320, height: 720 });
+  await page.goto("/learn/inv-5.3", { waitUntil: "networkidle" });
+  await expect(page.locator(".katex-display")).toBeVisible();
+  const results = await new AxeBuilder({ page }).analyze();
+  const blocking = results.violations.filter((v) => v.impact === "critical" || v.impact === "serious");
+  expect(blocking, blocking.map((v) => `${v.id}: ${v.help}`).join("\n")).toEqual([]);
 });
 
 // React 19 compares dangerouslySetInnerHTML by object identity, so a fresh
