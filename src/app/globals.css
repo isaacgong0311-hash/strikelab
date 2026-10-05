@@ -1652,6 +1652,8 @@ body:has(.sk-home) .v2-bg-vignette { display: none; }
 .auth-input { padding: 13px 15px; border-radius: var(--r-md); border: 1px solid var(--line-2); background: var(--paper-3); color: var(--ink); font-family: var(--font-ui), system-ui, sans-serif; font-size: 14px; outline: none; transition: border-color .15s ease, box-shadow .15s ease; }
 .auth-input::placeholder { color: var(--ink-3); }
 .auth-input:focus { border-color: var(--grass); box-shadow: 0 0 0 3px var(--grass-tint); }
+.auth-input[aria-invalid="true"] { border-color: #b91c1c; }
+.auth-field-error { color: #b91c1c; font-size: 12.5px; font-weight: 600; line-height: 1.4; }
 .auth-alt { text-align: center; font-size: 13px; color: var(--ink-2); margin-top: 22px; }
 .auth-alt a { color: var(--grass); font-weight: 600; }
 .auth-alt a:hover { text-decoration: underline; text-underline-offset: 3px; }

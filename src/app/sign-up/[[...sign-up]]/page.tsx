@@ -6,6 +6,7 @@ import { getSupabaseBrowser } from "@/lib/supabase/client";
 import { TRACKS } from "@/lib/tracks";
 import BrandMark from "@/components/BrandMark";
 import AuthError from "@/components/AuthError";
+import { validateSignUp, type FieldErrors } from "@/lib/auth/validateCredentials";
 import { useNextPath } from "@/lib/auth/useNextPath";
 import { getAttribution } from "@/lib/attribution";
 import styles from "./signup.module.css";
@@ -39,6 +40,7 @@ export default function SignUpPage() {
   const [name, setName] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [fieldErrors, setFieldErrors] = useState<FieldErrors<"role" | "name" | "email" | "password">>({});
   // Where to land after auth, e.g. /join/CODE from a class invite link.
   const nextPath = useNextPath();
   const [checkEmail, setCheckEmail] = useState(false);
@@ -52,9 +54,24 @@ export default function SignUpPage() {
   const destination = role === "leader" && nextPath === "/dashboard" ? "/teach/new" : nextPath;
   const leaderFlow = nextPath.startsWith("/teach");
 
+  // Clears one field's message as soon as the student starts fixing it.
+  const fixed = (field: keyof typeof fieldErrors) => setFieldErrors((current) => ({ ...current, [field]: undefined }));
+  const describedBy = (field: keyof typeof fieldErrors, ...extra: string[]) =>
+    [...extra, fieldErrors[field] ? `signup-${field}-error` : ""].filter(Boolean).join(" ") || undefined;
+
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError(null);
+
+    // The browser's own validation bubble is off (noValidate): it is unstyled,
+    // covers the field it points at and shows one problem at a time.
+    const problems = validateSignUp({ role, name, email, password });
+    setFieldErrors(problems);
+    const first = (["role", "name", "email", "password"] as const).find((field) => problems[field]);
+    if (first) {
+      document.getElementById(first === "role" ? "signup-role-student" : `signup-${first}`)?.focus();
+      return;
+    }
     setLoading(true);
 
     const supabase = getSupabaseBrowser();
@@ -134,7 +151,7 @@ export default function SignUpPage() {
 
         <AuthError message={error} />
 
-        <form onSubmit={handleSubmit} className="auth-form">
+        <form onSubmit={handleSubmit} className="auth-form" noValidate>
           <fieldset className={styles.roles}>
             <legend className="auth-label">I&apos;m signing up as</legend>
             <div className={styles.roleOptions}>
@@ -144,63 +161,76 @@ export default function SignUpPage() {
               ] as const).map(([value, label]) => (
                 <label key={value} className={styles.role}>
                   <input
+                    id={`signup-role-${value}`}
                     type="radio"
                     name="signup-role"
                     value={value}
                     required
+                    aria-describedby={describedBy("role")}
                     checked={role === value}
-                    onChange={() => setRoleChoice(value)}
+                    onChange={() => { setRoleChoice(value); fixed("role"); }}
                   />
                   <span>{label}</span>
                 </label>
               ))}
             </div>
+            {fieldErrors.role ? <span id="signup-role-error" className="auth-field-error" role="alert">{fieldErrors.role}</span> : null}
           </fieldset>
           <label className="auth-label">
             Your name
             <input
               className="auth-input"
+              id="signup-name"
               type="text"
               required
               maxLength={60}
               value={name}
-              onChange={(e) => setName(e.target.value)}
+              aria-invalid={fieldErrors.name ? true : undefined}
+              onChange={(e) => { setName(e.target.value); fixed("name"); }}
               placeholder={role === "leader" ? "Jordan Rivera" : "Alex P."}
               autoComplete={role === "leader" ? "name" : "nickname"}
-              aria-describedby="signup-name-help"
+              aria-describedby={describedBy("name", "signup-name-help")}
             />
             <span id="signup-name-help" className="auth-help">
               {role === "leader"
                 ? "Shown on your class pages."
                 : "What your club leader will see. A first name and last initial is enough."}
             </span>
+            {fieldErrors.name ? <span id="signup-name-error" className="auth-field-error" role="alert">{fieldErrors.name}</span> : null}
           </label>
           <label className="auth-label">
             Email
             <input
               className="auth-input"
+              id="signup-email"
               type="email"
               required
               value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              aria-invalid={fieldErrors.email ? true : undefined}
+              aria-describedby={describedBy("email")}
+              onChange={(e) => { setEmail(e.target.value); fixed("email"); }}
               placeholder="you@school.edu"
               autoComplete="email"
             />
+            {fieldErrors.email ? <span id="signup-email-error" className="auth-field-error" role="alert">{fieldErrors.email}</span> : null}
           </label>
           <label className="auth-label">
             Password
             <input
               className="auth-input"
+              id="signup-password"
               type="password"
               required
               minLength={8}
               value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              aria-invalid={fieldErrors.password ? true : undefined}
+              onChange={(e) => { setPassword(e.target.value); fixed("password"); }}
               placeholder="Min. 8 characters"
               autoComplete="new-password"
-              aria-describedby="signup-password-help"
+              aria-describedby={describedBy("password", "signup-password-help")}
             />
             <span id="signup-password-help" className="auth-help">Use at least 8 characters.</span>
+            {fieldErrors.password ? <span id="signup-password-error" className="auth-field-error" role="alert">{fieldErrors.password}</span> : null}
           </label>
           <button type="submit" disabled={loading} className="v2-btn" style={{ width: "100%", marginTop: 4 }}>
             {loading ? "Creating account…" : <>Create free account <span className="v2-arr">→</span></>}

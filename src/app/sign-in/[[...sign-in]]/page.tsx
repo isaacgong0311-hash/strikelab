@@ -6,6 +6,7 @@ import { getSupabaseBrowser } from "@/lib/supabase/client";
 import BrandMark from "@/components/BrandMark";
 import AuthError from "@/components/AuthError";
 import { useNextPath } from "@/lib/auth/useNextPath";
+import { validateSignIn, type FieldErrors } from "@/lib/auth/validateCredentials";
 
 export default function SignInPage() {
   const router = useRouter();
@@ -13,12 +14,23 @@ export default function SignInPage() {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [fieldErrors, setFieldErrors] = useState<FieldErrors<"email" | "password">>({});
   // Where to land after auth, e.g. /join/CODE from a class invite link.
   const nextPath = useNextPath();
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError(null);
+
+    // The browser's validation bubble is off (noValidate): it is unstyled, covers
+    // the field it points at and shows one problem at a time.
+    const problems = validateSignIn({ email, password });
+    setFieldErrors(problems);
+    const first = (["email", "password"] as const).find((field) => problems[field]);
+    if (first) {
+      document.getElementById(`signin-${first}`)?.focus();
+      return;
+    }
     setLoading(true);
 
     const supabase = getSupabaseBrowser();
@@ -62,18 +74,22 @@ export default function SignInPage() {
 
         <AuthError message={error} />
 
-        <form onSubmit={handleSubmit} className="auth-form">
+        <form onSubmit={handleSubmit} className="auth-form" noValidate>
           <label className="auth-label">
             Email
             <input
               className="auth-input"
+              id="signin-email"
               type="email"
               required
               value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              aria-invalid={fieldErrors.email ? true : undefined}
+              aria-describedby={fieldErrors.email ? "signin-email-error" : undefined}
+              onChange={(e) => { setEmail(e.target.value); setFieldErrors((c) => ({ ...c, email: undefined })); }}
               placeholder="you@school.edu"
               autoComplete="email"
             />
+            {fieldErrors.email ? <span id="signin-email-error" className="auth-field-error" role="alert">{fieldErrors.email}</span> : null}
           </label>
           <label className="auth-label">
             <span style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline" }}>
@@ -84,13 +100,17 @@ export default function SignInPage() {
             </span>
             <input
               className="auth-input"
+              id="signin-password"
               type="password"
               required
               value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              aria-invalid={fieldErrors.password ? true : undefined}
+              aria-describedby={fieldErrors.password ? "signin-password-error" : undefined}
+              onChange={(e) => { setPassword(e.target.value); setFieldErrors((c) => ({ ...c, password: undefined })); }}
               placeholder="••••••••"
               autoComplete="current-password"
             />
+            {fieldErrors.password ? <span id="signin-password-error" className="auth-field-error" role="alert">{fieldErrors.password}</span> : null}
           </label>
           <button type="submit" disabled={loading} className="v2-btn" style={{ width: "100%", marginTop: 4 }}>
             {loading ? "Signing in…" : <>Sign in <span className="v2-arr">→</span></>}
