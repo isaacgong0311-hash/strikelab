@@ -115,7 +115,7 @@ Nothing on the critical path is waiting on code, so I'll **react, not build**:
 
 **Things I could build, but only if you ask:**
 - **The staging seed script (Q16):** fills staging with a demo cohort of 10 fake students, if rehearsing with two accounts is too thin to trust the scorecard.
-- **A printable one-page leave-behind** for in-person asks.
+- ~~**A printable one-page leave-behind** for in-person asks.~~ **Built (Oct 5):** open `/pilot/leave-behind` and print it on Letter (turn off "Headers and footers" in the print dialog). Its QR goes to `/pilot?src=leave_behind`, so anyone who signs up after scanning it is tagged `leave_behind` by first-touch attribution (`src/lib/attribution.ts`). Log the conversation itself in `crm.csv` as usual; the tag only counts what the sheet converts.
 
 Nothing else gets built before the gate.
 

@@ -13,6 +13,7 @@ const PUBLIC_ROUTES = [
   "/pricing",
   "/clubs",
   "/pilot",
+  "/pilot/leave-behind",
   "/demo",
   "/demo?view=student",
   "/teach",

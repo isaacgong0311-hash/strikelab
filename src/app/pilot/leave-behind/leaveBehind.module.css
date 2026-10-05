@@ -1,0 +1,76 @@
+/* One Letter page for leaving with a club leader. On screen it is a sheet on a
+   grey desk with a print button; in print only the sheet shows. Sizes are in pt
+   and in so that the page fits whichever printer it meets. */
+
+.screen { padding: 1.5rem 1rem 3rem; background: var(--sl-canvas-subtle, #eef0ec); min-height: 60vh; }
+.toolbar { max-width: 8.5in; margin: 0 auto 1rem; display: flex; flex-wrap: wrap; align-items: center; gap: 0.75rem 1rem; color: var(--sl-text-muted); font-size: 0.875rem; }
+.toolbar p { margin: 0; flex: 1 1 18rem; }
+.print { min-height: var(--sl-tap, 44px); padding: 0 1.25rem; border: 0; border-radius: var(--sl-radius-md, 10px); background: var(--sl-brand); box-shadow: 0 3px 0 var(--sl-brand-strong); color: #fff; font: 700 0.9375rem var(--sl-font-body); cursor: pointer; }
+
+.sheet {
+  box-sizing: border-box;
+  width: 8.5in;
+  max-width: 100%;
+  min-height: 11in;
+  margin: 0 auto;
+  padding: 0.6in 0.65in;
+  background: #fff;
+  color: #17201b;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15), 0 8px 24px rgba(0, 0, 0, 0.08);
+  font-size: 10.5pt;
+  line-height: 1.45;
+}
+
+.head { display: flex; align-items: center; gap: 0.5rem; padding-bottom: 0.9rem; border-bottom: 2px solid #17201b; }
+.mark { display: grid; }
+.brand { font: 800 15pt/1 var(--sl-font-display); letter-spacing: -0.02em; }
+.tag { margin-left: auto; font: 700 8.5pt/1 var(--sl-font-code); letter-spacing: 0.08em; text-transform: uppercase; color: #146c3a; }
+
+.title { margin: 1.1rem 0 0.6rem; font: 800 25pt/1.1 var(--sl-font-display); letter-spacing: -0.025em; word-spacing: 0.08em; text-wrap: balance; }
+.lede { margin: 0 0 1rem; font-size: 11.5pt; max-width: 36rem; color: #3d453f; }
+
+.cols { display: grid; grid-template-columns: 1fr 1.9in; gap: 1.25rem; align-items: start; margin-bottom: 1rem; }
+.h2 { margin: 0 0 0.35rem; font: 800 9.5pt/1.2 var(--sl-font-code); letter-spacing: 0.08em; text-transform: uppercase; color: #146c3a; }
+.weeks { margin: 0; padding-left: 1.4rem; list-style: decimal; display: grid; gap: 0.25rem; }
+.weeks li { padding-left: 0.15rem; }
+
+.scan { padding: 0.75rem; border: 2px solid #17201b; border-radius: 10px; text-align: center; }
+.qr { width: 1.55in; height: 1.55in; margin: 0 auto 0.5rem; }
+.qr svg { display: block; width: 100%; height: 100%; }
+.scanText { margin: 0; font-size: 9.5pt; line-height: 1.3; }
+.scanText strong { display: block; font: 800 11pt/1.3 var(--sl-font-display); }
+.scanFine { margin: 0.25rem 0 0; font-size: 8.5pt; color: #3d453f; }
+
+.three { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; padding-top: 0.9rem; border-top: 1px solid #c7cdc8; }
+.three ul { margin: 0; padding-left: 1rem; list-style: disc; display: grid; gap: 0.2rem; font-size: 9.5pt; line-height: 1.4; }
+
+.foot { margin-top: 1rem; padding-top: 0.75rem; border-top: 2px solid #17201b; font-size: 10pt; }
+.foot p { margin: 0; }
+.footFine { margin-top: 0.15rem !important; font-size: 8.5pt; color: #3d453f; }
+
+@media (max-width: 40rem) {
+  .sheet { padding: 1.25rem; min-height: 0; }
+  .title { font-size: 1.6rem; }
+  .cols, .three { grid-template-columns: 1fr; }
+}
+
+@page { size: Letter; margin: 0; }
+
+@media print {
+  /* Only while this sheet is on the page, so nothing leaks onto other pages if the
+     route's stylesheet is still loaded after a client-side navigation. Hidden
+     elements still take up space, so the page is also cut to one sheet: otherwise
+     the site header, footer and toolbar push the document onto a second page. */
+  :global(html):has(.sheet),
+  :global(body):has(.sheet) { height: 11in; margin: 0; overflow: hidden; }
+  :global(body):has(.sheet) * { visibility: hidden; }
+  /* Same prefix as the rule above: :has(.sheet) counts toward specificity, so a bare
+     `.sheet *` would lose and the page would print blank. */
+  :global(body):has(.sheet) .sheet,
+  :global(body):has(.sheet) .sheet * { visibility: visible; }
+  .sheet { position: absolute; inset: 0 auto auto 0; width: 8.5in; min-height: 0; max-width: none; margin: 0; padding: 0.55in 0.65in; box-shadow: none; }
+  /* The mobile layout must not leak into a printed page opened on a phone. */
+  .cols { grid-template-columns: 1fr 1.9in; }
+  .three { grid-template-columns: repeat(3, 1fr); }
+  .title { font-size: 25pt; }
+}
