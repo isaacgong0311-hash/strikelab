@@ -322,6 +322,9 @@
 .ch-editor-title { display: flex; align-items: center; gap: 7px; font-family: var(--font-ui); font-size: 13px; font-weight: 600; color: var(--ink); }
 .ch-py-badge { font-family: var(--font-mono); font-size: 10px; color: var(--ink-3); text-transform: uppercase; letter-spacing: 0.06em; }
 .ch-run-bar { display: flex; align-items: center; justify-content: space-between; padding: 10px 14px; border-top: 1px solid var(--border); background: var(--bg2); gap: 10px; }
+/* Shown instead of the Run button while Pro is paused for new members. */
+.ch-paused { margin: 0; font-size: 13px; line-height: 1.5; color: var(--ink-3); }
+.ch-paused a { color: var(--grass); font-weight: 600; text-decoration: underline; text-underline-offset: 2px; }
 .ch-run-left { display: flex; align-items: center; gap: 10px; }
 .ch-run-btn { display: flex; align-items: center; gap: 7px; padding: 8px 18px; background: var(--grass); color: #fff; border-radius: var(--r-sm); font-family: var(--font-mono); font-size: 13px; font-weight: 700; box-shadow: 0 2px 0 var(--grass-d), 0 0 0 1px var(--grass); cursor: pointer; transition: transform .1s, box-shadow .1s; }
 .ch-run-btn:hover:not(:disabled) { transform: translateY(-1px); box-shadow: 0 2px 0 var(--grass-d), 0 0 0 1px var(--grass); }

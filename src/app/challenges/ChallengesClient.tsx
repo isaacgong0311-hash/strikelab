@@ -6,6 +6,7 @@ import Link from "next/link";
 import { getCurrentChallenge, getNextChallengeDate } from "@/lib/challenges";
 import { trackUpgradeClick } from "@/lib/analytics";
 import { startCheckout, useSubscription } from "@/lib/useSubscription";
+import { PRO_SALES_OPEN } from "@/lib/proSales";
 import { isPythonRuntimeReady, loadPythonRuntime } from "@/lib/pythonRuntime";
 import PythonWarmup from "@/components/PythonWarmup";
 
@@ -204,8 +205,12 @@ export default function ChallengesClient() {
       <div className="ch-header">
         <div className="ch-header-left">
           <div className="ch-eyebrow">
-            <span className="ch-pro-badge">Pro</span>
-            <span className="ch-divider">·</span>
+            {(isPro || PRO_SALES_OPEN) && (
+              <>
+                <span className="ch-pro-badge">Pro</span>
+                <span className="ch-divider">·</span>
+              </>
+            )}
             <span>Weekly Challenge</span>
           </div>
           <h1 className="ch-title">{challenge.title}</h1>
@@ -319,7 +324,7 @@ export default function ChallengesClient() {
                       </button>
                     )}
                   </div>
-                ) : (
+                ) : PRO_SALES_OPEN ? (
                   <button
                     type="button"
                     onClick={() => handleUpgrade("challenges_run_btn")}
@@ -328,6 +333,12 @@ export default function ChallengesClient() {
                   >
                     {checkoutLoading ? "Redirecting…" : "Unlock with Pro → Start free trial"}
                   </button>
+                ) : (
+                  <p className="ch-paused">
+                    Weekly challenges are paused for new members while we run club pilots.{" "}
+                    <Link href="/playground">Try the playground</Link> or{" "}
+                    <Link href="/lessons">keep going with the lessons</Link>.
+                  </p>
                 )}
                 {attempts > 0 && (
                   <span className="ch-attempts">{attempts} attempt{attempts > 1 ? "s" : ""}</span>
@@ -399,7 +410,7 @@ export default function ChallengesClient() {
                 })}
               </div>
             )}
-            {subHydrated && !isPro && (
+            {subHydrated && !isPro && PRO_SALES_OPEN && (
               <div className="ch-panel-footer">
                 <button
                   type="button"
@@ -417,7 +428,7 @@ export default function ChallengesClient() {
           <div className="ch-panel">
             <div className="ch-panel-header">
               <span className="ch-panel-title">Challenge Archive</span>
-              {subHydrated && !isPro && <span className="ch-pro-tag">Pro</span>}
+              {subHydrated && !isPro && PRO_SALES_OPEN && <span className="ch-pro-tag">Pro</span>}
             </div>
             <div className="ch-archive">
               {ARCHIVE.map(item => (
@@ -432,7 +443,7 @@ export default function ChallengesClient() {
                 </div>
               ))}
             </div>
-            {subHydrated && !isPro && (
+            {subHydrated && !isPro && PRO_SALES_OPEN && (
               <p className="ch-archive-note">Pro members access all past challenges.</p>
             )}
           </div>
