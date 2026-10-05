@@ -1963,7 +1963,7 @@ body:has(.sk-home) .v2-bg-vignette { display: none; }
 .nav-mobile-overlay {
   position: fixed;
   inset: 0;
-  top: 60px;
+  top: var(--nav-bottom, 60px);
   background: rgba(15,20,17,0.35);
   z-index: 49;
   animation: nav-overlay-in .18s ease both;
@@ -1976,7 +1976,8 @@ body:has(.sk-home) .v2-bg-vignette { display: none; }
   display: flex;
   flex-direction: column;
   gap: 2px;
-  max-height: calc(100vh - 60px);
+  max-height: calc(100vh - var(--nav-bottom, 60px));
+  max-height: calc(100dvh - var(--nav-bottom, 60px));
   overflow-y: auto;
   animation: nav-panel-in .22s cubic-bezier(.2,.7,.3,1) both;
 }

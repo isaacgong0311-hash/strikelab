@@ -156,6 +156,7 @@ export default function Nav() {
 
   const menuButtonRef = useRef<HTMLButtonElement>(null);
   const mobilePanelRef = useRef<HTMLDivElement>(null);
+  const navRef = useRef<HTMLElement>(null);
 
   // Lock body scroll, contain focus, and make background content inert while
   // the mobile navigation dialog is open.
@@ -163,6 +164,17 @@ export default function Nav() {
     if (!menuOpen) return;
     const prev = document.body.style.overflow;
     const menuButton = menuButtonRef.current;
+    // The panel hangs from the nav bar's real bottom edge. That is 60px once the
+    // announcement bar has scrolled away but 92px at the top of the page, so a
+    // fixed offset hid the first link under the header and pushed the last one
+    // off a short screen.
+    const root = document.documentElement;
+    const placePanel = () => {
+      const bottom = navRef.current?.getBoundingClientRect().bottom;
+      if (bottom !== undefined) root.style.setProperty("--nav-bottom", `${Math.round(bottom)}px`);
+    };
+    placePanel();
+    window.addEventListener("resize", placePanel);
     document.body.style.overflow = "hidden";
     const background = [...document.querySelectorAll<HTMLElement>("main, body > footer")];
     background.forEach((element) => { element.inert = true; });
@@ -186,6 +198,8 @@ export default function Nav() {
     document.addEventListener("keydown", onKeyDown);
     return () => {
       document.removeEventListener("keydown", onKeyDown);
+      window.removeEventListener("resize", placePanel);
+      root.style.removeProperty("--nav-bottom");
       document.body.style.overflow = prev;
       background.forEach((element) => { element.inert = false; });
       menuButton?.focus();
@@ -219,7 +233,7 @@ export default function Nav() {
       )}
 
       {/* ─── Main nav ──────────────────────────────────────────────────────── */}
-      <nav className={`nav-bar${scrolled ? " is-scrolled" : ""}`} aria-label="Primary navigation">
+      <nav ref={navRef} className={`nav-bar${scrolled ? " is-scrolled" : ""}`} aria-label="Primary navigation">
 
         {/* Left: logo + primary links */}
         <div className="nav-left">
