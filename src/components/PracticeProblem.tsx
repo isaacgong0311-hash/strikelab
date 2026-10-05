@@ -1,5 +1,6 @@
 "use client";
 import { useState, useCallback } from "react";
+import { explainPythonError, type PythonPhase } from "@/lib/pythonErrors";
 import dynamic from "next/dynamic";
 
 const MiniEditor = dynamic(() => import("@/components/MiniEditor"), { ssr: false });
@@ -62,15 +63,17 @@ export default function PracticeProblem({ lessonId }: { lessonId: string }) {
     if (!problem) return;
     setStatus("running");
     setOutput("Running tests…");
+    let phase: PythonPhase = "code";
     try {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const pyodide = await (window as any).__pyodideReady;
       pyodide.runPython(code);
+      phase = "tests";
       pyodide.runPython(problem.testCode);
       setOutput("All tests passed!");
       setStatus("pass");
     } catch (err: unknown) {
-      setOutput(err instanceof Error ? err.message : String(err));
+      setOutput(explainPythonError(err, phase));
       setStatus("fail");
     }
   }, [problem, code]);

@@ -1,5 +1,6 @@
 "use client";
 import { useState, useEffect, useRef, useCallback } from "react";
+import { explainPythonError, type PythonPhase } from "@/lib/pythonErrors";
 import dynamic from "next/dynamic";
 import Link from "next/link";
 import { getCurrentChallenge, getNextChallengeDate } from "@/lib/challenges";
@@ -146,10 +147,12 @@ export default function ChallengesClient() {
   const runCode = useCallback(async function runCode() {
     setStatus("running"); setAttempts(n => n + 1);
     setOutput(isPythonRuntimeReady() ? "Running tests…" : "Starting Python… the first run takes a few seconds.");
+    let phase: PythonPhase = "code";
     try {
       const pyodide = await loadPythonRuntime();
       setOutput("Running tests…");
       pyodide.runPython(code);
+      phase = "tests";
       pyodide.runPython(challenge.testCode);
       setOutput("All tests passed!");
       setStatus("pass");
@@ -166,7 +169,7 @@ export default function ChallengesClient() {
           .catch(() => { submittedRef.current = false; });
       }
     } catch (err: unknown) {
-      setOutput(err instanceof Error ? err.message : String(err));
+      setOutput(explainPythonError(err, phase));
       setStatus("fail");
     }
   }, [challenge.id, challenge.testCode, code, isPro]);

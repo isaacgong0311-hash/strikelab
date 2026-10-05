@@ -1,5 +1,6 @@
 "use client";
 import { useState, useEffect, useRef, useCallback, useMemo } from "react";
+import { explainPythonError, type PythonPhase } from "@/lib/pythonErrors";
 import Link from "next/link";
 import type { Lesson, FormulaSandboxConfig, LessonVisual } from "@/lib/lessons";
 import { QUIZZES, type QuizQuestion } from "@/lib/quizzes";
@@ -310,10 +311,12 @@ export default function LessonClient({ lesson, sections, chunks, prev, next, tra
     setStatus("running");
     setOutput(isPythonRuntimeReady() ? "Running tests…" : "Starting Python… the first run takes a few seconds.");
 
+    let phase: PythonPhase = "code";
     try {
       const pyodide = await loadPythonRuntime();
       setOutput("Running tests…");
       pyodide.runPython(code);
+      phase = "tests";
       pyodide.runPython(lesson.exercise.testFn);
       setOutput("✓ All tests passed!");
       setStatus("pass");
@@ -327,8 +330,7 @@ export default function LessonClient({ lesson, sections, chunks, prev, next, tra
         setTimeout(() => setShowCelebration(true), 400);
       }
     } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : String(err);
-      setOutput(msg);
+      setOutput(explainPythonError(err, phase));
       setStatus("fail");
     }
   }, [code, lesson.exercise.testFn, lesson.id, markComplete, markPassed]);
@@ -568,7 +570,7 @@ export default function LessonClient({ lesson, sections, chunks, prev, next, tra
                   <>
                     ▶ Run Tests
                     <kbd
-                      className="text-[9px] px-1.5 py-0.5 ml-1"
+                      className="kbd-hint text-[9px] px-1.5 py-0.5 ml-1"
                       style={{
                         background: "rgba(255,255,255,0.25)",
                         color: "rgba(255,255,255,0.9)",

@@ -188,6 +188,8 @@ code, pre, .mono {
   line-height: 1.85;
 }
 .lesson-content strong { color: var(--fg); font-weight: 700; }
+/* The Ctrl/⌘ + Enter hint means nothing on a phone, which has no such key. */
+@media (pointer: coarse) { .kbd-hint { display: none; } }
 .lesson-content em { color: #2c352f; font-style: italic; }
 .lesson-content sup { font-size: 0.7em; vertical-align: super; }
 .lesson-content code {
