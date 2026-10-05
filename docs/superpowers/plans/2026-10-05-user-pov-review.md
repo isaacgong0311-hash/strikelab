@@ -40,10 +40,10 @@ Severity: **S1** broken, wrong or a regression; **S2** confusing or unappealing;
 | ID | Finding | Evidence | Fix |
 |---|---|---|---|
 | **U1** | Typeset formulas that scroll are not keyboard-reachable on a phone. **Regression from PR #40**: the 320px overflow fix made `.katex-display` a scroll container, and the maths test only runs at desktop width | axe `scrollable-region-focusable` (serious) on `/lesson/3` at 375px | Give each display formula `tabindex="0"`, `role="group"` and a label; add a 375px axe check to `tests/math.spec.ts` |
-| **U2** | The first Run on starter code shows a 10-line Python traceback naming Pyodide internals (`/lib/python312.zip/_pyodide/_base.py`), ending in `AssertionError: ITM call`. Every coding lesson does this | `/lesson/1`, press Run on the untouched starter | Show only the student's frame and the message, say "A test failed: ITM call" in plain words, keep the full trace behind a "Show details" toggle |
+| **U2** | The first Run on starter code shows a 10-line Python traceback naming Pyodide internals (`/lib/python312.zip/_pyodide/_base.py`), ending in `AssertionError: ITM call`. Every coding lesson does this | `/lesson/1`, press Run on the untouched starter | One plain sentence ("A test didn't pass: ITM call", or "NameError on line 4: …" for the student's own code); the full trace goes to the console |
 | **U3** | Reloading mid-session restarts it at step 1. Progress lives only in memory | Answered 2 steps, reloaded: back to "Companies need money" | Persist the run (queue, position, results) per session in `sessionStorage`; clear it on finish or exit |
 | **U4** | `/challenges` pushes "Upgrade to compete →" and shows PRO tags, while `/pricing` says Pro is "paused for new sign-ups" | `ChallengesClient.tsx` (`isPro` branches) vs the pricing FAQ | Hide the upgrade call to action and the PRO tag unless the viewer already subscribes; one flag, so reopening sales is a one-line change |
-| **U5** | The mobile menu starts 32px too high on pages with the announcement bar, so the header covers the top of the first item ("Lessons"). The panel also has `overflow: visible`, so on a short phone the bottom items can't be reached | Menu panel top y=60, header bottom y=92 at 375px; panel is 580px tall on a 640px screen | Anchor the panel to the header's real bottom edge; give it `max-height` and `overflow-y: auto` |
+| **U5** | The mobile menu starts 32px too high on pages with the announcement bar, so the header covers the top of the first item ("Lessons"). The panel also has `overflow: visible`, so on a short phone the bottom items can't be reached | Menu panel top y=60, header bottom y=92 at 375px; the panel's `max-height` also assumed 60px, so its last 32px sit below the screen on any phone | Measure the nav bar's bottom edge when the menu opens and drive both `top` and `max-height` from it |
 
 ### Confusing or unappealing (S2)
 
@@ -51,7 +51,7 @@ Severity: **S1** broken, wrong or a regression; **S2** confusing or unappealing;
 |---|---|---|---|
 | **U6** | The player shows "1/3" beside a progress bar. It is the session number, but reads as a step count, and never changes while the bar moves | `SessionPlayer.tsx:263`; stays "1/3" through all 9 steps | Remove the visible fraction; keep "Session 1 of 3" for screen readers |
 | **U7** | A missed question re-queues with no limit, so a stuck student loops until they guess right | `engine.ts:63`; 16 steps walked with deliberately wrong answers, still going | After two misses on the same step, show the explanation and move on without re-queueing |
-| **U8** | The wrong-answer panel covers the last option on a phone, so a student can't see the right answer they are being told about | 375×812, miss on a 4-option question: option 4 is under the panel | Pad the stage by the panel's height while feedback is showing |
+| **U8** | The wrong-answer panel is sticky and covers the last option on a phone until the student scrolls. Nothing is lost (checked: the page scrolls and every option is reachable), but nothing says to scroll | 375×812, miss on a 4-option question: option 4 is under the panel | Batch B, with the player's layout pass. Reclassified S3 after checking |
 | **U9** | The finish screen pays nothing back (no XP, no streak) and never asks an anonymous student to save their progress, at the moment they are most likely to say yes | Finish screen after a session | Show XP earned; for signed-out students add a "Save your progress: free account" action |
 | **U10** | The whole product has two generations of page headings: 8 H1 sizes across 21 routes (26, 28, 30, 32, 36, 40, 44, 64px), two weights (600, 800) and line-heights from 1.02 to 1.50. Home, pricing, clubs, pilot, demo, dashboard and the player are one style; lessons, lesson, playground, sandbox, about, faq, for-teachers, blog, roadmap, sign-in and achievements are the other | Per-route H1 measurement | Roadmap **BV-T5** (type scale). This review adds the per-route evidence and orders the pages |
 | **U11** | Display headings crush word spaces: −0.03em tracking at weight 800 with 0 word-spacing. "Don't just read it. Run it." reads as "Don'tjust readit. Runit." | Home, pilot, clubs at both widths | Add word-spacing on tight display styles; relax the tracking |
@@ -80,15 +80,32 @@ Severity: **S1** broken, wrong or a regression; **S2** confusing or unappealing;
 
 Batches are ordered by what they cost a user. Each fix keeps its own test, and `npm run lint`, `tsc`, unit tests, Playwright and Lighthouse stay green.
 
-### Batch A: broken and wrong, plus the cheap fixes (this PR)
+### Batch A: broken and wrong, plus the cheap fixes (done, PR #40)
 
-U1 U2 U3 U4 U5 U6 U7 U8 U11 U12 U18 U19 U20 U21 U22. Acceptance:
+U1 U2 U3 U4 U5 U6 U7 U11 U12 U18 U19 U20 U21 U22. Acceptance:
 - axe is clean on `/lesson/3`, `/dashboard`, `/lessons` and `/roadmap` at 375 and 1366px;
 - a failed Run shows at most four lines and no Pyodide paths;
 - reload keeps the student's place;
 - `/challenges` offers no purchase;
 - the menu shows its first item in full on every page;
 - the player has no visible "1/3" and no endless retry.
+
+**Result** (production build; `journey-sweep.mjs` before and after, plus CI's own checks):
+
+| Check | Before | After |
+|---|---|---|
+| Page views with a serious axe violation (44) | 6 | 0 |
+| Playwright tests | 62 | 84 |
+| Unit tests | 376 | 389 |
+| Lighthouse (`/`, `/clubs`, `/pilot`, `/demo`, `/learn/inv-1.1`, `/lesson/3`) | 0.91, 0.92, 0.96, 0.90, 0.96, 0.81 | 0.91, 0.92, 0.96, 0.90, 0.96, 0.81 |
+
+U1 was a regression from PR #40 itself; its fix and test are the first commit of this batch.
+
+Two things this review's own tooling cannot show: the sweep's "controls under 24px" count is unchanged (it measures element boxes, and U12's fix grows the *touch area* with a pseudo-element, so `tests/tap-targets.spec.ts` asks the browser what a tap would hit instead); and "no `.katex-mathml` copy of a formula is read twice" was not checked with a screen reader.
+
+**Decisions taken on the default** (change them by editing the named constant or constant-like rule):
+- Pro stays hidden: `PRO_SALES_OPEN = false` in `src/lib/proSales.ts`. Challenges stays subscriber-only, with an explanation. Opening it to everyone is a separate call (decision 1).
+- A question gets one retry: `MAX_ATTEMPTS = 2` in `src/lib/sessions/engine.ts` (decision 2).
 
 ### Batch B: the student's first minute (next PR)
 
