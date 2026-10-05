@@ -68,7 +68,7 @@ const STATE_STYLES = {
   "done":        { label: "Shipped",     color: "#147038" },
   "in-progress": { label: "In progress", color: "#1d4ed8" },
   "planned":     { label: "Planned",     color: "#646464" },
-  "exploring":   { label: "Exploring",   color: "#6b6b6b" },
+  "exploring":   { label: "Exploring",   color: "#5c5c5c" },
 };
 
 export default function RoadmapPage() {
@@ -134,7 +134,7 @@ export default function RoadmapPage() {
               </span>
               <span
                 className="text-xs uppercase tracking-widest"
-                style={{ color: q.color, fontFamily: "var(--font-mono)", opacity: 0.75 }}
+                style={{ color: q.color, fontFamily: "var(--font-mono)" }}
               >
                 {q.label}
               </span>

@@ -371,7 +371,7 @@ export default function LessonClient({ lesson, sections, chunks, prev, next, tra
       <div className="lesson-shell max-w-6xl mx-auto px-6 py-10">
         {/* Section nav — occupies the column that used to sit empty beside the
             prose. Hidden under 1180px, where there's no room for it. */}
-        <aside className="lesson-toc-col">
+        <aside className="lesson-toc-col" aria-label="On this page">
           <LessonToc sections={sections} />
         </aside>
 
@@ -572,8 +572,8 @@ export default function LessonClient({ lesson, sections, chunks, prev, next, tra
                     <kbd
                       className="kbd-hint text-[9px] px-1.5 py-0.5 ml-1"
                       style={{
-                        background: "rgba(255,255,255,0.25)",
-                        color: "rgba(255,255,255,0.9)",
+                        background: "rgba(0,0,0,0.22)",
+                        color: "#ffffff",
                         fontFamily: "var(--font-mono)",
                       }}
                     >

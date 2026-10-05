@@ -93,11 +93,11 @@ export default function Footer() {
             </div>
             {/* Wider gap on mobile than the old 10px. The tap target used to
                 come from 9px of padding on each link, but that padding also
-                pushed the new hover rule 9px clear of the text. Spacing gives
-                the same ~34px of vertical pitch per row (WCAG 2.5.8 is
-                satisfied by spacing, not just by box size) while letting the
-                underline sit on the baseline where it belongs. */}
-            <div className="flex flex-col gap-4 md:gap-2.5">
+                pushed the new hover rule 9px clear of the text. Rows are now
+                44px apart (16px of text + 28px), and globals.css grows each
+                link's touch area to fill its row on touch screens, while the
+                underline stays on the baseline where it belongs. */}
+            <div className="flex flex-col gap-7 md:gap-2.5">
               {group.links.map((l) => (
                 <AnimatedLink key={l.href} href={l.href} className="v2-foot-link text-xs">
                   {l.label}

@@ -488,6 +488,15 @@ input[type="range"]::-moz-range-track {
 /* Footer links — monochrome hover */
 .v2-foot-link { color: var(--fg-mute); transition: color 180ms ease; }
 .v2-foot-link:hover { color: var(--fg); }
+/* A 16px-tall text link is nearly unhittable with a thumb. On touch screens this
+   grows the tappable area to 44px without moving the text or its underline,
+   which AnimatedLink draws on the anchor's own box with ::before (so vertical
+   padding would float the rule below the text). Footer rows are 44px apart on
+   phones, so the areas don't overlap. */
+@media (pointer: coarse) {
+  .v2-foot-link, .nav-announce-link { position: relative; }
+  .v2-foot-link::after, .nav-announce-link::after { content: ""; position: absolute; inset: -14px -8px; }
+}
 
 /* ─── Page-load fade-in (applied to <main>) ──────────────────────────── */
 @keyframes v2pageIn {
@@ -1578,7 +1587,7 @@ body:has(.sk-home) .v2-bg-vignette { display: none; }
 @keyframes dbounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-4px); } }
 .dnode-soon {
   position: absolute; top: -30px; z-index: 2;
-  background: #e2ddd0; color: #8a8478; font-weight: 700; font-size: 9px; letter-spacing: 0.1em;
+  background: #e2ddd0; color: #625d53; font-weight: 700; font-size: 9px; letter-spacing: 0.1em;
   padding: 4px 10px; border-radius: var(--r-sm);
   font-family: var(--font-mono);
   pointer-events: none;
