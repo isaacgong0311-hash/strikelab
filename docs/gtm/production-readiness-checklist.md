@@ -9,7 +9,7 @@ The P-numbers match `docs/superpowers/plans/2026-09-29-work-plan-to-first-kickof
 Production is already running code that expects every migration through 0021, and this release adds 0022 (the challenge leaderboard stops showing names publicly). The app degrades rather than crashing when one is missing, but a missing 0015 makes every signed-in read of classes, members and assignments error, and a missing 0016 makes activation unmeasurable.
 
 - [ ] In the Supabase SQL editor, run `scripts/metrics/check-migrations.sql`. It lists all 22 migrations as `applied` or `MISSING`.
-- [ ] Apply each `MISSING` file from `supabase/migrations/` by pasting it into the SQL editor. **If 0015 is missing, apply it first**, then the rest in number order. Every migration is written to be safe to re-run.
+- [ ] Apply each `MISSING` file from `supabase/migrations/`. Easiest is `npx supabase link --project-ref <ref>` then `npx supabase db push`, which applies them all in order (see `SUPABASE_SETUP.md`). By hand, paste each into the SQL editor; **if 0015 is missing, apply it first**, then the rest in number order. Every migration is written to be safe to re-run.
 - [ ] Re-run the check. **Pass:** all 22 rows say `applied`.
 - [ ] Signed in as a real user on strikelab.dev, open `/dashboard`, a class page (`/dashboard/class/<id>`), `/cohort/<id>` and `/teach`. None of them shows an error, and nothing new appears in Sentry.
 
@@ -30,7 +30,7 @@ Students sign up with email and a password, then confirm through a link (`src/ap
 
 - [ ] Google Cloud Console → **APIs & Services → OAuth consent screen**: publishing status is **In production**. In "Testing", only listed test users can sign in, and everyone else sees an error.
 - [ ] The app name and logo are StrikeLab's, and the authorized domain includes `strikelab.dev`.
-- [ ] Supabase → Authentication → URL configuration: the site URL is `https://strikelab.dev`, and the redirect allow-list includes `https://strikelab.dev/auth/callback` (plus your preview pattern if you test on previews).
+- [ ] Supabase → Authentication → URL configuration: the site URL is `https://strikelab.dev`, and the redirect allow-list includes `https://strikelab.dev/**` (the callback is always called with a `?next=` query, so use a pattern; add your preview pattern if you test on previews). Test it: sign up with a real address and follow the confirmation email. If the link lands on the home page instead of your dashboard, the allow-list rejected it.
 - [ ] **Know the school-account limit:** many districts block students under 18 from signing in to third-party apps with their school Google account unless the admin has allowed the app. Until the device test at a partner school (work plan §5.4) proves Google works *there*, students sign up with email at kickoff.
 
 ## P4. Keys, alerts and uptime (about 45 min)
