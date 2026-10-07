@@ -47,6 +47,23 @@ Ordered by what it unblocks. **A0 and A1 are the only items on the critical path
 | **A6** | **Staging seed script (Q16):** 10 fake students across 3 weeks so the scorecard and `/admin/metrics` can be rehearsed with real-looking data | A rehearsal with two accounts is too thin to trust the scorecard | Seed runs on staging; scorecard SQL returns plausible numbers | Staging; only if the founder wants it | Agent, 3h |
 | **A7** | **Friday report:** run `npm run pipeline`, paste it into `weekly-scorecard.md`, list open PRs by age, CI state, and which P-items are done | A weekly number nobody had to ask for. It is how the founder sees the gate approaching | Posted every Friday, starting Oct 9 | none | Agent, 20 min a week |
 
+### A1 dry run (Oct 7): what reconciling #37 will take
+
+A trial merge of #37 onto #40 plus #39 (in a throwaway copy, nothing pushed) conflicts in **13 files, 27 hunks**. D1 is decided (free), so #37's product calls win everywhere they touch. Redo this on the real `master` once #40 merges; the list below is the checklist.
+
+| File (hunks) | Resolution |
+|---|---|
+| `src/app/challenges/ChallengesClient.tsx` (5) | Take #37's. Delete `src/lib/proSales.ts` with it: those two are the only users of `PRO_SALES_OPEN` |
+| `tests/challenges.spec.ts` (no conflict, but wrong after the above) | Rewrite for the free behaviour: Run works signed out, no "Unlock with Pro" anywhere |
+| `src/app/dashboard/DashboardClient.tsx` (4) | Take #37's honest dashboard; drop my first-visit change and adapt or drop `tests/first-visit.spec.ts` |
+| `src/app/roadmap/page.tsx` (modify/delete) | Delete it (#37 retires `/roadmap`); drop my contrast fix and `/roadmap` from the accessibility and phone route lists |
+| `src/app/globals.css` (5), `src/app/pg-ch.css` (1), `src/app/learn/[sessionId]/session.module.css` (2) | Keep both: #37's removal of unused rules plus my type-scale and lesson-typography additions. Check `tests/fonts.spec.ts` and `tests/page-titles.spec.ts` afterwards |
+| `src/app/layout.tsx` (2), `src/app/demo/page.tsx` (2), `src/app/demo/demo.module.css` (1), `src/app/teach/[id]/invite/KickoffLive.tsx` (2) | Keep both sides; the demo ones overlap with #39's kickoff panel and need a look in the browser |
+| `tests/accessibility/core.spec.ts` (1), `tests/chromebook.spec.ts` (add/add) | Union of the route lists |
+| `docs/gtm/decision-log.md` (1) | Keep both sets of rows |
+
+Then: the full unit and browser suites, `npm run lhci`, and a look at `/challenges`, `/dashboard` and `/demo` at 375 and 1366px, before opening the one PR that supersedes #37.
+
 ### Parked until after the gate (each has a trigger)
 
 | Parked | Trigger to resume |
