@@ -133,7 +133,7 @@ One email, with everything a sponsor, principal or IT person asks for:
 >
 > - **What it is:** a free six-week lab, one meeting a week, run by you, with me supporting. One page: [pilot one-pager link, or attach it as a PDF]
 > - **Privacy:** 13 and up only, no ads, private by default, students can delete their account and all their data at any time. Privacy page: strikelab.dev/privacy
-> - **What we store and who can see it:** [data map, `docs/trust/data-map.md` as a PDF]
+> - **What we store and who can see it:** https://strikelab.dev/trust (the same facts as `docs/trust/data-map.md`; attach that as a PDF if the school wants a file)
 > - **Websites to allow on the school network:** [the IT allowlist from `kickoff-kit.md`]
 > - **Cost:** free for this pilot. No payment details are ever collected from students.
 >

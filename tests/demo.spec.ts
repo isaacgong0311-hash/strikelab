@@ -37,3 +37,34 @@ test("a broken page shows a friendly error, not a blank screen", async ({ page }
   expect(res?.status()).toBe(404);
   await expect(page.getByRole("heading", { level: 1 })).toContainText("doesn");
 });
+
+test.describe("guided demo", () => {
+  test("plays on its own, and the controls step through the scenes", async ({ page }) => {
+    await page.goto("/demo?view=tour", { waitUntil: "networkidle" });
+    const tour = page.getByRole("region", { name: "Watch a club's six weeks" });
+    await expect(tour.getByRole("button", { name: "Pause" })).toBeVisible();
+    await tour.getByRole("button", { name: "Pause" }).click();
+    await expect(tour.getByRole("button", { name: "Play" })).toBeVisible();
+
+    await tour.getByRole("button", { name: "Next →" }).click();
+    await expect(tour.getByText("Step 2 of 8")).toBeVisible();
+    // Stepped to by hand, the kickoff shows the end of the meeting, not an empty room.
+    await expect(tour.getByText("Zoe P.")).toBeVisible();
+
+    await tour.getByRole("button", { name: /Write the code/ }).click();
+    await expect(tour.getByText("def black_scholes_call")).toBeVisible();
+    await expect(tour.getByRole("button", { name: /Write the code/ })).toHaveAttribute("aria-current", "step");
+
+    await tour.getByRole("button", { name: "← Back" }).click();
+    await expect(tour.getByText("Step 3 of 8")).toBeVisible();
+  });
+
+  test("does not autoplay for visitors who prefer reduced motion", async ({ page }) => {
+    await page.emulateMedia({ reducedMotion: "reduce" });
+    await page.goto("/demo?view=tour", { waitUntil: "networkidle" });
+    const tour = page.getByRole("region", { name: "Watch a club's six weeks" });
+    await expect(tour.getByRole("button", { name: "Play" })).toBeVisible();
+    await page.waitForTimeout(1500);
+    await expect(tour.getByText("Step 1 of 8")).toBeVisible();
+  });
+});

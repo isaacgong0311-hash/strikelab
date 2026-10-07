@@ -37,6 +37,7 @@ const STATIC_PAGES: {
   { path: "/for-teachers", updated: "2026-08-11", priority: 0.6, freq: "monthly" },
   { path: "/privacy", updated: "2026-08-04", priority: 0.3, freq: "yearly" },
   { path: "/terms", updated: "2026-08-04", priority: 0.3, freq: "yearly" },
+  { path: "/trust", updated: "2026-10-01", priority: 0.4, freq: "monthly" },
 ];
 
 export default function sitemap(): MetadataRoute.Sitemap {
