@@ -21,11 +21,11 @@
 |---|---|---|
 | FW-1 Hero fix | **Shipped** | The homepage was rebuilt on Sep 30 (decision log); the scorecard now sits in its own section beside the phone |
 | FW-2 Banner only where it belongs | **Shipped** (verify on phone) | `Nav.tsx`: `ANNOUNCE_PATHS` and `!user` gate the announcement bar |
-| FW-3 Focused lesson player | **Shipped 2026-10-01** | `Nav` is mounted in `layout.tsx` for every route, including `/learn/*`; no player-specific bar |
-| FW-4 Honest empty dashboard | **Shipped 2026-10-01** | `DashboardClient.tsx:166` still renders "Welcome back" with no name |
+| FW-3 Focused lesson player | **Shipped 2026-10-01** | `HideOnPlayer` in `layout.tsx` hides the site header and footer on `/learn/*` |
+| FW-4 Honest empty dashboard | **Shipped 2026-10-01** | `dashboardHeading()` in `DashboardClient.tsx`: "Start here" for new visitors |
 | FW-5 Footer in the clubs voice | **Shipped** | `Footer.tsx`: "Free for students", "Runs in your browser", "Private by default" |
-| FW-6 Kickoff live view in `/demo` | **Shipped 2026-10-01** | `/demo` renders `CohortScorecard`, `CohortHomeView` and `LeaderToolkit`, not `KickoffLive` |
-| FW-7 Chromebook (1366×768) sweep | **Shipped 2026-10-01** | No such viewport in the Playwright config |
+| FW-6 Kickoff live view in `/demo` | **Shipped 2026-10-01** | `DemoKickoff` renders the shared `KickoffLiveView` on sample data |
+| FW-7 Chromebook (1366×768) sweep | **Shipped 2026-10-01** | `tests/chromebook.spec.ts` |
 | FW-8 to FW-22 | Per the Sep 30 phases | Unchanged |
 
 ---
@@ -60,9 +60,9 @@ Finish the four open Sep 30 items first (they fix what students and leaders see 
 | **FW-4** | ✅ Done 2026-10-01. Honest empty dashboard *(carried)* | "Start here" with one button for no progress; "Sign in to sync" when signed out; "Welcome back" only for returning users; inline SVG icons | A new visitor never sees "Welcome back"; a returning user still does | 2h / 10m |
 | **FW-6** | ✅ Done 2026-10-01. Kickoff live view in `/demo` *(carried)* | A "Kickoff day" panel renders the real `KickoffLive` component from sample data, with a stepper from 0 to 10 students joined, labelled sample data, no network calls | Visible on `/demo`; axe clean | 2h / 10m |
 | **FW-7** | ✅ Done 2026-10-01. Chromebook sweep *(carried)* | Add 1366×768 to the screenshot sweep for `/`, `/demo`, `/learn/inv-1.1`, `/lesson/3`, sign-up | Committed screenshots; nothing clipped | 1.5h / 10m |
-| **FY-1** | ✅ Done 2026-10-01 (added `error.tsx`; `global-error.tsx` already existed and was kept; per-route loading states not added). **Error and recovery screens** | Add `src/app/error.tsx` and `global-error.tsx` (report to Sentry, offer "Try again" and "Go home"); a per-route `loading` state for `/teach` and `/cohort`; a clear offline/Python-failed message in the lesson player | Forced runtime error shows a friendly page, not a blank screen; one Playwright test per screen | 3h / 10m |
-| **FY-2** | ✅ Done 2026-10-01 (homepage already matched; site-wide defaults aligned; other page titles not yet unified). **Link previews and metadata audit** | Check `opengraph-image.tsx` and the `layout.tsx` Open Graph and Twitter metadata against the new homepage sentence; make the preview show the one-sentence description; set one title pattern ("Page — StrikeLab"; the homepage is the only exception) (FW-9) | Pasting the URL into a messaging app and a social card shows the right text and image | 1.5h / 5m |
-| **FY-3** | ✅ Done 2026-10-01 (on the homepage; not yet on `/about`). **The proof data file and component** | `src/lib/proof/data.ts` holds sourced entries only (value, label, cohort, source file path, as-of date). A `ProofStrip` component renders **nothing** when there are no entries; a unit test fails the build if any entry lacks a source or a date, or if a number is rounded up. Wire it into the homepage and `/about` | With no entries, the pages look as they do today; with a test entry, the strip renders with its source link; the lint test fails on an unsourced entry | 3h / 15m |
+| **FY-1** | ✅ Done 2026-10-01 (`error.tsx`; `global-error.tsx` already existed and was kept; `loading.tsx` skeletons for `/teach` and `/cohort/[classId]`). **Error and recovery screens** | Add `src/app/error.tsx` and `global-error.tsx` (report to Sentry, offer "Try again" and "Go home"); a per-route `loading` state for `/teach` and `/cohort`; a clear offline/Python-failed message in the lesson player | Forced runtime error shows a friendly page, not a blank screen; one Playwright test per screen | 3h / 10m |
+| **FY-2** | ✅ Done 2026-10-01 (homepage already matched; site-wide defaults aligned; every other page already uses the "Page — StrikeLab" template with no doubled suffix). **Link previews and metadata audit** | Check `opengraph-image.tsx` and the `layout.tsx` Open Graph and Twitter metadata against the new homepage sentence; make the preview show the one-sentence description; set one title pattern ("Page — StrikeLab"; the homepage is the only exception) (FW-9) | Pasting the URL into a messaging app and a social card shows the right text and image | 1.5h / 5m |
+| **FY-3** | ✅ Done 2026-10-01 (on the homepage and `/about`). **The proof data file and component** | `src/lib/proof/data.ts` holds sourced entries only (value, label, cohort, source file path, as-of date). A `ProofStrip` component renders **nothing** when there are no entries; a unit test fails the build if any entry lacks a source or a date, or if a number is rounded up. Wire it into the homepage and `/about` | With no entries, the pages look as they do today; with a test entry, the strip renders with its source link; the lint test fails on an unsourced entry | 3h / 15m |
 
 **Total:** about 16 agent hours, **under an hour of founder review.**
 **Two PRs:** (1) FW-3, FW-4, FW-6, FW-7; (2) FY-1, FY-2, FY-3.
@@ -74,7 +74,7 @@ Only what the scorecard or an observation note asks for (Sep 30 plan §4, Phase 
 
 | # | Item | Trigger | Est. |
 |---|---|---|---|
-| **FY-4** | **Founder metrics page** (`/admin/metrics`, founder emails only; mega plan Q10). Charts: the weekly growth series, per-cohort activation and retention, support hours, the leader funnel. Built from `growth.sql`, `weekly-scorecard.sql`, `leader-funnel.sql` and the CSVs; read the `dataviz` skill before writing the charts; no names, aggregates only | The first real cohort is running | 6h / 20m |
+| **FY-4** | ✅ Done 2026-10-01, before the code freeze rather than during the pilots (`/admin/metrics`: KPI row, two weekly charts, the weekly and per-cohort tables; `weeklyGrowth()` is tested row for row against `growth.sql`; gated by `FOUNDER_USER_IDS`). **Founder metrics page** (`/admin/metrics`, founder emails only; mega plan Q10). Charts: the weekly growth series, per-cohort activation and retention, support hours, the leader funnel. Built from `growth.sql`, `weekly-scorecard.sql`, `leader-funnel.sql` and the CSVs; read the `dataviz` skill before writing the charts; no names, aggregates only | The first real cohort is running | 6h / 20m |
 | **FY-5** | **A sign-up and join journey on a throwaway account**, run by hand on a phone and a school-sized laptop each week of the pilot, with screenshots in `pilot-observation-notes.md` | Always, during pilots | 30m of founder time a week |
 | **FW-8** | Visual regression on `/demo` at 375 and 1366px (carried) | — | 2h |
 
@@ -84,7 +84,7 @@ The Sep 30 plan's FW-10 to FW-14 (consolidate styling, hit the 2.0s budget, lead
 
 | # | Item | Change | Acceptance | Est. |
 |---|---|---|---|---|
-| **FY-6** | **Guided demo** | A "Watch the six weeks" mode on `/demo`: a 90-second auto-advancing walkthrough (weeks 1 to 6 → capstone → scorecard) with pause, captions and reduced-motion respected. This is what the 2-minute demo video (Y4.1) records | Completes in about 90 seconds, keyboard operable, no autoplay for reduced-motion users; axe clean | 5h / 20m |
+| **FY-6** | ✅ Done 2026-10-01 (pulled forward from winter: `/demo?view=tour`, `GuidedTour.tsx`, timing in `src/lib/demo/tour.ts`). **Guided demo** | A "Watch the six weeks" mode on `/demo`: a 90-second auto-advancing walkthrough (weeks 1 to 6 → capstone → scorecard) with pause, captions and reduced-motion respected. This is what the 2-minute demo video (Y4.1) records | Completes in about 90 seconds, keyboard operable, no autoplay for reduced-motion users; axe clean | 5h / 20m |
 
 ### Phase D: proof and the paid ask (Jan → Mar)
 
@@ -93,7 +93,7 @@ The Sep 30 plan's FW-10 to FW-14 (consolidate styling, hit the 2.0s budget, lead
 | **FW-15 / FY-3 live** | Real outcome strip and quote cards | ≥ 1 cohort complete with consent; entries added to the proof file by the founder |
 | **FW-16** | Case-study page | A leader's written consent |
 | **FW-18** | "Request an invoice" and Club checkout on `/pricing` | The first leader says yes to paying |
-| **FY-7** | **Security and privacy one-pager page** (`/trust`) for school IT: data collected, who can see it, retention, deletion, subprocessors, the incident process. Source: `docs/trust/data-map.md` and the security review. **No compliance claims** (FERPA, COPPA) until the reviewer in readiness plan Y6.4 says so | Before the first district-review pilot |
+| **FY-7** | ✅ Done 2026-10-01 (pulled forward: `/trust`, rendered from `src/lib/trust/dataMap.ts`; a test fails if a migration adds an unlisted table; linked from the footer and the approval packet). **Security and privacy one-pager page** (`/trust`) for school IT: data collected, who can see it, retention, deletion, subprocessors, the incident process. Source: `docs/trust/data-map.md` and the security review. **No compliance claims** (FERPA, COPPA) until the reviewer in readiness plan Y6.4 says so | Before the first district-review pilot |
 
 ### Phase E: the application (late Mar → Apr)
 
@@ -156,3 +156,5 @@ Same list as the Sep 30 plan §7 (dark mode, a rebrand, a mascot, WebGL hero, a 
 |---|---|
 | 2026-10-01 | Created. Status of FW-1 to FW-7 checked against the code. |
 | 2026-10-01 | Phase A built: FW-3, FW-4, FW-6, FW-7, FY-1, FY-2 (partly), FY-3. Tests: 18 + 25 Playwright, unit tests for each. |
+| 2026-10-01 | Second pass: loading skeletons, proof strip on `/about`, the guided demo (FY-6) and `/trust` (FY-7) pulled forward. Found and fixed an accessibility-provider race that flashed full motion at reduced-motion users on every load. Found that `--font-mono` is self-referencing in `globals.css`, so JetBrains Mono never renders; left for a separate change because fixing it adds a font download to every page. |
+| 2026-10-01 | FY-4 founder metrics page built before the freeze. Chart colors checked with the dataviz palette validator: the brand green passes on the white card; the high-contrast theme's darker green fails the lightness band, so chart marks use the passing green directly. |

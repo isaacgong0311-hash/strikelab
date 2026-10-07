@@ -29,6 +29,7 @@ const NAV_GROUPS = [
       { href: "/roadmap", label: "Roadmap" },
       { href: "/faq",     label: "FAQ" },
       { href: "/privacy", label: "Privacy Policy" },
+      { href: "/trust",   label: "Student data & security" },
       { href: "/terms",   label: "Terms of Service" },
     ],
   },

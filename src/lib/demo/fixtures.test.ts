@@ -15,6 +15,23 @@ describe("demo data", () => {
     }
   });
 
+  it("can be built at any point in the program for the guided tour", () => {
+    const now = new Date("2026-10-14T15:00:00Z");
+    const week = (daysIn: number) => buildDemoData(now, { daysIn }).metrics.status;
+    expect(week(2)).toEqual({ kind: "week", week: 1 });
+    expect(week(23)).toEqual({ kind: "week", week: 4 });
+    expect(week(44).kind).toBe("after");
+
+    // The default is unchanged: the same as asking for day 16.
+    expect(buildDemoData(now)).toEqual(buildDemoData(now, { daysIn: 16 }));
+
+    // No capstones before week 3; by the end, everyone on pace has submitted.
+    const capstones = (daysIn: number) => buildDemoData(now, { daysIn }).metrics.students.filter((s) => s.capstone?.status === "submitted").length;
+    expect(capstones(2)).toBe(0);
+    expect(capstones(16)).toBe(1);
+    expect(capstones(44)).toBeGreaterThanOrEqual(4);
+  });
+
   it("example capstones are complete and computed from the code they show", () => {
     for (const c of EXAMPLE_CAPSTONES) {
       for (const field of [c.title, c.thesis, c.code, c.resultSummary, c.reflection]) expect(field.length).toBeGreaterThan(20);

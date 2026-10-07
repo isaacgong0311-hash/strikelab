@@ -16,12 +16,14 @@ const PUBLIC_ROUTES = [
   "/pilot/leave-behind",
   "/demo",
   "/demo?view=student",
+  "/demo?view=tour",
   "/teach",
   "/teach/new",
   "/sign-up?next=%2Fteach%2Fnew",
   "/challenges",
   "/roadmap",
   "/lesson/3",
+  "/trust",
 ];
 
 // The desktop pass can't see a region that only scrolls on a phone (a long

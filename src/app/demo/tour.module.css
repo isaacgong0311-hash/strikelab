@@ -1,0 +1,210 @@
+.tour {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.steps {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.375rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.step {
+  min-height: 40px;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0 0.875rem 0 0.375rem;
+  border: 1px solid var(--sl-border);
+  border-radius: var(--sl-radius-pill);
+  background: var(--sl-surface);
+  color: var(--sl-text-muted);
+  font: inherit;
+  font-size: 0.875rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+.step[aria-current="step"] {
+  border-color: var(--sl-brand);
+  background: var(--sl-brand);
+  color: #fff;
+}
+.stepNum {
+  width: 1.75rem;
+  height: 1.75rem;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--sl-canvas-subtle);
+  color: var(--sl-text);
+  font-size: 0.75rem;
+}
+.step[aria-current="step"] .stepNum {
+  background: #fff;
+  color: var(--sl-brand-strong);
+}
+
+.head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1rem;
+}
+.caption {
+  flex: 1 1 22rem;
+  min-width: 0;
+}
+.count {
+  margin: 0 0 0.25rem;
+  color: var(--sl-text-subtle);
+  font-size: 0.8125rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+.title {
+  margin: 0 0 0.375rem;
+  font: 800 clamp(1.25rem, 3.5vw, 1.625rem) / 1.2 var(--sl-font-display);
+  text-wrap: balance;
+}
+.text {
+  margin: 0;
+  max-width: 42rem;
+  color: var(--sl-text-muted);
+  line-height: var(--sl-leading-body);
+}
+
+.controls {
+  display: flex;
+  gap: 0.5rem;
+}
+.control {
+  min-height: 44px;
+  padding: 0 1rem;
+  border: 1px solid var(--sl-border);
+  border-radius: var(--sl-radius-pill);
+  background: var(--sl-surface);
+  color: var(--sl-text);
+  font: inherit;
+  font-weight: 800;
+  cursor: pointer;
+}
+.control:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+.play {
+  min-width: 6.5rem;
+  border-color: var(--sl-brand);
+  background: var(--sl-brand);
+  color: #fff;
+}
+.step:focus-visible,
+.control:focus-visible {
+  outline: 3px solid var(--sl-focus);
+  outline-offset: 2px;
+}
+
+.bar {
+  height: 6px;
+  overflow: hidden;
+  border-radius: var(--sl-radius-pill);
+  background: var(--sl-canvas-subtle);
+}
+.fill {
+  height: 100%;
+  background: var(--sl-brand);
+  transform-origin: left center;
+  transition: transform 250ms linear;
+}
+
+.stage {
+  animation: sceneIn 280ms ease-out both;
+}
+@keyframes sceneIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: none; }
+}
+:global(html[data-motion="reduce"]) .stage {
+  animation: none;
+}
+:global(html[data-motion="reduce"]) .fill {
+  transition: none;
+}
+
+/* Scene visuals built for the tour (the rest reuse the product's own components). */
+.card {
+  padding: clamp(1.25rem, 4vw, 2rem);
+  border: 1px solid var(--sl-border);
+  border-radius: var(--sl-radius-xl);
+  background: var(--sl-surface);
+}
+.weeks {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
+  gap: 0.75rem;
+  margin: 0 0 1rem;
+  padding: 0;
+  list-style: none;
+}
+.week {
+  padding: 0.875rem 1rem;
+  border: 1px solid var(--sl-border);
+  border-radius: var(--sl-radius-lg);
+  background: var(--sl-canvas);
+}
+.weekLabel {
+  margin: 0;
+  color: var(--sl-brand-strong);
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.weekTitle {
+  margin: 0.125rem 0 0.25rem;
+  font-weight: 800;
+}
+.weekBuilds {
+  margin: 0;
+  color: var(--sl-text-muted);
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+.joinLink {
+  display: inline-block;
+  margin: 0;
+  padding: 0.5rem 0.875rem;
+  border: 1px dashed var(--sl-brand);
+  border-radius: var(--sl-radius-md);
+  font: 0.9375rem/1.4 ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+}
+.prompt {
+  margin: 0 0 0.75rem;
+  font-weight: 700;
+}
+.code {
+  margin: 0;
+  padding: 1rem 1.125rem;
+  overflow-x: auto;
+  border-radius: var(--sl-radius-lg);
+  background: #0f1411;
+  color: #e7efe9;
+  /* System monospace: --sl-font-code currently resolves to nothing site-wide
+     (a self-referencing --font-mono in globals.css), and the tour shouldn't
+     download a web font just for this block. */
+  font: 0.875rem/1.55 ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+}
+.note {
+  margin: 0.75rem 0 0;
+  color: var(--sl-text-muted);
+  font-size: 0.875rem;
+}
+.note a {
+  color: var(--sl-brand-strong);
+  font-weight: 700;
+}

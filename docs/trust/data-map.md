@@ -1,6 +1,6 @@
 # StrikeLab Data Map
 
-What StrikeLab stores about students, who can see it, where it goes, and how long it's kept. It's written for a club sponsor, principal or district IT reviewer, and it goes in the pilot approval packet (`docs/gtm/outreach-kit.md` §5). It's a plain description of how the product works, not a legal document.
+What StrikeLab stores about students, who can see it, where it goes, and how long it's kept. It's written for a club sponsor, principal or district IT reviewer, and it goes in the pilot approval packet (`docs/gtm/outreach-kit.md` §5). It's a plain description of how the product works, not a legal document. The public version is https://strikelab.dev/trust, rendered from `src/lib/trust/dataMap.ts`: change both together.
 
 **Last checked against the code:** 2026-09-29, through migration `0022`. Update this page in the same PR as any migration that adds a table or column holding student data.
 

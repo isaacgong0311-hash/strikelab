@@ -92,25 +92,23 @@
   gap: 0.75rem;
 }
 .kickoffTitle {
-  font-family: var(--sl-font-display), Georgia, serif;
-  font-size: 1.25rem;
-  font-weight: 600;
-  color: var(--ink);
   margin: 0;
+  font: 800 clamp(1.25rem, 3.5vw, 1.5rem) / 1.2 var(--sl-font-display);
 }
 .kickoffLede {
-  font-size: 0.875rem;
-  line-height: 1.6;
-  color: var(--ink-2);
   margin: 0;
+  max-width: 42rem;
+  color: var(--sl-text-muted);
+  line-height: var(--sl-leading-body);
 }
 .kickoffSlider {
   display: grid;
   gap: 0.375rem;
-  font-size: 0.875rem;
-  color: var(--ink-2);
+  max-width: 28rem;
+  color: var(--sl-text-muted);
+  font-size: 0.9375rem;
 }
 .kickoffSlider input {
   width: 100%;
-  accent-color: var(--grass);
+  accent-color: var(--sl-brand);
 }
