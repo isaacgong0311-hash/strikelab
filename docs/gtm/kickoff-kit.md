@@ -13,7 +13,7 @@ Sections:
 
 ## 1. IT allowlist
 
-Send this to the school's IT contact as soon as a pilot has a date. Fill in `[project-ref]` from `NEXT_PUBLIC_SUPABASE_URL` in Vercel (the part before `.supabase.co`). The list was captured on 2026-09-29 by loading the invite, session, lesson (with Python running) and cohort pages and recording every host the browser contacted. Re-check it if a new third-party service is added. School web filters sometimes block the service that delivers the in-browser Python, which would break lessons from week 3 on.
+Send this to the school's IT contact as soon as a pilot has a date. Fill in `[project-ref]` from `NEXT_PUBLIC_SUPABASE_URL` in Vercel (the part before `.supabase.co`). The list was captured on 2026-09-29 by loading the invite, session, lesson (with Python running) and cohort pages and recording every host the browser contacted. **Re-checked 2026-10-08** on a production build with `node scripts/audit/network-hosts.mjs <url>` (the invite, session, lesson with Python running, cohort, demo, trust and sign-in pages): the browser contacted only `strikelab.dev` itself, so no new third-party host has appeared since the capture, and the Python runtime came from `strikelab.dev/pyodide/`, never from jsdelivr. Supabase, Google and Sentry only appear with the production keys or a Google sign-in, so that run could not exercise them. Re-check it if a new third-party service is added. School web filters sometimes block the service that delivers the in-browser Python, which would break lessons from week 3 on.
 
 > **Subject:** Websites to allow for StrikeLab (club pilot starting [date])
 >
@@ -39,7 +39,7 @@ Do this **at the school, on the school network, on the kind of device students w
 | 2 | Sign up as a test student with the method chosen in production-readiness P2/P3 | The account works; if email confirmation is on, the email arrives within 1 minute | Email: check spam and P2. Google: "this app is blocked" means the district restricts third-party apps, so use email |
 | 3 | Join, and land on the cohort home | "This week" shows week 1 and one Start button | Screenshot it and send it to the founder |
 | 4 | Finish session `inv-1.1` | The summary screen shows | Note where it stuck |
-| 5 | Open `/lesson/3` and click **Run** on the exercise | Python loads (the first time downloads about 13 MB and can take 5–30s on school Wi-Fi) and tests run | "Python couldn't load": the filter blocks large downloads from `strikelab.dev/pyodide/`. Weeks 1–2 don't need it; get it allowed before week 3 |
+| 5 | Open `/lesson/3` and click **Run** on the exercise | Python loads (the first time downloads about 13 MB and can take 5–30s on school Wi-Fi: measured 2026-10-08 on a local production build, ready in 5s at 20 Mbps, 8s at 10, 13s at 5 and 28s at 2 Mbps, so under about 2 Mbps expect more than 30s; the file is cached for good after the first load) and tests run | "Python couldn't load": the filter blocks large downloads from `strikelab.dev/pyodide/`. Weeks 1–2 don't need it; get it allowed before week 3 |
 | 6 | **Time** how long the cohort home takes to appear on a fresh load | Under about 3s | Tell the founder the device model and the time |
 | 7 | In the Supabase SQL editor, check that the test student has a `lesson_completions` row (smoke-test step 3's query) | One row | Measurement is broken: stop, and fix before kickoff |
 | 8 | Delete the test account (Settings → Delete my account) | Gone | — |
