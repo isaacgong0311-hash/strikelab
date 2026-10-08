@@ -6,6 +6,13 @@ A 20–30 minute click-through of the whole pilot journey, with a SQL check at e
 - on **production** in week 6 with throwaway accounts, which delete themselves at the end;
 - after any deploy that touches sign-up, joining, completions or capstones.
 
+**Automated part (30 seconds, no account, writes nothing).** Before the click-through, run the public half against the deployed URL:
+
+    PLAYWRIGHT_BASE_URL=https://<deployment> npm run smoke
+    SMOKE_EXPECT_INDEXABLE=1 PLAYWRIGHT_BASE_URL=https://strikelab.dev npm run smoke   # production
+
+It checks that the public pages load, the Python runtime is served from our own origin (the school-filter failure in step 4), the pilot entry points and bad invite links behave, the founder metrics page is hidden, and `robots.txt` matches the environment. It does **not** cover anything below: sign-up, joining, completions, sync, the scorecard, capstones or deletion. Those need a real project and stay manual until staging exists.
+
 **You need:** a laptop (the leader) and a phone (the student), two email addresses you can read (plus-addressing like `you+lead@gmail.com` works), and the Supabase SQL editor open for the project you're testing.
 
 Write each result in the log at the bottom. **Stop at the first failure.** It's either a bug or a missing migration, so run `scripts/metrics/check-migrations.sql` first.
