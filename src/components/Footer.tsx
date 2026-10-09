@@ -55,7 +55,7 @@ export default function Footer() {
         <div className="col-span-2">
           <div className="flex items-center gap-2.5 mb-4">
             <span style={{ color: "var(--fg)", display: "grid" }}><BrandMark size={26} /></span>
-            <span style={{ fontFamily: "var(--font-display)", fontStyle: "italic", color: "var(--fg)", fontSize: "1.15rem", fontWeight: 600 }}>
+            <span style={{ fontFamily: "var(--sl-font-display)", fontStyle: "italic", color: "var(--fg)", fontSize: "1.15rem", fontWeight: 600 }}>
               Strike<span style={{ fontStyle: "normal", fontWeight: 600 }}>Lab</span>
             </span>
           </div>
@@ -94,11 +94,11 @@ export default function Footer() {
             </div>
             {/* Wider gap on mobile than the old 10px. The tap target used to
                 come from 9px of padding on each link, but that padding also
-                pushed the new hover rule 9px clear of the text. Spacing gives
-                the same ~34px of vertical pitch per row (WCAG 2.5.8 is
-                satisfied by spacing, not just by box size) while letting the
-                underline sit on the baseline where it belongs. */}
-            <div className="flex flex-col gap-4 md:gap-2.5">
+                pushed the new hover rule 9px clear of the text. Rows are now
+                44px apart (16px of text + 28px), and globals.css grows each
+                link's touch area to fill its row on touch screens, while the
+                underline stays on the baseline where it belongs. */}
+            <div className="flex flex-col gap-7 md:gap-2.5">
               {group.links.map((l) => (
                 <AnimatedLink key={l.href} href={l.href} className="v2-foot-link text-xs">
                   {l.label}
@@ -119,7 +119,7 @@ export default function Footer() {
         >
           © 2026 StrikeLab · Free & Open Source · MIT License
         </span>
-        <span className="text-[11px]" style={{ color: "var(--fg-mute)", fontFamily: "var(--font-serif)", fontStyle: "italic" }}>
+        <span className="text-[11px]" style={{ color: "var(--fg-mute)", fontStyle: "italic" }}>
           &ldquo;Quant finance shouldn&rsquo;t require the right zip code.&rdquo;
         </span>
       </div>

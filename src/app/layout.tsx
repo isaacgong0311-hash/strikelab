@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
-import { Plus_Jakarta_Sans, Inter, JetBrains_Mono } from "next/font/google";
+import { Plus_Jakarta_Sans } from "next/font/google";
+import localFont from "next/font/local";
 import "./globals.css";
 import "../styles/tokens.css";
 import "../styles/foundation.css";
@@ -23,6 +24,11 @@ import { ACCESSIBILITY_BOOT_SCRIPT } from "@/lib/accessibility/preferences";
 //
 // Jakarta keeps some warmth and personality at heavy weights without the
 // costume, and its numerals are unambiguous.
+//
+// No `fallback` option here: with Turbopack, a manual fallback on a Google
+// font replaces the metric-matched "Plus Jakarta Sans Fallback" face and
+// headings would shift when the font arrives. Stacks that need a generic
+// family use --sl-font-display (tokens.css), which falls back to Inter.
 const jakarta = Plus_Jakarta_Sans({
   variable: "--font-display",
   subsets: ["latin"],
@@ -34,21 +40,29 @@ const jakarta = Plus_Jakarta_Sans({
 // Replaces Space Grotesk. Inter is the workhorse behind most modern learning
 // products for a reason: it is boring in the way interface type should be,
 // and stays legible at the 11-13px the nav, pills and labels rely on.
-const inter = Inter({
+const inter = localFont({
+  // Self-hosted (scripts/fonts/build_fonts.py) rather than Google's file:
+  // Google's latin subset has no Greek, arrows or maths symbols and strips
+  // the slashed-zero and I/l/1 features, so σ, Δ and → fell back to the
+  // device's fonts. This file carries all of them and is still smaller.
+  src: "./fonts/inter-text.woff2",
   variable: "--font-ui",
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
+  weight: "400 700",
+  // Appended to --font-ui, so even a bare var(--font-ui) ends in a generic family.
+  fallback: ["system-ui", "sans-serif"],
 });
 
-// JetBrains Mono — best-in-class coding mono for the Python exercises
-const jetbrains = JetBrains_Mono({
+// JetBrains Mono — code, formulas written as code, and data. The ligatures
+// are cut out of the file: a beginner has to see `<=` and `!=` as typed.
+const jetbrains = localFont({
+  src: "./fonts/jetbrains-mono-code.woff2",
   variable: "--font-mono",
-  subsets: ["latin"],
-  weight: ["300", "400", "500", "600", "700"],
+  weight: "400 700",
   // Code and small labels only: not worth competing with the page's own
   // content for bandwidth on a slow school network (work plan AG4). It
   // still loads, with a fallback font until it arrives.
   preload: false,
+  fallback: ["ui-monospace", "monospace"],
 });
 
 export const metadata: Metadata = {

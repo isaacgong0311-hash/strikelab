@@ -9,7 +9,8 @@
         "http://localhost:3000/clubs",
         "http://localhost:3000/pilot",
         "http://localhost:3000/demo",
-        "http://localhost:3000/learn/inv-1.1"
+        "http://localhost:3000/learn/inv-1.1",
+        "http://localhost:3000/lesson/3"
       ],
       "numberOfRuns": 3,
       "settings": {

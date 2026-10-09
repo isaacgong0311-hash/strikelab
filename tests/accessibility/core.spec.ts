@@ -13,6 +13,7 @@ const PUBLIC_ROUTES = [
   "/pricing",
   "/clubs",
   "/pilot",
+  "/pilot/leave-behind",
   "/demo",
   "/demo?view=student",
   "/demo?view=tour",
@@ -20,8 +21,15 @@ const PUBLIC_ROUTES = [
   "/teach/new",
   "/sign-up?next=%2Fteach%2Fnew",
   "/challenges",
+  "/roadmap",
+  "/lesson/3",
   "/trust",
 ];
+
+// The desktop pass can't see a region that only scrolls on a phone (a long
+// formula, the activity grid), or a contrast failure in a layout that only
+// exists at 375px. These are the pages with such content.
+const PHONE_ROUTES = ["/", "/lessons", "/lesson/1", "/lesson/3", "/learn/inv-5.3", "/dashboard", "/roadmap", "/challenges", "/sign-up"];
 
 async function waitForClientShell(page: import("@playwright/test").Page) {
   await expect(page.locator("html")).toHaveAttribute("data-client-ready", "true");
@@ -31,6 +39,21 @@ for (const route of PUBLIC_ROUTES) {
   test(`${route} has no serious automated accessibility violations`, async ({ page }) => {
     // Scan the settled page: with motion on, axe can sample text mid fade-in
     // and report blended colours as contrast failures (flaky on slow CI).
+    await page.emulateMedia({ reducedMotion: "reduce" });
+    await page.goto(route, { waitUntil: "networkidle" });
+    await waitForClientShell(page);
+    await expect(page.locator("h1").first()).toBeVisible();
+    const results = await new AxeBuilder({ page }).analyze();
+    const blocking = results.violations.filter((violation) =>
+      violation.impact === "critical" || violation.impact === "serious"
+    );
+    expect(blocking, blocking.map((violation) => `${violation.id}: ${violation.help}`).join("\n")).toEqual([]);
+  });
+}
+
+for (const route of PHONE_ROUTES) {
+  test(`${route} has no serious automated accessibility violations on a phone`, async ({ page }) => {
+    await page.setViewportSize({ width: 375, height: 812 });
     await page.emulateMedia({ reducedMotion: "reduce" });
     await page.goto(route, { waitUntil: "networkidle" });
     await waitForClientShell(page);

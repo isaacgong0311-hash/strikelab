@@ -81,10 +81,7 @@ export default function AboutPage() {
       {/* Hero */}
       <div className="v2-page-head mb-14" data-v2-head style={{ padding: 0, border: 0 }}>
         <Eyebrow>About</Eyebrow>
-        <h1
-          className="text-4xl font-semibold mb-5 leading-tight"
-          style={{ fontFamily: "var(--font-display)", color: "var(--ink)" }}
-        >
+        <h1 className="sl-page-title mb-5">
           Built by a high schooler<br />
           for{" "}
           <span className="not-italic font-bold text-[#16201c]">
@@ -112,7 +109,6 @@ export default function AboutPage() {
           style={{
             background: "linear-gradient(135deg, #0b1828, #1a2f5e)",
             borderColor: "var(--border2)",
-            fontFamily: "var(--font-serif)",
             fontStyle: "italic",
             color: "var(--grass)",
           }}
@@ -123,7 +119,7 @@ export default function AboutPage() {
           <Eyebrow className="mb-1.5">Founder</Eyebrow>
           <h2
             className="text-2xl font-semibold mb-1"
-            style={{ fontFamily: "var(--font-display)", color: "var(--ink)" }}
+            style={{ fontFamily: "var(--sl-font-display)", color: "var(--ink)" }}
           >
             Isaac Gong
           </h2>
@@ -149,7 +145,7 @@ export default function AboutPage() {
         <Eyebrow>Mission</Eyebrow>
         <h2
           className="text-2xl font-semibold mb-3"
-          style={{ fontFamily: "var(--font-display)", color: "var(--ink)" }}
+          style={{ fontFamily: "var(--sl-font-display)", color: "var(--ink)" }}
         >
           Quant finance shouldn&rsquo;t require the right zip code.
         </h2>
@@ -166,7 +162,7 @@ export default function AboutPage() {
         <Eyebrow>Principles</Eyebrow>
         <h2
           className="text-xl font-semibold mb-5"
-          style={{ fontFamily: "var(--font-display)", color: "var(--ink)" }}
+          style={{ fontFamily: "var(--sl-font-display)", color: "var(--ink)" }}
         >
           How we build
         </h2>
@@ -185,7 +181,7 @@ export default function AboutPage() {
               </div>
               <h3
                 className="font-semibold mb-2"
-                style={{ fontFamily: "var(--font-serif)" }}
+                style={{ fontFamily: "var(--sl-font-body)" }}
               >
                 {v.title}
               </h3>
@@ -202,7 +198,7 @@ export default function AboutPage() {
         <Eyebrow>Timeline</Eyebrow>
         <h2
           className="text-xl font-semibold mb-5"
-          style={{ fontFamily: "var(--font-display)", color: "var(--ink)" }}
+          style={{ fontFamily: "var(--sl-font-display)", color: "var(--ink)" }}
         >
           What we&rsquo;ve shipped (and what&rsquo;s next)
         </h2>
@@ -275,7 +271,7 @@ export default function AboutPage() {
       >
         <h2
           className="text-xl font-semibold mb-2"
-          style={{ fontFamily: "var(--font-display)", color: "var(--ink)" }}
+          style={{ fontFamily: "var(--sl-font-display)", color: "var(--ink)" }}
         >
           Want to talk?
         </h2>

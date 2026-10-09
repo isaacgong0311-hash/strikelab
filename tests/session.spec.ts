@@ -74,6 +74,12 @@ test("a learner can finish a session with the keyboard, retrying a missed questi
   await expect(page.getByRole("heading", { level: 1, name: "Session complete!" })).toBeVisible();
   await expect(page.getByText("67%")).toBeVisible(); // 2 of 3 questions right first time
   await expect(page.getByRole("link", { name: "Next session" })).toHaveAttribute("href", "/learn/inv-1.2");
+  // The reward for a session is how close it brings the student to the lesson's
+  // XP (awarded once, at the end), and a signed-out student is told where their
+  // progress lives and how to keep it.
+  await expect(page.getByText("2 more sessions to finish the lesson and earn 100 XP.")).toBeVisible();
+  await expect(page.getByText("saved on this device only")).toBeVisible();
+  await expect(page.getByRole("link", { name: "Create a free account" })).toHaveAttribute("href", /\/sign-up\?next=/);
   await shot(page, "5-complete");
 
   // The lesson page now offers to continue where the learner left off.
@@ -81,6 +87,55 @@ test("a learner can finish a session with the keyboard, retrying a missed questi
   const callout = page.getByRole("complementary", { name: /3 short sessions/ });
   await expect(callout).toContainText("1 of 3 done");
   await expect(callout.getByRole("link", { name: "Continue" })).toHaveAttribute("href", "/learn/inv-1.2");
+});
+
+// A dropped tab, a phone call or a refresh used to send a student back to step
+// 1, with their answers gone. The run is kept for the length of the tab.
+test("reloading mid-session keeps the learner's place", async ({ page }) => {
+  await open(page, "/learn/inv-1.1");
+  await page.keyboard.press("Enter"); // explain
+  await page.keyboard.press("2"); // a wrong answer, so the retry queue matters too
+  await page.keyboard.press("Enter");
+  await page.keyboard.press("Enter");
+  await expect(page.getByRole("heading", { level: 1, name: "Ownership is proportional" })).toBeVisible();
+
+  await page.reload();
+  await expect(page.locator("html")).toHaveAttribute("data-client-ready", "true");
+  await expect(page.getByRole("heading", { level: 1, name: "Ownership is proportional" })).toBeVisible();
+});
+
+// Every miss shows the answer. Looping a stuck student until they guess it only
+// teaches them to dread the screen, so a question gets one retry.
+test("a question missed twice moves on instead of looping", async ({ page }) => {
+  await open(page, "/learn/inv-1.1");
+  await page.keyboard.press("Enter"); // explain
+  await page.keyboard.press("2"); // miss the ownership question
+  await page.keyboard.press("Enter");
+  await expect(page.getByRole("status")).toContainText("see this one again");
+  await page.keyboard.press("Enter");
+  await page.keyboard.press("Enter"); // explain
+  await page.getByRole("textbox", { name: /Your answer in %/ }).fill("0.5");
+  await page.keyboard.press("Enter");
+  await page.keyboard.press("Enter");
+  await page.keyboard.press("Enter"); // explain
+  await page.keyboard.press("2"); // profit question, right
+  await page.keyboard.press("Enter");
+  await page.keyboard.press("Enter");
+
+  await expect(page.getByText("Let's try that again")).toBeVisible();
+  await page.keyboard.press("2"); // wrong again
+  await page.keyboard.press("Enter");
+  await expect(page.getByRole("status")).toContainText("We'll move on");
+  await expect(page.getByRole("status")).not.toContainText("see this one again");
+  await page.keyboard.press("Enter");
+  await expect(page.getByRole("heading", { level: 1, name: "Session complete!" })).toBeVisible();
+});
+
+test("the progress bar has no lookalike step counter beside it", async ({ page }) => {
+  await open(page, "/learn/inv-1.1");
+  // "1/3" is the session's place in the lesson, not a step count; it is for screen readers only.
+  await expect(page.getByText("1/3", { exact: true })).toHaveCount(0);
+  await expect(page.getByText("Session 1 of 3")).toBeAttached();
 });
 
 test("Check stays disabled until an answer is chosen", async ({ page }) => {

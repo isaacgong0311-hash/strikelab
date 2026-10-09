@@ -1,11 +1,14 @@
 "use client";
 import { useState, useEffect, useRef, useCallback } from "react";
+import { explainPythonError, type PythonPhase } from "@/lib/pythonErrors";
 import dynamic from "next/dynamic";
 import Link from "next/link";
 import { getCurrentChallenge, getNextChallengeDate } from "@/lib/challenges";
 import { trackUpgradeClick } from "@/lib/analytics";
 import { startCheckout, useSubscription } from "@/lib/useSubscription";
-import { loadPythonRuntime } from "@/lib/pythonRuntime";
+import { PRO_SALES_OPEN } from "@/lib/proSales";
+import { isPythonRuntimeReady, loadPythonRuntime } from "@/lib/pythonRuntime";
+import PythonWarmup from "@/components/PythonWarmup";
 
 const MiniEditor = dynamic(() => import("@/components/MiniEditor"), { ssr: false });
 
@@ -34,14 +37,6 @@ function useCountdown(targetMs: number) {
   return timeLeft;
 }
 
-// ── Pyodide ──────────────────────────────────────────────────────────────────
-function usePyodide() {
-  useEffect(() => {
-    loadPythonRuntime().catch(() => {
-      // Reported when the student clicks Run, which retries.
-    });
-  }, []);
-}
 
 // ── Rank badge ────────────────────────────────────────────────────────────────
 const RANK_STYLES: Record<number, { bg: string; color: string; label: string }> = {
@@ -114,7 +109,6 @@ export default function ChallengesClient() {
   const challenge = getCurrentChallenge();
   const nextDate = getNextChallengeDate();
   const countdown = useCountdown(nextDate.getTime());
-  usePyodide();
 
   const [code, setCode] = useState(challenge.starterCode);
   const [output, setOutput] = useState("");
@@ -152,10 +146,14 @@ export default function ChallengesClient() {
   }, [lbRefreshKey]);
 
   const runCode = useCallback(async function runCode() {
-    setStatus("running"); setOutput("Running tests…"); setAttempts(n => n + 1);
+    setStatus("running"); setAttempts(n => n + 1);
+    setOutput(isPythonRuntimeReady() ? "Running tests…" : "Starting Python… the first run takes a few seconds.");
+    let phase: PythonPhase = "code";
     try {
       const pyodide = await loadPythonRuntime();
+      setOutput("Running tests…");
       pyodide.runPython(code);
+      phase = "tests";
       pyodide.runPython(challenge.testCode);
       setOutput("All tests passed!");
       setStatus("pass");
@@ -172,7 +170,7 @@ export default function ChallengesClient() {
           .catch(() => { submittedRef.current = false; });
       }
     } catch (err: unknown) {
-      setOutput(err instanceof Error ? err.message : String(err));
+      setOutput(explainPythonError(err, phase));
       setStatus("fail");
     }
   }, [challenge.id, challenge.testCode, code, isPro]);
@@ -207,8 +205,12 @@ export default function ChallengesClient() {
       <div className="ch-header">
         <div className="ch-header-left">
           <div className="ch-eyebrow">
-            <span className="ch-pro-badge">Pro</span>
-            <span className="ch-divider">·</span>
+            {(isPro || PRO_SALES_OPEN) && (
+              <>
+                <span className="ch-pro-badge">Pro</span>
+                <span className="ch-divider">·</span>
+              </>
+            )}
             <span>Weekly Challenge</span>
           </div>
           <h1 className="ch-title">{challenge.title}</h1>
@@ -300,6 +302,7 @@ export default function ChallengesClient() {
                 <span className="ch-py-badge">Python · runs in browser</span>
               </div>
 
+              <PythonWarmup />
               <MiniEditor value={code} onChange={setCode} />
 
               {/* Run bar */}
@@ -321,7 +324,7 @@ export default function ChallengesClient() {
                       </button>
                     )}
                   </div>
-                ) : (
+                ) : PRO_SALES_OPEN ? (
                   <button
                     type="button"
                     onClick={() => handleUpgrade("challenges_run_btn")}
@@ -330,6 +333,12 @@ export default function ChallengesClient() {
                   >
                     {checkoutLoading ? "Redirecting…" : "Unlock with Pro → Start free trial"}
                   </button>
+                ) : (
+                  <p className="ch-paused">
+                    Weekly challenges are paused for new members while we run club pilots.{" "}
+                    <Link href="/playground">Try the playground</Link> or{" "}
+                    <Link href="/lessons">keep going with the lessons</Link>.
+                  </p>
                 )}
                 {attempts > 0 && (
                   <span className="ch-attempts">{attempts} attempt{attempts > 1 ? "s" : ""}</span>
@@ -401,7 +410,7 @@ export default function ChallengesClient() {
                 })}
               </div>
             )}
-            {subHydrated && !isPro && (
+            {subHydrated && !isPro && PRO_SALES_OPEN && (
               <div className="ch-panel-footer">
                 <button
                   type="button"
@@ -419,7 +428,7 @@ export default function ChallengesClient() {
           <div className="ch-panel">
             <div className="ch-panel-header">
               <span className="ch-panel-title">Challenge Archive</span>
-              {subHydrated && !isPro && <span className="ch-pro-tag">Pro</span>}
+              {subHydrated && !isPro && PRO_SALES_OPEN && <span className="ch-pro-tag">Pro</span>}
             </div>
             <div className="ch-archive">
               {ARCHIVE.map(item => (
@@ -434,7 +443,7 @@ export default function ChallengesClient() {
                 </div>
               ))}
             </div>
-            {subHydrated && !isPro && (
+            {subHydrated && !isPro && PRO_SALES_OPEN && (
               <p className="ch-archive-note">Pro members access all past challenges.</p>
             )}
           </div>

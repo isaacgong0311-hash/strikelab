@@ -37,7 +37,13 @@ export default function AccessibilityMenu() {
         aria-label="Accessibility display preferences"
         onClick={() => setOpen((value) => !value)}
       >
-        <span aria-hidden="true">Aa</span>
+        {/* A half-filled circle, the usual symbol for display and contrast
+            settings. The "Aa" it replaced suggested text size, which this
+            panel (reduce motion, enhanced contrast) doesn't offer. */}
+        <svg width="18" height="18" viewBox="0 0 20 20" aria-hidden="true" focusable="false">
+          <circle cx="10" cy="10" r="8" fill="none" stroke="currentColor" strokeWidth="1.8" />
+          <path d="M10 2a8 8 0 0 1 0 16z" fill="currentColor" />
+        </svg>
       </button>
       {open && (
         <div id="a11y-quick-panel" className="a11y-menu-panel" role="region" aria-label="Accessibility display preferences">

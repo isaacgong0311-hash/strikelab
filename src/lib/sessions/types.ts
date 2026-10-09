@@ -14,6 +14,8 @@ export interface ExplainStep {
   body: string[];
   /** Optional formula shown in a highlighted block. */
   formula?: string;
+  /** The same formula as TeX, typeset on the server. Use this or `formula`, not both. */
+  formulaTex?: string;
   /** Optional side-by-side comparison. */
   compare?: { label: string; points: string[] }[];
 }

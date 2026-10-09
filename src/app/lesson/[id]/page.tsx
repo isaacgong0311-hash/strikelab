@@ -6,6 +6,22 @@ import { breadcrumbJsonLd, isoDuration } from "@/lib/seo";
 import JsonLd from "@/components/JsonLd";
 import LessonClient from "./LessonClient";
 import { buildLessonToc } from "@/lib/lessonToc";
+import "katex/dist/katex.min.css";
+import { renderMathInHtml } from "@/lib/math/renderMath";
+import type { Lesson } from "@/lib/lessons";
+
+// Props cross into a client component, so everything passed is serialised into
+// the page's RSC payload. The client never reads the raw lesson text (it gets
+// the typeset `chunks`), and prev/next only need a title and a link. Passing
+// whole Lesson objects shipped three lessons' worth of HTML on every page.
+function forClient({ content, ...lesson }: Lesson) {
+  void content;
+  return lesson;
+}
+
+function link(lesson: Lesson | null) {
+  return lesson && { id: lesson.id, title: lesson.title };
+}
 
 export async function generateStaticParams() {
   return getAllLessons().map((l) => ({ id: l.id }));
@@ -88,7 +104,9 @@ export default async function LessonPage({ params }: { params: Promise<{ id: str
 
   // Section ids are injected here rather than client-side so deep links work
   // on first paint and the anchors exist for crawlers.
-  const toc = buildLessonToc(ctx.lesson.content);
+  // Maths is typeset here, on the server, so KaTeX never ships to the client
+  // and the formulas are in the prerendered HTML.
+  const toc = buildLessonToc(renderMathInHtml(ctx.lesson.content));
 
   // Gives Google the Home › Lessons › Lesson trail to show under the result
   // instead of a bare URL.
@@ -117,11 +135,11 @@ export default async function LessonPage({ params }: { params: Promise<{ id: str
       <JsonLd data={breadcrumbs} />
       <LessonClient
         key={ctx.lesson.id}
-        lesson={ctx.lesson}
+        lesson={forClient(ctx.lesson)}
         sections={toc.sections}
         chunks={toc.chunks}
-        prev={ctx.prev}
-        next={ctx.next}
+        prev={link(ctx.prev)}
+        next={link(ctx.next)}
         trackId={ctx.track.id}
         trackTitle={ctx.track.title}
         positionInTrack={ctx.positionInTrack}

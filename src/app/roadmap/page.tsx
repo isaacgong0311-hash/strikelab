@@ -68,7 +68,7 @@ const STATE_STYLES = {
   "done":        { label: "Shipped",     color: "#147038" },
   "in-progress": { label: "In progress", color: "#1d4ed8" },
   "planned":     { label: "Planned",     color: "#646464" },
-  "exploring":   { label: "Exploring",   color: "#6b6b6b" },
+  "exploring":   { label: "Exploring",   color: "#5c5c5c" },
 };
 
 export default function RoadmapPage() {
@@ -80,10 +80,7 @@ export default function RoadmapPage() {
       {/* Header */}
       <div className="mb-10 v2-page-head" data-v2-head>
         <Eyebrow>Roadmap</Eyebrow>
-        <h1
-          className="text-4xl font-semibold mb-3 leading-tight"
-          style={{ fontFamily: "var(--font-display)", color: "var(--ink)" }}
-        >
+        <h1 className="sl-page-title mb-3">
           What we&rsquo;re building next
         </h1>
         <p className="text-sm leading-relaxed max-w-2xl" style={{ color: "var(--muted2)" }}>
@@ -134,7 +131,7 @@ export default function RoadmapPage() {
               </span>
               <span
                 className="text-xs uppercase tracking-widest"
-                style={{ color: q.color, fontFamily: "var(--font-mono)", opacity: 0.75 }}
+                style={{ color: q.color, fontFamily: "var(--font-mono)" }}
               >
                 {q.label}
               </span>
@@ -156,7 +153,7 @@ export default function RoadmapPage() {
                     <div className="flex items-start justify-between gap-3 mb-1.5">
                       <h3
                         className="text-sm font-semibold"
-                        style={{ fontFamily: "var(--font-display)", color: "var(--ink)" }}
+                        style={{ fontFamily: "var(--sl-font-display)", color: "var(--ink)" }}
                       >
                         {item.title}
                       </h3>
@@ -189,7 +186,7 @@ export default function RoadmapPage() {
       >
         <h2
           className="text-lg font-semibold text-white mb-2"
-          style={{ fontFamily: "var(--font-display)", color: "var(--ink)" }}
+          style={{ fontFamily: "var(--sl-font-display)", color: "var(--ink)" }}
         >
           Have a feature request?
         </h2>

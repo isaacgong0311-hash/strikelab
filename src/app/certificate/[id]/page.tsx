@@ -75,10 +75,7 @@ export default async function CertificatePage({
           ∂ StrikeLab · Certificate of Completion
         </div>
 
-        <h1
-          className="text-3xl font-semibold mb-2"
-          style={{ fontFamily: "var(--font-display)", color: "var(--ink)" }}
-        >
+        <h1 className="sl-page-title mb-2">
           {cert.displayName}
         </h1>
         <p className="text-sm mb-8" style={{ color: "var(--muted2)" }}>
@@ -86,7 +83,7 @@ export default async function CertificatePage({
         </p>
         <div
           className="text-2xl font-semibold mb-10"
-          style={{ fontFamily: "var(--font-display)", color: "var(--grass)" }}
+          style={{ fontFamily: "var(--sl-font-display)", color: "var(--grass)" }}
         >
           {cert.trackTitle}
         </div>

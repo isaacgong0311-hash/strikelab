@@ -428,10 +428,7 @@ export default function SettingsClient() {
   return (
     <div className="max-w-2xl mx-auto px-6 py-14">
       <div className="mb-8">
-        <h1
-          className="text-3xl font-semibold mb-2"
-          style={{ fontFamily: "var(--font-display)", color: "var(--ink)" }}
-        >
+        <h1 className="sl-page-title mb-2">
           Settings
         </h1>
         <p className="text-sm" style={{ color: "var(--muted2)" }}>

@@ -1,0 +1,4 @@
+/* KaTeX sets display maths on one line. On a phone a long formula would push
+   the whole page sideways; let it scroll inside its own block instead.
+   :global because the markup comes from KaTeX, not from us. */
+.content :global(.katex-display) { overflow-x: auto; overflow-y: hidden; padding: 0.25rem 0; }

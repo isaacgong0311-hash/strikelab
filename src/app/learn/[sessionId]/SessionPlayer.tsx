@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Fragment, useEffect, useRef, useState, type FormEvent, type ReactNode } from "react";
+import { Fragment, useEffect, useMemo, useRef, useState, type FormEvent, type ReactNode } from "react";
 import { useProgress } from "@/lib/useProgress";
 import { useAuth } from "@/lib/auth/AuthProvider";
 import { loadSupabaseBrowser } from "@/lib/supabase/lazy";
@@ -12,8 +12,10 @@ import {
   gradeMcq,
   gradeNumeric,
   isFinished,
+  parseSavedRun,
   progressFraction,
   startRun,
+  willRetry,
 } from "@/lib/sessions/engine";
 import {
   isLessonFinished,
@@ -46,9 +48,17 @@ interface Props {
   lessonTitle: string;
   sessionIds: string[];
   nextSessionId: string | null;
+  /** Server-typeset formulas, keyed by step id. */
+  formulaHtml: Record<string, string>;
 }
 
-export default function SessionPlayer({ session, lessonTitle, sessionIds, nextSessionId }: Props) {
+export default function SessionPlayer({ session, lessonTitle, sessionIds, nextSessionId, formulaHtml }: Props) {
+  // Stable { __html } objects: React 19 re-sets innerHTML whenever this prop's
+  // identity changes, which would rebuild the typeset formula on every render.
+  const formulaMarkup = useMemo(
+    () => Object.fromEntries(Object.entries(formulaHtml).map(([id, __html]) => [id, { __html }])),
+    [formulaHtml],
+  );
   const { steps } = session;
   const lessonHref = `/lesson/${session.lessonId}`;
   const sessionNumber = sessionIds.indexOf(session.id) + 1;
@@ -69,6 +79,35 @@ export default function SessionPlayer({ session, lessonTitle, sessionIds, nextSe
   const formRef = useRef<HTMLFormElement>(null);
 
   const finished = isFinished(run);
+
+  // A reload (a dropped tab, a phone call, a refresh) used to send the student
+  // back to step 1. The run is kept for the length of the tab and cleared when
+  // it finishes, so a replay starts fresh. Resuming happens in an effect rather
+  // than in the state initialiser so the first client render still matches the
+  // server's HTML.
+  const runKey = `sl:session-run:${session.id}`;
+  useEffect(() => {
+    // Deferred, like the other storage reads in this app, so it isn't a
+    // synchronous setState in the effect body.
+    const id = window.setTimeout(() => {
+      try {
+        const saved = parseSavedRun(JSON.parse(sessionStorage.getItem(runKey) ?? "null"), steps.length);
+        if (saved) setRun(saved);
+      } catch {
+        // Storage blocked or the value is corrupt: start from the top.
+      }
+    }, 0);
+    return () => window.clearTimeout(id);
+  }, [runKey, steps.length]);
+  useEffect(() => {
+    try {
+      if (finished) sessionStorage.removeItem(runKey);
+      else if (run.position > 0) sessionStorage.setItem(runKey, JSON.stringify(run));
+    } catch {
+      // Not being able to remember the place is no reason to break the step.
+    }
+  }, [run, finished, runKey]);
+
   const step: Step | undefined = steps[run.queue[run.position]];
   const isRetry = run.queue.slice(0, run.position).includes(run.queue[run.position]);
   const progress = progressFraction(run, steps);
@@ -170,6 +209,10 @@ export default function SessionPlayer({ session, lessonTitle, sessionIds, nextSe
 
   if (finished) {
     const lessonDone = summary ? isLessonFinished(session.lessonId, summary.results) : false;
+    // XP is awarded once, when the last session of a lesson is finished, so the
+    // honest reward for this one is how close it brings the student to that.
+    const sessionsLeft = sessionIds.filter((id) => !summary?.results[id]).length;
+    const xpStillToEarn = !completed.has(session.lessonId);
     return (
       <div className={styles.shell}>
         <section className={styles.done} aria-labelledby="session-done-title">
@@ -210,6 +253,12 @@ export default function SessionPlayer({ session, lessonTitle, sessionIds, nextSe
               );
             })}
           </ol>
+          {summary && !lessonDone && sessionsLeft > 0 ? (
+            <p className={styles.goal}>
+              {sessionsLeft} more {sessionsLeft === 1 ? "session" : "sessions"} to finish the lesson
+              {xpStillToEarn ? " and earn 100 XP" : ""}.
+            </p>
+          ) : null}
           <div className={styles.doneActions}>
             {nextSessionId ? (
               <Link href={`/learn/${nextSessionId}`} className={styles.primary}>
@@ -224,6 +273,13 @@ export default function SessionPlayer({ session, lessonTitle, sessionIds, nextSe
               Read the full lesson
             </Link>
           </div>
+          {user ? null : (
+            <p className={styles.saveNote}>
+              Your progress is saved on this device only.{" "}
+              <Link href={`/sign-up?next=${encodeURIComponent("/lessons")}`}>Create a free account</Link> to keep it
+              on every device.
+            </p>
+          )}
         </section>
       </div>
     );
@@ -251,8 +307,10 @@ export default function SessionPlayer({ session, lessonTitle, sessionIds, nextSe
         >
           <div className={styles.fill} style={{ transform: `scaleX(${progress})` }} />
         </div>
-        <span className={styles.count}>
-          {sessionNumber}/{sessionIds.length}
+        {/* Not a visible "1/3": next to a progress bar it reads as a step
+            count, but it is this session's place in the lesson. */}
+        <span className="sl-visually-hidden">
+          Session {sessionNumber} of {sessionIds.length}
         </span>
       </header>
 
@@ -272,7 +330,11 @@ export default function SessionPlayer({ session, lessonTitle, sessionIds, nextSe
                   <RichText text={p} />
                 </p>
               ))}
-              {step.formula ? <p className={styles.formula}>{step.formula}</p> : null}
+              {formulaMarkup[step.id] ? (
+                <div className={styles.formulaMath} dangerouslySetInnerHTML={formulaMarkup[step.id]} />
+              ) : step.formula ? (
+                <p className={styles.formula}>{step.formula}</p>
+              ) : null}
               {step.compare ? (
                 <div className={styles.compare}>
                   {step.compare.map((col) => (
@@ -359,7 +421,7 @@ export default function SessionPlayer({ session, lessonTitle, sessionIds, nextSe
                 </p>
                 <p className={styles.feedbackBody}>
                   {step.explanation}
-                  {lastCorrect ? "" : " You'll see this one again before the session ends."}
+                  {lastCorrect ? "" : willRetry(run, steps) ? " You'll see this one again before the session ends." : " We'll move on; the full lesson goes deeper on this."}
                 </p>
               </>
             ) : null}

@@ -44,7 +44,7 @@ export default function HomeView() {
         <div className={`${styles.wrap} ${home.heroGrid}`}>
           <div>
             <p className={styles.kicker}>Quant finance for high school</p>
-            <h1 className={styles.h1}>Learn quant finance by building it.</h1>
+            <h1 className={styles.h1}>Learn quant finance by building it<span className={styles.stop}>.</span></h1>
             <p className={styles.lede}>
               Price options, code the Greeks and backtest strategies in real Python, right in the browser. Free for
               students, and ready to run as a six-week lab for your club or class.
@@ -220,7 +220,7 @@ export default function HomeView() {
         <div className={`${styles.wrap} ${home.split}`}>
           <div>
             <p className={styles.kicker}>For clubs and teachers</p>
-            <h2 id="home-clubs" className={styles.h2}>Run it as a six-week lab. No prep.</h2>
+            <h2 id="home-clubs" className={styles.h2}>Run it as a <span style={{ whiteSpace: "nowrap" }}>six-week</span> lab. No prep.</h2>
             <p className={styles.lede}>
               Launch in minutes, share one invite link, and meet once a week. Students work one short step at a time; you
               see who&apos;s keeping up.

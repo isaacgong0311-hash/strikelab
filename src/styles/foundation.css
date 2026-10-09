@@ -15,11 +15,30 @@
 :root[data-ui="v3"] h3 {
   font-family: var(--sl-font-display);
   text-wrap: balance;
+  /* Headings are set at weight 700-800 with -0.02 to -0.03em tracking, which
+     leaves the word space about a letter wide: "Run it" reads as "Runit". A
+     little word-spacing opens it back up without loosening the letters. */
+  word-spacing: 0.08em;
 }
 
 :root[data-ui="v3"] p,
 :root[data-ui="v3"] li {
   text-wrap: pretty;
+}
+
+/* The title of every page that isn't a marketing hero (those set their own,
+   larger, in marketing.module.css). One weight, one leading, one size scale, so
+   moving from the path to a lesson to the playground doesn't change the
+   typeface's character. No margin here: Tailwind's utilities live in a layer and
+   an unlayered margin would override a page's mb-*. */
+.sl-page-title {
+  font-family: var(--sl-font-display);
+  font-weight: 800;
+  font-size: clamp(1.75rem, 4.5vw, 2.5rem);
+  line-height: 1.1;
+  letter-spacing: -0.025em;
+  color: var(--ink);
+  text-wrap: balance;
 }
 
 :root[data-ui="v3"] code,
@@ -375,7 +394,7 @@
 /* Settings, signed out */
 .settings-gate { width: min(100% - 32px, 36rem); margin: clamp(24px, 6vw, 64px) auto; display: grid; gap: 16px; }
 .settings-gate-card { padding: clamp(20px, 4vw, 28px); border: 1px solid var(--sl-border); border-radius: var(--sl-radius-xl); background: var(--sl-surface); box-shadow: var(--sl-shadow-1); }
-.settings-gate-card h1 { margin: 0 0 8px; color: var(--sl-text); font: 800 clamp(26px, 5vw, 32px)/1.1 var(--sl-font-display); letter-spacing: -0.03em; }
+.settings-gate-card h1 { margin: 0 0 8px; color: var(--sl-text); font: 800 1.75rem/1.15 var(--sl-font-display); letter-spacing: -0.025em; }
 .settings-gate-card > p { margin: 0 0 20px; color: var(--sl-text-muted); line-height: 1.6; }
 .settings-gate-actions { display: flex; flex-wrap: wrap; gap: 10px; }
 .settings-gate-primary, .settings-gate-secondary { min-height: var(--sl-tap); display: inline-flex; align-items: center; padding: 0 18px; border-radius: var(--sl-radius-md); font-weight: 800; font-size: 14px; text-decoration: none; }

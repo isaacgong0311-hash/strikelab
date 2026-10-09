@@ -80,7 +80,7 @@ function SuccessContent() {
               boxShadow: "0 6px 0 #bf4830",
               margin: "0 auto 24px",
             }}>!</div>
-            <h1 style={{ fontFamily: "var(--font-display)", fontSize: 26, color: "var(--ink)", marginBottom: 10 }}>
+            <h1 style={{ fontFamily: "var(--sl-font-display)", fontSize: 26, color: "var(--ink)", marginBottom: 10 }}>
               Something went wrong
             </h1>
             <p style={{ color: "var(--ink-2)", marginBottom: 24 }}>{error}</p>
@@ -102,7 +102,7 @@ function SuccessContent() {
             }}>✓</div>
 
             <h1 style={{
-              fontFamily: "var(--font-display)", fontWeight: 600, fontSize: 30,
+              fontFamily: "var(--sl-font-display)", fontWeight: 600, fontSize: 30,
               color: "var(--ink)", letterSpacing: "-0.02em", marginBottom: 10,
             }}>
               You&apos;re on Pro!

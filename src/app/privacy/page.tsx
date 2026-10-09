@@ -146,10 +146,7 @@ export default function PrivacyPage() {
       <Breadcrumbs trail={[{ name: "Privacy Policy", path: "/privacy" }]} />
 
       <Eyebrow>Legal</Eyebrow>
-      <h1
-        className="text-4xl font-semibold mb-3 leading-tight"
-        style={{ fontFamily: "var(--font-display)", color: "var(--ink)" }}
-      >
+      <h1 className="sl-page-title mb-3">
         Privacy Policy
       </h1>
       <p className="text-sm mb-12" style={{ color: "var(--ink-3)" }}>
@@ -165,7 +162,7 @@ export default function PrivacyPage() {
           <div key={s.title}>
             <h2
               className="text-lg font-semibold mb-2.5"
-              style={{ fontFamily: "var(--font-display)", color: "var(--ink)" }}
+              style={{ fontFamily: "var(--sl-font-display)", color: "var(--ink)" }}
             >
               {s.title}
             </h2>

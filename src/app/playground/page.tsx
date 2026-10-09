@@ -23,10 +23,7 @@ export default function PlaygroundPage() {
       <div className="mb-2 v2-page-head v2-page-head--tool" data-v2-head>
         <Breadcrumbs trail={[{ name: "Playground", path: "/playground" }]} />
         <Eyebrow>Playground</Eyebrow>
-        <h1
-          className="text-4xl font-semibold mb-3 leading-tight"
-          style={{ fontFamily: "var(--font-display)", color: "var(--ink)" }}
-        >
+        <h1 className="sl-page-title mb-3">
           Python options pricing playground
         </h1>
         {/* Four Greeks, matching the interactive tool below exactly — it used

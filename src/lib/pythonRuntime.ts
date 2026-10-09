@@ -25,6 +25,13 @@ export interface PythonRuntime {
   runPython(code: string): unknown;
 }
 
+let runtimeLoaded = false;
+
+/** True once Python has finished loading on this page (Run will be instant). */
+export function isPythonRuntimeReady(): boolean {
+  return runtimeLoaded;
+}
+
 type PyodideWindow = Window & {
   __pyodideReady?: Promise<PythonRuntime>;
   loadPyodide?: (options: { indexURL: string }) => Promise<PythonRuntime>;
@@ -63,9 +70,14 @@ export function loadPythonRuntime(sources: readonly string[] = PYTHON_SOURCES): 
   })();
 
   w.__pyodideReady = ready;
-  // A failed load shouldn't stick: the next Run tries again.
-  ready.catch(() => {
-    if (w.__pyodideReady === ready) w.__pyodideReady = undefined;
-  });
+  ready.then(
+    () => {
+      runtimeLoaded = true;
+    },
+    () => {
+      // A failed load shouldn't stick: the next Run tries again.
+      if (w.__pyodideReady === ready) w.__pyodideReady = undefined;
+    }
+  );
   return ready;
 }

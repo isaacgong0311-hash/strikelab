@@ -64,10 +64,7 @@ function InviteLink({ code }: { code: string }) {
 function SignInPrompt() {
   return (
     <div className="max-w-md mx-auto px-6 py-24 text-center">
-      <h1
-        className="text-2xl font-semibold mb-3"
-        style={{ fontFamily: "var(--font-display)", color: "var(--ink)" }}
-      >
+      <h1 className="sl-page-title text-2xl mb-3">
         Sign in to view this class
       </h1>
       <Link href="/sign-in" className="v2-btn">Sign in →</Link>
@@ -155,10 +152,7 @@ export default function ClassRosterClient() {
   if (state === "not-found") {
     return (
       <div className="max-w-md mx-auto px-6 py-24 text-center">
-        <h1
-          className="text-2xl font-semibold mb-3"
-          style={{ fontFamily: "var(--font-display)", color: "var(--ink)" }}
-        >
+        <h1 className="sl-page-title text-2xl mb-3">
           Class not found
         </h1>
         <p className="text-sm mb-6" style={{ color: "var(--muted2)" }}>
@@ -173,10 +167,7 @@ export default function ClassRosterClient() {
     <div className="max-w-4xl mx-auto px-6 py-14">
       <div className="mb-6 flex items-start justify-between gap-4 flex-wrap">
         <div>
-          <h1
-            className="text-3xl font-semibold mb-2"
-            style={{ fontFamily: "var(--font-display)", color: "var(--ink)" }}
-          >
+          <h1 className="sl-page-title mb-2">
             {state === "loading" ? "Loading…" : className}
           </h1>
           <p className="text-sm" style={{ color: "var(--muted2)" }}>

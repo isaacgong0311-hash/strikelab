@@ -59,7 +59,7 @@ export default function NewsletterSignup() {
           <Eyebrow>Newsletter</Eyebrow>
           <h3
             className="text-xl font-semibold mb-2"
-            style={{ fontFamily: "var(--font-display)", color: "var(--ink)" }}
+            style={{ fontFamily: "var(--sl-font-display)", color: "var(--ink)" }}
           >
             One short email per month.
           </h3>
@@ -95,7 +95,6 @@ export default function NewsletterSignup() {
                   borderColor: "var(--border2)",
                   background: "var(--paper-3)",
                   color: "var(--ink)",
-                  fontFamily: "var(--font-sans)",
                 }}
               />
               <button

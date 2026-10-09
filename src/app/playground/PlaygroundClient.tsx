@@ -1,5 +1,6 @@
 "use client";
 import { useState, useEffect, useCallback, useRef } from "react";
+import { explainPythonError } from "@/lib/pythonErrors";
 import { rangeFill } from "@/lib/rangeFill";
 import { useSearchParams } from "next/navigation";
 import dynamic from "next/dynamic";
@@ -213,7 +214,7 @@ export default function PlaygroundClient() {
         setOutput(PYTHON_UNAVAILABLE_MESSAGE); setStatus("fail"); return;
       }
       try { pyodide.runPython(code); } catch (err: unknown) {
-        setOutput(err instanceof Error ? err.message : String(err));
+        setOutput(explainPythonError(err, "code"));
         setStatus("fail"); return;
       }
       const strikes = Array.from({ length: 41 }, (_, i) => 50 + i * 2.5);
@@ -246,7 +247,7 @@ export default function PlaygroundClient() {
         setOutput("All four Greeks implemented! Drag the sliders to see how the curves change.");
         setStatus("pass");
       }
-    } catch (err: unknown) { setOutput(err instanceof Error ? err.message : String(err)); setStatus("fail"); }
+    } catch (err: unknown) { setOutput(explainPythonError(err, "code")); setStatus("fail"); }
   }, [code, S, T, r, sigma]);
 
   useEffect(() => {
