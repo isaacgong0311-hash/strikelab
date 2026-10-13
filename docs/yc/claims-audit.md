@@ -11,7 +11,7 @@
 | `vitest run` | 390 tests in 65 files, all pass |
 | `next build` | Succeeds |
 | Playwright (55 browser tests incl. axe accessibility, Chromebook sweep, Python-with-CDN-blocked) | 54 pass on the first run against `next dev`. `reveal.spec.ts` "lesson body becomes visible after scrolling" timed out once on a cold dev-server compile (3s poll) and passed on rerun, so treat it as timing-sensitive on dev, not a failure. Run with a system Chromium because the installed browser build is older than the one Playwright expects |
-| Lighthouse budgets | **Not run.** Run `npm run lhci` against a production build before the freeze (Oct 23) |
+| Lighthouse (`lhci autorun`, 5 pages x 3 runs, production build, 2026-10-13) | No errors (layout shift budget holds). **Warnings only:** largest contentful paint 2.4-3.5s against the 2.0s target on every page, and JavaScript 206-216 KB against the 184 KB budget. This matches the known winter item (mega plan Q13, CSS/JS consolidation); lab numbers on this container's CPU, not a phone |
 
 ## Claims
 
