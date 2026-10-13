@@ -1,0 +1,13 @@
+organization,leader_name,leader_email,segment,source,status,expected_students,last_contact,next_action,objection,referral_from,notes
+Round Rock HS Investing Club,,,investing_club,research,to_contact,,,"Find sponsor on campus clubs page; ask your own teachers for an intro first",,,"Listed on RRHS 2025-26 clubs page: https://rrhs.roundrockisd.org/o/rrhs/page/clubsorganizations/ (stated aim: teach basic investing). Best-fit prospect. Verify the club still meets."
+Round Rock HS Hackathon Club,,,coding_club,research,to_contact,,,"Find sponsor on clubs page",,,"Same RRHS 2025-26 clubs page. Check whether it meets weekly."
+Round Rock HS Girls Who Code,,,coding_club,research,to_contact,,,"Find sponsor on clubs page",,,"Same RRHS 2025-26 clubs page."
+Round Rock HS DECA,,,business_club,research,to_contact,,,"Find chapter advisor via https://www.rrhsdeca.org/",,,"Chapter site says nearly 600 members (2025). Large and competition-driven; a six-week add-on may suit a subgroup, not the whole chapter."
+Stony Point HS Entrepreneurship Club,,,business_club,research,to_contact,,,"Find sponsor on campus clubs page",,,"Listed: https://stonypoint.roundrockisd.org/o/stonypoint/page/clubs-teams-organizations"
+Stony Point HS UIL Computer Science team,,,coding_club,research,to_contact,,,"Find coach on campus clubs page",,,"Listed as a competitive programming / CS knowledge team. Same Stony Point page. Check UIL calendar before asking."
+Stony Point HS DECA,,,business_club,research,to_contact,,,"Find advisor on campus clubs page",,,"Same Stony Point page."
+McNeil HS DECA,,,business_club,research,to_contact,,,"Find advisor on the McNeil campus site",,,"McNeil students placed at DECA International per https://www.roundrockisd.org/article/2132976 (date unchecked). Confirm the chapter is current."
+Cedar Ridge HS DECA,,,business_club,research,to_contact,,,"Find advisor on the Cedar Ridge campus site",,,"Active per an alumnus profile and the same RRISD news item. Confirm current."
+Westwood HS DECA,,,business_club,research,to_contact,,,"Find advisor on the Westwood campus site",,,"Named in the same RRISD news item. Confirm current."
+Round Rock HS FBLA,,,business_club,research,to_contact,,,"Check whether it still exists",,,"Only source is an old 2019-20 officers page: https://sites.google.com/view/rrhsfbla/officers. Treat as unverified."
+Westwood / Cedar Ridge / McNeil / Success: math, CS, investing, economics clubs,,,unknown,research,to_contact,,,"Open each campus clubs page and add any matching club as its own row",,,"Search found no listings for these campuses. Not evidence that none exist."
