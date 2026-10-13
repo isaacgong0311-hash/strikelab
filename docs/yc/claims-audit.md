@@ -21,8 +21,9 @@
 | "22 lessons total" | `/about` timeline, Aug 2026 entry | Historical entry; the next entry says 23 | Fine as history |
 | ~346 tests | Application draft, readiness plan Y9.3, sprint plan | `vitest run` gives 390 | **Stale. Application draft fixed; the two plan docs are dated snapshots and left as they were** |
 | No leader-run cohort started | Application draft, README | `cohorts.csv` empty, `crm.csv` 2 rows | Correct |
+| No FERPA/COPPA/"compliant" claims | `/clubs`, `/pricing`, `/trust`, components, `dataMap.ts` | grep for `ferpa|coppa|compliant` finds only a comment forbidding them | Correct |
 | 38/38 browser tests | Sprint plan | Not rerun | Unverified |
 
 ## Not yet checked
 
-`/clubs`, `/pricing`, `/trust` copy for compliance wording (FERPA, COPPA); Lighthouse budgets; the Playwright suite. Next pass.
+Lighthouse budgets; the Playwright suite. Next pass.
