@@ -132,3 +132,24 @@ About 12 agent hours, roughly 2 founder hours, before the freeze.
 | Date | Change |
 |---|---|
 | 2026-10-13 | Created. |
+
+---
+
+## 8. Stanford overlay (added 2026-10-13)
+
+The founder plans to attend Stanford and wants to improve **depth** (sustained, personal work) and **reach** (real people served). This is the same work as the YC plan, with one change in emphasis: the application dimension that matters most is verified reach.
+
+**What changes**
+- New artifact: `docs/yc/impact-ledger.md`, one source of truth for depth and reach that feeds both YC and college forms.
+- Reach (real clubs and students) is zero today and is the only number that moves outcomes. S3, the G1 packet and the outreach list are therefore the highest-priority work, ahead of anything else in this plan.
+- The YC "full-time" question (Y5.1) must be answered with the college plan in view. Don't promise either one yet.
+
+**What does not change**
+- No invented users, quotes or numbers. Nothing in the ledger is projected.
+- Code freeze Oct 23 stands.
+
+**Deadlines to check (unverified for 2026–27; confirm on admission.stanford.edu):** Restrictive Early Action Nov 1 (non-binding; art-portfolio track Oct 15), Regular Decision Jan 5. Which one applies depends on the founder's grade, which this plan doesn't know. Question 1 in the ledger asks.
+
+| Change log | |
+|---|---|
+| 2026-10-13 | Added §8 and `impact-ledger.md`. |
