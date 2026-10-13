@@ -27,7 +27,7 @@ Students write Black-Scholes pricing, the Greeks and backtests in Python in the 
 - 23 browser-based lessons across three tracks (investing fundamentals, options pricing, quant investing), each ending in a Python exercise graded by unit tests, run client-side with Pyodide.
 - A pilot operating system: cohort launch from a six-week template with break weeks, invite links, a student cohort home, server-timestamped completions, synced code across devices, private capstones with revocable sharing, a leader scorecard and CSV export.
 - A paper-trading sandbox, challenges, certificates, and Stripe plumbing (not yet used for pilots).
-- Engineering: ~346 automated tests, CI with accessibility and Lighthouse performance budgets, row-level security tests for every database policy. `[SOURCE: recheck counts at submission]`
+- Engineering: 390 automated unit tests (65 files, checked 2026-10-13), CI with accessibility and Lighthouse performance budgets, row-level security tests for every database policy. `[SOURCE: recheck counts at submission]`
 
 **How long did it take, and who built it?** Built solo by the founder, a high-school student. `[NEEDS FOUNDER: dates, hours, what the founder did vs. used AI tools for. Be specific and honest; YC will ask.]`
 
