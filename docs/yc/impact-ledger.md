@@ -29,7 +29,7 @@ Last updated: 2026-10-13.
 |---|---|---|
 | Clubs or classes that have run a cohort | 0 | `docs/gtm/cohorts.csv` (empty) |
 | Students who completed at least one lesson in a leader-run cohort | 0 | `/admin/metrics` |
-| Independent learners who have used the lessons | Unknown, "fewer than 20" per the company spec | Pull a count from the database and record the date |
+| Independent learners who have used the lessons | Unknown, "fewer than 20" per the company spec | Run `scripts/metrics/baseline.sql` in Supabase and record the date. Run it twice: once with the founder's own test accounts counted, once without, and report only the second |
 | Schools / districts reached | 0 | CRM |
 | Leaders contacted | 0 real contacts logged | `crm.csv` |
 

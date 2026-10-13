@@ -64,10 +64,10 @@ No new features. Anything larger waits for the scorecard (readiness Y4.4).
 **Done when:** seed command works on a clean database, smoke test passes or its failures are written down, one PR merged by Oct 20.
 
 ### S5. Interview readiness (A drafts, F speaks) — capped at ~1.5h/week
-1. Grow `interview-bank.md` to 40 questions with the founder's answers left blank (the founder writes every answer).
+1. ~~Grow `interview-bank.md` to 40 questions~~ Already 50 questions (checked 2026-10-13). Only the founder's answers are missing.
 2. One mock "skeptical partner" round in chat on the hardest five: *why would a school pay, why solo, will you work full time, why not a stock simulator, how big can this get.* Output: three sentences of feedback per answer, no flattery.
 
-**Done when:** 40 questions listed; one mock round recorded in `docs/yc/mock-interviews.md`.
+**Done when:** one mock round recorded in `docs/yc/mock-interviews.md`. Needs the founder's spoken answers; not started.
 
 ### S6. G1 packet for Fri Oct 16 (A, ~45m)
 Pre-fill the decision-log row, the readiness §2 score table with evidence per dimension, and the three open decisions (adult signatory, advisors, early submit). The founder edits scores they disagree with.
