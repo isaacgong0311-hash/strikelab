@@ -20,7 +20,7 @@ If this plan and the mega plan disagree on dates or gates, the mega plan wins. T
 
 ## 1. The honest verdict
 
-**The product is far ahead of the company.** 23 lessons, a cohort operating system, a scorecard, 346 tests and CI. Almost none of that is what a YC partner decides on. They decide on:
+**The product is far ahead of the company.** 23 lessons, a cohort operating system, a scorecard, 390 tests and CI. Almost none of that is what a YC partner decides on. They decide on:
 
 1. **Are real people using it, and is it growing?** (Today: no leader contacts, no cohort. This is the whole gap.)
 2. **Does the founder understand something others don't?** (Partly written down, not yet earned from interviews.)
@@ -189,7 +189,7 @@ YC partners rarely read the code, but investors, school IT reviewers and technic
 |---|---|---|---|---|
 | Y9.1 | **(Done 2026-10-01: `finpath/` and `SUBMISSION.md` moved to `archive/`; README leads with the pilot. Electron/Capacitor stay because `package.json` scripts use them; `marketing/` holds outreach drafts.)** **Repo tells one story.** The repo root also holds `finpath/` (a separate hackathon app), `marketing/`, Electron/Capacitor files, `SUBMISSION.md`. Move the unrelated pieces to an `archive/` folder or a separate repo, and make `README.md` open with the pilot product and the proof | A | Winter build (Dec 21) | README answers: what is it, who runs it, what has it proven, how to try it in 2 minutes |
 | Y9.2 | **Public numbers match the repo.** Test counts, lesson counts, "23 lessons" etc. checked against reality before any public claim | A | Each gate | A one-line check in the gate checklist |
-| Y9.3 | **Keep CI green and the budgets enforced.** 346 tests, accessibility, Lighthouse budgets | A | Always | No red `master` |
+| Y9.3 | **Keep CI green and the budgets enforced.** 390 tests, accessibility, Lighthouse budgets | A | Always | No red `master` |
 | Y9.4 | **(Already fixed: migration 0020 and the `23505` handler; audit doc updated 2026-10-01.)** **Close the known risks in `docs/money-paths-audit.md`.** The Stripe webhook ordering gap and the certificate race are documented; fix them before the first payment | A | Before Q20/Q21 | Fixed with tests |
 | Y9.5 | **Security and privacy posture one-pager** for school IT: where data lives, who can see it, retention, deletion, subprocessors, incident process. Built from `docs/trust/` | A | Before a district-review pilot | One page, no compliance claims without Y6.4 |
 | Y9.6 | **A backup and restore drill** for the production database; Supabase Pro only when the trigger in the mega plan §13 fires | F + A | Before cohort A | A restore tested once |
