@@ -243,7 +243,7 @@ print("Tests passed!")
   <li><strong>Synthetic long stock:</strong> C − P + K · e<sup>−rT</sup> = S. Buy a call, sell a put, invest PV(K), and you've recreated owning the stock outright.</li>
   <li><strong>Synthetic call:</strong> C = P + S − K · e<sup>−rT</sup>. If calls look overpriced, you can build one yourself out of a put plus the stock.</li>
   <li><strong>Synthetic put:</strong> P = C − S + K · e<sup>−rT</sup>. Know the call price and you can back out exactly what the put should cost.</li>
-  <li><strong>Box spread:</strong> buy a call spread and sell a put spread at the same two strikes. The payoff at expiration is always the fixed gap K<sub>2</sub> − K<sub>1</sub>, no matter where the stock lands — so the box has to trade at that gap's present value. Market makers use box spreads to effectively borrow and lend at whatever rate the options market implies.</li>
+  <li><strong>Box spread:</strong> at the same two strikes, buy a bull call spread (long the lower-strike call, short the higher-strike call) and a bear put spread (long the higher-strike put, short the lower-strike put). The payoff at expiration is always the fixed gap K<sub>2</sub> − K<sub>1</sub>, no matter where the stock lands — so the box has to trade at that gap's present value. Market makers use box spreads to effectively borrow and lend at whatever rate the options market implies.</li>
 </ul>
 
 <h2>Dividends and Early Exercise</h2>
@@ -855,7 +855,7 @@ print("Tests passed!")
   <li><strong>Moneyness:</strong> vega peaks right at the ATM strike and tapers off on either side. Deep OTM options are close to binary bets — they'll be worth either a lot or nothing — so a small shift in vol barely changes that calculus. Deep ITM options are close to certain to be exercised regardless, so vol doesn't move the needle much there either.</li>
   <li><strong>Time to expiry:</strong> vega scales with √T. A 1-year ATM option carries roughly √12 ≈ 3.46× the vega of a 1-month ATM option — more time on the clock means more room for volatility to actually matter.</li>
 </ul>
-<p>The upshot is that long-dated options behave more like a bet on volatility than a bet on direction. A 2-year LEAPS option might sit around $0.80 of vega — a 5-point move in vol shifts its price by $4, often more than the delta-driven move you'd get from a comparable stretch of time.</p>
+<p>The upshot is that long-dated options behave more like a bet on volatility than a bet on direction. A 2-year at-the-money LEAPS option on a $100 stock sits around $0.50 of vega — a 5-point move in vol shifts its price by about $2.50, often more than the delta-driven move you'd get from a comparable stretch of time.</p>
 
 <h2>Implied Volatility: The Market's Forecast</h2>
 <p>Black-Scholes takes σ as one of its inputs, but here's the catch: nobody can actually observe σ directly. What you do observe is the option's <em>market price</em>. So traders run the formula backwards — given this market price, what σ would make Black-Scholes spit out that exact number? That backed-out σ is <strong>implied volatility (IV)</strong>.</p>
