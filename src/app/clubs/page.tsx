@@ -83,6 +83,7 @@ export default function ClubsPage() {
           </div>
           <div className={styles.ctaRow}>
             <Link href="/demo" className={styles.secondary}>Try the teacher view with sample data</Link>
+            <Link href="/guides/start-a-high-school-investing-club" className={styles.secondary}>How to start a club</Link>
           </div>
         </div>
       </section>

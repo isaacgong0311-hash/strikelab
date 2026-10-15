@@ -38,6 +38,7 @@ const STATIC_PAGES: {
   { path: "/privacy", updated: "2026-08-04", priority: 0.3, freq: "yearly" },
   { path: "/terms", updated: "2026-08-04", priority: 0.3, freq: "yearly" },
   { path: "/trust", updated: "2026-10-01", priority: 0.4, freq: "monthly" },
+  { path: "/guides/start-a-high-school-investing-club", updated: "2026-10-15", priority: 0.7, freq: "monthly" },
 ];
 
 export default function sitemap(): MetadataRoute.Sitemap {

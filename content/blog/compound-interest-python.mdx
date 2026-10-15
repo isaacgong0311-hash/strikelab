@@ -1,0 +1,93 @@
+---
+title: "Compound Interest Explained, With Python You Can Run"
+description: "How compound growth works, the Rule of 72, and why starting early matters. Includes a short Python example with real numbers."
+date: "2026-10-15"
+author: "Isaac Gong"
+tags: ["investing", "beginners", "compound-interest", "python"]
+targetKeyword: "compound interest"
+relatedLesson: "inv-6"
+---
+
+Compound interest is growth on top of growth. It is the reason time matters so
+much in investing, and it is easy to see once you write it as code.
+
+*The rates below are illustrative only. They are not a forecast or a promise of
+any return.*
+
+## The idea
+
+If you earn a return and leave it invested, next year you earn a return on the
+original amount **and** on last year's gain. The formula for a one-time deposit
+is:
+
+```
+future value = principal × (1 + rate) ^ years
+```
+
+## One deposit, three time horizons
+
+```python
+principal = 1000
+rate = 0.07  # an illustrative 7% a year
+
+for years in (10, 20, 30):
+    value = principal * (1 + rate) ** years
+    print(years, round(value, 2))
+```
+
+This prints:
+
+```
+10 1967.15
+20 3869.68
+30 7612.26
+```
+
+Notice the pattern. The second ten years added about $1,900 and the third ten
+added about $3,700. The growth speeds up because each year's gain is larger than
+the last.
+
+## The Rule of 72
+
+A quick mental shortcut: divide 72 by the annual rate (as a whole number) to
+estimate how many years it takes to double. At 7%, 72 ÷ 7 is about 10.3 years,
+which matches the table above, where $1,000 became about $1,967 in 10 years. It
+is an approximation, not an exact law.
+
+## Adding money every month
+
+Most people invest regularly, not once. Here is $100 a month, compounded monthly:
+
+```python
+monthly = 100
+rate = 0.07
+months = 30 * 12
+r = rate / 12
+
+value = monthly * (((1 + r) ** months - 1) / r)
+print(round(value))        # 121997
+print(monthly * months)    # 36000 put in
+```
+
+Over 30 years you contribute $36,000, and in this illustration it grows to about
+$122,000. Most of that final number is growth, not deposits, and most of the
+growth comes in the later years.
+
+## Why starting early matters
+
+Because growth builds on itself, the same dollar invested sooner has more years to
+compound. Waiting a decade to start is not made up by saving a little more later;
+it costs you the years where compounding does the most work.
+
+## The warning label
+
+Real investments do not earn the same return every year. They go up and down,
+and sometimes lose money. A smooth 7% line is a teaching tool. Fees also reduce
+growth: at 6% instead of 7%, that first $1,000 grows to about $5,743 in 30 years
+instead of $7,612.
+
+## Practice
+
+Open the [Building Your Portfolio lesson](/lesson/inv-6) or the
+[Retirement Accounts and Tax Drag lesson](/lesson/inv-8) and change the numbers
+yourself. Seeing the curve move does more than reading about it.

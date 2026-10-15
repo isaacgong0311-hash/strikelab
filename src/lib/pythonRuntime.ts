@@ -21,6 +21,30 @@ export const PYTHON_SOURCES = [
 export const PYTHON_UNAVAILABLE_MESSAGE =
   "Python couldn't load. Check your connection and try again. On a school network, ask IT to allow strikelab.dev.";
 
+interface ConnectionHints {
+  saveData?: boolean;
+  effectiveType?: string;
+}
+
+/**
+ * Whether a page should start downloading Python (about 13 MB, once per
+ * version) before the student asks to run anything. Pages where reading comes
+ * first skip the early download for visitors who turned on Data Saver or are
+ * on a 2G-class connection; Python then loads on the first Run, exactly as
+ * before. Browsers without the Network Information API get the early load.
+ */
+export function shouldPreloadPython(connection?: ConnectionHints | null): boolean {
+  if (!connection) return true;
+  if (connection.saveData) return false;
+  return connection.effectiveType !== "slow-2g" && connection.effectiveType !== "2g";
+}
+
+/** Reads the browser's connection hints, if it exposes any. */
+export function currentConnection(): ConnectionHints | null {
+  if (typeof navigator === "undefined") return null;
+  return (navigator as Navigator & { connection?: ConnectionHints }).connection ?? null;
+}
+
 export interface PythonRuntime {
   runPython(code: string): unknown;
 }
