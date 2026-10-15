@@ -50,3 +50,7 @@ Each "closed" claim from the 2026-10-01 update, mapped to code and a test:
 | Certificate race returns the existing certificate | `src/app/api/certificates/issue/route.ts` catches `23505` | `route.test.ts`: "returns the existing certificate id when insert loses a race", and a non-unique error still 500s |
 
 Caveat: `applyEvent.test.ts` runs against a hand-written fake of the Supabase query builder, not the real migration. The ordering logic is tested; the `.or(...)` filter string is not tested against Postgres. Before the first real payment, replay two out-of-order events against staging (the PGlite harness used by `*.db.test.ts` could cover this).
+
+### Correction, 2026-10-15 (later the same day)
+
+The re-verification above says the two fixes hold, and they do: events are applied in order and the certificate race returns the existing certificate. It **missed a third gap** found in the YC-worthiness review: `updateByCustomerId` in `src/app/api/stripe/webhook/route.ts` discards the result of `applySubscriptionEvent`, which can return `"missing"` (no subscription row for that customer yet) or `"error"`. The route still answers 200, so Stripe does not retry, and a `customer.subscription.created` event that arrives before the row exists is lost. Tracked as T3.1 in `docs/superpowers/plans/2026-10-15-build-plan-to-yc.md`. Fix before the first payment.
