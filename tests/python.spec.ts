@@ -37,3 +37,25 @@ test("with every Python source blocked, Run says so instead of hanging", async (
   await page.getByRole("button", { name: /run/i }).first().click();
   await expect(page.getByText(/Python couldn't load/)).toBeVisible({ timeout: 30_000 });
 });
+
+// Data Saver / 2G visitors shouldn't pay the 13 MB runtime download just for
+// opening a lesson: Python loads on the first Run instead.
+test("with Data Saver on, a lesson does not download Python until Run", async ({ page }) => {
+  await page.addInitScript(() => {
+    Object.defineProperty(navigator, "connection", { value: { saveData: true, effectiveType: "4g" }, configurable: true });
+  });
+  const wasm: string[] = [];
+  page.on("request", (r) => {
+    if (r.url().endsWith("pyodide.asm.wasm")) wasm.push(r.url());
+  });
+
+  await page.goto("/lesson/3", { waitUntil: "domcontentloaded" });
+  await expect(page.getByRole("button", { name: /run/i }).first()).toBeVisible({ timeout: 30_000 });
+  // Give an eager loader time to fire if there were one.
+  await page.waitForTimeout(4_000);
+  expect(wasm).toHaveLength(0);
+
+  await page.getByRole("button", { name: /run/i }).first().click();
+  await expect(page.getByText("Running tests…")).toBeHidden({ timeout: 60_000 });
+  expect(wasm.length).toBeGreaterThan(0);
+});

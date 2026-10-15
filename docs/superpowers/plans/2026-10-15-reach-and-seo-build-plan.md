@@ -100,3 +100,4 @@ Each step ends with lint, unit tests, the relevant browser tests and a build.
 | Date | Change |
 |---|---|
 | 2026-10-15 | Created. |
+| 2026-10-15 | Built: A1 partner map v0; B1 club-leader guide; B2 six beginner posts (drafted by the agent under the founder's byline, **founder read-through needed before merge**); B4 link-integrity test (per-post Open Graph images already existed); C2/C3 Data Saver / 2G visitors no longer download Python on page open (loads on first Run), with a browser test. Not built: B3 glossary, A4 Spanish, C1 performance (after freeze), C5 share cards. |

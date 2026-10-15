@@ -24,7 +24,7 @@ import FlameIcon from "@/components/FlameIcon";
 import Dialog from "@/components/ui/Dialog";
 
 import { CODE_SYNC_LABELS, useSyncedCode } from "@/lib/submissions/useSyncedCode";
-import { loadPythonRuntime } from "@/lib/pythonRuntime";
+import { currentConnection, loadPythonRuntime, shouldPreloadPython } from "@/lib/pythonRuntime";
 
 const MiniEditor = dynamic(() => import("@/components/MiniEditor"), { ssr: false });
 
@@ -725,7 +725,9 @@ export default function LessonClient({ lesson, sections, chunks, prev, next, tra
 
 function PyodideLoader() {
   // Start loading Python as soon as the exercise is on screen, so Run is fast.
+  // Data Saver and 2G visitors load it on the first Run instead (about 13 MB).
   useEffect(() => {
+    if (!shouldPreloadPython(currentConnection())) return;
     loadPythonRuntime().catch(() => {
       // Reported when the student clicks Run, which retries.
     });

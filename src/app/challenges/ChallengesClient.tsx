@@ -5,7 +5,7 @@ import Link from "next/link";
 import { getCurrentChallenge, getNextChallengeDate } from "@/lib/challenges";
 import { trackUpgradeClick } from "@/lib/analytics";
 import { startCheckout, useSubscription } from "@/lib/useSubscription";
-import { loadPythonRuntime } from "@/lib/pythonRuntime";
+import { currentConnection, loadPythonRuntime, shouldPreloadPython } from "@/lib/pythonRuntime";
 
 const MiniEditor = dynamic(() => import("@/components/MiniEditor"), { ssr: false });
 
@@ -37,6 +37,7 @@ function useCountdown(targetMs: number) {
 // ── Pyodide ──────────────────────────────────────────────────────────────────
 function usePyodide() {
   useEffect(() => {
+    if (!shouldPreloadPython(currentConnection())) return;
     loadPythonRuntime().catch(() => {
       // Reported when the student clicks Run, which retries.
     });
