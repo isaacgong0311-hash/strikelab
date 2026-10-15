@@ -12,8 +12,10 @@ export interface SubscriptionFields {
  * `stripe_customer_id`. Deliberately an UPDATE (not upsert) — this event
  * type never carries a Supabase user id, so it can't create the row itself.
  * The row is expected to already exist via `linkCustomerToUser`; if it
- * doesn't yet (out-of-order webhook delivery), this is a no-op and the
- * next subscription event reconciles it.
+ * doesn't yet (out-of-order webhook delivery) this returns "missing" and
+ * writes nothing. The webhook route turns "missing" and "error" into a 500
+ * so Stripe redelivers the event once the row exists; nothing else would
+ * reconcile it.
  *
  * Ordering: Stripe can deliver an older subscription event after a newer
  * one. The update only applies when this event is at least as new as the
@@ -60,6 +62,6 @@ export async function applySubscriptionEvent(
     console.warn(`[webhook] Ignored stale event for customer ${customerId} (created ${eventCreated})`);
     return "stale";
   }
-  console.warn(`[webhook] No subscription row yet for customer ${customerId} — will reconcile on next event`);
+  console.warn(`[webhook] No subscription row yet for customer ${customerId} — Stripe will redeliver`);
   return "missing";
 }
