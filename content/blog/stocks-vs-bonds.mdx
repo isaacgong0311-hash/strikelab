@@ -1,0 +1,74 @@
+---
+title: "Stocks vs. Bonds: What's the Difference?"
+description: "Stocks are ownership, bonds are loans. Learn how each makes money, why bond prices fall when interest rates rise, and how the risks differ."
+date: "2026-10-15"
+author: "Isaac Gong"
+tags: ["investing", "beginners", "bonds", "stocks"]
+targetKeyword: "stocks vs bonds"
+relatedLesson: "inv-7"
+---
+
+Stocks and bonds are the two building blocks of most portfolios. They look
+similar on a brokerage screen, but they are fundamentally different promises.
+
+*This article is education, not investment advice.*
+
+## Stocks are ownership
+
+When you buy a stock, you own part of a company. You do well if the company
+grows and its share price rises, and you may also receive **dividends**, a share
+of profits some companies pay out. There is no promised return. If the company
+struggles, the stock can fall a lot, and in the worst case become worthless.
+
+## Bonds are loans
+
+When you buy a bond, you lend money to a government or company. In return they
+promise to pay you **interest** (called the coupon) on a schedule and to give back
+your original amount (the **face value**) on a set date called maturity.
+
+A $1,000 bond with a 5% coupon pays $50 a year in interest, then returns the
+$1,000 at maturity, as long as the borrower can pay.
+
+## How the risks differ
+
+- **Stocks:** price swings, and the company may do badly. Higher potential
+  growth, higher potential loss.
+- **Bonds:** the borrower may fail to pay (**credit risk**), and the bond's market
+  price changes when interest rates change (**interest-rate risk**). Bonds are
+  usually less volatile than stocks, but they are not risk-free.
+
+## Why bond prices move when rates change
+
+This surprises most beginners. Suppose you own a bond paying 5%, and new bonds
+now pay 6%. Nobody will pay full price for your 5% bond when they can get 6%
+elsewhere, so its market price falls. If new bonds pay 4%, your 5% bond becomes
+more attractive and its price rises.
+
+You can check this with a small calculation. Take a $1,000 bond with a 5% coupon
+and ten years left, and discount each payment at the going rate:
+
+```python
+def bond_price(face, coupon_rate, market_rate, years):
+    coupon = face * coupon_rate
+    pv_coupons = sum(coupon / (1 + market_rate) ** t for t in range(1, years + 1))
+    pv_face = face / (1 + market_rate) ** years
+    return pv_coupons + pv_face
+
+print(round(bond_price(1000, 0.05, 0.06, 10), 2))  # 926.4
+print(round(bond_price(1000, 0.05, 0.04, 10), 2))  # 1081.11
+```
+
+When the market rate rises from 5% to 6%, the bond is worth about $926. When it
+falls to 4%, it is worth about $1,081. Same bond, different price.
+
+## Why people hold both
+
+Stocks and bonds often react differently to the same events, so holding both can
+make a portfolio's ups and downs smoother. How much of each is a personal choice
+that depends on your goals and how long you can wait, which is why advice from a
+qualified adult matters for real money decisions.
+
+## Learn it hands-on
+
+The [Bonds and Fixed Income lesson](/lesson/inv-7) lets you run the pricing code
+yourself and watch the price respond as you change the interest rate.
