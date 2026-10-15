@@ -53,3 +53,14 @@ Contact leaders, run interviews, incorporate, sign for Stripe, make legal calls,
 ## Suggested order
 
 A1 → A5 → A3 → A4 → A6 → A2 → B4 → B3 → B1 → B2. A1, A5 and B4 are the quick wins before G1.
+
+## Progress log
+
+| Date | Task | Result |
+|---|---|---|
+| 2026-10-15 | **A1** numbers audit | 23 lessons (9+11+3) confirmed. Fixed "346 tests" → 390 in the living YC plan. Audit in `docs/yc/numbers-audit-2026-10-15.md`. Flagged outdated pricing language in `marketing/cold_dm_templates.md` for the founder |
+| 2026-10-15 | **A5** money paths | Both fixes map to code and tests; caveat added: the ordering test uses a fake Supabase client, so replay out-of-order events on staging before the first payment |
+| 2026-10-15 | **B4** G1 pack | `docs/gtm/g1-decision-pack.md`. CRM has 0 real contacts on file; the pack says so plainly |
+| 2026-10-15 | **A6** security | `next` 16.2.6 had critical advisories (incl. `next/og` ImageResponse RCE; the app uses `opengraph-image.tsx`). Bumped `next` and `eslint-config-next` to 16.4.1. tsc, lint, 390 tests, `next build` pass. Remaining 10 audit items are transitive (`js-yaml`, `nanoid`, `browserslist`, …); `npm audit fix` crashes on an npm 10.9.4 bug (`edgesOut`), so they need a newer npm or hand-pinned overrides |
+| 2026-10-15 | **A3** browser tests | Playwright 55/55 passed on Next 16.4.1 (e2e, accessibility, Chromebook, no-JS, CDN-blocked Python) |
+| 2026-10-15 | **A4** Lighthouse | No errors. Warnings only: LCP 2.4–3.1 s (budget 2.0 s) and script size 192–202 KB (budget 184 KB). Compared with 16.2.6 on the same machine, script size fell from 206–283 KB and LCP was equal or better, so the bump didn't cause them. Lab numbers on a sandbox CPU, so use for comparison, not as absolutes |
