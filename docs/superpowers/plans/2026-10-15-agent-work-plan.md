@@ -1,0 +1,55 @@
+# Agent work plan: what Claude can do on StrikeLab without the founder
+
+**Date:** 2026-10-15 (the day before the G1 go/no-go)
+**Owner:** the agent does everything here. The founder reviews PRs and answers `[NEEDS FOUNDER]` markers.
+**Source:** carved out of the mega plan §7 (build queue) and the YC-readiness plan §7 ("what the agent can do right now"). If this file disagrees with those, they win.
+
+## Baseline (checked 2026-10-15)
+
+`tsc --noEmit` clean, `eslint` clean, `vitest`: 65 files / 390 tests passing. No `TODO`/`FIXME` in `src/`. The product is ahead of the company, so the rule from the mega plan holds: **no features to look bigger.** Everything below either removes risk, reduces founder hours, or prepares proof.
+
+## What I will not do
+
+Contact leaders, run interviews, incorporate, sign for Stripe, make legal calls, invent users/quotes/metrics, or touch anything whose build-queue trigger has not fired (Q11, Q12, Q15, Q18–Q30). Nothing ships on `master` after the Oct 23 freeze unless the scorecard names it.
+
+## Batch 1: do now (no trigger needed, low risk, one PR each)
+
+| # | Task | Why | Done when |
+|---|---|---|---|
+| A1 | **Y9.2 numbers audit.** Plans/docs say "346 tests"; reality is 390. Check every public count (lessons, tests, tracks) in `README.md`, `/about`, `/pilot`, `/clubs`, `docs/yc/*` against the repo and fix the drift | A wrong number in an application is the cheapest credibility loss there is | One PR; a grep-able list of every number and its source |
+| A2 | **Q16 staging seed script.** One command creates a rehearsal cohort with ~10 fake students in varied states (not started, stuck, finished, capstone in), clearly labeled as fake | The founder rehearses the kickoff (G2) and Monday scorecard on realistic data | `npm run seed:rehearsal` works against a local/PGlite DB; has a test; refuses to run against production |
+| A3 | **Smoke-test gaps.** Run `tests/` (Playwright e2e + a11y) locally, list failures and flakes, fix the ones caused by code | Q4 ("rehearsal blockers") is waiting on the founder; this finds some first | Green e2e/a11y run, or a written list of what needs an env I don't have |
+| A4 | **Lighthouse budgets.** Run `lhci` on `/`, `/demo`, `/learn`, `/cohort` and record against `lighthouserc.json` | Y9.3 and Q13: keep the budgets enforced before the freeze | Numbers pasted into the PR; regressions fixed or logged |
+| A5 | **Money-path re-read.** Re-verify `docs/money-paths-audit.md` items marked fixed (migration 0020, `23505` handler) still have tests | Y9.4: must hold before the first payment | Each claim maps to a test name |
+| A6 | **Dependency and security pass.** `npm audit`, Next 16 deprecation notices (per `AGENTS.md`), the `vite-tsconfig-paths` warning vitest prints | Cheap hygiene, no behavior change | Only safe bumps; lint/tests/build green |
+
+## Batch 2: document work for the founder to fill in
+
+| # | Task | Notes |
+|---|---|---|
+| B1 | **Application v0 → v0.5.** `docs/yc/application-draft.md` has 18 `[NEEDS FOUNDER]` markers. I'll re-verify every product claim against the repo, tighten the prose, and group the markers into a one-page question list for the founder | Y8.1. I do not answer the markers |
+| B2 | **Interview bank.** Add the missing sections (items 40+ target), tighten wording, and be ready to play the skeptical partner in chat | Y8.5/Y8.6. Founder writes every answer |
+| B3 | **Source-check pass** on `competition-map.md` and `market-sizing.md`: mark each figure as sourced / unsourced / blocked, build the checklist the founder walks through | Y3.1/Y3.2 say every figure waits on the founder's check |
+| B4 | **Gate G1 pack.** A one-page decision sheet for Oct 16 pulled from `crm.csv`, `npm run pipeline`, and the readiness scores | Saves the founder an hour tonight |
+
+## Batch 3: only when a trigger fires (I will not start these on my own)
+
+| Item | Trigger |
+|---|---|
+| Q11 needs-help digest | A leader asks "who should I nudge?" twice |
+| Q12 pilot-report generator | The first cohort ends |
+| Q14 / Q17 facilitator guide v2, burden reducers | Pilot reports name them |
+| Q18 / Q19 proof components, case study | Written consent from a leader |
+| Q20 / Q21 invoice request, Club checkout | A leader says yes to paying |
+| Anything on the "single largest measured bottleneck" | The Monday scorecard names it |
+
+## How I work
+
+- One branch/PR per task, off `master`, each with lint + tsc + tests (+ build when UI changes) run before pushing.
+- After code changes, `graphify update .` per `CLAUDE.md`.
+- Docs-only PRs for Batch 2; I flag anything unsourced instead of smoothing it over.
+- Failures get reported with output, not summarized away.
+
+## Suggested order
+
+A1 → A5 → A3 → A4 → A6 → A2 → B4 → B3 → B1 → B2. A1, A5 and B4 are the quick wins before G1.
