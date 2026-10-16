@@ -5,7 +5,8 @@ import { useRouter } from "next/navigation";
 import { useAuth } from "@/lib/auth/AuthProvider";
 import { getSupabaseBrowser } from "@/lib/supabase/client";
 import { QUANT_FOUNDATIONS_TEMPLATE } from "@/lib/cohorts/template";
-import { TIMEZONES, endDate, postLaunch, readableDate } from "@/lib/cohorts/launch";
+import { useBrowserTimezone } from "@/lib/cohorts/useBrowserTimezone";
+import { defaultTimezone, endDate, postLaunch, readableDate, timezoneChoices } from "@/lib/cohorts/launch";
 import BreakWeeksPicker from "@/components/cohort/BreakWeeksPicker";
 import Stepper from "../Stepper";
 import styles from "../teach.module.css";
@@ -21,7 +22,9 @@ export default function SetupWizard() {
   const [klass, setKlass] = useState<{ id: string; name: string } | null>(null);
   const [name, setName] = useState("");
   const [startsOn, setStartsOn] = useState("");
-  const [timezone, setTimezone] = useState("America/Chicago");
+  const detectedZone = useBrowserTimezone();
+  const [pickedZone, setPickedZone] = useState<string | null>(null);
+  const timezone = pickedZone ?? defaultTimezone(detectedZone);
   const [skipWeeks, setSkipWeeks] = useState<string[]>([]);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -131,8 +134,8 @@ export default function SetupWizard() {
             </label>
             <label className={styles.field}>
               Timezone
-              <select className={styles.input} value={timezone} onChange={(e) => setTimezone(e.target.value)}>
-                {TIMEZONES.map((zone) => (
+              <select className={styles.input} value={timezone} onChange={(e) => setPickedZone(e.target.value)}>
+                {timezoneChoices(detectedZone).map((zone) => (
                   <option key={zone} value={zone}>{zone.replace("_", " ")}</option>
                 ))}
               </select>

@@ -3,7 +3,8 @@
 import Link from "next/link";
 import { useState } from "react";
 import { QUANT_FOUNDATIONS_TEMPLATE } from "@/lib/cohorts/template";
-import { TIMEZONES, endDate, postLaunch, readableDate } from "@/lib/cohorts/launch";
+import { useBrowserTimezone } from "@/lib/cohorts/useBrowserTimezone";
+import { defaultTimezone, endDate, postLaunch, readableDate, timezoneChoices } from "@/lib/cohorts/launch";
 import BreakWeeksPicker from "@/components/cohort/BreakWeeksPicker";
 
 interface CohortClass {
@@ -74,7 +75,9 @@ function ActiveCohort({ classId, cohort, onLaunched }: Props & { cohort: CohortC
 
 export default function CohortLaunchPanel({ classId, cohort, onLaunched }: Props) {
   const [startsOn, setStartsOn] = useState("");
-  const [timezone, setTimezone] = useState("America/Chicago");
+  const detectedZone = useBrowserTimezone();
+  const [pickedZone, setPickedZone] = useState<string | null>(null);
+  const timezone = pickedZone ?? defaultTimezone(detectedZone);
   const [skipWeeks, setSkipWeeks] = useState<string[]>([]);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -132,8 +135,8 @@ export default function CohortLaunchPanel({ classId, cohort, onLaunched }: Props
         </label>
         <label>
           <span>Timezone</span>
-          <select value={timezone} onChange={(event) => setTimezone(event.target.value)}>
-            {TIMEZONES.map((zone) => (
+          <select value={timezone} onChange={(event) => setPickedZone(event.target.value)}>
+            {timezoneChoices(detectedZone).map((zone) => (
               <option key={zone} value={zone}>{zone.replace("_", " ")}</option>
             ))}
           </select>
