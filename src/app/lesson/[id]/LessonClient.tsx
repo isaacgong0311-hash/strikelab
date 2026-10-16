@@ -303,8 +303,8 @@ export default function LessonClient({ lesson, sections, chunks, prev, next, tra
 
     try {
       const pyodide = await loadPythonRuntime();
-      pyodide.runPython(code);
-      pyodide.runPython(lesson.exercise.testFn);
+      await pyodide.runPython(code);
+      await pyodide.runPython(lesson.exercise.testFn);
       setOutput("✓ All tests passed!");
       setStatus("pass");
       trackTestsPassed(lesson.id);

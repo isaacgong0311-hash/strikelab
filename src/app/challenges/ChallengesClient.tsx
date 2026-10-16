@@ -155,8 +155,8 @@ export default function ChallengesClient() {
     setStatus("running"); setOutput("Running tests…"); setAttempts(n => n + 1);
     try {
       const pyodide = await loadPythonRuntime();
-      pyodide.runPython(code);
-      pyodide.runPython(challenge.testCode);
+      await pyodide.runPython(code);
+      await pyodide.runPython(challenge.testCode);
       setOutput("All tests passed!");
       setStatus("pass");
 
