@@ -3,15 +3,15 @@
 **Updated:** 2026-10-16. **This page wins** over the older plans in `docs/superpowers/plans/` on what to do next. They still hold the detail: metric definitions (`docs/gtm/metric-glossary.md`), proof thresholds (the company-design spec), the build queue (mega plan §7).
 
 ## Where we are
-The product is built and tested. **No leader-run cohort has started, no leader has been interviewed, nobody has paid.** An independent review (`docs/superpowers/plans/2026-10-15-yc-worthiness-review.md`) concluded that is the problem, not the product.
+**Direction (2026-10-16): StrikeLab is a proving ground.** Free four-week seasons of timed challenges, a defended capstone and a verified record; parents pay for a January intensive; sponsors fund seasons later; clubs are chapters. Spec: `docs/superpowers/specs/2026-10-16-strikelab-proving-ground-design.md`. Build plan for the Oct 31 milestone: `docs/superpowers/plans/2026-10-16-seasons-and-waitlist.md` (built: `/seasons`, timed attempts, handles, leaderboards, `/intensive` waitlist).
 
 ## This week (in this order)
-1. **Founder (Isaac):** read YC's FAQ and Early Decision page (T0.1); talk to parents (T0.4); log the first 15 real contacts in `docs/gtm/crm.csv` (T1.1, T1.3); ask one teacher at your own school to sponsor Cohort 0 (T1.4).
-2. **Marketing lead:** `docs/gtm/marketing-lead-onboarding.md`. Message variants, 15 contacts, the money question on every call.
-3. **Agent:** Wave 1 hardening is done (webhook, join codes, Python worker, AI tutor switch, warm-up page, join page, timezone, payer columns); **apply migration `0023` before the next deploy.** Next: cutting what doesn't serve the six-week club story (needs your delete-or-hide call). Log: `docs/superpowers/plans/2026-10-15-agent-work-plan.md`.
+1. **Founder:** apply migration `0024` (the one-file bundle), set `SEASON_PARAM_SECRET` in Vercel, start Chapter 1 at your school, email 3 finance people asking them to judge, read YC's and PearX's eligibility rules yourself.
+2. **Teammate:** community posts and in-person visits pointing to `/seasons` (`docs/gtm/marketing-lead-onboarding.md`).
+3. **Agent (Nov 29 milestone):** official server-side scoring, the record page, defense sign-off, a rehearsal season.
 
 ## Next gate
-**Gate A, Oct 31:** 40 real contacts logged, 8+ conversations held, YC facts known, hardening merged, a Cohort 0 yes or no. Full gate list and kill rules: `docs/superpowers/plans/2026-10-15-build-plan-to-yc.md` §2.
+**Oct 31:** Chapter 1 started, 3 judges asked, eligibility rules read, seasons live on the site. **Nov 29:** 100 sign-ups and 5 chapters for Season 1 (Nov 30 to Dec 20). Kill rules are in the spec, section 7. Full gate list and kill rules: `docs/superpowers/plans/2026-10-15-build-plan-to-yc.md` §2.
 
 ## Open decisions
 | Decision | Owner | Needed by |
