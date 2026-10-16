@@ -71,3 +71,27 @@ A1 → A5 → A3 → A4 → A6 → A2 → B4 → B3 → B1 → B2. A1, A5 and B4
 | 2026-10-15 | **B2** interview bank | v0.5: fact sheets for the 14 questions the repo can answer, a follow-up table, and a mock-interview protocol. Honest gaps stated: no moderation or report button, no failover if Supabase/Vercel is down, no Google/Clever sign-in |
 | 2026-10-15 | Internal-linking pass (from Search Console) | **No code change.** The footer already links `/clubs`, `/pilot`, `/demo`, `/trust`, `/blog` on every page, so linking isn't why 30 pages are "discovered, not indexed" |
 | 2026-10-15 | Flag: contact address | Every page, the privacy policy and the terms use `hello@strikelab.app`, while the site is `strikelab.dev`. Founder: confirm that mailbox exists and is read |
+
+## Build log: Wave 1 of the build plan (2026-10-16)
+
+| Task | Result |
+|---|---|
+| **T3.1** Stripe webhook | Throws (so the route answers 500 and Stripe redelivers) when a subscription update finds no row or errors; same for an unconfigured database. New route test replays the exact out-of-order case and fails on the old code |
+| **T3.2** Join codes | `crypto.getRandomValues` instead of `Math.random`; code-space numbers corrected in the security review and decision log (32 symbols, about 1.07B). Invite pattern now matches the real alphabet |
+| **T3.3** Python in a Web Worker | `public/python-worker.js` + `src/lib/pythonRuntime.ts`: 10 s limit per run, runaway code is stopped and explained, next Run starts fresh Python; main-thread fallback if Workers are missing. Verified in a real browser: `while True:` typed in the editor is stopped and the next Run works. 10 unit tests with a fake worker |
+| **T3.4** Warm-up | `/warmup` page (and a row in the kickoff kit) so 25 students download the 13 MB runtime at the start, not mid-exercise |
+| **T3.5** AI tutor | Server drops client `system`/other roles (and non-array bodies) for every AI route; tutor prompt gains boundaries for minors and an untrusted-input rule; **migration `0023`** adds `classes.ai_tutor_enabled` (default **off**) and `ai_tutor_allowed()`; both quota functions honor it (fail closed, except before 0023 exists); leader toggle on the class page; privacy page and data map updated. **Still open, needs the founder:** the provider's data-retention terms (T8.8) and any output moderation beyond the prompt |
+| **T3.7** Join page | Distinguishes "invite doesn't match", and "we can't reach the database" (which used to say the invite was wrong) |
+| **T3.9** Site-down plan | Screen-free kickoff agenda for the leader added to the kickoff kit. **Still open, needs the founder:** an uptime monitor and database point-in-time recovery |
+| **T3.12** Content | Two lesson errors fixed after recomputing the numbers (LEAPS vega, box spread). **Still open:** expert review of all 23 lessons (T8.9) |
+| **T4.3** | Outreach drafts moved to `docs/gtm/outreach-drafts/`, stale pricing replaced |
+| **T5.3** | Timezone defaults to the leader's own (wizard and class page) |
+| **T1.8** | `payer` and `willing_to_pay` columns in the CRM and interview log; `npm run pipeline` prints the payer split and the yes/maybe/no tally |
+| **T10.1** | `docs/PLAN.md` is the one-page plan; README points to it. (The 12 older plans were not moved: links across the docs would break.) |
+| Teammate | `docs/gtm/marketing-lead-onboarding.md` |
+
+**Migration to apply before the next deploy:** `supabase/migrations/0023_class_ai_tutor.sql` (run `scripts/metrics/check-migrations.sql` afterwards). Until it is applied the code behaves as before.
+
+**Not started (and why):** T3.6 age and teacher attestations (wording needs a qualified reviewer), T3.8 rate-limit fail-closed policy (a taste call: it would lock students out if the limiter table is missing), T3.10 and T3.11 (tests that need a staging Supabase project), T4.1 to T4.2, T4.4 to T4.8 (waiting on the delete-or-hide decision), T5.1, T5.2, T5.4 to T5.11.
+
+Checks at this point: `tsc` clean, `eslint` 0 errors (2 known warnings), 430 unit tests and 57 browser tests (including accessibility) passing.
