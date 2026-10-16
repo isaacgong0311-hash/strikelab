@@ -35,6 +35,20 @@ export const STORED_DATA: StoredData[] = [
     others: "Only the handle and total score, on leaderboards",
   },
   {
+    what: "Defense sign-offs (whether a live defense verified a capstone or a top-10 placing, the date, and the reviewer's name)",
+    tables: ["defenses"],
+    student: "Yes",
+    leader: "No",
+    others: "Only on the student's record, if they share it",
+  },
+  {
+    what: "Record sharing setting (an unguessable link the student can turn off)",
+    tables: ["student_records"],
+    student: "Yes",
+    leader: "No",
+    others: "Anyone with the link sees the record under the handle: seasons, official scores, verified items. No name",
+  },
+  {
     what: "Intensive waitlist (a parent's email, the student's grade, an optional note)",
     tables: ["intensive_waitlist"],
     student: "No",

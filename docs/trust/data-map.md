@@ -37,6 +37,8 @@ Enforced in the database with row-level security (RLS): each rule below is a dat
 | Optional Discord webhook URL | `profiles.discord_webhook_url` | No | Yes | No | No |
 | Leaderboard handle (chosen by the student; never a real name) | `profiles.handle` | Pseudonym | Yes | Yes, on the chapter board | The handle and season score appear on leaderboards |
 | Season challenge attempts (code, explanation, timing, official score) | `season_attempts` | Student work | Yes | No | Only the handle and total score, on leaderboards |
+| Defense sign-offs (verified or not, kind, date, reviewer name, a note; consent confirmed before saving) | `defenses` | Student work | Yes | No | Only on the student's record, if they share it |
+| Record sharing setting (an unguessable token; turning sharing off deletes it) | `student_records` | No | Yes | No | Anyone with the link sees the record under the handle (seasons, official scores, verified items). No name. A top-10 placing appears only after a verified defense |
 | Intensive waitlist (a parent's email, the student's grade, an optional note) | `intensive_waitlist` | Yes (the parent's) | No | No | No; used only to contact that parent about the cohort |
 | Season schedule and challenge slots | `seasons`, `season_challenges` | No | Public | Public | Public |
 

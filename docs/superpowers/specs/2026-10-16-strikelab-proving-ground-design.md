@@ -116,7 +116,7 @@ Student opens challenge, then `start_attempt` stamps the start time and returns 
 | By | Founder | Teammate | Agent |
 |---|---|---|---|
 | **Oct 31** | Chapter 1 at school; ask 3 finance people to judge; read YC/PearX eligibility rules | Start community posts and in-person visits | Seasons data model, params, timed attempts, handles, chapter board; intensive waitlist page |
-| **Nov 29** | Review the 3 Season 1 challenges (agent drafted them; a judge may write a replacement); 5 chapters | Pre-season sign-ups toward 100 | Official scoring, record page, defense sign-off, rehearsal season |
+| **Nov 29** | Review the 3 Season 1 challenges (agent drafted them; a judge may write a replacement); 5 chapters; run the rehearsal (`docs/gtm/season-rehearsal.md`) | Pre-season sign-ups toward 100 | Official scoring, record page, defense sign-off, rehearsal season (all built 2026-10-16) |
 | **Dec 20** | Run Season 1 (Nov 30 to Dec 20) | Keep sign-ups and chapters going | Fixes from Season 1 only |
 | **January** | Intensive #1 | Parent waitlist push | Parent checkout, once a parent holds the Stripe account |
 | **Feb 28** | 1 sponsor letter of intent; Season 2 | Season 2 recruitment | Season 2 |

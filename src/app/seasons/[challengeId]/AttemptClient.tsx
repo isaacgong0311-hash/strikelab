@@ -21,6 +21,9 @@ interface Started {
 type Phase = "ready" | "working" | "submitted";
 
 export default function AttemptClient({ challengeId }: { challengeId: string }) {
+  // Challenge ids are "<season>-w<week>"; a rehearsal season lives only at its own link.
+  const seasonId = challengeId.replace(/-w\d+$/, "");
+  const seasonHref = seasonId.startsWith("rehearsal") ? `/seasons?season=${encodeURIComponent(seasonId)}` : "/seasons";
   const [phase, setPhase] = useState<Phase>("ready");
   const [attempt, setAttempt] = useState<Started | null>(null);
   const [code, setCode] = useState("");
@@ -109,7 +112,7 @@ export default function AttemptClient({ challengeId }: { challengeId: string }) 
                 <button type="button" className={styles.primary} onClick={start} disabled={busy}>
                   {busy ? "Starting…" : "Start the challenge"}
                 </button>
-                <Link href="/seasons" className={styles.secondary}>Back to the season</Link>
+                <Link href={seasonHref} className={styles.secondary}>Back to the season</Link>
               </div>
             </>
           )}
@@ -147,7 +150,7 @@ export default function AttemptClient({ challengeId }: { challengeId: string }) 
           {phase === "submitted" && (
             <>
               <p className={styles.lede} role="status">Submitted. Your official score appears on the leaderboard once it&apos;s graded.</p>
-              <Link href="/seasons" className={styles.primary}>Back to the season</Link>
+              <Link href={seasonHref} className={styles.primary}>Back to the season</Link>
             </>
           )}
 
