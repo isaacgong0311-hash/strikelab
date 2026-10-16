@@ -8,8 +8,7 @@ import {
   simulatePrice,
 } from "./pricing";
 
-// This engine prices every trade in the sandbox (real simulated cash, per the
-// archive/SUBMISSION.md writeup) and is a TS port of the exact formulas the lessons
+// This engine prices every trade in the sandbox (real simulated cash) and is a TS port of the exact formulas the lessons
 // teach students to implement themselves. It had zero test coverage before
 // this file — these lock in the one thing that actually matters: does the
 // math agree with the textbook, and does the seeded "live" price stay

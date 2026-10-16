@@ -16,8 +16,6 @@ A club leader launches a cohort from a fixed template in minutes, shares an invi
 
 Live → **[strikelab.dev](https://strikelab.dev)** · Free · Open source · MIT license
 
-Earlier hackathon material (the paper-trading submission writeup and the unrelated FinPath app) lives in [`archive/`](archive/).
-
 ---
 
 ## Curriculum
