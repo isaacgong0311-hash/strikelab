@@ -77,14 +77,14 @@ export const STORED_DATA: StoredData[] = [
     others: "No",
   },
   {
-    what: "Weekly challenge times",
+    what: "Weekly challenge times (retired feature: kept only for people who used it earlier)",
     tables: ["challenge_completions"],
     student: "Yes",
     leader: "No",
-    others: "The leaderboard shows times only, never names",
+    others: "No. The leaderboard is gone; nothing in the app reads this any more",
   },
   {
-    what: "Paper-trading sandbox balance and trades",
+    what: "Paper-trading sandbox balance and trades (retired feature: kept only for people who used it earlier)",
     tables: ["sandbox_accounts", "sandbox_positions", "sandbox_trades"],
     student: "Yes",
     leader: "No",

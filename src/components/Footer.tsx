@@ -16,7 +16,6 @@ const NAV_GROUPS = [
     links: [
       { href: "/lessons",    label: "Lessons" },
       { href: "/playground", label: "Playground" },
-      { href: "/sandbox",    label: "Sandbox" },
       { href: "/dashboard",  label: "Dashboard" },
       { href: "/blog",       label: "Blog" },
     ],

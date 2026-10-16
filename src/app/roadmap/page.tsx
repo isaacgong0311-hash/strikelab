@@ -8,7 +8,7 @@ export const metadata = pageMetadata({
   path: "/roadmap",
   title: "Roadmap",
   description:
-    "What's shipping next on StrikeLab — guided cohorts, VaR/GARCH/Monte Carlo lessons, and a live equity sandbox.",
+    "What's shipping next on StrikeLab — guided cohorts, VaR/GARCH/Monte Carlo lessons, and more cohort tools.",
 });
 
 const ROADMAP = [
@@ -18,7 +18,6 @@ const ROADMAP = [
     color: "#147038",
     items: [
       { title: "Lessons 8–10 shipped ✓", state: "done", desc: "Implied Volatility (Newton-Raphson IV solver), Option Strategies (spreads, straddles, iron condor), and Binomial Trees (CRR, American options) all live." },
-      { title: "Weekly coding challenges ✓", state: "done", desc: "Time-boxed problems scored on correctness + elegance — quant interview prep, gamified. Live on the Challenges page." },
     ],
   },
   {
@@ -26,7 +25,6 @@ const ROADMAP = [
     label: "Shipping now",
     color: "#147038",
     items: [
-      { title: "Paper-trading sandbox ✓", state: "done", desc: "$100,000 in simulated cash, options priced live with the same Black-Scholes engine from the lessons. Real (delayed) market data via Polygon.io is still on the roadmap." },
       { title: "Mobile-responsive layout", state: "in-progress", desc: "All lessons + playground fully usable on phone." },
       { title: "Rho lesson ✓", state: "done", desc: "The interest-rate Greek — how rate changes move long-dated options, and why it mattered so much during the 2022-2023 hiking cycle." },
       { title: "Achievement system ✓", state: "done", desc: "12 badges for completing tracks, perfect Greek scores, and streak milestones — live on the dashboard and at /achievements." },
@@ -56,7 +54,6 @@ const ROADMAP = [
     label: "Long term",
     color: "#646464",
     items: [
-      { title: "Live equity sandbox", state: "exploring", desc: "Multi-asset support — futures, FX, fixed income basics." },
       { title: "Quant interview prep track", state: "exploring", desc: "Brain teasers, probability puzzles, market-making intuition drills." },
       { title: "College-app portfolio builder", state: "exploring", desc: "Bundle your StrikeLab work into an admissions-ready artifact." },
       { title: "iOS / Android apps", state: "exploring", desc: "Offline lesson sync, mobile-native playground." },

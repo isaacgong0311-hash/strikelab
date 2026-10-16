@@ -27,7 +27,7 @@ const TIERS = [
     features: [
       `All ${TOTAL_LESSONS} lessons, with Python that runs in the browser`,
       "Short, step-by-step sessions for the first week's lessons",
-      "Greek visualizer, playground and paper-trading sandbox",
+      "Greek visualizer and playground",
       "Progress and code saved to your account",
       "Certificates when you finish a track",
     ],
@@ -85,7 +85,7 @@ const FAQS = [
   },
   {
     q: "What happened to Pro?",
-    a: "Pro (weekly coding challenges, $9/month) is paused for new sign-ups while we focus on club pilots. If you already subscribe, nothing changes: manage it from Settings → Billing.",
+    a: "Pro ($9/month) is no longer offered: the weekly coding challenges it unlocked were retired so we can focus on club pilots. If you subscribed earlier, email hello@strikelab.app and we will cancel it; you can also cancel yourself from Settings → Billing.",
   },
 ];
 

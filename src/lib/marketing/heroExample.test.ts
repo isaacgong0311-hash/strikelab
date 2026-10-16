@@ -8,7 +8,7 @@ describe("homepage numbers", () => {
     expect(heroExample().price).toBe("10.4506");
   });
 
-  it("prices the Greeks example with the same model the sandbox uses", () => {
+  it("prices the Greeks example with the same Black-Scholes model as the lessons", () => {
     const { inputs, price } = sampleGreeks();
     const reference = blackScholesCall(inputs.S, inputs.K, inputs.days / 365, inputs.r, inputs.sigma);
     expect(Number(price)).toBeCloseTo(reference, 2);

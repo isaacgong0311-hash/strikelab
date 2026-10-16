@@ -19,7 +19,7 @@ const SECTIONS: { title: string; body: React.ReactNode }[] = [
         run the site. We don&rsquo;t sell your data, don&rsquo;t run ad
         tracking, and don&rsquo;t share it with anyone except the vendors
         listed below that we use to actually run the platform (auth, hosting,
-        payments, AI). No real money ever touches the paper-trading sandbox.
+        payments, AI). StrikeLab never handles real trading money.
       </>
     ),
   },
@@ -36,9 +36,7 @@ const SECTIONS: { title: string; body: React.ReactNode }[] = [
           <strong>If you create an account</strong> (email + password, or
           Google sign-in): your email, an optional display name, and the same
           progress data above, your exercise code and short-session results
-          — synced via Supabase so they follow you to a new device. Signing
-          in also unlocks the paper-trading sandbox, which stores your
-          simulated cash balance and trade history.
+          — synced via Supabase so they follow you to a new device.
         </p>
         <p className="mb-3">
           <strong>If you join a class:</strong> your teacher sees your display
@@ -155,7 +153,7 @@ export default function PrivacyPage() {
         Privacy Policy
       </h1>
       <p className="text-sm mb-12" style={{ color: "var(--ink-3)" }}>
-        Last updated August 2026. See also our{" "}
+        Last updated October 2026. See also our{" "}
         <Link href="/terms" className="underline underline-offset-2" style={{ color: "var(--grass)" }}>
           Terms of Service
         </Link>

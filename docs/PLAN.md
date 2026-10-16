@@ -16,7 +16,7 @@ The product is built and tested. **No leader-run cohort has started, no leader h
 ## Open decisions
 | Decision | Owner | Needed by |
 |---|---|---|
-| Delete or hide the extras (sandbox, challenges, Electron, Capacitor, Spline) | Isaac | Before T4 starts |
+| ~~Delete or hide the extras~~ **Decided 2026-10-16: delete.** Done: Electron, Capacitor, Spline, archive, sandbox, challenges, leaderboard, their AI routes | Isaac | Done |
 | Which payer to test first: leader/school, parent, sponsor, partner org (default: all four, small) | Isaac | Oct 23 |
 | Does YC take under-18s / Early Decision for high schoolers | Isaac (read the source) | Oct 31 |
 | Role and arrangement with the new teammate (and a written contributor/IP agreement) | Isaac + teammate + a parent | Before they commit code or copy |

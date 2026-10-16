@@ -51,8 +51,6 @@ Three tracks, 23 lessons, each ending with a coding exercise — students fill i
 | **Lesson track** | 23 structured lessons across three tracks, each ending with a Pyodide-powered coding exercise that runs directly in the browser — no install. |
 | **Pricing playground** | A CodeMirror editor pre-loaded with a partial Black-Scholes engine. Implement `compute_delta`, `compute_gamma`, `compute_theta`, `compute_vega`, click Run, and all four Greek curves render live. |
 | **Greek visualizer** | Recharts plots of Δ, Γ, Θ, ν as functions of strike price. Drag sliders for stock price (S), time to expiry (T), risk-free rate (r), and volatility (σ) to reshape the curves in real time. |
-| **Paper-trading sandbox** | $100,000 in simulated cash, options priced live with the same Black-Scholes engine from the lessons. |
-| **Weekly challenges** | Time-boxed quant-interview-style problems, scored on correctness + elegance, with a live leaderboard. |
 | **Dashboard** | XP, streaks, a full-year activity heatmap, per-difficulty stats, and 12 achievement badges. |
 | **Short sessions** | Week-1 lessons also run as bite-sized sessions at `/learn/[id]`: one idea per screen, instant feedback, missed questions come back. |
 | **Pilot cohorts** | Teachers launch the six-week Quant Foundations Lab (with break weeks) and share an invite link. Students get a cohort home with one next step and a private capstone; teachers get a scorecard (activation, weekly activity, week-4 retention, who needs help) and CSV export. |
@@ -92,7 +90,7 @@ STRIPE_PRO_PRICE_ID=...
 STRIPE_SCHOOL_PRICE_ID=...
 ```
 
-The app runs without any of these set — Supabase-backed features (auth, progress sync, sandbox) and Stripe checkout fall back to a clean disabled state instead of crashing.
+The app runs without any of these set — Supabase-backed features (auth, progress sync) and Stripe checkout fall back to a clean disabled state instead of crashing.
 
 Database changes live in `supabase/migrations/` and are applied by hand in the Supabase SQL editor, in order. `scripts/metrics/check-migrations.sql` shows which are applied.
 

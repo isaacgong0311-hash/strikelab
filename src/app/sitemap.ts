@@ -26,8 +26,6 @@ const STATIC_PAGES: {
   { path: "/demo", updated: "2026-09-23", priority: 0.8, freq: "monthly" },
   { path: "/lessons", updated: "2026-06-08", priority: 0.9, freq: "weekly" },
   { path: "/playground", updated: "2026-07-14", priority: 0.8, freq: "monthly" },
-  { path: "/sandbox", updated: "2026-08-03", priority: 0.8, freq: "weekly" },
-  { path: "/challenges", updated: "2026-07-27", priority: 0.7, freq: "weekly" },
   { path: "/pricing", updated: "2026-09-23", priority: 0.7, freq: "monthly" },
   { path: "/achievements", updated: "2026-08-03", priority: 0.5, freq: "monthly" },
   { path: "/about", updated: "2026-07-27", priority: 0.6, freq: "monthly" },

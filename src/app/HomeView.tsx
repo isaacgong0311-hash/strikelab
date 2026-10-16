@@ -17,7 +17,7 @@ const TOTAL_LESSONS = TRACKS.reduce((n, t) => n + t.lessons.length, 0);
 
 const FAQS = [
   { q: "Do I need to know finance or coding?", a: "No. Lesson 1 starts at what a stock is. Python comes in gradually, with the hard parts already written, and it runs in your browser." },
-  { q: "What does it cost?", a: "Students never pay: every lesson, the playground and the sandbox are free. Clubs start with a free six-week pilot, then $199/year per club or $499/year per school instructor if they continue." },
+  { q: "What does it cost?", a: "Students never pay: every lesson and the playground are free. Clubs start with a free six-week pilot, then $199/year per club or $499/year per school instructor if they continue." },
   { q: "Do I need an account?", a: "Not to start. Progress saves on this device; a free account syncs it across devices and keeps your code." },
   { q: "I lead a club. How much prep is it?", a: "None beyond showing up. Each week comes with a goal, discussion prompts, common sticking points and a message to send. The lessons do the teaching." },
   { q: "Is it safe for students?", a: "It's built for ages 13–18: no ads, no public profiles or leaderboards with names, work is private unless the student shares it, and accounts can be deleted at any time." },
@@ -186,7 +186,7 @@ export default function HomeView() {
             <div className={styles.card}>
               <span className={styles.step} aria-hidden="true">3</span>
               <h3 className={styles.h3}>See it move</h3>
-              <p className={styles.body}>Drag sliders to reshape the Greek curves, then try ideas in a paper-trading sandbox with $100k of pretend cash.</p>
+              <p className={styles.body}>Drag sliders to reshape the Greek curves and watch the price and risk change as you move each input.</p>
             </div>
           </div>
         </div>

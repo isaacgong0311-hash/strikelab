@@ -11,8 +11,6 @@ const PRIMARY: { href: string; label: string; pro?: boolean }[] = [
   { href: "/dashboard",   label: "Dashboard" },
   { href: "/lessons",     label: "Lessons" },
   { href: "/playground",  label: "Playground" },
-  { href: "/sandbox",     label: "Sandbox" },
-  { href: "/challenges",  label: "Challenges", pro: true },
 ];
 
 const SECONDARY: { href: string; label: string }[] = [

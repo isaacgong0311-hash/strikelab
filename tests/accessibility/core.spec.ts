@@ -6,7 +6,6 @@ const PUBLIC_ROUTES = [
   "/lessons",
   "/lesson/inv-1",
   "/playground",
-  "/sandbox",
   "/dashboard",
   "/sign-in",
   "/settings",
@@ -19,7 +18,6 @@ const PUBLIC_ROUTES = [
   "/teach",
   "/teach/new",
   "/sign-up?next=%2Fteach%2Fnew",
-  "/challenges",
   "/trust",
   "/warmup",
 ];

@@ -28,8 +28,8 @@ Enforced in the database with row-level security (RLS): each rule below is a dat
 | Capstone (title, thesis, code, results, reflection) | `capstone_submissions` | Student work | Yes | Opens it explicitly; **each view is logged and shown to the student** | Only via a share link the student creates: no name, and it stops working when they turn sharing off |
 | Log of teacher views of a capstone | `capstone_access_log` | Activity | Yes | No | No |
 | Class membership, and when they joined | `class_members` | Activity | Yes | Yes | No |
-| Weekly challenge times | `challenge_completions` | Activity | Yes | No | The leaderboard shows times only, never names (since `0022`) |
-| Paper-trading sandbox balance and trades | `sandbox_*` | Activity | Yes | No | No |
+| Weekly challenge times (retired Oct 2026; rows kept for people who used it earlier, nothing reads them) | `challenge_completions` | Activity | Yes | No | No. The leaderboard was removed |
+| Paper-trading sandbox balance and trades (retired Oct 2026; rows kept for people who used it earlier, nothing reads them) | `sandbox_*` | Activity | Yes | No | No |
 | AI tutor usage counts (not the messages) | `ai_usage`, `hint_usage` | Activity | Yes | No | No |
 | Certificates (name, track, date) | `certificates` | Yes | Yes | No | Only someone the student gives the certificate link to |
 | Subscription status (if a paid plan) | `subscriptions` | No card data | Yes | No | No |
@@ -75,3 +75,5 @@ Resend (sign-up emails) will join this list if production-readiness P2 chooses c
 - Joining a class requires the class's invite code and an account. Joining, class creation, capstone saves and sharing, and account deletion are rate-limited per account.
 - Teachers can only see students who joined *their* class, and only the fields marked above.
 - All traffic is HTTPS. Secrets live in the hosting provider's environment settings, never in the code.
+
+**Cleanup still to do:** the two retired features' tables (`challenge_completions`, `sandbox_*`) still exist. Dropping them would delete those students' old data, so it needs a deliberate migration and a decision about notice; until then they are covered by account deletion like every other table, and no code reads or writes them.

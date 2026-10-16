@@ -95,3 +95,15 @@ A1 → A5 → A3 → A4 → A6 → A2 → B4 → B3 → B1 → B2. A1, A5 and B4
 **Not started (and why):** T3.6 age and teacher attestations (wording needs a qualified reviewer), T3.8 rate-limit fail-closed policy (a taste call: it would lock students out if the limiter table is missing), T3.10 and T3.11 (tests that need a staging Supabase project), T4.1 to T4.2, T4.4 to T4.8 (waiting on the delete-or-hide decision), T5.1, T5.2, T5.4 to T5.11.
 
 Checks at this point: `tsc` clean, `eslint` 0 errors (2 known warnings), 430 unit tests and 57 browser tests (including accessibility) passing.
+
+## Build log: the cut (2026-10-16, decision: delete)
+
+| Task | Result |
+|---|---|
+| **T4.1, T4.2** | Removed Electron, Capacitor, Spline and `archive/`: 185 packages and about 2,700 lockfile lines gone (lockfile keeps CRLF) |
+| **T4.4** | Removed the paper-trading sandbox, weekly challenges and leaderboard, and their API and AI routes, pages, CSS and tests. Kept `src/lib/pricing.ts` (the homepage example uses its Black-Scholes function) |
+| Copy | Nav, footer, sitemap, home, roadmap, about (history kept, plus an Oct 2026 "retired" line), pricing (+ Pro FAQ), terms, privacy ("Last updated October 2026"), FAQ, `llms.txt`, README, success page all updated |
+| Data | The tables `challenge_completions` and `sandbox_*` were **not** dropped (that would delete old users' data); the data map says they are retired and unread. Dropping them needs a deliberate migration |
+| Checks | `tsc` clean, `eslint` 0 errors, 418 unit tests, `next build`, 58 browser tests (incl. accessibility) |
+
+**For the founder to read:** the edits to `/terms` and `/privacy` (legal pages), and the Pro FAQ now says Pro is no longer offered and anyone who subscribed can email to cancel.

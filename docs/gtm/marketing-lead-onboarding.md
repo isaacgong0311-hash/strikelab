@@ -31,7 +31,7 @@ Isaac owns: the product, the demos, anything that needs a technical answer, scho
    - "Zero prep" (the real weekly prep is not measured yet).
    - "We'll handle your district's data-privacy agreement."
    - "Trusted by N schools" or any number of clubs running it.
-   - Anything about the paper-trading sandbox or the AI tutor in leader outreach (both are being cut or reworked).
+   - The paper-trading sandbox, weekly challenges or a leaderboard (all removed in Oct 2026), or the AI tutor (off by default for every class; the leader chooses).
 3. **Adults only.** Outreach goes to teachers, advisors, parents, firms and organizations. Do not cold-message students. Do not collect any student's personal information.
 4. **Consent before anything is public.** A quote, a name, a school or a photo needs written permission from that person (and a guardian for a minor). Templates: `docs/gtm/` (one page each, still pending legal review).
 5. **No access to production data or keys.** You do not need the database, Stripe or any service key, and you should not be given them. The CRM is a CSV in the repo; the numbers come from `npm run pipeline`.

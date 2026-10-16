@@ -116,7 +116,6 @@ function SuccessContent() {
               display: "flex", flexDirection: "column", gap: 10,
             }}>
               {[
-                "Weekly coding challenges with a live leaderboard",
                 "Weekly office hours with the founder",
                 "Priority email support",
               ].map((item) => (
@@ -128,13 +127,13 @@ function SuccessContent() {
             </ul>
 
             <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-              <Link href="/challenges" style={{
+              <Link href="/lessons" style={{
                 display: "block", padding: "14px 20px",
                 background: "var(--grass)", color: "#fff",
                 borderRadius: 14, fontWeight: 700, fontSize: 15,
                 boxShadow: "0 4px 0 var(--grass-d)", textDecoration: "none",
               }}>
-                Try a Challenge →
+                Start a lesson →
               </Link>
               <Link href="/dashboard" style={{
                 display: "block", padding: "12px 20px",
