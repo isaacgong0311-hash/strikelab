@@ -2,6 +2,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { getSupabaseServer } from "@/lib/supabase/server";
 import { getSupabaseAdmin } from "@/lib/supabase/admin";
+import { lookupInvite } from "@/lib/classInvite";
 import { privatePageMetadata } from "@/lib/seo";
 import { QUANT_FOUNDATIONS_TEMPLATE } from "@/lib/cohorts/template";
 import JoinButton from "./JoinButton";
@@ -11,8 +12,6 @@ export const metadata = privatePageMetadata({
   title: "Join your class",
   description: "Join your club or class on StrikeLab.",
 });
-
-const CODE_PATTERN = /^[A-Z2-9]{6}$/;
 
 /**
  * Invite link a teacher shares: /join/ABC234. Signed-out visitors are sent
@@ -24,12 +23,23 @@ export default async function JoinPage({ params }: { params: Promise<{ code: str
   const code = decodeURIComponent(raw).trim().toUpperCase();
   const here = `/join/${code}`;
 
-  const admin = getSupabaseAdmin();
-  const klass = CODE_PATTERN.test(code) && admin
-    ? (await admin.from("classes").select("id, name, template_id, starts_on").eq("join_code", code).maybeSingle()).data
-    : null;
+  const lookup = await lookupInvite(getSupabaseAdmin(), code);
 
-  if (!klass) {
+  if (lookup.kind === "unavailable") {
+    return (
+      <div className={styles.shell}>
+        <div className={styles.card}>
+          <h1 className={styles.title}>We can&apos;t reach StrikeLab&apos;s database right now</h1>
+          <p className={styles.muted}>
+            Your invite link is fine. This is on our side. Wait a minute and refresh this page. If it still doesn&apos;t load,
+            tell your teacher so they can start with the offline agenda and send the link again later.
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  if (lookup.kind === "not-found") {
     return (
       <div className={styles.shell}>
         <div className={styles.card}>
@@ -43,6 +53,7 @@ export default async function JoinPage({ params }: { params: Promise<{ code: str
     );
   }
 
+  const klass = lookup.klass;
   const isCohort = Boolean(klass.template_id && klass.starts_on);
   const destination = isCohort ? `/cohort/${klass.id}` : "/dashboard";
 
@@ -63,7 +74,7 @@ export default async function JoinPage({ params }: { params: Promise<{ code: str
     <div className={styles.shell}>
       <div className={styles.card}>
         <p className={styles.kicker}>You&apos;re invited</p>
-        <h1 className={styles.title}>Join {klass.name as string}</h1>
+        <h1 className={styles.title}>Join {klass.name}</h1>
         <p className={styles.muted}>
           {isCohort
             ? `Your class is running the ${QUANT_FOUNDATIONS_TEMPLATE.name}: six weeks of short lessons and real code, one step at a time.`

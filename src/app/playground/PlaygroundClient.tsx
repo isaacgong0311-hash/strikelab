@@ -4,7 +4,7 @@ import { rangeFill } from "@/lib/rangeFill";
 import { useSearchParams } from "next/navigation";
 import dynamic from "next/dynamic";
 import GreekChart from "@/components/GreekChart";
-import { loadPythonRuntime, PYTHON_UNAVAILABLE_MESSAGE } from "@/lib/pythonRuntime";
+import { loadPythonRuntime, PYTHON_UNAVAILABLE_MESSAGE, PythonTimeoutError } from "@/lib/pythonRuntime";
 
 const MiniEditor = dynamic(() => import("@/components/MiniEditor"), { ssr: false });
 
@@ -212,7 +212,7 @@ export default function PlaygroundClient() {
         setPyodideFailed(true);
         setOutput(PYTHON_UNAVAILABLE_MESSAGE); setStatus("fail"); return;
       }
-      try { pyodide.runPython(code); } catch (err: unknown) {
+      try { await pyodide.runPython(code); } catch (err: unknown) {
         setOutput(err instanceof Error ? err.message : String(err));
         setStatus("fail"); return;
       }
@@ -223,9 +223,12 @@ export default function PlaygroundClient() {
         for (const g of GREEKS) {
           const expr = g.fn.replace(/\bS\b/g,String(S)).replace(/\bK\b/g,String(K)).replace(/\bT\b/g,String(T)).replace(/\br\b/g,String(r)).replace(/\bsigma\b/g,String(sigma));
           try {
-            const val = pyodide.runPython(expr) as number;
+            const val = (await pyodide.runPython(expr)) as number;
             newData[g.key].push({ strike: Math.round(K*10)/10, value: Math.round(val*10000)/10000 });
           } catch (e: unknown) {
+            // A runaway run restarts Python and loses the student's functions;
+            // the other 160 evaluations would only fail, so stop and say why.
+            if (e instanceof PythonTimeoutError) throw e;
             if (!firstErr[g.key]) { const raw = e instanceof Error ? e.message : String(e); firstErr[g.key] = raw.split("\n").filter(Boolean).at(-1) ?? raw; }
             newData[g.key].push({ strike: Math.round(K*10)/10, value: NaN });
           }

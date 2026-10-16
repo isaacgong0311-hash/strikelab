@@ -19,7 +19,9 @@ breaks in production while the keys are missing.
 
 ## 2. Run the database schema
 
-In the Supabase dashboard, open **SQL Editor → New query**, and run each file
+**Shortcut:** paste the whole of [`supabase/apply-all-migrations.sql`](supabase/apply-all-migrations.sql) into **SQL Editor → New query** and click **Run**. It is every migration below, in order, in one file, and it is safe to run on a database that already has some of them (it only adds what is missing). Then run `scripts/metrics/check-migrations.sql`: every row should say `applied`. (After adding a migration, regenerate it with `npm run db:combine`; a test fails if it is stale.)
+
+Or, one at a time: in the Supabase dashboard, open **SQL Editor → New query**, and run each file
 in `supabase/migrations/` in order — paste the contents, click **Run**, repeat
 for the next file:
 

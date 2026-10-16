@@ -11,6 +11,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { requireUser } from "@/lib/supabase/requireUser";
 import { rateLimit } from "@/lib/rateLimit";
 import { getSupabaseAdmin } from "@/lib/supabase/admin";
+import { lookupInvite } from "@/lib/classInvite";
 
 export async function POST(req: NextRequest) {
   const auth = await requireUser();
@@ -27,20 +28,16 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Enter a join code" }, { status: 400 });
   }
 
-  const admin = getSupabaseAdmin();
-  if (!admin) {
-    return NextResponse.json({ error: "Classes not configured" }, { status: 503 });
+  // "not found" and "can't reach the database" are different problems for a
+  // student standing in a classroom: only the first means the code is wrong.
+  const lookup = await lookupInvite(getSupabaseAdmin(), code);
+  if (lookup.kind === "unavailable") {
+    return NextResponse.json({ error: "We can't reach the class database right now. Try again in a minute." }, { status: 503 });
   }
-
-  const { data: klass } = await admin
-    .from("classes")
-    .select("id, name, template_id, starts_on")
-    .eq("join_code", code)
-    .maybeSingle();
-
-  if (!klass) {
+  if (lookup.kind === "not-found") {
     return NextResponse.json({ error: "That code doesn't match a class" }, { status: 404 });
   }
+  const klass = lookup.klass;
 
   const { error } = await auth.supabase
     .from("class_members")

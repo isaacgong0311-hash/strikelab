@@ -81,11 +81,11 @@ export const FAQ_GROUPS: FAQGroup[] = [
     items: [
       {
         q: "Is StrikeLab really free?",
-        a: `The full curriculum (all ${LESSON_COUNT} lessons), the playground, the Greek visualizer, achievements, and the paper-trading sandbox are free forever — nothing there is gated. Students never pay. Clubs and schools that run the six-week lab pay after a free pilot ($199/year per club, $499/year per school instructor), and that funds the platform.`,
+        a: `The full curriculum (all ${LESSON_COUNT} lessons), the playground, the Greek visualizer and achievements are free forever — nothing there is gated. Students never pay. Clubs and schools that run the six-week lab pay after a free pilot ($199/year per club, $499/year per school instructor), and that funds the platform.`,
       },
       {
         q: "Is this safe to use as a minor?",
-        a: "Yes. No real money is ever involved anywhere on the platform. The paper-trading sandbox uses a simulated $100,000 balance priced with StrikeLab's own Black-Scholes engine, not a live brokerage connection. See /privacy for what account data we actually collect.",
+        a: "Yes. No real money is ever involved anywhere on the platform, and there is no connection to a brokerage. See /privacy for what account data we actually collect.",
       },
       {
         q: "Will you ever sell my data?",

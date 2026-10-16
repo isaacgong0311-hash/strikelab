@@ -5,6 +5,7 @@ import { pageMetadata } from "@/lib/seo";
 import { LAB_WEEKS, pilotCallHref } from "@/lib/marketing/lab";
 import { TrackedAnchor } from "@/components/marketing/TrackedLink";
 import TrackPageView from "@/components/marketing/TrackPageView";
+import PilotPreview from "./PilotPreview";
 
 export const metadata = pageMetadata({
   path: "/pilot",
@@ -18,9 +19,9 @@ const SETUP_HREF = "/teach/new?src=pilot";
 
 const FAQS = [
   { q: "Do I need a finance or coding background?", a: "No. The platform teaches; you run the meeting. Each week comes with a goal, discussion prompts, common sticking points and a message you can send your students." },
-  { q: "What devices do students need?", a: "Any laptop or Chromebook with a modern browser. Python runs in the browser, so there's nothing to install. Phones work for the short lessons; the coding exercises are easier on a laptop." },
-  { q: "My school needs to approve outside tools. What do you collect?", a: "Only what's needed to run the program: an email, a display name, and progress in the lessons you assign. Nothing is public, there are no ads, and students can delete their account at any time. We'll help with your district's data agreement." },
-  { q: "How many students?", a: "10 to 25 is the sweet spot for a club. Smaller works too." },
+  { q: "What devices do students need?", a: "A laptop or Chromebook with a modern browser. Python runs in the browser, so there's nothing to install. Phones work for the short lessons; the coding exercises are easier on a laptop." },
+  { q: "My school needs to approve outside tools. What do you collect?", a: "Only what's needed to run the program: an email, a display name, and progress in the lessons you assign. Nothing is public, there are no ads, and students can delete their account at any time. If your school has its own data agreement or form, email it to us and we'll go through it with you." },
+  { q: "How many students?", a: "The lab is designed for a club-sized group, roughly 10 to 25 students. Smaller works too." },
   { q: "What does it cost after the pilot?", a: "$199/year for a club or $499/year for a school instructor, if you want to continue. Nothing bills automatically, and students never pay." },
   { q: "What if our schedule has a break in the middle?", a: "Mark break weeks when you set it up (Thanksgiving, exams, spring break). Nothing is due on a break, and due dates shift for you." },
 ];
@@ -71,6 +72,8 @@ export default function PilotPage() {
         </div>
       </section>
 
+      <PilotPreview />
+
       <section className={styles.section} aria-labelledby="pilot-weeks">
         <div className={styles.wrap}>
           <h2 id="pilot-weeks" className={styles.h2}>What your students build</h2>
@@ -94,7 +97,7 @@ export default function PilotPage() {
               <h3 className={styles.h3}>You bring</h3>
               <ul className={styles.checks}>
                 <li>A weekly meeting time, in person or online</li>
-                <li>Your students (10–25 is ideal)</li>
+                <li>Your students (designed for roughly 10–25)</li>
                 <li>School approval, if your school requires it</li>
                 <li>A 15-minute conversation at the end about what worked</li>
               </ul>

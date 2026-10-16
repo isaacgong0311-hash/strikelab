@@ -46,8 +46,9 @@ function currentPeriodEnd(sub: Stripe.Subscription): string | null {
 async function linkCustomerToUser(userId: string, customerId: string) {
   const admin = getSupabaseAdmin();
   if (!admin) {
-    console.error("[webhook] Supabase admin client not configured — subscription not persisted");
-    return;
+    // Throwing makes the route answer 500, so Stripe retries instead of
+    // treating a paid checkout as delivered.
+    throw new Error("Supabase admin client not configured — subscription not persisted");
   }
   const { error } = await admin
     .from("subscriptions")
@@ -55,7 +56,7 @@ async function linkCustomerToUser(userId: string, customerId: string) {
       { user_id: userId, stripe_customer_id: customerId, updated_at: new Date().toISOString() },
       { onConflict: "user_id" },
     );
-  if (error) console.error("[webhook] Failed to link customer to user:", error.message);
+  if (error) throw new Error(`Failed to link customer to user: ${error.message}`);
 }
 
 async function updateByCustomerId(
@@ -64,11 +65,16 @@ async function updateByCustomerId(
   eventCreated: number,
 ) {
   const admin = getSupabaseAdmin();
-  if (!admin) {
-    console.error("[webhook] Supabase admin client not configured — subscription not persisted");
-    return;
+  if (!admin) throw new Error("Supabase admin client not configured — subscription not persisted");
+  const outcome = await applySubscriptionEvent(admin, customerId, fields, eventCreated);
+  // "stale" is fine (a newer event already won). "missing" means this event
+  // arrived before checkout.session.completed created the row, and "error"
+  // means the write failed. Either way the paid state would be lost if we
+  // answered 200, so throw: the route returns 500 and Stripe redelivers, by
+  // which time the row exists.
+  if (outcome === "missing" || outcome === "error") {
+    throw new Error(`Subscription update not applied (${outcome}) for customer ${customerId}`);
   }
-  await applySubscriptionEvent(admin, customerId, fields, eventCreated);
 }
 
 // Webhooks must read the raw body — Next.js App Router gives us Request.text()

@@ -17,9 +17,9 @@ const TOTAL_LESSONS = TRACKS.reduce((n, t) => n + t.lessons.length, 0);
 
 const FAQS = [
   { q: "Do I need to know finance or coding?", a: "No. Lesson 1 starts at what a stock is. Python comes in gradually, with the hard parts already written, and it runs in your browser." },
-  { q: "What does it cost?", a: "Students never pay: every lesson, the playground and the sandbox are free. Clubs start with a free six-week pilot, then $199/year per club or $499/year per school instructor if they continue." },
+  { q: "What does it cost?", a: "Students never pay: every lesson and the playground are free. Clubs start with a free six-week pilot, then $199/year per club or $499/year per school instructor if they continue." },
   { q: "Do I need an account?", a: "Not to start. Progress saves on this device; a free account syncs it across devices and keeps your code." },
-  { q: "I lead a club. How much prep is it?", a: "None beyond showing up. Each week comes with a goal, discussion prompts, common sticking points and a message to send. The lessons do the teaching." },
+  { q: "I lead a club. How much prep is it?", a: "Light. Each week comes with a goal, discussion prompts, common sticking points and a message to send, and the lessons do the teaching. Read the week's plan before you meet. We're timing the real prep in the first pilots and will tell you the number." },
   { q: "Is it safe for students?", a: "It's built for ages 13–18: no ads, no public profiles or leaderboards with names, work is private unless the student shares it, and accounts can be deleted at any time." },
 ];
 
@@ -62,7 +62,7 @@ export default function HomeView() {
                 <span className={home.doorWho}>I lead a club or teach</span>
                 <span className={home.doorWhat}>A six-week lab with a plan for every meeting and a scorecard. Pilots are free.</span>
                 <div className={home.doorActions}>
-                  <TrackedLink href="/pilot?src=home-hero" event="hero_cta" eventProps={{ target: "pilot" }} className={styles.secondary}>Start a free pilot</TrackedLink>
+                  <TrackedLink href="/pilot?src=home-hero" event="hero_cta" eventProps={{ target: "pilot" }} className={styles.primary}>Start a free pilot</TrackedLink>
                   <TrackedLink href="/demo" event="hero_cta" eventProps={{ target: "demo" }} className={home.doorLink}>See the teacher view</TrackedLink>
                 </div>
               </div>
@@ -125,8 +125,54 @@ export default function HomeView() {
         </div>
       </section>
 
+      {/* ── For clubs and teachers ───────────────────────── */}
+      <section className={`${styles.section} ${styles.sectionAlt}`} aria-labelledby="home-clubs">
+        <div className={`${styles.wrap} ${home.split}`}>
+          <div>
+            <p className={styles.kicker}>For clubs and teachers</p>
+            <h2 id="home-clubs" className={styles.h2}>Run it as a six-week lab. The plan is ready.</h2>
+            <p className={styles.lede}>
+              Launch in minutes, share one invite link, and meet once a week. Students work one short step at a time; you
+              see who&apos;s keeping up.
+            </p>
+            <ol className={home.weeks}>
+              {LAB_WEEKS.map((w) => (
+                <li key={w.week} className={home.week}>
+                  <span className={home.weekNum} aria-hidden="true">{w.week}</span>
+                  <div>
+                    <h3 className={home.weekTitle}>
+                      <span className="sl-visually-hidden">Week {w.week}: </span>
+                      {w.title}
+                    </h3>
+                    <p className={home.weekBody}>{w.builds}</p>
+                  </div>
+                </li>
+              ))}
+            </ol>
+            <div className={styles.ctaRow}>
+              <Link href="/pilot?src=home-clubs" className={styles.primary}>Start a free pilot</Link>
+              <Link href="/clubs?src=home-clubs" className={styles.secondary}>How a pilot works</Link>
+            </div>
+          </div>
+          <figure className={home.clubVisual}>
+            <div className={home.phone} inert aria-hidden="true">
+              <CohortHomeView classId="demo" className={DEMO_CLASS_NAME} view={demo.studentView} capstone={null} embedded />
+            </div>
+            <div className={home.scorecard} aria-hidden="true">
+              <span className={home.scorecardLabel}>Your scorecard</span>
+              <span><b>{demo.metrics.activated.pct}%</b> activated</span>
+              <span><b>{demo.metrics.activeThisWeek}</b> active this week</span>
+              <span className={home.scorecardHelp}>{needNudge} student{needNudge === 1 ? "" : "s"} to nudge</span>
+            </div>
+            <figcaption className={home.caption}>
+              A student&apos;s week and the leader&apos;s scorecard, from the <Link href="/demo" className={styles.textLink}>live demo</Link> (sample data).
+            </figcaption>
+          </figure>
+        </div>
+      </section>
+
       {/* ── The Greeks ───────────────────────────────────── */}
-      <section className={`${styles.section} ${styles.sectionAlt}`} aria-labelledby="home-greeks">
+      <section className={styles.section} aria-labelledby="home-greeks">
         <div className={`${styles.wrap} ${home.split}`}>
           <div>
             <p className={styles.kicker}>The Greeks</p>
@@ -168,7 +214,7 @@ export default function HomeView() {
       </section>
 
       {/* ── Run it ───────────────────────────────────────── */}
-      <section className={styles.section} aria-labelledby="home-run">
+      <section className={`${styles.section} ${styles.sectionAlt}`} aria-labelledby="home-run">
         <div className={styles.wrap}>
           <p className={styles.kicker}>How it works</p>
           <h2 id="home-run" className={styles.h2}>Don&apos;t just read it. Run it.</h2>
@@ -186,20 +232,20 @@ export default function HomeView() {
             <div className={styles.card}>
               <span className={styles.step} aria-hidden="true">3</span>
               <h3 className={styles.h3}>See it move</h3>
-              <p className={styles.body}>Drag sliders to reshape the Greek curves, then try ideas in a paper-trading sandbox with $100k of pretend cash.</p>
+              <p className={styles.body}>Drag sliders to reshape the Greek curves and watch the price and risk change as you move each input.</p>
             </div>
           </div>
         </div>
       </section>
 
       {/* ── What students build ──────────────────────────── */}
-      <section className={`${styles.section} ${styles.sectionAlt}`} aria-labelledby="home-build">
+      <section className={styles.section} aria-labelledby="home-build">
         <div className={styles.wrap}>
           <p className={styles.kicker}>What you build</p>
           <h2 id="home-build" className={styles.h2}>Work you can show, not a quiz score</h2>
           <p className={styles.lede}>
-            A capstone is a real question, code that answers it, and an honest result: the kind of project that stands out on
-            an application. These two examples were written by the StrikeLab team to show the bar.
+            A capstone is a real question, code that answers it, and an honest result: the kind of project a student can show a
+            teacher or put in an application. These two examples were written by the StrikeLab team to show the bar.
           </p>
           <div className={styles.grid2} style={{ marginTop: "1.75rem" }}>
             {[pricing, backtest].map((c) => (
@@ -212,52 +258,6 @@ export default function HomeView() {
               </Link>
             ))}
           </div>
-        </div>
-      </section>
-
-      {/* ── For clubs and teachers ───────────────────────── */}
-      <section className={styles.section} aria-labelledby="home-clubs">
-        <div className={`${styles.wrap} ${home.split}`}>
-          <div>
-            <p className={styles.kicker}>For clubs and teachers</p>
-            <h2 id="home-clubs" className={styles.h2}>Run it as a six-week lab. No prep.</h2>
-            <p className={styles.lede}>
-              Launch in minutes, share one invite link, and meet once a week. Students work one short step at a time; you
-              see who&apos;s keeping up.
-            </p>
-            <ol className={home.weeks}>
-              {LAB_WEEKS.map((w) => (
-                <li key={w.week} className={home.week}>
-                  <span className={home.weekNum} aria-hidden="true">{w.week}</span>
-                  <div>
-                    <h3 className={home.weekTitle}>
-                      <span className="sl-visually-hidden">Week {w.week}: </span>
-                      {w.title}
-                    </h3>
-                    <p className={home.weekBody}>{w.builds}</p>
-                  </div>
-                </li>
-              ))}
-            </ol>
-            <div className={styles.ctaRow}>
-              <Link href="/pilot?src=home-clubs" className={styles.primary}>Start a free pilot</Link>
-              <Link href="/clubs?src=home-clubs" className={styles.secondary}>How a pilot works</Link>
-            </div>
-          </div>
-          <figure className={home.clubVisual}>
-            <div className={home.phone} inert aria-hidden="true">
-              <CohortHomeView classId="demo" className={DEMO_CLASS_NAME} view={demo.studentView} capstone={null} embedded />
-            </div>
-            <div className={home.scorecard} aria-hidden="true">
-              <span className={home.scorecardLabel}>Your scorecard</span>
-              <span><b>{demo.metrics.activated.pct}%</b> activated</span>
-              <span><b>{demo.metrics.activeThisWeek}</b> active this week</span>
-              <span className={home.scorecardHelp}>{needNudge} student{needNudge === 1 ? "" : "s"} to nudge</span>
-            </div>
-            <figcaption className={home.caption}>
-              A student&apos;s week and the leader&apos;s scorecard, from the <Link href="/demo" className={styles.textLink}>live demo</Link> (sample data).
-            </figcaption>
-          </figure>
         </div>
       </section>
 

@@ -2,7 +2,7 @@
 
 What StrikeLab stores about students, who can see it, where it goes, and how long it's kept. It's written for a club sponsor, principal or district IT reviewer, and it goes in the pilot approval packet (`docs/gtm/outreach-kit.md` §5). It's a plain description of how the product works, not a legal document. The public version is https://strikelab.dev/trust, rendered from `src/lib/trust/dataMap.ts`: change both together.
 
-**Last checked against the code:** 2026-09-29, through migration `0022`. Update this page in the same PR as any migration that adds a table or column holding student data.
+**Last checked against the code:** 2026-10-16, through migration `0024` (seasons, handles, intensive waitlist). Update this page in the same PR as any migration that adds a table or column holding student data.
 
 ## Principles
 
@@ -28,13 +28,17 @@ Enforced in the database with row-level security (RLS): each rule below is a dat
 | Capstone (title, thesis, code, results, reflection) | `capstone_submissions` | Student work | Yes | Opens it explicitly; **each view is logged and shown to the student** | Only via a share link the student creates: no name, and it stops working when they turn sharing off |
 | Log of teacher views of a capstone | `capstone_access_log` | Activity | Yes | No | No |
 | Class membership, and when they joined | `class_members` | Activity | Yes | Yes | No |
-| Weekly challenge times | `challenge_completions` | Activity | Yes | No | The leaderboard shows times only, never names (since `0022`) |
-| Paper-trading sandbox balance and trades | `sandbox_*` | Activity | Yes | No | No |
+| Weekly challenge times (retired Oct 2026; rows kept for people who used it earlier, nothing reads them) | `challenge_completions` | Activity | Yes | No | No. The leaderboard was removed |
+| Paper-trading sandbox balance and trades (retired Oct 2026; rows kept for people who used it earlier, nothing reads them) | `sandbox_*` | Activity | Yes | No | No |
 | AI tutor usage counts (not the messages) | `ai_usage`, `hint_usage` | Activity | Yes | No | No |
 | Certificates (name, track, date) | `certificates` | Yes | Yes | No | Only someone the student gives the certificate link to |
 | Subscription status (if a paid plan) | `subscriptions` | No card data | Yes | No | No |
 | Request counters for abuse limits | `rate_limits` | No | No | No | No |
 | Optional Discord webhook URL | `profiles.discord_webhook_url` | No | Yes | No | No |
+| Leaderboard handle (chosen by the student; never a real name) | `profiles.handle` | Pseudonym | Yes | Yes, on the chapter board | The handle and season score appear on leaderboards |
+| Season challenge attempts (code, explanation, timing, official score) | `season_attempts` | Student work | Yes | No | Only the handle and total score, on leaderboards |
+| Intensive waitlist (a parent's email, the student's grade, an optional note) | `intensive_waitlist` | Yes (the parent's) | No | No | No; used only to contact that parent about the cohort |
+| Season schedule and challenge slots | `seasons`, `season_challenges` | No | Public | Public | Public |
 
 **StrikeLab staff** (the founder) can read the database to operate and support the service, and does so only for support, debugging and aggregate pilot metrics. Pilot reports use aggregate numbers only.
 
@@ -45,7 +49,7 @@ Enforced in the database with row-level security (RLS): each rule below is a dat
 | Supabase | Database and sign-in | Everything in the table above |
 | Vercel | Hosting; cookie-free, aggregate page analytics | Web requests (IP address, pages visited), no account data in analytics |
 | Sentry | Error reports | The error, the page, and the account id of a signed-in user (no email or name) |
-| Groq | AI tutor and hints (only when a student uses them) | The question or code the student sends, without their name or email |
+| Groq | AI tutor and hints (only when a student uses them and, for students in a class, only if their leader has turned the tutor on; it is off by default for every class) | The question or code the student sends, without their name or email |
 | Google | "Continue with Google" (only if used) | The sign-in itself |
 | Stripe | Payments (never used by students in a pilot) | The payer's checkout details, handled entirely by Stripe |
 | Web3Forms | Newsletter sign-up (only if used) | The email address entered |
@@ -75,3 +79,5 @@ Resend (sign-up emails) will join this list if production-readiness P2 chooses c
 - Joining a class requires the class's invite code and an account. Joining, class creation, capstone saves and sharing, and account deletion are rate-limited per account.
 - Teachers can only see students who joined *their* class, and only the fields marked above.
 - All traffic is HTTPS. Secrets live in the hosting provider's environment settings, never in the code.
+
+**Cleanup still to do:** the two retired features' tables (`challenge_completions`, `sandbox_*`) still exist. Dropping them would delete those students' old data, so it needs a deliberate migration and a decision about notice; until then they are covered by account deletion like every other table, and no code reads or writes them.

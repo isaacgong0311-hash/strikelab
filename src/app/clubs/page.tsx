@@ -18,7 +18,7 @@ const FOR = ["Math clubs", "Coding and CS clubs", "Investing clubs", "Economics 
 
 const FAQS = [
   { q: "Does the leader need finance or coding experience?", a: "No. The lessons teach the material; the weekly plan tells you how to run the meeting, what to ask, and where students usually get stuck." },
-  { q: "Can students use it outside the meeting?", a: "Yes. Lessons are short, run on any laptop or Chromebook, and pick up where each student left off. Most of the work can happen in the meeting if you prefer." },
+  { q: "Can students use it outside the meeting?", a: "Yes. Lessons are short, run on a laptop or Chromebook with a modern browser, and pick up where each student left off. Most of the work can happen in the meeting if you prefer." },
   { q: "What do I see as the leader?", a: "Who has started, who's active each week, week-4 retention, who needs a nudge (and why), and each student's capstone, with a CSV export for your records." },
   { q: "Is anything public?", a: "No. Student work is private to the student and their leader. A student can create a share link for their capstone, which hides their name and stops working when they turn it off." },
   { q: "Google Classroom or SSO?", a: "Not yet. Students join with one invite link and a free account." },
@@ -66,7 +66,7 @@ export default function ClubsPage() {
 
       <section className={styles.section} aria-labelledby="clubs-leader">
         <div className={styles.wrap}>
-          <h2 id="clubs-leader" className={styles.h2}>Zero prep for the leader</h2>
+          <h2 id="clubs-leader" className={styles.h2}>A ready plan for every meeting</h2>
           <div className={styles.grid3} style={{ marginTop: "1.5rem" }}>
             <div className={styles.card}>
               <h3 className={styles.h3}>A plan for every meeting</h3>
@@ -96,12 +96,12 @@ export default function ClubsPage() {
 
       <section className={styles.section} aria-labelledby="clubs-trust">
         <div className={styles.wrap}>
-          <h2 id="clubs-trust" className={styles.h2}>Safe to bring to your school</h2>
+          <h2 id="clubs-trust" className={styles.h2}>What we collect, and what we don&apos;t</h2>
           <ul className={styles.checks} style={{ maxWidth: "44rem" }}>
             <li>Built for ages 13–18. No ads, no selling data, no public profiles or leaderboards for students.</li>
             <li>Student work is private to the student and their leader unless the student shares it.</li>
             <li>Students can delete their account and everything in it at any time.</li>
-            <li>We&apos;ll help with your district&apos;s student-data agreement. <Link href="/privacy" className={styles.textLink}>Read the privacy page</Link>.</li>
+            <li>If your school has its own student-data agreement or approval form, email it to us and we&apos;ll go through it with you. <Link href="/privacy" className={styles.textLink}>Read the privacy page</Link>.</li>
           </ul>
         </div>
       </section>

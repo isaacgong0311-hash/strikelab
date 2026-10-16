@@ -40,6 +40,7 @@ const TIMELINE = [
   { date: "Aug 2026", event: "Curriculum rebalanced toward investing: 3 new Investing Fundamentals lessons (bonds, retirement accounts, common mistakes), Quant Investing trimmed to its 3 clearest lessons, and every lesson now opens with a \"before this lesson\" prereq box. 23 lessons total.", state: "done" },
   { date: "Aug 2026", event: "Interactive payoff diagrams and a clickable binomial tree lattice ship in the Option Strategies and Binomial Trees lessons.", state: "done" },
   { date: "Aug 2026", event: "Certificates of completion and Discord integration ship.", state: "done" },
+  { date: "Oct 2026", event: "Weekly challenges, the leaderboard and the paper-trading sandbox are retired so the product can focus on the six-week club lab.", state: "done" },
   { date: "Aug 2026", event: "Classroom rosters ship — teachers create a class in Settings, students join with a code.", state: "done" },
   { date: "Q4 2026", event: "Assignment grading, plus three new lessons on VaR, GARCH, and Monte Carlo.", state: "planned" },
 ];
@@ -68,7 +69,7 @@ const VALUES = [
 const MILESTONES = [
   "AoPS forum launch thread (March 2026)",
   "10-lesson curriculum shipped (May 2026)",
-  "Paper-trading sandbox shipped (Aug 2026)",
+  "Club pilot program and cohort tools built (Sep 2026)",
 ];
 
 export default function AboutPage() {
@@ -138,8 +139,7 @@ export default function AboutPage() {
           </p>
           <p className="text-sm leading-relaxed" style={{ color: "var(--muted2)" }}>
             So I built the resource I needed. StrikeLab is a multi-year project — the pricing
-            engine, the curriculum, and a paper-trading sandbox for practicing what you learn
-            with simulated cash. If you&rsquo;re a student staring at the same wall, this is for you.
+            engine, the curriculum, and a six-week lab that clubs can run. If you&rsquo;re a student staring at the same wall, this is for you.
           </p>
         </div>
       </div>

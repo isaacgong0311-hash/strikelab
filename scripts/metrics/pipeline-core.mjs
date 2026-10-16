@@ -6,9 +6,14 @@
 // - A lead that ends keeps its status; `next_action` starts with "closed:".
 // - `source` says how we reached them; WARM_SOURCES count as warm.
 // - The approval path goes in `notes` as "path:A", "path:B" or "path:C".
+// - `payer` answers "if this worked, who would pay?": one of PAYERS.
+//   `willing_to_pay` records the answer to the $199 question: one of WILLING.
+//   Leave both blank until the question has actually been asked.
 
 export const STAGES = ["to_contact", "contacted", "replied", "call_booked", "call_held", "verbal_yes", "locked", "running", "completed", "committed", "paid"];
 const ALIASES = { interested: "replied" };
+export const PAYERS = ["leader", "school", "parent", "sponsor", "partner_org", "nobody", "unsure"];
+export const WILLING = ["yes", "maybe", "no"];
 export const WARM_SOURCES = new Set(["own_school", "own_teacher", "warm_intro", "referral", "founder_personal_network"]);
 
 /** Minimal RFC 4180 CSV parser: quoted fields, doubled quotes, commas and newlines inside quotes. */
@@ -57,6 +62,13 @@ export function summarizePipeline(rows, today) {
     const m = /path:\s*([ABC])\b/i.exec(r.notes ?? "");
     if (m) paths[m[1].toUpperCase()]++;
   }
+  // The money question (build plan T1.7): who would pay, and would they say yes?
+  const asked = real.filter((r) => PAYERS.includes((r.payer ?? "").trim().toLowerCase()));
+  const payerSplit = Object.fromEntries(PAYERS.map((p) => [p, asked.filter((r) => r.payer.trim().toLowerCase() === p).length]));
+  const willing = Object.fromEntries(WILLING.map((w) => [w, real.filter((r) => (r.willing_to_pay ?? "").trim().toLowerCase() === w).length]));
+  const unknownPayers = real
+    .filter((r) => (r.payer ?? "").trim() !== "" && !PAYERS.includes(r.payer.trim().toLowerCase()))
+    .map((r) => `${r.organization} ("${r.payer}")`);
   const unknownStatus = real.filter((r) => stageIndex(r.status) === null).map((r) => `${r.organization} ("${r.status}")`);
   const todayMs = Date.parse(`${today}T00:00:00Z`);
   const followUp = real
@@ -77,6 +89,10 @@ export function summarizePipeline(rows, today) {
     verbalYes: reached("verbal_yes"),
     locked: reached("locked"),
     paths,
+    moneyAsked: asked.length,
+    payerSplit,
+    willing,
+    unknownPayers,
     followUp,
     unknownStatus,
   };
@@ -95,12 +111,18 @@ export function formatPipeline(s, today) {
     `| Verbal yeses with a date | ${s.verbalYes} |`,
     `| Locked pilots | ${s.locked} |`,
     `| Leaders by approval path (A / B / C) | ${s.paths.A} / ${s.paths.B} / ${s.paths.C} |`,
+    `| Asked who would pay | ${s.moneyAsked} of ${s.contacted} contacted |`,
+    `| Payer named (leader / school / parent / sponsor / partner org / nobody / unsure) | ${["leader", "school", "parent", "sponsor", "partner_org", "nobody", "unsure"].map((p) => s.payerSplit[p]).join(" / ")} |`,
+    `| Willing to pay the stated price (yes / maybe / no) | ${s.willing.yes} / ${s.willing.maybe} / ${s.willing.no} |`,
     "",
   ];
   if (s.followUp.length) {
     lines.push(`**Follow up today** (no contact for 3+ days):`, "");
     for (const f of s.followUp) lines.push(`- ${f.organization}: ${f.status}, last contact ${f.lastContact}. Next: ${f.nextAction || "(none set)"}`);
     lines.push("");
+  }
+  if (s.unknownPayers.length) {
+    lines.push(`**Fix these payer values** (use: ${PAYERS.join(", ")}): ${s.unknownPayers.join(", ")}`, "");
   }
   if (s.unknownStatus.length) {
     lines.push(`**Fix these statuses** (not in the list in outreach-kit.md §7): ${s.unknownStatus.join(", ")}`, "");

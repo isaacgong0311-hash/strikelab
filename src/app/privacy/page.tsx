@@ -19,7 +19,7 @@ const SECTIONS: { title: string; body: React.ReactNode }[] = [
         run the site. We don&rsquo;t sell your data, don&rsquo;t run ad
         tracking, and don&rsquo;t share it with anyone except the vendors
         listed below that we use to actually run the platform (auth, hosting,
-        payments, AI). No real money ever touches the paper-trading sandbox.
+        payments, AI). StrikeLab never handles real trading money.
       </>
     ),
   },
@@ -36,9 +36,17 @@ const SECTIONS: { title: string; body: React.ReactNode }[] = [
           <strong>If you create an account</strong> (email + password, or
           Google sign-in): your email, an optional display name, and the same
           progress data above, your exercise code and short-session results
-          — synced via Supabase so they follow you to a new device. Signing
-          in also unlocks the paper-trading sandbox, which stores your
-          simulated cash balance and trade history.
+          — synced via Supabase so they follow you to a new device.
+        </p>
+        <p className="mb-3">
+          <strong>If you play a season:</strong> the handle you choose (never
+          your real name) and your score appear on leaderboards; your code and
+          explanation are private to you and are used to compute your score.
+        </p>
+        <p className="mb-3">
+          <strong>If a parent joins the intensive waitlist:</strong> we keep
+          that parent&rsquo;s email, the student&rsquo;s grade and any note, and
+          use them only to contact that parent about the cohort.
         </p>
         <p className="mb-3">
           <strong>If you join a class:</strong> your teacher sees your display
@@ -66,7 +74,9 @@ const SECTIONS: { title: string; body: React.ReactNode }[] = [
         to generate a response. Usage is capped per day per account so costs
         stay predictable — we log how many requests you&rsquo;ve made, not
         the content of what you asked. AI features require signing in for
-        exactly this reason.
+        exactly this reason. If you are in a class or club, your leader
+        decides whether AI features are available to you; they are off until
+        the leader turns them on.
       </>
     ),
   },
@@ -153,7 +163,7 @@ export default function PrivacyPage() {
         Privacy Policy
       </h1>
       <p className="text-sm mb-12" style={{ color: "var(--ink-3)" }}>
-        Last updated August 2026. See also our{" "}
+        Last updated October 2026. See also our{" "}
         <Link href="/terms" className="underline underline-offset-2" style={{ color: "var(--grass)" }}>
           Terms of Service
         </Link>

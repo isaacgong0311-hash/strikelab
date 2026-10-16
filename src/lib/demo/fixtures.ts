@@ -111,3 +111,8 @@ export function buildDemoData(now: Date = new Date(), { daysIn = DEMO_DEFAULT_DA
 
   return { metrics, csv: cohortCsvRows(metrics), studentView, assignments };
 }
+
+/** A believable "first meeting" date for sample messages: one week from now, YYYY-MM-DD. */
+export function demoStartsOn(now: Date = new Date()): string {
+  return new Date(now.getTime() + 7 * 86_400_000).toISOString().slice(0, 10);
+}

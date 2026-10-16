@@ -54,3 +54,11 @@ function erf(x: number): number {
   const y = 1 - ((((1.061405429 * t - 1.453152027) * t + 1.421413741) * t - 0.284496736) * t + 0.254829592) * t * Math.exp(-x * x);
   return x >= 0 ? y : -y;
 }
+
+import { demoStartsOn } from "./fixtures";
+describe("demoStartsOn", () => {
+  it("is exactly one week after the given day", () => {
+    expect(demoStartsOn(new Date("2026-10-16T12:00:00Z"))).toBe("2026-10-23");
+    expect(demoStartsOn(new Date("2026-12-28T00:00:00Z"))).toBe("2027-01-04");
+  });
+});

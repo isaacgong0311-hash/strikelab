@@ -7,7 +7,7 @@ import { pageMetadata, breadcrumbJsonLd } from "@/lib/seo";
 export const metadata = pageMetadata({
   path: "/terms",
   title: "Terms of Service",
-  description: "The terms for using StrikeLab's curriculum, playground, and paper-trading sandbox.",
+  description: "The terms for using StrikeLab's curriculum, playground, and club lab.",
 });
 
 const SECTIONS: { title: string; body: React.ReactNode }[] = [
@@ -16,11 +16,10 @@ const SECTIONS: { title: string; body: React.ReactNode }[] = [
     body: (
       <>
         A free, browser-based curriculum teaching options pricing and quant
-        finance, plus a Python playground, weekly coding challenges, and a
-        paper-trading sandbox. Nothing on StrikeLab is real trading — the
-        sandbox uses simulated cash and simulated pricing. It is not a
-        brokerage, it doesn&rsquo;t execute real trades, and nothing on this
-        site is financial advice.
+        finance, plus a Python playground and a six-week lab that clubs can
+        run. Nothing on StrikeLab is real trading. It is not a brokerage, it
+        doesn&rsquo;t execute real trades, and nothing on this site is
+        financial advice.
       </>
     ),
   },
@@ -40,9 +39,7 @@ const SECTIONS: { title: string; body: React.ReactNode }[] = [
     body: (
       <>
         Use StrikeLab to learn. Don&rsquo;t try to break, scrape at scale, or
-        abuse the AI features, the challenge leaderboard, or the sandbox
-        (e.g. scripting fake trades to game a leaderboard that doesn&rsquo;t
-        currently exist for the sandbox, or hammering the AI endpoints past
+        abuse the AI features (for example by hammering the AI endpoints past
         their daily cap on purpose). We reserve the right to suspend accounts
         that abuse the platform.
       </>
@@ -93,7 +90,7 @@ const SECTIONS: { title: string; body: React.ReactNode }[] = [
         StrikeLab is provided as-is. We try hard to keep the pricing engine
         and lessons correct, but this is an educational tool built by one
         person — verify anything you plan to rely on outside a classroom
-        setting, and don&rsquo;t use the sandbox&rsquo;s simulated pricing as
+        setting, and don&rsquo;t use the playground&rsquo;s example pricing as
         a stand-in for real market data.
       </>
     ),
@@ -144,7 +141,7 @@ export default function TermsPage() {
         Terms of Service
       </h1>
       <p className="text-sm mb-12" style={{ color: "var(--ink-3)" }}>
-        Last updated August 2026. See also our{" "}
+        Last updated October 2026. See also our{" "}
         <Link href="/privacy" className="underline underline-offset-2" style={{ color: "var(--grass)" }}>
           Privacy Policy
         </Link>

@@ -8,11 +8,16 @@ import { consumeHintQuota } from "./quota";
 // consumeAiQuota's (the bug this migration fixed: both used to read/write
 // the same hint_usage row).
 
-function fakeSupabase(rpcImpl: (args: unknown) => { data: unknown; error: unknown }) {
+function fakeSupabase(
+  rpcImpl: (args: unknown) => { data: unknown; error: unknown },
+  classPolicy: { data: unknown; error: unknown } = { data: true, error: null },
+) {
   return {
-    rpc: vi.fn((_fn: string, args: unknown) => ({
-      single: () => Promise.resolve(rpcImpl(args)),
-    })),
+    rpc: vi.fn((fn: string, args: unknown) =>
+      fn === "ai_tutor_allowed"
+        ? Promise.resolve(classPolicy)
+        : { single: () => Promise.resolve(rpcImpl(args)) },
+    ),
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } as any;
 }

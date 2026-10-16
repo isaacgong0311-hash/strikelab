@@ -2,13 +2,17 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 import { getSupabaseAdmin } from "@/lib/supabase/admin";
 import { TRACKS, getLessonById } from "@/lib/tracks";
 
-const CODE_ALPHABET = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"; // no 0/O/1/I — easy to read aloud
+// No 0/O/1/I, easy to read aloud. 32 symbols x 6 places is about 1.07 billion codes.
+export const CODE_ALPHABET = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+export const JOIN_CODE_LENGTH = 6;
 
+/** Invite codes gate who can join a class, so draw them from a CSPRNG (not Math.random). */
 export function generateJoinCode(): string {
+  // Web Crypto, so this works in Node and the browser alike. 32 divides 256
+  // evenly, so masking a random byte to 5 bits picks each symbol equally.
+  const bytes = crypto.getRandomValues(new Uint8Array(JOIN_CODE_LENGTH));
   let code = "";
-  for (let i = 0; i < 6; i++) {
-    code += CODE_ALPHABET[Math.floor(Math.random() * CODE_ALPHABET.length)];
-  }
+  for (const b of bytes) code += CODE_ALPHABET[b & (CODE_ALPHABET.length - 1)];
   return code;
 }
 
@@ -79,6 +83,8 @@ export interface OwnedClass {
   skipWeeks: string[];
   /** Only ever returned to the class's own teacher. */
   joinCode: string;
+  /** Whether students in this class may use the AI tutor (migration 0023; off by default). */
+  aiTutorEnabled?: boolean;
 }
 
 export type TeacherOwnsClassResult =
@@ -117,6 +123,7 @@ export async function requireTeacherOwnsClass(
       launchedAt: (klass.launched_at as string | null) ?? null,
       skipWeeks: Array.isArray(klass.skip_weeks) ? (klass.skip_weeks as string[]) : [],
       joinCode: klass.join_code as string,
+      aiTutorEnabled: klass.ai_tutor_enabled === true,
     },
   };
 }

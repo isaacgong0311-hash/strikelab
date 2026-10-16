@@ -9,6 +9,7 @@ const NAV_GROUPS = [
       { href: "/pilot?src=footer", label: "Free pilot" },
       { href: "/demo",         label: "Demo" },
       { href: "/for-teachers", label: "AP alignment" },
+      { href: "/intensive",    label: "Intensive (parents)" },
     ],
   },
   {
@@ -16,7 +17,7 @@ const NAV_GROUPS = [
     links: [
       { href: "/lessons",    label: "Lessons" },
       { href: "/playground", label: "Playground" },
-      { href: "/sandbox",    label: "Sandbox" },
+      { href: "/seasons",    label: "Seasons" },
       { href: "/dashboard",  label: "Dashboard" },
       { href: "/blog",       label: "Blog" },
     ],

@@ -40,6 +40,7 @@ Do this **at the school, on the school network, on the kind of device students w
 | 3 | Join, and land on the cohort home | "This week" shows week 1 and one Start button | Screenshot it and send it to the founder |
 | 4 | Finish session `inv-1.1` | The summary screen shows | Note where it stuck |
 | 5 | Open `/lesson/3` and click **Run** on the exercise | Python loads (the first time downloads about 13 MB and can take 5–30s on school Wi-Fi) and tests run | "Python couldn't load": the filter blocks large downloads from `strikelab.dev/pyodide/`. Weeks 1–2 don't need it; get it allowed before week 3 |
+| 5b | Open `strikelab.dev/warmup` on one computer, then ask everyone to open it at the start of the meeting | The page says "Your lab is ready" in under a minute; after that exercises start instantly instead of downloading 13 MB mid-meeting | "Python didn't load": same fix as above; use **Try again** once, then carry on and get `strikelab.dev/pyodide/` allowed |
 | 6 | **Time** how long the cohort home takes to appear on a fresh load | Under about 3s | Tell the founder the device model and the time |
 | 7 | In the Supabase SQL editor, check that the test student has a `lesson_completions` row (smoke-test step 3's query) | One row | Measurement is broken: stop, and fix before kickoff |
 | 8 | Delete the test account (Settings → Delete my account) | Gone | — |
@@ -78,7 +79,26 @@ Log the result (date, device model, pass/fail per step) in the CRM notes for tha
 | A student has no phone or device | Pair them with someone, and they sign up on the leader's device at the end or at home that evening. Note their name for the leader |
 | A student is under 13 | They don't create an account. The leader decides whether they can follow along on a partner's screen |
 | Python is blocked on the network | Week 1 has no code. Carry on, and get `strikelab.dev/pyodide/` allowed before week 3 |
-| The site is down | Check the Vercel dashboard. If the last deploy broke it, roll back (§5). Otherwise switch the meeting to discussion using the facilitator guide's week-1 prompts, and have students join that evening |
+| The site is down | Check the Vercel dashboard. If the last deploy broke it, roll back (§5). Otherwise run the screen-free kickoff below (the leader can do this alone), and have students join that evening |
+
+### If StrikeLab is down: the screen-free kickoff (print this page for the leader)
+
+The leader can run this alone, with no computer. The site not loading says nothing about the program; students join the next day.
+
+**Say:** "The site isn't loading for us today, so we'll start with the ideas instead. Nothing is lost: you'll join tonight or tomorrow with the link, and we'll pick up from there."
+
+| Minutes | What |
+|---|---|
+| 0–5 | Check-in: "What do you already know about the stock market?" Write answers on the board |
+| 5–20 | Discussion in pairs, then share out: **What does it actually mean to own a share?** and **Who's on the other side of every trade?** |
+| 20–35 | Pairs: **Why doesn't "put everything in the stock you're most sure about" work?** Each pair writes one sentence |
+| 35–45 | Closing question, out loud: "Why would anyone hold more than one stock?" (the week-1 objective) |
+
+**Watch for:** treating market cap and stock price as the same thing; confusing volatility with "risk of losing everything".
+
+**After:** send the invite link in the class's usual channel the same evening with: "Join tonight or tomorrow. The first lesson takes about five minutes." Tell the founder (log it as a support-hours row in `support-log.csv`).
+
+**Before the meeting, so it rarely comes to this:** open `strikelab.dev` and the invite link on your own device 30 minutes early; have students open `strikelab.dev/warmup` as they sit down.
 
 ### After the meeting (same day)
 

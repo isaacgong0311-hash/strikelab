@@ -10,6 +10,7 @@ import { downloadCsv, toCsv } from "@/lib/csv";
 import { useOrigin } from "@/lib/useOrigin";
 import CohortScorecard from "./CohortScorecard";
 import LeaderToolkit from "./LeaderToolkit";
+import AiTutorSwitch from "./AiTutorSwitch";
 import type { CohortScorecard as Scorecard } from "@/lib/cohorts/loadScorecard";
 
 interface RosterEntry {
@@ -31,6 +32,7 @@ interface ClassSummary {
   launchedAt: string | null;
   skipWeeks?: string[];
   joinCode?: string;
+  aiTutorEnabled?: boolean;
 }
 
 /** The link students open to join. Readable text first; copying is a bonus. */
@@ -210,6 +212,12 @@ export default function ClassRosterClient() {
       {state === "ready" && scorecard?.measurable && (
         <div className="mb-6">
           <LeaderToolkit classId={classId} metrics={scorecard.metrics} assignments={assignments} />
+        </div>
+      )}
+
+      {state === "ready" && classSummary && (
+        <div className="mb-6">
+          <AiTutorSwitch classId={classId} initial={classSummary.aiTutorEnabled === true} />
         </div>
       )}
 

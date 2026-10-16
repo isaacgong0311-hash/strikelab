@@ -21,6 +21,27 @@ export interface StoredData {
 
 export const STORED_DATA: StoredData[] = [
   {
+    what: "Leaderboard handle (chosen by the student; never a real name)",
+    tables: [],
+    student: "Yes",
+    leader: "Yes, on the chapter board",
+    others: "The handle and season score appear on leaderboards",
+  },
+  {
+    what: "Season challenge attempts (code, explanation, timing, score)",
+    tables: ["season_attempts"],
+    student: "Yes",
+    leader: "No",
+    others: "Only the handle and total score, on leaderboards",
+  },
+  {
+    what: "Intensive waitlist (a parent's email, the student's grade, an optional note)",
+    tables: ["intensive_waitlist"],
+    student: "No",
+    leader: "No",
+    others: "No. Used only to contact that parent about the cohort",
+  },
+  {
     what: "Email and password (or Google sign-in)",
     tables: [],
     student: "Yes",
@@ -77,14 +98,14 @@ export const STORED_DATA: StoredData[] = [
     others: "No",
   },
   {
-    what: "Weekly challenge times",
+    what: "Weekly challenge times (retired feature: kept only for people who used it earlier)",
     tables: ["challenge_completions"],
     student: "Yes",
     leader: "No",
-    others: "The leaderboard shows times only, never names",
+    others: "No. The leaderboard is gone; nothing in the app reads this any more",
   },
   {
-    what: "Paper-trading sandbox balance and trades",
+    what: "Paper-trading sandbox balance and trades (retired feature: kept only for people who used it earlier)",
     tables: ["sandbox_accounts", "sandbox_positions", "sandbox_trades"],
     student: "Yes",
     leader: "No",
@@ -116,6 +137,8 @@ export const STORED_DATA: StoredData[] = [
 /** Tables that hold no student data, so they aren't rows above. */
 export const OPERATIONAL_TABLES: Record<string, string> = {
   rate_limits: "Request counters for abuse limits",
+  seasons: "The season schedule (public)",
+  season_challenges: "Challenge slots and time windows (public)",
 };
 
 export interface Subprocessor {
@@ -128,7 +151,7 @@ export const SUBPROCESSORS: Subprocessor[] = [
   { vendor: "Supabase", purpose: "Database and sign-in", receives: "Everything in the table above" },
   { vendor: "Vercel", purpose: "Hosting and cookie-free, aggregate page analytics", receives: "Web requests (IP address, pages visited); no account data in analytics" },
   { vendor: "Sentry", purpose: "Error reports", receives: "The error, the page, and a signed-in user's account id (no email or name)" },
-  { vendor: "Groq", purpose: "AI tutor and hints, only when a student uses them", receives: "The question or code the student sends, without their name or email" },
+  { vendor: "Groq", purpose: "AI tutor and hints, only when a student uses them and, for students in a class, only if their leader has turned the tutor on", receives: "The question or code the student sends, without their name or email" },
   { vendor: "Google", purpose: "\"Continue with Google\", only if used", receives: "The sign-in itself" },
   { vendor: "Stripe", purpose: "Payments; never used by students in a pilot", receives: "The payer's checkout details, handled entirely by Stripe" },
   { vendor: "Web3Forms", purpose: "Newsletter sign-up, only if used", receives: "The email address entered" },

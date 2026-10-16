@@ -10,7 +10,31 @@ export const TIMEZONES = [
   "America/Denver",
   "America/Los_Angeles",
   "America/Phoenix",
+  "America/Anchorage",
+  "Pacific/Honolulu",
 ];
+
+export const FALLBACK_TIMEZONE = "America/Chicago";
+
+function isRealTimezone(zone: string | undefined | null): zone is string {
+  if (!zone) return false;
+  try {
+    new Intl.DateTimeFormat("en-US", { timeZone: zone }).format(0);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+/** The leader's own timezone (from their browser) if it is real, else Central. */
+export function defaultTimezone(detected: string | undefined | null): string {
+  return isRealTimezone(detected) ? detected : FALLBACK_TIMEZONE;
+}
+
+/** The picker's options: the common US zones, plus the leader's own if it isn't one of them. */
+export function timezoneChoices(detected: string | undefined | null): string[] {
+  return isRealTimezone(detected) && !TIMEZONES.includes(detected) ? [...TIMEZONES, detected] : [...TIMEZONES];
+}
 
 /** "October 26, 2026", or "Oct 26" without the year. */
 export function readableDate(value: string, withYear = true): string {
