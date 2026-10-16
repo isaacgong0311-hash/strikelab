@@ -39,6 +39,16 @@ const SECTIONS: { title: string; body: React.ReactNode }[] = [
           — synced via Supabase so they follow you to a new device.
         </p>
         <p className="mb-3">
+          <strong>If you play a season:</strong> the handle you choose (never
+          your real name) and your score appear on leaderboards; your code and
+          explanation are private to you and are used to compute your score.
+        </p>
+        <p className="mb-3">
+          <strong>If a parent joins the intensive waitlist:</strong> we keep
+          that parent&rsquo;s email, the student&rsquo;s grade and any note, and
+          use them only to contact that parent about the cohort.
+        </p>
+        <p className="mb-3">
           <strong>If you join a class:</strong> your teacher sees your display
           name, which assigned lessons you&rsquo;ve finished and when, and your
           exercise code. If your class runs the six-week program, your

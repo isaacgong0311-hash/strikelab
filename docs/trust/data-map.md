@@ -2,7 +2,7 @@
 
 What StrikeLab stores about students, who can see it, where it goes, and how long it's kept. It's written for a club sponsor, principal or district IT reviewer, and it goes in the pilot approval packet (`docs/gtm/outreach-kit.md` §5). It's a plain description of how the product works, not a legal document. The public version is https://strikelab.dev/trust, rendered from `src/lib/trust/dataMap.ts`: change both together.
 
-**Last checked against the code:** 2026-10-16, through migration `0023` (per-class AI tutor switch). Update this page in the same PR as any migration that adds a table or column holding student data.
+**Last checked against the code:** 2026-10-16, through migration `0024` (seasons, handles, intensive waitlist). Update this page in the same PR as any migration that adds a table or column holding student data.
 
 ## Principles
 
@@ -35,6 +35,10 @@ Enforced in the database with row-level security (RLS): each rule below is a dat
 | Subscription status (if a paid plan) | `subscriptions` | No card data | Yes | No | No |
 | Request counters for abuse limits | `rate_limits` | No | No | No | No |
 | Optional Discord webhook URL | `profiles.discord_webhook_url` | No | Yes | No | No |
+| Leaderboard handle (chosen by the student; never a real name) | `profiles.handle` | Pseudonym | Yes | Yes, on the chapter board | The handle and season score appear on leaderboards |
+| Season challenge attempts (code, explanation, timing, official score) | `season_attempts` | Student work | Yes | No | Only the handle and total score, on leaderboards |
+| Intensive waitlist (a parent's email, the student's grade, an optional note) | `intensive_waitlist` | Yes (the parent's) | No | No | No; used only to contact that parent about the cohort |
+| Season schedule and challenge slots | `seasons`, `season_challenges` | No | Public | Public | Public |
 
 **StrikeLab staff** (the founder) can read the database to operate and support the service, and does so only for support, debugging and aggregate pilot metrics. Pilot reports use aggregate numbers only.
 

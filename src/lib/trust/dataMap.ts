@@ -21,6 +21,27 @@ export interface StoredData {
 
 export const STORED_DATA: StoredData[] = [
   {
+    what: "Leaderboard handle (chosen by the student; never a real name)",
+    tables: [],
+    student: "Yes",
+    leader: "Yes, on the chapter board",
+    others: "The handle and season score appear on leaderboards",
+  },
+  {
+    what: "Season challenge attempts (code, explanation, timing, score)",
+    tables: ["season_attempts"],
+    student: "Yes",
+    leader: "No",
+    others: "Only the handle and total score, on leaderboards",
+  },
+  {
+    what: "Intensive waitlist (a parent's email, the student's grade, an optional note)",
+    tables: ["intensive_waitlist"],
+    student: "No",
+    leader: "No",
+    others: "No. Used only to contact that parent about the cohort",
+  },
+  {
     what: "Email and password (or Google sign-in)",
     tables: [],
     student: "Yes",
@@ -116,6 +137,8 @@ export const STORED_DATA: StoredData[] = [
 /** Tables that hold no student data, so they aren't rows above. */
 export const OPERATIONAL_TABLES: Record<string, string> = {
   rate_limits: "Request counters for abuse limits",
+  seasons: "The season schedule (public)",
+  season_challenges: "Challenge slots and time windows (public)",
 };
 
 export interface Subprocessor {
