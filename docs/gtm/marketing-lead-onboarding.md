@@ -1,6 +1,6 @@
 # Onboarding: marketing and outreach lead
 
-**Who this is for:** the person joining Isaac to run outreach, messaging and partnerships. **Read this, then `docs/superpowers/plans/2026-10-15-build-plan-to-yc.md` sections 2, 4, 5 and 8.** Everything else in `docs/` is background.
+**Who this is for:** the person joining Isaac to run outreach, messaging and partnerships. **Since 2026-10-16 the company is a proving ground (`docs/superpowers/specs/2026-10-16-strikelab-proving-ground-design.md`); your Season 1 messages are in `docs/gtm/season-1-outreach.md`, section C. The club-pilot tasks below are paused.** Read this, then `docs/superpowers/plans/2026-10-15-build-plan-to-yc.md` sections 2, 4, 5 and 8.** Everything else in `docs/` is background.
 
 ## What StrikeLab is, in 30 seconds
 
@@ -31,7 +31,7 @@ Isaac owns: the product, the demos, anything that needs a technical answer, scho
    - "Zero prep" (the real weekly prep is not measured yet).
    - "We'll handle your district's data-privacy agreement."
    - "Trusted by N schools" or any number of clubs running it.
-   - The paper-trading sandbox, weekly challenges or a leaderboard (all removed in Oct 2026), or the AI tutor (off by default for every class; the leader chooses).
+   - The paper-trading sandbox (removed in Oct 2026), or the AI tutor (off by default for every class; the leader chooses). Seasons, their challenges and handle-only leaderboards are back as of Season 1 (Nov 30); describe them only as `docs/gtm/season-1-outreach.md` does.
 3. **Adults only.** Outreach goes to teachers, advisors, parents, firms and organizations. Do not cold-message students. Do not collect any student's personal information.
 4. **Consent before anything is public.** A quote, a name, a school or a photo needs written permission from that person (and a guardian for a minor). Templates: `docs/gtm/` (one page each, still pending legal review).
 5. **No access to production data or keys.** You do not need the database, Stripe or any service key, and you should not be given them. The CRM is a CSV in the repo; the numbers come from `npm run pipeline`.

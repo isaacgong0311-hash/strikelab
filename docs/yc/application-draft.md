@@ -1,21 +1,22 @@
-# YC Application Draft (v0.5, 2026-10-15)
+# YC Application Draft (v0.6, 2026-10-16)
 
-**Status:** v0.5. Product claims re-verified against the repo on 2026-10-15 (table at the end); founder answers still open (list at the end). Rough on purpose. Its job is to show which answers we can't write yet.
-**Questions below are by theme, not verbatim.** The live form could not be fetched from the agent environment. Before each rewrite, open ycombinator.com/apply, paste the current questions over the headings, and keep the answers.
+**Status:** v0.6. Rewritten around the proving-ground design (`docs/superpowers/specs/2026-10-16-strikelab-proving-ground-design.md`), which replaces the club-lab pitch of v0.5. Product claims re-verified against the repo on 2026-10-16 (table at the end); founder answers still open (list at the end). Its job is still to show which answers we can't write yet.
+**Eligibility first.** The founder is under 18 and in high school. YC and PearX normally need founders who can sign contracts. Read each program's current rules on its own site, not here, and apply only when they allow it. Until then this draft is the record of what would be true on that day.
+**Questions below are by theme, not verbatim.** Before each rewrite, open the live form, paste its current questions over the headings, and keep the answers.
 **Markers:** `[NEEDS FOUNDER]` = only the founder can answer. `[NO PROOF YET]` = a claim that needs data we don't have. `[SOURCE]` = a number that must link to the data room.
-**Rules (plan Y8.8):** every figure links to a source; bad numbers are stated plainly with what changed; nothing invented. Update at each gate (G3, G4, G5).
+**Rules (plan Y8.8):** every figure links to a source; bad numbers are stated plainly with what changed; nothing invented.
 
 ---
 
 ## Company
 
 **One-sentence description**
-StrikeLab gives high-school clubs a ready-to-run six-week technical-finance lab where students code real market models and finish with work they can show.
+StrikeLab is where high schoolers prove they can do real quant work, through seasons of timed challenges and a defended capstone, and earn a record that firms and programs can trust.
 
 **What does the company do?** (≤ 50 words)
-Students write Black-Scholes pricing, the Greeks and backtests in Python in the browser, no install. A club leader launches a six-week cohort in minutes and sees who is active and who needs help. Each student ends with a capstone: real code and a result.
+Students learn quant finance by writing Python in the browser, then compete in free seasons of timed challenges, each with their own randomized numbers and the AI tutor off, scored by the server. A capstone defended live becomes a verified record. Parents pay for a six-week intensive; sponsors fund seasons.
 
-**Link / demo:** strikelab.dev, `/demo`. `[Record 2-minute video: plan Y4.1]`
+**Link / demo:** strikelab.dev/seasons, strikelab.dev/intensive, strikelab.dev/demo. `[Record a 2-minute video after Season 1: a real attempt, start to official score]`
 
 **Where do you live / where is the company based?** `[NEEDS FOUNDER]`
 
@@ -24,45 +25,54 @@ Students write Black-Scholes pricing, the Greeks and backtests in Python in the 
 ## Progress
 
 **What have you built?**
-- 23 browser-based lessons across three tracks (investing fundamentals, options pricing, quant investing), each ending in a Python exercise graded by unit tests, run client-side with Pyodide.
-- A pilot operating system: cohort launch from a six-week template with break weeks, invite links, a student cohort home, server-timestamped completions, synced code across devices, private capstones with revocable sharing, a leader scorecard and CSV export.
-- A paper-trading sandbox, challenges, certificates, and Stripe plumbing (not yet used for pilots).
-- Engineering: 392 automated tests (13 of the 66 test files run against the real database migrations with row-level security on), 55 browser tests including accessibility, and CI with Lighthouse performance and layout-shift budgets. `[SOURCE: recheck counts at submission]`
+- **Train:** 23 browser lessons in three tracks; Python runs in the student's browser (Pyodide in a Web Worker, with a time limit), graded by tests, no install.
+- **Compete (new, Oct 2026):** seasons of weekly timed challenges. The server stamps the start time and rejects late submissions; each student's numbers come from a keyed hash of their ID, so answers can't be copied; the AI tutor is blocked during an open attempt; leaderboards show handles only and use official scores only; a club gets a private chapter board.
+- **Official scoring:** submitted code is re-run in Python on our side with the student's own numbers and a hidden test; infinite loops are stopped; anything unclear goes to a person instead of scoring 0.
+- **Season 1 scheduled:** three challenges (put-call parity, Black-Scholes, option delta), Nov 30 to Dec 20.
+- **Intensive waitlist** with the price shown ($349), parent email only, no payment taken.
+- **Chapter toolkit** (from the earlier club product): cohorts, invite links, scorecard, private capstones with revocable sharing.
+- **Engineering:** 480 automated tests in 80 files (14 run against the real database migrations with row-level security on), browser tests with accessibility checks, CI with performance and layout-shift budgets. `[SOURCE: recheck counts at submission]`
 
-**How long did it take, and who built it?** Built solo by the founder, a high-school student. `[NEEDS FOUNDER: dates, hours, what the founder did vs. used AI tools for. Be specific and honest; YC will ask.]`
+**How long did it take, and who built it?** The founder, a high-school student, with AI coding tools. `[NEEDS FOUNDER: dates, hours, what you did vs. what the tools did. Be specific and honest; YC will ask.]`
 
 **Are people using it? Describe traction.**
-`[NO PROOF YET]` As of 2026-10-01: no leader-run cohort has started. Fewer than 20 people have completed a lesson or joined a class (company design spec §2).
-*Target text after the pilots:* "N cohorts run by M outside leaders; X students activated (Y% of enrolled); Z% retained in week 4; K capstones submitted; L of M leaders asked to run it again; P organizations paid or committed in writing. Growth: [weekly chart]." Every figure `[SOURCE: scorecard, by cohort and source]`.
+`[NO PROOF YET]` As of 2026-10-16 Season 1 has not run. Fewer than 20 people have completed a lesson or joined a class (re-check before submitting).
+*Target text after Season 1:* "Season 1: N students from M schools in K chapters; X% finished all three challenges; Y came back for Season 2; Z placed in the top 10 and passed a live defense." Kill rule set in advance: under 30 students means the message or channel was wrong. Every figure `[SOURCE: database query, by ?src= tag]`.
 
-**Revenue / money collected / commitments:** `[NO PROOF YET]` $0. Pilots free by design; list price $199/yr per club, $499/yr per school instructor. Target: ≥ 2 paid or dated, priced commitments by Mar 28.
+**Revenue / money collected / commitments:** `[NO PROOF YET]` $0. Intensive waitlist opens to parents after Season 1; target 10 paid seats ($349) for January, charged only once a cohort fills and only after a parent holds the Stripe account and the terms are reviewed. Sponsor target: one signed letter of intent by Feb 28.
 
-**How many active users and how fast is it growing?** `[NO PROOF YET]` North-star metric: students who submit a capstone in a leader-run cohort. Chart weekly.
+**How many active users and how fast is it growing?** `[NO PROOF YET]` North-star metric: students with an official score in a season. Second: students who return for the next season.
 
-**Did you do anything unusual to get users?** `[NEEDS FOUNDER]` Candidate story: walking into teachers' classrooms; asking every leader for an introduction. Use only what really happened.
+**Did you do anything unusual to get users?** `[NEEDS FOUNDER]` Use only what really happened (chapter at your school, community posts, judges recruited).
 
 ## Idea
 
 **Why did you pick this idea? How do you know people need it?**
-`[NEEDS FOUNDER: personal story, in plain words, 150 words max, no superlatives (plan Y5.5).]` Evidence to cite once it exists: the top three pains from leader conversations, ranked (plan Y2.5).
+`[NEEDS FOUNDER: 150 words, your own words.]` The fact to build it on: "I'm the student it's for." You wanted a path into quant or finance and had no way to show you could do the work: too young for internships, and grades and contests don't show that you can price an option or test a strategy honestly.
 
 **What's new about what you make? What do you understand that others don't?**
-Draft thesis, to be tested against interviews: the existing options teach students to *click* (stock simulators) or *recite* (financial-literacy curricula). Code-first finance makes the *work product* the credential: a student implementing Black-Scholes produces something a teacher can inspect. And leader time is the scarcest resource in any club, so the product's job is zero-prep delivery, not more content.
-`[NO PROOF YET: replace with 3–5 specific things learned from ≥ 30 conversations (plan Y2.2). Delete anything a generic edtech pitch would also say.]`
+Draft thesis, to be tested in Season 1:
+1. For a high schooler, the bottleneck into quant isn't content (free content is everywhere); it's **credible proof**. A record is only worth something if it's hard to fake.
+2. AI makes take-home work worthless as proof. So the format has to assume AI exists: per-student numbers, server-timed windows, the tutor off, and a short live defense before anything counts as verified.
+3. Students will do this for free if it's ranked and seasonal (the way they do AMC and USACO), so the people who pay are the ones who want the outcome: parents (an intensive) and firms (brand and early visibility, aggregates only).
+`[NO PROOF YET: replace with what Season 1 actually showed.]`
 
 **Who are your competitors? What do you understand about them that they don't?**
-`[See docs/yc/competition-map.md (figures re-checked against search results 2026-10-15; the founder still opens each link).]` Starting set from the company design spec §2: stock-market simulators and financial-literacy curricula (teacher dashboards, standards alignment, classroom join flows), and learning-to-opportunity programs such as Forage and QuantConnect's Quant League. Positioning: StrikeLab wins on rigorous, code-first technical finance and inspectable student work, not on generic investing content or on having a simulator.
+See `docs/yc/competition-map.md` (written for the club pitch; update for seasons). The relevant ones now: math and CS competitions (AMC/AIME, USACO), which prove ability but not quant work; quant competitions for older students (for example QuantConnect's Quant League) and virtual work experience (for example Forage); stock-market simulators and financial-literacy curricula, which teach clicking or reciting. Positioning: the only one built for high schoolers that produces a verified, hard-to-fake record of real quant work. `[NEEDS FOUNDER: open each link and check this is still true.]`
 
 **How do you make money? How much?**
-Rung 1: club and school licenses ($199 / $499 per year), which prove willingness to pay and are the distribution engine. Rung 2: district agreements. Rung 3: parent-paid summer cohorts. Rung 4: sponsor-funded seats for schools that lack quant exposure. Rung 5 (later, opt-in only): verified student portfolios for programs and employers. Source: mega plan §8. State plainly that license revenue alone is small and which rung has evidence. `[NO PROOF YET beyond rung 1 hypothesis]`
+1. **Parents, now:** a six-week intensive, $349, 8 to 12 students, mentor review and a defended capstone. Target $3,500 from the first cohort.
+2. **Sponsors, next:** a title sponsor per season ($2k to $10k plus prizes) for brand and early visibility; sponsors see aggregates only.
+3. **Later, 18+ only:** paid, consented introductions to internships and programs, after legal review. Not built.
+Clubs are chapters and play free. All prices are starting guesses to test. `[NO PROOF YET]`
 
 **How big can this get? Market size.**
-Draft from `docs/yc/market-sizing.md` (inputs re-checked 2026-10-15; the private-school count I2 is still unconfirmed and the founder opens each link): about 27,000 US high schools; if 25–50% have a club that could host the lab, at a $300 blended price that is $2.0M–$4.1M a year **if every one paid**, and roughly $0.1M–$0.6M at a mature 5–15% paying share. So licenses are the wedge and the proof of willingness to pay; districts, sponsored seats and summer cohorts are what could make it large, and the pilots are what will size them. `[NEEDS FOUNDER: confirm the sourced inputs; decide how much of this to say.]`
+`[NEEDS FOUNDER: redo docs/yc/market-sizing.md for this model.]` The inputs to size: US high schoolers aiming at quant, finance and CS (the AMC/AIME and USACO populations are a sourced proxy); the share of families who pay for enrichment at this price; and what firms already spend on university recruiting and brand events. Don't state a number until each input links to a source.
 
 **Why will this be a large company, not a small one?** (five sentences)
-`[NEEDS FOUNDER: plan Y3.4. Wedge → repeated cohorts → district agreements → sponsored seats → verified record of what students can build. Mark which links are unproven.]`
+Draft, every link unproven: Free seasons bring in the students firms want to reach. Rankings and chapters make each season bigger than the last. Parents pay for the intensive that gets their student to a verified capstone. Firms pay to sponsor seasons, which keeps them free. Once students turn 18, a trusted record becomes the way programs and firms find them. `[NEEDS FOUNDER: rewrite in your words and mark what Season 1 proved.]`
 
-**Category / what category does the company fall into:** Education / EdTech (and B2B2C to schools and clubs). `[confirm against live form]`
+**Category:** Education / EdTech (consumer, with sponsor revenue). `[confirm against live form]`
 
 ## Founder(s)
 
@@ -77,7 +87,7 @@ Candidate, verifiable in the repo: running a Python interpreter (Pyodide/WebAsse
 **Are you working on this full time? Willing to relocate / work full time during the batch?**
 `[NEEDS FOUNDER + PARENTS: plan Y5.1. Answer honestly; do not imply availability that doesn't exist. YC expects enrolled students to be ready to work full time if accepted.]`
 
-**Solo founder: why, and who fills the gaps?** `[NEEDS FOUNDER: plan Y5.2/5.4: named advisors, helpers ladder in mega plan §11.]`
+**Team:** the founder (product, code, email outreach, defenses) and a teammate who runs non-email outreach (communities, club visits, parents). `[NEEDS FOUNDER: is the teammate a cofounder? Run the 4 to 6 week trial in docs/gtm/marketing-lead-onboarding.md first; write down roles and any equity; anyone under 18 needs a parent involved.]`
 
 **Age / legal ability to sign:** `[NEEDS FOUNDER + PARENTS: state plainly; adult signatory plan Y6.1.]`
 
@@ -93,7 +103,7 @@ Candidate, verifiable in the repo: running a Python interpreter (Pyodide/WebAsse
 ## Curious / other
 
 **What convinced you to apply to YC? How did you hear about it?** `[NEEDS FOUNDER]`
-**Anything else we should know?** Use for the honest weak spot: "No cohort has run yet; here is the plan and the date of the first one." Delete this line and replace it with the real numbers when they exist.
+**Anything else we should know?** Use for the honest weak spot: "Season 1 ran Nov 30 to Dec 20; here is exactly what happened." Never use it to excuse a missing number.
 
 ## Video (1 min, founder, plain)
 
@@ -105,17 +115,19 @@ Outline only; script after G3: who I am (10 s) · what I built, shown on screen 
 
 | Gap | Plan item | Earliest it can close |
 |---|---|---|
-| Any traction | Y1, pilots | Dec 20 (G3) |
-| Insight from conversations | Y2 | Feb 28 |
-| Paid proof | Y7 | Mar 28 (G5) |
-| Market sizing, competitor map | Y3.1–3.2 | Dec 21 |
+| Eligibility (age, signing) | founder reads the rules | Ongoing |
+| Any traction | Season 1 | Dec 20 |
+| Return rate | Season 2 | Feb 28 |
+| Paid proof | Intensive #1 | January |
+| Sponsor interest | 1 letter of intent | Feb 28 |
+| Market sizing, competitor map for the new model | Y3.1–3.2 | Dec 21 |
 | Commitment plan | Y5.1 | Dec 21 |
 | Company, IP, signatory | Y6 | Mar 1 |
 | Video, demo | Y4.1, Y8.4 | Apr 10 |
 
 ---
 
-## Product claims, verified against the repo (2026-10-15)
+## Product claims, verified against the repo (2026-10-15; seasons rows 2026-10-16)
 
 | Claim in this draft | Verified against | Result |
 |---|---|---|
@@ -129,14 +141,20 @@ Outline only; script after G3: who I am (10 s) · what I built, shown on screen 
 | Paper-trading sandbox, challenges, certificates | `api/sandbox`, `api/challenges`, `api/certificates` | ✅ exist; not part of the pilot pitch |
 | Stripe plumbing, not used for pilots | `api/stripe/*`; webhook ordering fix covered by `applyEvent.test.ts` | ✅ |
 | List price $199 per club / $499 per school instructor | `src/app/pricing/page.tsx` | ✅ |
-| Tests | `npm test`: 66 files, 392 tests; `playwright`: 55 passed | ✅ (was "~346") |
+| Seasons: server-timed windows, late submissions rejected, AI tutor blocked during an attempt, handle-only boards from official scores, chapter board for members and teacher only | migration `0024`, `src/lib/seasons/seasons.db.test.ts` | ✅ |
+| Per-student numbers from a keyed hash | `src/lib/seasons/params.ts`, `params.test.ts` | ✅ |
+| Official scoring re-runs code with the student's numbers; loops stopped; unclear cases go to review | `scripts/seasons/score-core.mjs`, `scoring.test.ts` | ✅ run by the founder (`npm run season:score`), not automatic yet |
+| Season 1: three challenges, Nov 30 to Dec 20 | `supabase/seed/season-1.sql`, `season1Seed.db.test.ts` | ✅ in the repo; live only after the seed is run in production |
+| Intensive waitlist, price shown, no payment | `src/app/intensive/`, `api/intensive/waitlist` | ✅ |
+| Tests (2026-10-16) | `npm test`: 80 files, 480 tests, 14 database test files | ✅ |
+| Tests (2026-10-15, superseded) | `npm test`: 66 files, 392 tests; `playwright`: 55 passed | ✅ (was "~346") |
 | "CI with accessibility and Lighthouse budgets" | `lighthouserc.json`: errors on layout shift, page weight and performance score; **LCP ≤ 2.0 s and script size are warnings only, and both are currently missed** (LCP 2.4–3.1 s on a throttled lab run) | ⚠ worded as "performance and layout-shift budgets"; don't claim LCP |
 | "Row-level security tests for every database policy" | 13 `*.db.test.ts` files cover classes, capstones, completions, submissions, deletion, rate limits, leaderboard; **no check that literally every policy has a test** | ⚠ reworded above; don't say "every" unless audited |
 | Fewer than 20 people have completed a lesson or joined a class | Not checkable from the repo (needs the production database) | `[NEEDS FOUNDER: current number]` |
 
 ## Founder question list (all `[NEEDS FOUNDER]` items, grouped)
 
-Answer in your own words; the agent will not write these. About 60–90 minutes in total.
+Answer in your own words; the agent will not write these. **New for v0.6:** (a) is the teammate a cofounder, and on what terms? (b) your 150-word "I'm the student it's for" story; (c) which program's eligibility rules you checked, and what they say. About 60–90 minutes in total.
 
 **Facts only you know (10 min)**
 1. Where do you live; where would the company be based?
