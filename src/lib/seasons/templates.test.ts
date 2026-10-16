@@ -18,6 +18,12 @@ def black_scholes_call(S, K, T, r, sigma):
     d2 = d1 - sigma * sqrt(T)
     return S * norm_cdf(d1) - K * exp(-r * T) * norm_cdf(d2)
 `,
+  "call-delta": `from math import log, sqrt, erf
+def norm_cdf(x):
+    return 0.5 * (1 + erf(x / sqrt(2)))
+def call_delta(S, K, T, r, sigma):
+    return norm_cdf((log(S / K) + (r + sigma ** 2 / 2) * T) / (sigma * sqrt(T)))
+`,
 };
 
 let py: PyodideInterface;

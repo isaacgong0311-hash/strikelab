@@ -43,7 +43,7 @@ A strong high-school student (math team, AMC/AIME, CS, investing club) who wants
 
 ### The loop
 1. **Train (exists):** 23 lessons, in-browser Python (now in a Web Worker with time limits), free and self-paced.
-2. **Compete in seasons (rebuilt from the removed weekly challenges):** four-week seasons, one timed challenge a week.
+2. **Compete in seasons (rebuilt from the removed weekly challenges):** short seasons (Season 1: three weeks, Nov 30 to Dec 20), one timed challenge a week.
 3. **Prove (exists + new step):** the capstone, plus a 10-minute live **defense**; passing marks it verified.
 4. **The record (new):** one page per student listing seasons and placings, challenges solved, verified capstone. Private until the student shares it.
 5. **Chapters (exists):** a club plays a season together; chapter leaderboard.
@@ -97,10 +97,10 @@ Student opens challenge, then `start_attempt` stamps the start time and returns 
 | Channel | Owner |
 |---|---|
 | Chapter 1 at the founder's school (labeled founder-run) | Founder |
-| Communities where these students already are: AoPS, competition-math and USACO Discords, Reddit, following each community's rules. Pitch: "a free 4-week quant season, ranked, with a verified record at the end" | **Teammate** |
+| Communities where these students already are: AoPS, competition-math and USACO Discords, Reddit, following each community's rules. Pitch: "a free 3-week quant season, ranked, with a verified record at the end" | **Teammate** |
 | Social and short video; in-person club visits | **Teammate** |
 | Parents: intensive waitlist via school parent channels and events, after Season 1 has results | **Teammate** |
-| Teachers/club advisors by email: "let your club play a free 4-week season" (target 5 chapters) | Founder (agent drafts) |
+| Teachers/club advisors by email: "let your club play a free 3-week season" (target 5 chapters) | Founder (agent drafts) |
 | Finance/quant people by email, asked to **judge or write one challenge** first (judges now, sponsor contacts later) | Founder (agent drafts) |
 
 ## 6. Trust and integrity
@@ -116,7 +116,7 @@ Student opens challenge, then `start_attempt` stamps the start time and returns 
 | By | Founder | Teammate | Agent |
 |---|---|---|---|
 | **Oct 31** | Chapter 1 at school; ask 3 finance people to judge; read YC/PearX eligibility rules | Start community posts and in-person visits | Seasons data model, params, timed attempts, handles, chapter board; intensive waitlist page |
-| **Nov 29** | Write 4 challenges (one from a judge); 5 chapters | Pre-season sign-ups toward 100 | Official scoring, record page, defense sign-off, rehearsal season |
+| **Nov 29** | Review the 3 Season 1 challenges (agent drafted them; a judge may write a replacement); 5 chapters | Pre-season sign-ups toward 100 | Official scoring, record page, defense sign-off, rehearsal season |
 | **Dec 20** | Run Season 1 (Nov 30 to Dec 20) | Keep sign-ups and chapters going | Fixes from Season 1 only |
 | **January** | Intensive #1 | Parent waitlist push | Parent checkout, once a parent holds the Stripe account |
 | **Feb 28** | 1 sponsor letter of intent; Season 2 | Season 2 recruitment | Season 2 |

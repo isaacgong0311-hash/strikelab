@@ -11,7 +11,7 @@ export const metadata = pageMetadata({
   path: "/seasons",
   title: "Seasons: prove you can do quant work",
   description:
-    "Free four-week seasons of timed quant challenges for high schoolers. Your own numbers, explain your answer, ranked under a handle, ending in a verified record.",
+    "Free seasons of timed quant challenges for high schoolers. Your own numbers, explain your answer, ranked under a handle, ending in a verified record.",
 });
 
 export const dynamic = "force-dynamic";

@@ -116,9 +116,54 @@ _score = _passed / len(_cases)
 `,
 };
 
+const callDelta: ChallengeTemplate = {
+  slug: "call-delta",
+  title: "Measure a call's delta",
+  concept: "Delta",
+  paramSpecs: [
+    { name: "S", min: 80, max: 120, step: 1 },
+    { name: "K", min: 80, max: 120, step: 1 },
+    { name: "T", min: 0.25, max: 2, step: 0.25 },
+    { name: "r", min: 0.01, max: 0.06, step: 0.005 },
+    { name: "sigma", min: 0.1, max: 0.5, step: 0.01 },
+  ],
+  prompt: (p) =>
+    `Write call_delta(S, K, T, r, sigma) returning the Black-Scholes delta of a European call: how much its price ` +
+    `moves per $1 move in the stock. Your numbers: S = ${p.S}, K = ${p.K}, T = ${p.T} years, r = ${p.r}, ` +
+    `sigma = ${p.sigma}. Then explain, in two or three sentences, what your delta means for someone hedging 100 calls.`,
+  starterCode: `${NORM_CDF}
+def call_delta(S, K, T, r, sigma):
+    # Your code here
+    raise NotImplementedError
+`,
+  previewTest: `_v = call_delta(100, 100, 1, 0.05, 0.2)
+assert isinstance(_v, (int, float)), "Return a number"
+assert 0 < _v < 1, "A call's delta is between 0 and 1"
+assert call_delta(120, 100, 1, 0.05, 0.2) > _v, "Deeper in the money means a higher delta"
+assert call_delta(80, 100, 1, 0.05, 0.2) < _v, "Further out of the money means a lower delta"
+print("Preview checks passed. Your official score is computed with your own numbers after you submit.")
+`,
+  officialTest: (p) => `from math import log as _log, sqrt as _sqrt, erf as _erf
+def _ncdf(x):
+    return 0.5 * (1 + _erf(x / _sqrt(2)))
+def _ref(S, K, T, r, sigma):
+    return _ncdf((_log(S / K) + (r + sigma * sigma / 2) * T) / (sigma * _sqrt(T)))
+_cases = [(${p.S}, ${p.K}, ${p.T}, ${p.r}, ${p.sigma}), (${p.S} * 1.1, ${p.K}, ${p.T}, ${p.r}, ${p.sigma}), (${p.S}, ${p.K}, ${p.T} * 2, ${p.r}, ${p.sigma})]
+_passed = 0
+for _c in _cases:
+    try:
+        if abs(call_delta(*_c) - _ref(*_c)) <= 1e-6:
+            _passed += 1
+    except Exception:
+        pass
+_score = _passed / len(_cases)
+`,
+};
+
 export const TEMPLATES: Readonly<Record<string, ChallengeTemplate>> = {
   [putCallParity.slug]: putCallParity,
   [blackScholesCall.slug]: blackScholesCall,
+  [callDelta.slug]: callDelta,
 };
 
 export function getTemplate(slug: string): ChallengeTemplate | null {
