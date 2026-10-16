@@ -181,5 +181,6 @@ One email, with everything a sponsor, principal or IT person asks for:
 - **When a lead ends, keep its status** and write `closed: <reason>` in `next_action` (`closed: no_response`, `closed: not_now (re-ask Nov 16)`, `closed: declined`). The funnel then still shows how far they got.
 - **`source`** is one of `own_school`, `own_teacher`, `warm_intro`, `referral` (these count as warm), `cold_email`, `event`.
 - **Approval path** goes in `notes` as `path:A`, `path:B` or `path:C`.
+- **The money question** (every call): `payer` is who would pay if it worked: `leader`, `school`, `parent`, `sponsor`, `partner_org`, `nobody` or `unsure`. `willing_to_pay` is their answer at the stated price: `yes`, `maybe` or `no`. Leave both blank until you have actually asked. Same two columns exist in `interview-log.csv`.
 - **`last_contact`** is `YYYY-MM-DD`, updated on every touch.
 - Rows starting with `EXAMPLE` are ignored. Delete them once real rows exist.

@@ -38,4 +38,30 @@ describe("pipeline from crm.csv", () => {
     const out = formatPipeline(summarizePipeline(rows, "2026-09-29"), "2026-09-29");
     expect(out).toContain("| Contacts touched (cumulative) |");
   });
+
+  it("tallies who would pay and whether they said yes, ignoring blanks and EXAMPLE rows", () => {
+    const rows = parseCsv(
+      "organization,leader_name,leader_email,segment,source,status,expected_students,last_contact,next_action,objection,referral_from,notes,payer,willing_to_pay\n" +
+        "EXAMPLE — Club,,,,warm_intro,call_held,,,,,,,parent,yes\n" +
+        "A,,,,own_school,call_held,,2026-10-08,x,,,,parent,yes\n" +
+        "B,,,,warm_intro,call_held,,2026-10-08,x,,,,sponsor,maybe\n" +
+        "C,,,,cold_email,call_held,,2026-10-08,x,,,,Nobody,no\n" +
+        "D,,,,cold_email,contacted,,2026-10-08,x,,,,,\n" +
+        "E,,,,cold_email,call_held,,2026-10-08,x,,,,the PTA,\n"
+    );
+    const s = summarizePipeline(rows, "2026-10-09");
+    expect(s.moneyAsked).toBe(3);
+    expect(s.payerSplit).toMatchObject({ parent: 1, sponsor: 1, nobody: 1, leader: 0 });
+    expect(s.willing).toEqual({ yes: 1, maybe: 1, no: 1 });
+    expect(s.unknownPayers).toEqual(['E ("the PTA")']);
+    const out = formatPipeline(s, "2026-10-09");
+    expect(out).toContain("| Asked who would pay | 3 of 5 contacted |");
+    expect(out).toContain("Fix these payer values");
+  });
+
+  it("works on a CRM without the payer columns (older files)", () => {
+    const s = summarizePipeline(parseCsv("organization,status,source\nA,contacted,cold_email\n"), "2026-10-09");
+    expect(s.moneyAsked).toBe(0);
+    expect(s.willing).toEqual({ yes: 0, maybe: 0, no: 0 });
+  });
 });

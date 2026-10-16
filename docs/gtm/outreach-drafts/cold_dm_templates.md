@@ -1,3 +1,5 @@
+> **Status 2026-10-15: these are the September student-led drafts.** Pricing lines were corrected to match `/pricing` (free for students, free pilot, then $199/yr per club or $499/yr per school instructor). They still mention the paper-trading sandbox, which is being cut from the cohort product (build plan T4.4): remove those sentences before sending. For leader outreach use `docs/gtm/outreach-kit.md`. Check every claim against the live site before sending.
+
 # Cold DM / Outreach Templates
 
 ---
@@ -38,7 +40,7 @@ Everything is free. I'm not asking for anything - just want the curriculum to re
 
 strikelab.dev
 
-If you'd like to share it with your students, or your school wants to sponsor Pro access for a class, I'm happy to chat.
+If you'd like to share it with your students, or your club wants to run it as a free six-week pilot with a weekly plan and a progress scorecard, I'm happy to chat.
 
 Best,
 Isaac
@@ -56,9 +58,9 @@ It teaches the math behind how options are priced: Black-Scholes, the five Greek
 
 This is designed for students who've completed pre-calculus or AP Calculus and want to see the math applied to something real. It aligns naturally with AP Stats and AP Calc content.
 
-The core curriculum — all 23 lessons, the Python playground, achievements, and certificates of completion — is free forever, for any student. We also offer a paid Pro tier ($9/mo, optional) with weekly coding challenges, a leaderboard, office hours, and priority support — schools sometimes cover this for a class or club. A dedicated school license (site-wide, with a teacher dashboard) is on the roadmap but not built yet, so today the simplest path for a class is just having students sign up individually — it's free.
+The core curriculum (all 23 lessons, the Python playground, certificates of completion) is free for every student. Clubs and classes can run the six-week Quant Foundations Lab as a free pilot, with a weekly plan and a scorecard for the leader. After the pilot a club license is $199 a year (a school license is $499 a year per instructor); nothing renews or bills automatically.
 
-Would love to offer your math club or AP class free access. Can I send you a walkthrough?
+Would love to offer your math club or AP class the free pilot. Can I send you a walkthrough?
 
 Best,
 Isaac
