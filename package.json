@@ -15,6 +15,7 @@
     "lhci": "lhci autorun",
     "pipeline": "node scripts/metrics/pipeline.mjs",
     "support": "node scripts/metrics/support.mjs",
+    "db:combine": "node scripts/supabase/combine-migrations.mjs",
     "rehearsal:seed": "node --env-file=.env.local scripts/rehearsal/seed.mjs",
     "test:a11y": "playwright test tests/accessibility",
     "test:e2e": "playwright test",

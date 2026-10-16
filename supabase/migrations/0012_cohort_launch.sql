@@ -13,6 +13,11 @@ alter table public.assignments
   add column if not exists position smallint,
   add column if not exists due_on date;
 
+-- Dropped first so this file can be run again (the checks have no IF NOT EXISTS).
+alter table public.assignments
+  drop constraint if exists assignments_week_number_check,
+  drop constraint if exists assignments_position_check;
+
 alter table public.assignments
   add constraint assignments_week_number_check
     check (week_number is null or week_number between 1 and 6),
