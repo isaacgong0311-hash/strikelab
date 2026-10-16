@@ -10,11 +10,16 @@ import { consumeAiQuota, DAILY_AI_ACTIONS, AI_COST } from "./quota";
 // requirement (a DB hiccup must not block a student mid-lesson), not just an
 // edge case.
 
-function fakeSupabase(rpcImpl: (args: unknown) => { data: unknown; error: unknown }) {
+function fakeSupabase(
+  rpcImpl: (args: unknown) => { data: unknown; error: unknown },
+  classPolicy: { data: unknown; error: unknown } = { data: true, error: null },
+) {
   return {
-    rpc: vi.fn((_fn: string, args: unknown) => ({
-      single: () => Promise.resolve(rpcImpl(args)),
-    })),
+    rpc: vi.fn((fn: string, args: unknown) =>
+      fn === "ai_tutor_allowed"
+        ? Promise.resolve(classPolicy)
+        : { single: () => Promise.resolve(rpcImpl(args)) },
+    ),
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } as any;
 }
@@ -53,5 +58,24 @@ describe("consumeAiQuota", () => {
     const supabase = fakeSupabase(() => ({ data: null, error: { message: "connection reset" } }));
     const result = await consumeAiQuota(supabase, "user-1", "chat");
     expect(result.allowed).toBe(true);
+  });
+});
+
+describe("class policy (migration 0023)", () => {
+  it("blocks without spending budget when the student's class has the tutor off", async () => {
+    const supabase = fakeSupabase(() => ({ data: { new_count: 1, allowed: true }, error: null }), { data: false, error: null });
+    const result = await consumeAiQuota(supabase, "user-1", "chat");
+    expect(result).toMatchObject({ allowed: false, reason: "class" });
+    expect(supabase.rpc).not.toHaveBeenCalledWith("consume_ai_quota", expect.anything());
+  });
+
+  it("fails closed on an unexpected policy error", async () => {
+    const supabase = fakeSupabase(() => ({ data: { new_count: 1, allowed: true }, error: null }), { data: null, error: { code: "XX000", message: "boom" } });
+    expect((await consumeAiQuota(supabase, "user-1", "chat")).allowed).toBe(false);
+  });
+
+  it("keeps the old behavior before the migration exists (function not found)", async () => {
+    const supabase = fakeSupabase(() => ({ data: { new_count: 1, allowed: true }, error: null }), { data: null, error: { code: "42883", message: "function does not exist" } });
+    expect((await consumeAiQuota(supabase, "user-1", "chat")).allowed).toBe(true);
   });
 });

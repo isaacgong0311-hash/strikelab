@@ -128,7 +128,7 @@ export const SUBPROCESSORS: Subprocessor[] = [
   { vendor: "Supabase", purpose: "Database and sign-in", receives: "Everything in the table above" },
   { vendor: "Vercel", purpose: "Hosting and cookie-free, aggregate page analytics", receives: "Web requests (IP address, pages visited); no account data in analytics" },
   { vendor: "Sentry", purpose: "Error reports", receives: "The error, the page, and a signed-in user's account id (no email or name)" },
-  { vendor: "Groq", purpose: "AI tutor and hints, only when a student uses them", receives: "The question or code the student sends, without their name or email" },
+  { vendor: "Groq", purpose: "AI tutor and hints, only when a student uses them and, for students in a class, only if their leader has turned the tutor on", receives: "The question or code the student sends, without their name or email" },
   { vendor: "Google", purpose: "\"Continue with Google\", only if used", receives: "The sign-in itself" },
   { vendor: "Stripe", purpose: "Payments; never used by students in a pilot", receives: "The payer's checkout details, handled entirely by Stripe" },
   { vendor: "Web3Forms", purpose: "Newsletter sign-up, only if used", receives: "The email address entered" },

@@ -29,12 +29,32 @@ export interface ChatMessage {
 export const MAX_HISTORY_MESSAGES = 10;
 export const MAX_MESSAGE_CHARS = 4000;
 
-/** Trims history to the most recent turns and clamps each message's length. */
-export function clampHistory(messages: ChatMessage[]): ChatMessage[] {
-  return messages
-    .slice(-MAX_HISTORY_MESSAGES)
-    .map((m) => ({ role: m.role, content: String(m.content ?? "").slice(0, MAX_MESSAGE_CHARS) }))
-    .filter((m) => m.content.trim().length > 0);
+/**
+ * What a client is allowed to put in a thread. Only "user" and "assistant":
+ * the server owns the system prompt, and a client-supplied "system" (or any
+ * other) role would let a student rewrite the tutor's rules.
+ */
+const CLIENT_ROLES = new Set(["user", "assistant"]);
+
+/**
+ * Trims history to the most recent turns, clamps each message's length, and
+ * drops anything that isn't a plain user/assistant text turn. `messages` comes
+ * straight from the request body, so it is treated as untrusted: it may not be
+ * an array, and entries may have any shape.
+ */
+export function clampHistory(messages: unknown): ChatMessage[] {
+  if (!Array.isArray(messages)) return [];
+  const turns: ChatMessage[] = [];
+  for (const m of messages) {
+    if (!m || typeof m !== "object") continue;
+    const { role, content } = m as { role?: unknown; content?: unknown };
+    if (typeof role !== "string" || !CLIENT_ROLES.has(role)) continue;
+    if (typeof content !== "string") continue;
+    const text = content.slice(0, MAX_MESSAGE_CHARS);
+    if (text.trim().length === 0) continue;
+    turns.push({ role: role as ChatMessage["role"], content: text });
+  }
+  return turns.slice(-MAX_HISTORY_MESSAGES);
 }
 
 /**

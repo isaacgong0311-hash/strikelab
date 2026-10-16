@@ -1,4 +1,5 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
+import { aiAllowedForUser } from "@/lib/ai/classPolicy";
 
 const DAILY_HINT_CAP = 20;
 
@@ -10,6 +11,9 @@ export async function consumeHintQuota(
   supabase: SupabaseClient,
   userId: string,
 ): Promise<boolean> {
+  // A class leader's "tutor off" also covers hints (migration 0023).
+  if (!(await aiAllowedForUser(supabase))) return false;
+
   const { data, error } = await supabase
     .rpc("consume_hint_quota", { p_user_id: userId, p_cap: DAILY_HINT_CAP })
     .single();

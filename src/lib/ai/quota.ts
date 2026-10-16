@@ -1,4 +1,5 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
+import { aiAllowedForUser } from "./classPolicy";
 
 /**
  * Daily AI budget, shared across every AI surface (tutor chat, code review,
@@ -31,6 +32,8 @@ export interface QuotaResult {
   allowed: boolean;
   used: number;
   limit: number;
+  /** Set when `allowed` is false for a reason other than the daily cap. */
+  reason?: "class";
 }
 
 /**
@@ -54,6 +57,12 @@ export async function consumeAiQuota(
   feature: AiFeature,
 ): Promise<QuotaResult> {
   const cost = AI_COST[feature];
+
+  // A class leader's "tutor off" overrides the budget; checked first so a
+  // blocked student doesn't burn any of it.
+  if (!(await aiAllowedForUser(supabase))) {
+    return { allowed: false, used: 0, limit: DAILY_AI_ACTIONS, reason: "class" };
+  }
 
   const { data, error } = await supabase
     .rpc("consume_ai_quota", { p_user_id: userId, p_cost: cost, p_cap: DAILY_AI_ACTIONS })

@@ -26,5 +26,6 @@ from (values
   ('0019_capstone_submissions',     to_regclass('public.capstone_submissions') is not null),
   ('0020_subscription_event_order', exists (select 1 from information_schema.columns where table_schema = 'public' and table_name = 'subscriptions' and column_name = 'last_event_created')),
   ('0021_rate_limits',              to_regclass('public.rate_limits') is not null),
-  ('0022_private_challenge_board',  to_regprocedure('public.challenge_leaderboard(text, integer)') is not null)
+  ('0022_private_challenge_board',  to_regprocedure('public.challenge_leaderboard(text, integer)') is not null),
+  ('0023_class_ai_tutor',            to_regprocedure('public.ai_tutor_allowed()') is not null)
 ) as m(migration, present);

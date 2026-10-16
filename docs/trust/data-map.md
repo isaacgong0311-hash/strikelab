@@ -2,7 +2,7 @@
 
 What StrikeLab stores about students, who can see it, where it goes, and how long it's kept. It's written for a club sponsor, principal or district IT reviewer, and it goes in the pilot approval packet (`docs/gtm/outreach-kit.md` §5). It's a plain description of how the product works, not a legal document. The public version is https://strikelab.dev/trust, rendered from `src/lib/trust/dataMap.ts`: change both together.
 
-**Last checked against the code:** 2026-09-29, through migration `0022`. Update this page in the same PR as any migration that adds a table or column holding student data.
+**Last checked against the code:** 2026-10-16, through migration `0023` (per-class AI tutor switch). Update this page in the same PR as any migration that adds a table or column holding student data.
 
 ## Principles
 
@@ -45,7 +45,7 @@ Enforced in the database with row-level security (RLS): each rule below is a dat
 | Supabase | Database and sign-in | Everything in the table above |
 | Vercel | Hosting; cookie-free, aggregate page analytics | Web requests (IP address, pages visited), no account data in analytics |
 | Sentry | Error reports | The error, the page, and the account id of a signed-in user (no email or name) |
-| Groq | AI tutor and hints (only when a student uses them) | The question or code the student sends, without their name or email |
+| Groq | AI tutor and hints (only when a student uses them and, for students in a class, only if their leader has turned the tutor on; it is off by default for every class) | The question or code the student sends, without their name or email |
 | Google | "Continue with Google" (only if used) | The sign-in itself |
 | Stripe | Payments (never used by students in a pilot) | The payer's checkout details, handled entirely by Stripe |
 | Web3Forms | Newsletter sign-up (only if used) | The email address entered |

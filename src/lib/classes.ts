@@ -83,6 +83,8 @@ export interface OwnedClass {
   skipWeeks: string[];
   /** Only ever returned to the class's own teacher. */
   joinCode: string;
+  /** Whether students in this class may use the AI tutor (migration 0023; off by default). */
+  aiTutorEnabled?: boolean;
 }
 
 export type TeacherOwnsClassResult =
@@ -121,6 +123,7 @@ export async function requireTeacherOwnsClass(
       launchedAt: (klass.launched_at as string | null) ?? null,
       skipWeeks: Array.isArray(klass.skip_weeks) ? (klass.skip_weeks as string[]) : [],
       joinCode: klass.join_code as string,
+      aiTutorEnabled: klass.ai_tutor_enabled === true,
     },
   };
 }

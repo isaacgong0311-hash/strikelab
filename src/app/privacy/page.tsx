@@ -66,7 +66,9 @@ const SECTIONS: { title: string; body: React.ReactNode }[] = [
         to generate a response. Usage is capped per day per account so costs
         stay predictable — we log how many requests you&rsquo;ve made, not
         the content of what you asked. AI features require signing in for
-        exactly this reason.
+        exactly this reason. If you are in a class or club, your leader
+        decides whether AI features are available to you; they are off until
+        the leader turns them on.
       </>
     ),
   },
