@@ -7,6 +7,8 @@ export const RATE_LIMITS = {
   "class-create": [20, 3600],
   "class-launch": [30, 3600],
   "class-settings": [60, 3600],
+  "season-attempt": [60, 3600],
+  "season-handle": [10, 3600],
   "capstone-save": [600, 3600],
   "capstone-share": [20, 3600],
   "account-delete": [5, 3600],
