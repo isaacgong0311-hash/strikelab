@@ -16,7 +16,7 @@ export const metadata = pageMetadata({
 
 export const dynamic = "force-dynamic";
 
-interface SeasonRow { id: string; title: string; starts_on: string; ends_on: string }
+interface SeasonRow { id: string; title: string; starts_on: string; ends_on: string; is_rehearsal?: boolean }
 interface ChallengeRow { id: string; week: number; template_slug: string; opens_at: string; closes_at: string; time_limit_minutes: number }
 interface BoardRow { rank: number; handle: string; total_score: number; solved: number; is_you: boolean }
 
@@ -24,11 +24,17 @@ function readable(date: string): string {
   return new Intl.DateTimeFormat("en-US", { month: "long", day: "numeric", timeZone: "UTC" }).format(new Date(`${date}T00:00:00Z`));
 }
 
-async function load() {
+const SEASON_ID = /^[a-z0-9-]{2,40}$/;
+
+async function load(requested: string | null) {
   const supabase = await getSupabaseServer();
   if (!supabase) return { season: null, challenges: [], board: [], needsHandle: false, signedIn: false };
   const today = new Date().toISOString().slice(0, 10);
-  const { data: seasons } = await supabase.from("seasons").select("id, title, starts_on, ends_on").gte("ends_on", today).order("starts_on").limit(1);
+  // By default, the next real season. A rehearsal season (0025) is reachable
+  // only by its id in the link, so the public page never shows test data.
+  const { data: seasons } = requested
+    ? await supabase.from("seasons").select("id, title, starts_on, ends_on, is_rehearsal").eq("id", requested).limit(1)
+    : await supabase.from("seasons").select("id, title, starts_on, ends_on, is_rehearsal").eq("is_rehearsal", false).gte("ends_on", today).order("starts_on").limit(1);
   const season = (seasons?.[0] as SeasonRow | undefined) ?? null;
   const { data: auth } = await supabase.auth.getUser();
   let needsHandle = false;
@@ -50,8 +56,10 @@ async function load() {
   };
 }
 
-export default async function SeasonsPage() {
-  const { season, challenges, board, needsHandle, signedIn } = await load();
+export default async function SeasonsPage({ searchParams }: { searchParams: Promise<{ season?: string | string[] }> }) {
+  const { season: seasonParam } = await searchParams;
+  const requested = typeof seasonParam === "string" && SEASON_ID.test(seasonParam) ? seasonParam : null;
+  const { season, challenges, board, needsHandle, signedIn } = await load(requested);
   const now = new Date();
   const title = season?.title ?? PLANNED_SEASON.title;
   const starts = season?.starts_on ?? PLANNED_SEASON.startsOn;
@@ -61,7 +69,7 @@ export default async function SeasonsPage() {
     <div className={styles.page}>
       <section className={styles.section}>
         <div className={styles.wrap}>
-          <p className={styles.kicker}>Seasons</p>
+          <p className={styles.kicker}>{season?.is_rehearsal ? "Rehearsal season (practice only, not on any record)" : "Seasons"}</p>
           <h1 className={styles.h1}>Prove you can do quant work.</h1>
           <p className={styles.lede}>
             {title}: {readable(starts)} to {readable(ends)}. One timed challenge a week, free. Your own numbers, your
@@ -72,6 +80,12 @@ export default async function SeasonsPage() {
               <Link href="/sign-up?next=%2Fseasons" className={styles.primary}>Create a free account to play</Link>
               <Link href="/lessons" className={styles.secondary}>Train with the lessons first</Link>
             </div>
+          )}
+          {signedIn && (
+            <p className={styles.body} style={{ marginTop: "1rem" }}>
+              <Link href="/record" className={styles.textLink}>See your record</Link>: your official scores and anything
+              verified, private until you share it.
+            </p>
           )}
           {needsHandle && <div style={{ marginTop: "1.5rem" }}><HandleForm /></div>}
         </div>
