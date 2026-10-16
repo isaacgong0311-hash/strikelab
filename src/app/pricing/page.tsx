@@ -59,7 +59,7 @@ const TIERS = [
     features: [
       "Everything in Club, for all of one instructor's classes",
       "Invoices and purchase orders",
-      "Help completing your district's student-data agreement",
+      "We'll go through your school's student-data form with you",
     ],
     cta: { href: "/pilot?src=pricing", label: "Start a free pilot" },
     accent: false,

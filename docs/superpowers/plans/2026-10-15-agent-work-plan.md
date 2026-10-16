@@ -107,3 +107,15 @@ Checks at this point: `tsc` clean, `eslint` 0 errors (2 known warnings), 430 uni
 | Checks | `tsc` clean, `eslint` 0 errors, 418 unit tests, `next build`, 58 browser tests (incl. accessibility) |
 
 **For the founder to read:** the edits to `/terms` and `/privacy` (legal pages), and the Pro FAQ now says Pro is no longer offered and anyone who subscribed can email to cancel.
+
+## Build log: funnel, copy and tests (2026-10-16)
+
+| Task | Result |
+|---|---|
+| **T5.5** Copy | "Zero prep" and "No prep" replaced (light prep; the real number is being timed in the first pilots); "we'll help with your district's agreement" replaced by "email us your school's form and we'll go through it with you"; "Safe to bring to your school" became "What we collect, and what we don't"; "sweet spot" became "designed for roughly 10 to 25"; "stands out on an application" softened; "any laptop" gained "with a modern browser" |
+| **T5.1** Homepage | Leader door in the hero now has the same button weight as the student door; the club section moved above the Greeks tour with the background bands re-flowed |
+| **T5.2** `/pilot` preview | New section shows the scorecard and the invite message from the demo club, labelled as example data, before any sign-up. Browser-tested |
+| **T3.7+** Join route | `/api/classes/join` now uses the same lookup as the join page: an outage returns 503, not "That code doesn't match a class" |
+| **T3.10** Tests | Join route (9 cases) and scorecard loader (6 cases, incl. missing migrations 0016 and 0019) |
+| Skipped | **T5.9** loading states for lesson pages: an earlier commit made the lesson player paint immediately for Lighthouse, and a loading boundary could undo that; measure first |
+| Waiting on the founder | **T5.4** proof block needs the real number of clubs recruited; **T5.6** accessibility statement needs a real audit run; **T5.8** the 10-second test with five strangers |
