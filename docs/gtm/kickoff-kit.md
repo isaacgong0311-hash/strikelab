@@ -40,6 +40,7 @@ Do this **at the school, on the school network, on the kind of device students w
 | 3 | Join, and land on the cohort home | "This week" shows week 1 and one Start button | Screenshot it and send it to the founder |
 | 4 | Finish session `inv-1.1` | The summary screen shows | Note where it stuck |
 | 5 | Open `/lesson/3` and click **Run** on the exercise | Python loads (the first time downloads about 13 MB and can take 5–30s on school Wi-Fi) and tests run | "Python couldn't load": the filter blocks large downloads from `strikelab.dev/pyodide/`. Weeks 1–2 don't need it; get it allowed before week 3 |
+| 5b | Open `strikelab.dev/warmup` on one computer, then ask everyone to open it at the start of the meeting | The page says "Your lab is ready" in under a minute; after that exercises start instantly instead of downloading 13 MB mid-meeting | "Python didn't load": same fix as above; use **Try again** once, then carry on and get `strikelab.dev/pyodide/` allowed |
 | 6 | **Time** how long the cohort home takes to appear on a fresh load | Under about 3s | Tell the founder the device model and the time |
 | 7 | In the Supabase SQL editor, check that the test student has a `lesson_completions` row (smoke-test step 3's query) | One row | Measurement is broken: stop, and fix before kickoff |
 | 8 | Delete the test account (Settings → Delete my account) | Gone | — |

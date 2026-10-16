@@ -21,6 +21,7 @@ const PUBLIC_ROUTES = [
   "/sign-up?next=%2Fteach%2Fnew",
   "/challenges",
   "/trust",
+  "/warmup",
 ];
 
 async function waitForClientShell(page: import("@playwright/test").Page) {

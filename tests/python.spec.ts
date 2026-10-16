@@ -85,3 +85,19 @@ test("pressing Run on `while True:` shows the explanation and the next Run works
   await expect(page.getByText(/ran for more than 10 seconds/)).toBeHidden({ timeout: 60_000 });
   await expect(page.getByText(/Python couldn't load/)).toHaveCount(0);
 });
+
+// Kickoff helper: students open /warmup so Python is downloaded before the
+// first exercise, not during it (build plan T3.4).
+test("the warm-up page loads Python and says the lab is ready", async ({ page }) => {
+  await page.goto("/warmup", { waitUntil: "domcontentloaded" });
+  await expect(page.getByRole("heading", { name: /Your lab is ready/ })).toBeVisible({ timeout: 60_000 });
+  await expect(page.getByRole("link", { name: "Continue" })).toBeVisible();
+});
+
+test("the warm-up page says so, and offers Try again, when Python can't load", async ({ page }) => {
+  await page.route(/cdn\.jsdelivr\.net|\/pyodide\//, (route) => route.abort());
+  await page.goto("/warmup", { waitUntil: "domcontentloaded" });
+  await expect(page.getByRole("heading", { name: /Python didn't load/ })).toBeVisible({ timeout: 60_000 });
+  await expect(page.getByText(/ask IT to allow strikelab\.dev/)).toBeVisible();
+  await expect(page.getByRole("button", { name: "Try again" })).toBeVisible();
+});
