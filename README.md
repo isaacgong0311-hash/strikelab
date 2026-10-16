@@ -4,6 +4,8 @@
 
 A club leader launches a cohort from a fixed template in minutes, shares an invite link, and watches a scorecard (activation, weekly activity, week-4 retention, who needs help). Students work through lessons (Black-Scholes, the Greeks, backtesting) in an in-browser Python editor with nothing to install, and submit a private capstone. Everything is free for students; pilots are free for clubs.
 
+**The plan on one page:** [`docs/PLAN.md`](docs/PLAN.md). It supersedes the older plans below on what to do next.
+
 **Status (2026-10-01):** the product and the pilot operating system are built and tested; no leader-run cohort has started yet. Where the company stands, what it has to prove, and the plan:
 - Proof thresholds and strategy: [`docs/superpowers/specs/2026-09-13-strikelab-yc-company-design.md`](docs/superpowers/specs/2026-09-13-strikelab-yc-company-design.md)
 - The plan and gates: [`docs/superpowers/plans/2026-09-29-mega-plan.md`](docs/superpowers/plans/2026-09-29-mega-plan.md)
