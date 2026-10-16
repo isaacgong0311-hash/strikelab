@@ -23,7 +23,7 @@ The *product* is the strong part. The *company* does not exist yet. A YC partner
 
 | Dimension | Score /10 | Why |
 |---|---|---|
-| Founder quality and speed | 6 | A solo high-school founder built a 23-lesson product with Pyodide, RLS tests and cohort tooling **[V]**. Pulled down by: 38 of 146 commits are authored "Claude" and 30 are by an author `hogri` **[V]** (YC will ask who built what), and the founder's own role/hours are still blank in the application draft **[V]** |
+| Founder quality and speed | 6 | A solo high-school founder built a 23-lesson product with Pyodide, RLS tests and cohort tooling **[V]**. Pulled down by: at the time of the review 38 of 146 commits were authored "Claude" and the other 108 are Isaac's under four git identities (`hogri` is Isaac, confirmed 2026-10-16) **[V]**; YC will still ask who built what, and the founder's own role/hours are still blank in the application draft **[V]** |
 | Real problem, real users | 1 | No interviews, no leader contacts, no cohort **[V]**. The premise "club leaders need a ready-to-run lab" is untested **[I]** |
 | Traction | 0 | The only outside signal is Search Console: 21 indexed pages, 5 to 25 impressions a day **[V]** |
 | Market and path to large | 3 | The repo's own math puts licenses at about $0.1M to $0.6M a year at maturity (`docs/yc/market-sizing.md`) **[V]**. The rungs that could be large (districts, sponsors, talent pipeline) are unsized **[V]** |
@@ -50,7 +50,7 @@ I will not give a probability of admission. Nothing in the repo supports a numbe
 6. **Age and signing authority.** YC's long-quoted position, from a Paul Graham essay (2007) and a Fortune summary (2025), is that YC generally does not take founders who cannot legally sign contracts; there are exceptions (a 14- and a 16-year-old in 2017) and an 18-year-old in W25 **[S]**. I could not find a current official rule. **Read YC's own FAQ and, if it is unclear, email them.** This single fact decides whether your timeline is "apply in spring" or "apply later".
 7. **A new path may matter: YC "Early Decision".** [S] Launched Sept 2025: students apply, get funded now, and join a batch after graduating. Whether *high schoolers* qualify is **unverified**. Check ycombinator.com/early-decision.
 8. **Full-time commitment.** The application draft marks it `[NEEDS FOUNDER + PARENTS]`; the spec says you plan to stay enrolled with 10 to 15 hours a week **[V]**. The partner will ask this early.
-9. **Authorship.** 38 of 146 commits say "Claude" and the application draft's "what did you do vs AI" is blank **[V]**. You need an honest, specific answer. Also: who is `hogri` (30 commits)? A second person, an alternate account of yours? If it is a collaborator, that matters for equity, IP and the "solo founder" claim.
+9. **Authorship.** 38 of 146 commits (26%) say "Claude" and the application draft's "what did you do vs AI" is blank **[V]**. You need an honest, specific answer. **Resolved 2026-10-16:** `hogri` is Isaac, so there is no second contributor: the "solo founder" claim and code ownership are clean, and about three quarters of the commits are the founder's own. A `.mailmap` now shows them as one person.
 
 ### C. Product and engineering risks (would hurt at the first live cohort)
 
@@ -100,7 +100,7 @@ I will not give a probability of admission. Nothing in the repo supports a numbe
 ## 7. Questions only you can answer
 
 1. What does YC's own FAQ say about under-18 founders and Early Decision? (15 minutes, and it decides the timeline.)
-2. Who is `hogri` in the git history?
+2. ~~Who is `hogri` in the git history?~~ Answered: it is Isaac.
 3. What did you personally build or decide, versus what Claude wrote? Write it plainly; YC will ask.
 4. What do your parents think about a full-time commitment, and who is the adult who can sign for you?
 5. Do you want to delete the sprawl (sandbox, challenges, Electron, Capacitor, Spline) or hide it behind flags? Deleting is simpler; flags keep optionality. See the build plan, T4.

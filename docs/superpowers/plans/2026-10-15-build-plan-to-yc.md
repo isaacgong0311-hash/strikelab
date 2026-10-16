@@ -62,7 +62,7 @@
 | # | Task | Effort | Done when |
 |---|---|---|---|
 | T0.1 | **Read YC's own FAQ and Early Decision page; email YC if unclear:** can an under-18 apply, can a high schooler use Early Decision, what is the full-time expectation? | 1 h | A dated note in `decision-log.md` quoting the source |
-| T0.2 | **Identify `hogri`** (30 commits): collaborator, alternate account, or contractor? | 15 min | Written answer; if a person, T8.4 applies |
+| T0.2 | ~~Identify `hogri`~~ **Done 2026-10-16: it is Isaac** (alternate git identity). No second contributor; `.mailmap` added | n/a | Done |
 | T0.3 | **Write your authorship paragraph:** what you decided and built vs. what Claude wrote. Specific, honest, 150 words | 1 h | A paragraph you can say aloud |
 | T0.4 | **Parents conversation:** full-time commitment, adult signatory, what happens to school | 1 to 2 h | Two written sentences each; feeds T8.1, T8.2 |
 | T0.5 | **Decide delete vs. flag for the sprawl** (T4): delete is simpler; flags keep optionality | 15 min | Choice logged |
@@ -184,7 +184,7 @@ The reviewers agree the in-session experience is strong and the between-meetings
 | T8.1 | Written **commitment plan** (school, deferral, parents) | One honest page; the partner will ask early |
 | T8.2 | **Name the adult signatory** | Needed for any pilot agreement, Stripe, formation |
 | T8.3 | Decide **formation** timing (Delaware C-corp is the usual shape) ⚖ | Don't form before the trigger; know the person and cost |
-| T8.4 | **IP assignment / licensing** for anyone who contributed code (`hogri` if a person) ⚖ | Clean ownership before any investor looks |
+| T8.4 | **IP assignment / licensing** for anyone who contributes code or copy **from now on** (the new teammate); `hogri` turned out to be Isaac, so nothing is owed for past commits ⚖ | Clean ownership before any investor looks |
 | T8.5 | **Privacy and terms review** by a qualified person; COPPA/FERPA questions ⚖; reviews the age and teacher attestation wording | No compliance claims until then |
 | T8.6 | **Stripe account in the right name** ⚖ | Before the first payment |
 | T8.7 | **Three advisors** who will vouch (teacher, startup-literate adult, a pilot leader) | 30-minute monthly call each |

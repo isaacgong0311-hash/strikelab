@@ -6,7 +6,7 @@
 The product is built and tested. **No leader-run cohort has started, no leader has been interviewed, nobody has paid.** An independent review (`docs/superpowers/plans/2026-10-15-yc-worthiness-review.md`) concluded that is the problem, not the product.
 
 ## This week (in this order)
-1. **Founder (Isaac):** read YC's FAQ and Early Decision page (T0.1); say who `hogri` is (T0.2); talk to parents (T0.4); log the first 15 real contacts in `docs/gtm/crm.csv` (T1.1, T1.3); ask one teacher at your own school to sponsor Cohort 0 (T1.4).
+1. **Founder (Isaac):** read YC's FAQ and Early Decision page (T0.1); talk to parents (T0.4); log the first 15 real contacts in `docs/gtm/crm.csv` (T1.1, T1.3); ask one teacher at your own school to sponsor Cohort 0 (T1.4).
 2. **Marketing lead:** `docs/gtm/marketing-lead-onboarding.md`. Message variants, 15 contacts, the money question on every call.
 3. **Agent:** Wave 1 hardening is done (webhook, join codes, Python worker, AI tutor switch, warm-up page, join page, timezone, payer columns); **apply migration `0023` before the next deploy.** Next: cutting what doesn't serve the six-week club story (needs your delete-or-hide call). Log: `docs/superpowers/plans/2026-10-15-agent-work-plan.md`.
 
