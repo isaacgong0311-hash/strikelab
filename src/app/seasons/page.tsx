@@ -5,9 +5,12 @@ import { getSupabaseServer } from "@/lib/supabase/server";
 import { getTemplate } from "@/lib/seasons/templates";
 import { challengeStatus } from "@/lib/seasons/window";
 import { PLANNED_SEASON } from "@/lib/seasons/planned";
+import { remainingLabel, statusForWeek, type OwnAttempt } from "@/lib/seasons/status";
 import LeaderboardTable, { type LeaderboardRow } from "@/components/seasons/LeaderboardTable";
 import HandleForm from "./HandleForm";
+import WeekStatus from "./WeekStatus";
 import boardStyles from "./board.module.css";
+import statusStyles from "./status.module.css";
 
 export const metadata = pageMetadata({
   path: "/seasons",
@@ -20,6 +23,7 @@ export const dynamic = "force-dynamic";
 
 interface SeasonRow { id: string; title: string; starts_on: string; ends_on: string }
 interface ChallengeRow { id: string; week: number; template_slug: string; opens_at: string; closes_at: string; time_limit_minutes: number }
+interface AttemptRow extends OwnAttempt { challenge_id: string }
 interface ClubOption { id: string; name: string }
 
 function readable(date: string): string {
@@ -28,7 +32,7 @@ function readable(date: string): string {
 
 async function load(requestedClubId: string | undefined) {
   const supabase = await getSupabaseServer();
-  if (!supabase) return { season: null, challenges: [], board: [], clubBoard: null, clubs: [], selectedClub: null, needsHandle: false, signedIn: false };
+  if (!supabase) return { season: null, challenges: [], attempts: [], board: [], clubBoard: null, clubs: [], selectedClub: null, needsHandle: false, signedIn: false };
   const today = new Date().toISOString().slice(0, 10);
   const { data: seasons } = await supabase.from("seasons").select("id, title, starts_on, ends_on").gte("ends_on", today).order("starts_on").limit(1);
   const season = (seasons?.[0] as SeasonRow | undefined) ?? null;
@@ -45,16 +49,24 @@ async function load(requestedClubId: string | undefined) {
       clubs = (classes ?? []) as ClubOption[];
     }
   }
-  if (!season) return { season: null, challenges: [], board: [], clubBoard: null, clubs, selectedClub: null, needsHandle, signedIn: Boolean(auth.user) };
+  if (!season) return { season: null, challenges: [], attempts: [], board: [], clubBoard: null, clubs, selectedClub: null, needsHandle, signedIn: Boolean(auth.user) };
   const selectedClub = clubs.find((club) => club.id === requestedClubId) ?? clubs[0] ?? null;
   const [{ data: challenges }, { data: board }, clubResult] = await Promise.all([
     supabase.from("season_challenges").select("id, week, template_slug, opens_at, closes_at, time_limit_minutes").eq("season_id", season.id).order("week"),
     supabase.rpc("season_leaderboard", { p_season_id: season.id, p_class_id: null }),
     selectedClub ? supabase.rpc("season_leaderboard", { p_season_id: season.id, p_class_id: selectedClub.id }) : Promise.resolve(null),
   ]);
+  const challengeRows = (challenges ?? []) as ChallengeRow[];
+  const { data: attempts } = auth.user && challengeRows.length > 0
+    ? await supabase.from("season_attempts")
+      .select("challenge_id, status, deadline, official_score")
+      .eq("user_id", auth.user.id)
+      .in("challenge_id", challengeRows.map((challenge) => challenge.id))
+    : { data: [] };
   return {
     season,
-    challenges: (challenges ?? []) as ChallengeRow[],
+    challenges: challengeRows,
+    attempts: (attempts ?? []) as AttemptRow[],
     board: (board ?? []) as LeaderboardRow[],
     clubBoard: selectedClub ? (clubResult?.data ?? []) as LeaderboardRow[] : null,
     clubs,
@@ -66,8 +78,10 @@ async function load(requestedClubId: string | undefined) {
 
 export default async function SeasonsPage({ searchParams }: { searchParams: Promise<{ club?: string | string[] }> }) {
   const { club } = await searchParams;
-  const { season, challenges, board, clubBoard, clubs, selectedClub, needsHandle, signedIn } = await load(typeof club === "string" ? club : undefined);
+  const { season, challenges, attempts, board, clubBoard, clubs, selectedClub, needsHandle, signedIn } = await load(typeof club === "string" ? club : undefined);
   const now = new Date();
+  const attemptsByChallenge = new Map(attempts.map((attempt) => [attempt.challenge_id, attempt]));
+  const seasonRank = board.find((row) => row.is_you)?.rank ?? null;
   const title = season?.title ?? PLANNED_SEASON.title;
   const starts = season?.starts_on ?? PLANNED_SEASON.startsOn;
   const ends = season?.ends_on ?? PLANNED_SEASON.endsOn;
@@ -105,7 +119,7 @@ export default async function SeasonsPage({ searchParams }: { searchParams: Prom
         </div>
       </section>
 
-      <section className={styles.section} aria-labelledby="season-challenges">
+      {!signedIn && <section className={styles.section} aria-labelledby="season-challenges">
         <div className={styles.wrap}>
           <h2 id="season-challenges" className={styles.h2}>This season&apos;s challenges</h2>
           {challenges.length === 0 ? (
@@ -131,7 +145,40 @@ export default async function SeasonsPage({ searchParams }: { searchParams: Prom
             </ol>
           )}
         </div>
-      </section>
+      </section>}
+
+      {signedIn && (
+        <section className={styles.section} aria-labelledby="your-status">
+          <div className={styles.wrap}>
+            <h2 id="your-status" className={styles.h2}>Your status</h2>
+            {challenges.length === 0 ? (
+              <p className={styles.body}>Your weekly challenges will appear here when the season is scheduled.</p>
+            ) : (
+              <ol className={statusStyles.list}>
+                {challenges.map((challenge) => {
+                  const template = getTemplate(challenge.template_slug);
+                  const view = statusForWeek(now, challenge, attemptsByChallenge.get(challenge.id) ?? null, seasonRank);
+                  return (
+                    <li key={challenge.id} className={statusStyles.card}>
+                      <div>
+                        <p className={statusStyles.week}>Week {challenge.week}</p>
+                        <h3 className={statusStyles.title}>{template?.title ?? "Challenge"}</h3>
+                        <p className={statusStyles.concept}>{template?.concept ?? ""} · {challenge.time_limit_minutes} minutes</p>
+                      </div>
+                      <WeekStatus
+                        view={view}
+                        challengeId={challenge.id}
+                        initialText={view.kind === "upcoming" ? remainingLabel(now, view.opensAt) : ""}
+                        serverNow={now.toISOString()}
+                      />
+                    </li>
+                  );
+                })}
+              </ol>
+            )}
+          </div>
+        </section>
+      )}
 
       <section className={`${styles.section} ${styles.sectionAlt}`} aria-labelledby="season-board">
         <div className={styles.wrap}>
