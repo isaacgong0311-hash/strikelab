@@ -12,15 +12,19 @@ import { TRACKS } from "@/lib/tracks";
 import { LAB_WEEKS, pilotCallHref } from "@/lib/marketing/lab";
 import { heroExample, sampleGreeks } from "@/lib/marketing/heroExample";
 import TrackedLink, { TrackedAnchor } from "@/components/marketing/TrackedLink";
+import { PLANNED_SEASON, shortSeasonDate } from "@/lib/seasons/planned";
 
 const TOTAL_LESSONS = TRACKS.reduce((n, t) => n + t.lessons.length, 0);
+const seasonStart = shortSeasonDate(PLANNED_SEASON.startsOn);
+const seasonDates = `${seasonStart} to ${shortSeasonDate(PLANNED_SEASON.endsOn)}`;
 
 const FAQS = [
   { q: "Do I need to know finance or coding?", a: "No. Lesson 1 starts at what a stock is. Python comes in gradually, with the hard parts already written, and it runs in your browser." },
-  { q: "What does it cost?", a: "Students never pay: every lesson and the playground are free. Clubs start with a free six-week pilot, then $199/year per club or $499/year per school instructor if they continue." },
+  { q: "What is a season?", a: `${PLANNED_SEASON.title} runs ${seasonDates}. One challenge opens each week; when you start it, a timer starts and the AI tutor switches off until you submit. Your numbers are yours alone, your code is scored on our server, and the leaderboard shows a handle, never your name.` },
+  { q: "What does it cost?", a: "Students never pay: every lesson, the playground and every season are free, and clubs play free. The one paid option is the January Intensive for parents, and nothing is charged until a cohort fills." },
   { q: "Do I need an account?", a: "Not to start. Progress saves on this device; a free account syncs it across devices and keeps your code." },
   { q: "I lead a club. How much prep is it?", a: "Light. Each week comes with a goal, discussion prompts, common sticking points and a message to send, and the lessons do the teaching. Read the week's plan before you meet. We're timing the real prep in the first pilots and will tell you the number." },
-  { q: "Is it safe for students?", a: "It's built for ages 13–18: no ads, no public profiles or leaderboards with names, work is private unless the student shares it, and accounts can be deleted at any time." },
+  { q: "Is it safe for students?", a: "It's built for ages 13–18: no ads, no public profiles, leaderboards show a handle and never a real name, work is private unless the student shares it, and accounts can be deleted at any time." },
 ];
 
 /**
@@ -44,29 +48,38 @@ export default function HomeView() {
         <div className={`${styles.wrap} ${home.heroGrid}`}>
           <div>
             <p className={styles.kicker}>Quant finance for high school</p>
-            <h1 className={styles.h1}>Learn quant finance by building it.</h1>
+            <h1 className={styles.h1}>Learn quant finance. Then prove it.</h1>
             <p className={styles.lede}>
-              Price options, code the Greeks and backtest strategies in real Python, right in the browser. Free for
-              students, and ready to run as a six-week lab for your club or class.
+              Price options, code the Greeks and backtest strategies in real Python, right in the browser. Then take
+              on a free season of timed challenges, ranked under a handle, and finish with a record you can show.
             </p>
             <div className={home.doors}>
               <div className={home.door}>
                 <span className={home.doorWho}>I&apos;m a student</span>
-                <span className={home.doorWhat}>{TOTAL_LESSONS} lessons, from &ldquo;what is a stock?&rdquo; to Black-Scholes. No signup to start.</span>
+                <span className={home.doorWhat}>
+                  {PLANNED_SEASON.title} runs {seasonDates}: one timed challenge a week, free. Train with {TOTAL_LESSONS} lessons first, no signup needed.
+                </span>
                 <div className={home.doorActions}>
-                  <TrackedLink href="/learn/inv-1.1?src=home-hero" event="hero_cta" eventProps={{ target: "lesson" }} className={styles.primary}>Start lesson 1</TrackedLink>
-                  <TrackedLink href="/lessons" event="hero_cta" eventProps={{ target: "path" }} className={home.doorLink}>See the path</TrackedLink>
+                  <TrackedLink href="/seasons?src=home-hero" event="hero_cta" eventProps={{ target: "season" }} className={styles.primary}>Join {PLANNED_SEASON.title}</TrackedLink>
+                  <TrackedLink href="/learn/inv-1.1?src=home-hero" event="hero_cta" eventProps={{ target: "lesson" }} className={home.doorLink}>Start lesson 1</TrackedLink>
                 </div>
               </div>
               <div className={home.door}>
                 <span className={home.doorWho}>I lead a club or teach</span>
-                <span className={home.doorWhat}>A six-week lab with a plan for every meeting and a scorecard. Pilots are free.</span>
+                <span className={home.doorWhat}>Play the season together on your club&apos;s own board, with a ready six-week plan if you want one. Free for clubs.</span>
                 <div className={home.doorActions}>
-                  <TrackedLink href="/pilot?src=home-hero" event="hero_cta" eventProps={{ target: "pilot" }} className={styles.primary}>Start a free pilot</TrackedLink>
+                  <TrackedLink href="/clubs?src=home-hero" event="hero_cta" eventProps={{ target: "clubs" }} className={styles.primary}>Bring your club</TrackedLink>
                   <TrackedLink href="/demo" event="hero_cta" eventProps={{ target: "demo" }} className={home.doorLink}>See the teacher view</TrackedLink>
                 </div>
               </div>
             </div>
+            <p className={styles.fine}>
+              Parent or guardian?{" "}
+              <TrackedLink href="/intensive?src=home-hero" event="hero_cta" eventProps={{ target: "intensive" }} className={styles.textLink}>
+                See the January Intensive
+              </TrackedLink>
+              , a small six-week cohort that ends with a capstone your student defends live.
+            </p>
           </div>
           <figure className={home.heroVisual}>
             <div className={home.code} aria-hidden="true">
@@ -100,12 +113,40 @@ export default function HomeView() {
       {/* ── Facts (all true, all derived) ────────────────── */}
       <div className={home.facts}>
         <ul className={`${styles.wrap} ${home.factList}`}>
-          <li><b>{TRACKS.length}</b> tracks</li>
           <li><b>{TOTAL_LESSONS}</b> lessons</li>
+          <li><b>{PLANNED_SEASON.title}</b> starts {seasonStart}</li>
           <li><b>Python</b> in your browser</li>
           <li><b>$0</b> for students</li>
         </ul>
       </div>
+
+      {/* ── The loop: train, compete, prove ──────────────── */}
+      <section className={`${styles.section} ${styles.sectionAlt}`} aria-labelledby="home-loop">
+        <div className={styles.wrap}>
+          <p className={styles.kicker}>How it works</p>
+          <h2 id="home-loop" className={styles.h2}>Train, compete, prove it.</h2>
+          <div className={styles.grid3} style={{ marginTop: "1.75rem" }}>
+            <div className={styles.card}>
+              <span className={styles.step} aria-hidden="true">1</span>
+              <h3 className={styles.h3}>Train</h3>
+              <p className={styles.body}>Short lessons, then real Python: fill in the missing function, press Run, and tests tell you whether your model is right. Nothing to install.</p>
+            </div>
+            <div className={styles.card}>
+              <span className={styles.step} aria-hidden="true">2</span>
+              <h3 className={styles.h3}>Compete in a season</h3>
+              <p className={styles.body}>One timed challenge a week with numbers nobody else gets and the AI tutor off. Your code is scored on our server and ranked under a handle.</p>
+            </div>
+            <div className={styles.card}>
+              <span className={styles.step} aria-hidden="true">3</span>
+              <h3 className={styles.h3}>Prove it</h3>
+              <p className={styles.body}>Explain why your code works. Top finishes and capstones are verified in a short live conversation before they count, so the result means something.</p>
+            </div>
+          </div>
+          <div className={styles.ctaRow}>
+            <Link href="/seasons?src=home-loop" className={styles.primary}>See how seasons work</Link>
+          </div>
+        </div>
+      </section>
 
       {/* ── The path ─────────────────────────────────────── */}
       <section className={styles.section} aria-labelledby="home-path">
@@ -130,10 +171,10 @@ export default function HomeView() {
         <div className={`${styles.wrap} ${home.split}`}>
           <div>
             <p className={styles.kicker}>For clubs and teachers</p>
-            <h2 id="home-clubs" className={styles.h2}>Run it as a six-week lab. The plan is ready.</h2>
+            <h2 id="home-clubs" className={styles.h2}>Bring your club. Play the season together.</h2>
             <p className={styles.lede}>
-              Launch in minutes, share one invite link, and meet once a week. Students work one short step at a time; you
-              see who&apos;s keeping up.
+              Your club gets its own private leaderboard for the season, and a six-week plan if you want structure
+              between challenges: one invite link, a plan for every meeting, and a view of who&apos;s keeping up. Free.
             </p>
             <ol className={home.weeks}>
               {LAB_WEEKS.map((w) => (
@@ -150,8 +191,8 @@ export default function HomeView() {
               ))}
             </ol>
             <div className={styles.ctaRow}>
-              <Link href="/pilot?src=home-clubs" className={styles.primary}>Start a free pilot</Link>
-              <Link href="/clubs?src=home-clubs" className={styles.secondary}>How a pilot works</Link>
+              <Link href="/pilot?src=home-clubs" className={styles.primary}>Set up your club</Link>
+              <Link href="/clubs?src=home-clubs" className={styles.secondary}>How it works for clubs</Link>
             </div>
           </div>
           <figure className={home.clubVisual}>
@@ -213,33 +254,8 @@ export default function HomeView() {
         </div>
       </section>
 
-      {/* ── Run it ───────────────────────────────────────── */}
-      <section className={`${styles.section} ${styles.sectionAlt}`} aria-labelledby="home-run">
-        <div className={styles.wrap}>
-          <p className={styles.kicker}>How it works</p>
-          <h2 id="home-run" className={styles.h2}>Don&apos;t just read it. Run it.</h2>
-          <div className={styles.grid3} style={{ marginTop: "1.75rem" }}>
-            <div className={styles.card}>
-              <span className={styles.step} aria-hidden="true">1</span>
-              <h3 className={styles.h3}>Short lessons</h3>
-              <p className={styles.body}>One idea per screen with instant feedback. Questions you miss come back until they stick.</p>
-            </div>
-            <div className={styles.card}>
-              <span className={styles.step} aria-hidden="true">2</span>
-              <h3 className={styles.h3}>Real Python, checked</h3>
-              <p className={styles.body}>Fill in the missing function, press Run, and tests tell you whether your model is right. Nothing to install.</p>
-            </div>
-            <div className={styles.card}>
-              <span className={styles.step} aria-hidden="true">3</span>
-              <h3 className={styles.h3}>See it move</h3>
-              <p className={styles.body}>Drag sliders to reshape the Greek curves and watch the price and risk change as you move each input.</p>
-            </div>
-          </div>
-        </div>
-      </section>
-
       {/* ── What students build ──────────────────────────── */}
-      <section className={styles.section} aria-labelledby="home-build">
+      <section className={`${styles.section} ${styles.sectionAlt}`} aria-labelledby="home-build">
         <div className={styles.wrap}>
           <p className={styles.kicker}>What you build</p>
           <h2 id="home-build" className={styles.h2}>Work you can show, not a quiz score</h2>
@@ -262,7 +278,7 @@ export default function HomeView() {
       </section>
 
       {/* ── Why code ─────────────────────────────────────── */}
-      <section className={`${styles.section} ${styles.sectionAlt}`} aria-labelledby="home-compare">
+      <section className={styles.section} aria-labelledby="home-compare">
         <div className={styles.wrap}>
           <p className={styles.kicker}>Why it&apos;s different</p>
           <h2 id="home-compare" className={styles.h2}>Build the model instead of playing the market</h2>
@@ -271,14 +287,14 @@ export default function HomeView() {
       </section>
 
       {/* ── Trust + founder ──────────────────────────────── */}
-      <section className={styles.section} aria-labelledby="home-trust">
+      <section className={`${styles.section} ${styles.sectionAlt}`} aria-labelledby="home-trust">
         <div className={`${styles.wrap} ${styles.grid2}`}>
           <div>
             <p className={styles.kicker}>Private by default</p>
             <h2 id="home-trust" className={styles.h2}>Safe for students and schools</h2>
             <ul className={styles.checks}>
               <li>Built for ages 13–18. No ads, and we never sell data.</li>
-              <li>No public profiles, and no leaderboards with names.</li>
+              <li>No public profiles. Leaderboards show a handle the student picks, never a real name.</li>
               <li>Student work is private to the student (and their leader, in a club) unless they share it.</li>
               <li>Students can delete their account and everything in it at any time.</li>
             </ul>
@@ -302,24 +318,24 @@ export default function HomeView() {
       </section>
 
       {/* ── FAQ ──────────────────────────────────────────── */}
-      <section className={`${styles.section} ${styles.sectionAlt}`} aria-labelledby="home-faq">
+      <section className={styles.section} aria-labelledby="home-faq">
         <div className={styles.narrow}>
           <h2 id="home-faq" className={styles.h2}>Questions</h2>
           <Faq items={FAQS} />
         </div>
       </section>
 
-      {/* ── Final CTA: both doors again ──────────────────── */}
-      <section className={`${styles.section} ${styles.center}`} aria-labelledby="home-cta">
+      {/* ── Final CTA: train now, compete next ──────────────────── */}
+      <section className={`${styles.section} ${styles.sectionAlt} ${styles.center}`} aria-labelledby="home-cta">
         <div className={styles.wrap}>
           <h2 id="home-cta" className={styles.h2}>Start tonight. It&apos;s free.</h2>
-          <p className={styles.lede}>One short lesson at a time, from what a stock is to Black-Scholes.</p>
+          <p className={styles.lede}>Train one short lesson at a time, then prove it in {PLANNED_SEASON.title}, starting {seasonStart}.</p>
           <div className={`${styles.ctaRow} ${home.centerRow}`}>
             <Link href="/learn/inv-1.1?src=home-cta" className={styles.primary}>Start lesson 1</Link>
-            <Link href="/pilot?src=home-cta" className={styles.secondary}>Run it with your club</Link>
+            <Link href="/seasons?src=home-cta" className={styles.secondary}>Join {PLANNED_SEASON.title}</Link>
           </div>
           <p className={styles.fine}>
-            Want to talk it through first?{" "}
+            Leading a club and want to talk it through first?{" "}
             <TrackedAnchor href={pilotCallHref("home")} event="pilot_call_click" eventProps={{ page: "home" }} className={styles.textLink}>
               Book 15 minutes with the founder
             </TrackedAnchor>

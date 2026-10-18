@@ -34,9 +34,9 @@ test("the pilot page previews the scorecard and the invite message, labelled as 
   await expect(page).toHaveURL(/\/pilot$/);
 });
 
-test("the homepage gives leaders the same weight as students and doesn't promise zero prep", async ({ page }) => {
+test("the homepage gives leaders their own door and doesn't promise zero prep", async ({ page }) => {
   await page.goto("/");
-  await expect(page.getByRole("link", { name: "Start a free pilot" }).first()).toBeVisible();
+  await expect(page.getByRole("link", { name: "Bring your club" }).first()).toBeVisible();
   await expect(page.getByText(/No prep\./)).toHaveCount(0);
   await expect(page.getByText(/Zero prep/)).toHaveCount(0);
   // The club section now comes before the Greeks tour.

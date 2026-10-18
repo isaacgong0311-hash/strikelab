@@ -1,10 +1,10 @@
 "use client";
 import Link from "next/link";
+import { PLANNED_SEASON } from "@/lib/seasons/planned";
 import { TRACKS } from "@/lib/tracks";
 import { useProgress } from "@/lib/useProgress";
 import FlameIcon from "@/components/FlameIcon";
 import TrophyIcon from "@/components/TrophyIcon";
-import ConstructionIcon from "@/components/ConstructionIcon";
 import PathScenery, { sceneryForIndex, ChestIcon } from "@/components/PathScenery";
 import { getLessonSessions, resumeSession, type SessionResults } from "@/lib/sessions";
 import { useSessionResults } from "@/lib/sessions/useSessionResults";
@@ -45,13 +45,6 @@ const LEVEL_COLORS: Record<string, string> = {
   Beginner:     "var(--sky)",
   Intermediate: "var(--grass)",
   Advanced:     "var(--coral)",
-};
-
-// Roadmap items ("planned"/"in-progress" on /roadmap) shown as a preview
-// past each track's finish line — the path keeps going, it's just not paved
-// yet. Update alongside ROADMAP in src/app/roadmap/page.tsx.
-const COMING_SOON: Record<string, string> = {
-  quant: "VaR, GARCH & Monte Carlo",
 };
 
 export default function LessonsClient() {
@@ -229,24 +222,16 @@ export default function LessonsClient() {
                 </div>
               </div>
 
-              {/* Coming soon — the path keeps going past what's built */}
-              {COMING_SOON[track.id] && (
-                <div
-                  className="dnode locked"
-                  role="listitem"
-                  style={{ transform: `translateX(${OFFSETS[(track.lessons.length + 1) % OFFSETS.length]}px)` }}
-                >
-                  <span className="dnode-soon">COMING SOON</span>
-                  <div className="dnode-btn">
-                    <ConstructionIcon size={24} />
-                  </div>
-                  <div className="dnode-label">{COMING_SOON[track.id]}</div>
-                </div>
-              )}
             </div>
           </section>
         );
       })}
+
+      {/* Past the last track: the path leads into a season, not more lessons */}
+      <Link href="/seasons?src=lessons" className="dpath-next" style={{ marginTop: "2rem" }}>
+        <span><small>Then prove it</small><strong>{PLANNED_SEASON.title}: timed challenges, ranked under a handle</strong></span>
+        <span aria-hidden="true">See seasons →</span>
+      </Link>
     </div>
   );
 }

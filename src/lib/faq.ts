@@ -47,11 +47,11 @@ export const FAQ_GROUPS: FAQGroup[] = [
       },
       {
         q: "Will there be more advanced content?",
-        a: "Yes — all five Greeks (Delta through Rho), Implied Volatility, Option Strategies, and Binomial Trees are all live already. Next up: a bridge into VaR, GARCH, and Monte Carlo for the Quant Investing track. See /roadmap for what's shipping and when.",
+        a: "Yes — all five Greeks (Delta through Rho), Implied Volatility, Option Strategies, and Binomial Trees are all live already. Next up is seasons rather than new lessons: timed challenges that test what you've learned, starting with Season 1 on Nov 30. See /roadmap for what's shipping and when.",
       },
       {
         q: "Can I use this for AP Stats / AP Calc?",
-        a: "Yes — many students do. The Black-Scholes derivation uses derivatives (AP Calc AB territory) and log-normal distributions (AP Stats). Teachers, we're happy to help align lessons.",
+        a: "Yes. The Black-Scholes derivation uses derivatives (AP Calc AB territory) and log-normal distributions (AP Stats). Teachers, we're happy to help align lessons.",
       },
     ],
   },

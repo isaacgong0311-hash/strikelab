@@ -2,11 +2,11 @@ import type { Metadata } from "next";
 import HomeView from "./HomeView";
 import { SITE_URL, SITE_NAME } from "@/lib/site";
 
-// Decision log 2026-09-30: one homepage for independent students and club
-// leaders; the title leads with what everyone does here.
-const TITLE = "StrikeLab: learn quant finance by building it";
+// One homepage for students, club leaders and parents; the title leads with
+// the loop everyone shares (train, then prove it in a season; PLAN.md 2026-10-16).
+const TITLE = "StrikeLab: learn quant finance, then prove it";
 const DESCRIPTION =
-  "Price options, code the Greeks and backtest strategies in real Python, right in the browser. Free for high-school students, and ready to run as a six-week lab for clubs and classes.";
+  "Price options, code the Greeks and backtest strategies in real Python, right in the browser, then prove it in free seasons of timed challenges. Free for high-school students and their clubs.";
 
 // The hero's sample data is relative to today; refresh it hourly.
 export const revalidate = 3600;

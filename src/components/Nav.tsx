@@ -6,6 +6,7 @@ import { useProgress } from "@/lib/useProgress";
 import { useAuth } from "@/lib/auth/AuthProvider";
 import BrandMark from "@/components/BrandMark";
 import AccessibilityMenu from "@/components/accessibility/AccessibilityMenu";
+import { PLANNED_SEASON, shortSeasonDate } from "@/lib/seasons/planned";
 
 const PRIMARY: { href: string; label: string; pro?: boolean }[] = [
   { href: "/dashboard",   label: "Dashboard" },
@@ -29,17 +30,18 @@ const TEACHER: { href: string; label: string }[] = [
   { href: "/dashboard", label: "Dashboard" },
 ];
 
-// Signed-out visitors are students and club leaders alike (decision log
-// 2026-09-30): the learning surfaces first, then one clear door for leaders.
+// Signed-out visitors: seasons first (proving-ground direction, PLAN.md
+// 2026-10-16), then the training surfaces, then one door each for club
+// leaders and parents. Pricing and the demo stay in the footer and on /clubs.
 const VISITOR: { href: string; label: string }[] = [
+  { href: "/seasons",    label: "Seasons" },
   { href: "/lessons",    label: "Lessons" },
   { href: "/playground", label: "Playground" },
-  { href: "/clubs",      label: "For clubs & teachers" },
-  { href: "/demo",       label: "Demo" },
-  { href: "/pricing",    label: "Pricing" },
+  { href: "/clubs",      label: "For clubs" },
+  { href: "/intensive",  label: "For parents" },
 ];
 
-// The leaders' announcement shows only on these marketing pages, never in a
+// The season announcement shows only on these marketing pages, never in a
 // lesson, a cohort or a leader's own pages (frontend work plan FW-2).
 const ANNOUNCE_PATHS = new Set(["/", "/lessons", "/pricing", "/about", "/faq"]);
 
@@ -211,8 +213,8 @@ export default function Nav() {
       {/* ─── Announcement bar ──────────────────────────────────────────────── */}
       {showAnnounce && (
         <div className="nav-announce">
-          <Link href="/pilot?src=announce" className="nav-announce-link">
-            Clubs &amp; teachers: free pilots this fall →
+          <Link href="/seasons?src=announce" className="nav-announce-link">
+            {PLANNED_SEASON.title} starts {shortSeasonDate(PLANNED_SEASON.startsOn)}: free, timed, ranked under a handle →
           </Link>
         </div>
       )}

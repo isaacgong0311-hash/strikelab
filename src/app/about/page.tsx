@@ -40,9 +40,11 @@ const TIMELINE = [
   { date: "Aug 2026", event: "Curriculum rebalanced toward investing: 3 new Investing Fundamentals lessons (bonds, retirement accounts, common mistakes), Quant Investing trimmed to its 3 clearest lessons, and every lesson now opens with a \"before this lesson\" prereq box. 23 lessons total.", state: "done" },
   { date: "Aug 2026", event: "Interactive payoff diagrams and a clickable binomial tree lattice ship in the Option Strategies and Binomial Trees lessons.", state: "done" },
   { date: "Aug 2026", event: "Certificates of completion and Discord integration ship.", state: "done" },
-  { date: "Oct 2026", event: "Weekly challenges, the leaderboard and the paper-trading sandbox are retired so the product can focus on the six-week club lab.", state: "done" },
   { date: "Aug 2026", event: "Classroom rosters ship — teachers create a class in Settings, students join with a code.", state: "done" },
-  { date: "Q4 2026", event: "Assignment grading, plus three new lessons on VaR, GARCH, and Monte Carlo.", state: "planned" },
+  { date: "Sep 2026", event: "Six-week club lab ships: cohort launch, invite links, a student home, a leader scorecard and private capstones.", state: "done" },
+  { date: "Oct 2026", event: "The paper-trading sandbox and the old challenges are retired. Seasons replace them: timed challenges with per-student numbers, server scoring and handle-only leaderboards.", state: "done" },
+  { date: "Nov 30, 2026", event: "Season 1: three weekly challenges, through Dec 20.", state: "planned" },
+  { date: "Jan 2027", event: "First Intensive cohort: six weeks, ending in a capstone defended live.", state: "planned" },
 ];
 
 const VALUES = [
