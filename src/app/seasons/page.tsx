@@ -5,7 +5,9 @@ import { getSupabaseServer } from "@/lib/supabase/server";
 import { getTemplate } from "@/lib/seasons/templates";
 import { challengeStatus } from "@/lib/seasons/window";
 import { PLANNED_SEASON } from "@/lib/seasons/planned";
+import LeaderboardTable, { type LeaderboardRow } from "@/components/seasons/LeaderboardTable";
 import HandleForm from "./HandleForm";
+import boardStyles from "./board.module.css";
 
 export const metadata = pageMetadata({
   path: "/seasons",
@@ -18,40 +20,53 @@ export const dynamic = "force-dynamic";
 
 interface SeasonRow { id: string; title: string; starts_on: string; ends_on: string }
 interface ChallengeRow { id: string; week: number; template_slug: string; opens_at: string; closes_at: string; time_limit_minutes: number }
-interface BoardRow { rank: number; handle: string; total_score: number; solved: number; is_you: boolean }
+interface ClubOption { id: string; name: string }
 
 function readable(date: string): string {
   return new Intl.DateTimeFormat("en-US", { month: "long", day: "numeric", timeZone: "UTC" }).format(new Date(`${date}T00:00:00Z`));
 }
 
-async function load() {
+async function load(requestedClubId: string | undefined) {
   const supabase = await getSupabaseServer();
-  if (!supabase) return { season: null, challenges: [], board: [], needsHandle: false, signedIn: false };
+  if (!supabase) return { season: null, challenges: [], board: [], clubBoard: null, clubs: [], selectedClub: null, needsHandle: false, signedIn: false };
   const today = new Date().toISOString().slice(0, 10);
   const { data: seasons } = await supabase.from("seasons").select("id, title, starts_on, ends_on").gte("ends_on", today).order("starts_on").limit(1);
   const season = (seasons?.[0] as SeasonRow | undefined) ?? null;
   const { data: auth } = await supabase.auth.getUser();
   let needsHandle = false;
+  let clubs: ClubOption[] = [];
   if (auth.user) {
     const { data: profile } = await supabase.from("profiles").select("handle").eq("id", auth.user.id).maybeSingle();
     needsHandle = !profile?.handle;
+    const { data: memberships } = await supabase.from("class_members").select("class_id").eq("student_id", auth.user.id);
+    const ids = (memberships ?? []).map((membership) => membership.class_id);
+    if (ids.length > 0) {
+      const { data: classes } = await supabase.from("classes").select("id, name").in("id", ids).order("name");
+      clubs = (classes ?? []) as ClubOption[];
+    }
   }
-  if (!season) return { season: null, challenges: [], board: [], needsHandle, signedIn: Boolean(auth.user) };
-  const [{ data: challenges }, { data: board }] = await Promise.all([
+  if (!season) return { season: null, challenges: [], board: [], clubBoard: null, clubs, selectedClub: null, needsHandle, signedIn: Boolean(auth.user) };
+  const selectedClub = clubs.find((club) => club.id === requestedClubId) ?? clubs[0] ?? null;
+  const [{ data: challenges }, { data: board }, clubResult] = await Promise.all([
     supabase.from("season_challenges").select("id, week, template_slug, opens_at, closes_at, time_limit_minutes").eq("season_id", season.id).order("week"),
     supabase.rpc("season_leaderboard", { p_season_id: season.id, p_class_id: null }),
+    selectedClub ? supabase.rpc("season_leaderboard", { p_season_id: season.id, p_class_id: selectedClub.id }) : Promise.resolve(null),
   ]);
   return {
     season,
     challenges: (challenges ?? []) as ChallengeRow[],
-    board: (board ?? []) as BoardRow[],
+    board: (board ?? []) as LeaderboardRow[],
+    clubBoard: selectedClub ? (clubResult?.data ?? []) as LeaderboardRow[] : null,
+    clubs,
+    selectedClub,
     needsHandle,
     signedIn: Boolean(auth.user),
   };
 }
 
-export default async function SeasonsPage() {
-  const { season, challenges, board, needsHandle, signedIn } = await load();
+export default async function SeasonsPage({ searchParams }: { searchParams: Promise<{ club?: string | string[] }> }) {
+  const { club } = await searchParams;
+  const { season, challenges, board, clubBoard, clubs, selectedClub, needsHandle, signedIn } = await load(typeof club === "string" ? club : undefined);
   const now = new Date();
   const title = season?.title ?? PLANNED_SEASON.title;
   const starts = season?.starts_on ?? PLANNED_SEASON.startsOn;
@@ -121,23 +136,27 @@ export default async function SeasonsPage() {
       <section className={`${styles.section} ${styles.sectionAlt}`} aria-labelledby="season-board">
         <div className={styles.wrap}>
           <h2 id="season-board" className={styles.h2}>Leaderboard</h2>
-          {board.length === 0 ? (
-            <p className={styles.body}>Scores appear here once the first challenge has been graded.</p>
-          ) : (
-            <table style={{ borderCollapse: "collapse", minWidth: "min(100%, 32rem)" }}>
-              <caption className="sl-visually-hidden">Season leaderboard by handle</caption>
-              <thead><tr><th scope="col">Rank</th><th scope="col">Handle</th><th scope="col">Score</th><th scope="col">Solved</th></tr></thead>
-              <tbody>
-                {board.map((r) => (
-                  <tr key={`${r.rank}-${r.handle}`} style={r.is_you ? { fontWeight: 800 } : undefined}>
-                    <td>{r.rank}</td><td>{r.handle}{r.is_you ? " (you)" : ""}</td><td>{Number(r.total_score).toFixed(0)}</td><td>{r.solved}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          )}
+          <LeaderboardTable rows={board} caption="Season leaderboard by handle" />
         </div>
       </section>
+
+      {selectedClub && clubBoard && (
+        <section className={styles.section} aria-labelledby="club-board">
+          <div className={styles.wrap}>
+            <h2 id="club-board" className={styles.h2}>Your club</h2>
+            {clubs.length > 1 ? (
+              <form action="/seasons" method="get" className={boardStyles.picker}>
+                <label htmlFor="club-select">Club</label>
+                <select id="club-select" name="club" defaultValue={selectedClub.id}>
+                  {clubs.map((option) => <option key={option.id} value={option.id}>{option.name}</option>)}
+                </select>
+                <button type="submit">Show club</button>
+              </form>
+            ) : <p className={boardStyles.clubName}>{selectedClub.name}</p>}
+            <LeaderboardTable rows={clubBoard} caption={`${selectedClub.name} leaderboard by handle`} />
+          </div>
+        </section>
+      )}
     </div>
   );
 }
