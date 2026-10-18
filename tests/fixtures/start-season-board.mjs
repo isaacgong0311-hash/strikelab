@@ -8,9 +8,33 @@ const apiPort = 54399;
 const appPort = 3113;
 const studentId = "11111111-1111-4111-8111-111111111111";
 const teacherId = "22222222-2222-4222-8222-222222222222";
+const statusFixture = Boolean(process.env.SEASON_STATUS_E2E);
 const firstClub = { id: "33333333-3333-4333-8333-333333333333", name: "Options Club" };
 const secondClub = { id: "44444444-4444-4444-8444-444444444444", name: "Quant Club" };
-const season = { id: "s1", title: "Season 1", starts_on: "2026-10-01", ends_on: "2026-12-20" };
+const isoDay = (offset) => new Date(Date.now() + offset * 86_400_000).toISOString().slice(0, 10);
+const isoTime = (minutes) => new Date(Date.now() + minutes * 60_000).toISOString();
+const season = { id: "s1", title: "Season 1", starts_on: isoDay(-7), ends_on: isoDay(30) };
+const challenge = (week, opens, closes) => ({
+  id: `s1-w${week}`, season_id: "s1", week, template_slug: "put-call-parity",
+  opens_at: isoTime(opens), closes_at: isoTime(closes), time_limit_minutes: 60,
+});
+const statusChallenges = [
+  challenge(1, 2_880, 4_320), // upcoming
+  challenge(2, -1_440, 2_880), // open
+  challenge(3, -1_440, 2_880), // started
+  challenge(4, -1_440, 2_880), // submitted
+  challenge(5, -1_440, 2_880), // scored
+  challenge(6, -1_440, 2_880), // pending review
+  challenge(7, -4_320, -1_440), // closed
+  challenge(8, -1_440, 2_880), // expired attempt
+];
+const statusAttempts = [
+  { challenge_id: "s1-w3", status: "started", deadline: isoTime(20), official_score: null },
+  { challenge_id: "s1-w4", status: "submitted", deadline: isoTime(-20), official_score: null },
+  { challenge_id: "s1-w5", status: "scored", deadline: isoTime(-20), official_score: 88 },
+  { challenge_id: "s1-w6", status: "pending_review", deadline: isoTime(-20), official_score: null },
+  { challenge_id: "s1-w8", status: "started", deadline: isoTime(-1), official_score: null },
+];
 
 function json(response, status, value) {
   response.writeHead(status, {
@@ -36,7 +60,8 @@ const service = createServer(async (request, response) => {
   let value;
   switch (url.pathname) {
     case "/rest/v1/seasons": value = [season]; break;
-    case "/rest/v1/season_challenges": value = []; break;
+    case "/rest/v1/season_challenges": value = statusFixture ? statusChallenges : []; break;
+    case "/rest/v1/season_attempts": value = statusFixture && userId === studentId ? statusAttempts : []; break;
     case "/rest/v1/profiles": value = token === "fixture-service-role-key" ? [{ id: studentId, display_name: "Example Student" }] : userId === studentId ? [{ handle: "student_one" }] : []; break;
     case "/rest/v1/class_members": value = token === "fixture-service-role-key" ? [{ student_id: studentId }] : userId === studentId ? [{ class_id: firstClub.id }, { class_id: secondClub.id }] : []; break;
     case "/rest/v1/classes": value = userId === studentId ? [firstClub, secondClub] : userId === teacherId ? [firstClub] : []; break;
