@@ -45,7 +45,7 @@ const ROADMAP = [
     label: "Next up",
     color: "#1d4ed8",
     items: [
-      { title: "Seasons", state: "in-progress", desc: "Timed weekly challenges with per-student numbers, the AI tutor off during an attempt, server scoring, and handle-only season and club leaderboards." },
+      { title: "Seasons", state: "in-progress", desc: "Timed weekly challenges with per-student numbers, the AI tutor off during an attempt, official scores computed by StrikeLab after submission, and handle-only season and club leaderboards." },
       { title: "Season 1 (Nov 30 to Dec 20)", state: "planned", desc: "Three challenges: put-call parity, Black-Scholes and option delta." },
       { title: "Verified records", state: "planned", desc: "A private page per student listing seasons, placings and a capstone verified in a short live conversation, shareable by link." },
       { title: "The Intensive (January)", state: "planned", desc: "A six-week cohort of 8 to 12 students with mentor review, ending in a capstone the student defends live." },
