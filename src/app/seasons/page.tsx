@@ -83,7 +83,7 @@ export default async function SeasonsPage() {
           <ul className={styles.checks} style={{ maxWidth: "44rem" }}>
             <li>Each week a challenge opens. When you start it, a timer starts too, and the AI tutor switches off until you submit.</li>
             <li>Your numbers are yours alone, so nobody can hand you an answer.</li>
-            <li>You submit your code and a short explanation of why it works. Your score is computed on our server, not in your browser.</li>
+            <li>You submit your code and a short explanation of why it works. StrikeLab computes your official score after you submit, not in your browser, and usually posts it within a day.</li>
             <li>Leaderboards show handles, never real names. Clubs can play together and get their own board.</li>
             <li>Top finishers and capstones are verified in a short live conversation before they appear on a record.</li>
           </ul>

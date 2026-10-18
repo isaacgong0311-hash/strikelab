@@ -20,7 +20,7 @@ const seasonDates = `${seasonStart} to ${shortSeasonDate(PLANNED_SEASON.endsOn)}
 
 const FAQS = [
   { q: "Do I need to know finance or coding?", a: "No. Lesson 1 starts at what a stock is. Python comes in gradually, with the hard parts already written, and it runs in your browser." },
-  { q: "What is a season?", a: `${PLANNED_SEASON.title} runs ${seasonDates}. One challenge opens each week; when you start it, a timer starts and the AI tutor switches off until you submit. Your numbers are yours alone, your code is scored on our server, and the leaderboard shows a handle, never your name.` },
+  { q: "What is a season?", a: `${PLANNED_SEASON.title} runs ${seasonDates}. One challenge opens each week; when you start it, a timer starts and the AI tutor switches off until you submit. Your numbers are yours alone. StrikeLab computes the official score after you submit and usually posts it within a day. The leaderboard shows a handle, never your name.` },
   { q: "What does it cost?", a: "Students never pay: every lesson, the playground and every season are free, and clubs play free. The one paid option is the January Intensive for parents, and nothing is charged until a cohort fills." },
   { q: "Do I need an account?", a: "Not to start. Progress saves on this device; a free account syncs it across devices and keeps your code." },
   { q: "I lead a club. How much prep is it?", a: "Light. Each week comes with a goal, discussion prompts, common sticking points and a message to send, and the lessons do the teaching. Read the week's plan before you meet. We're timing the real prep in the first pilots and will tell you the number." },
@@ -134,7 +134,7 @@ export default function HomeView() {
             <div className={styles.card}>
               <span className={styles.step} aria-hidden="true">2</span>
               <h3 className={styles.h3}>Compete in a season</h3>
-              <p className={styles.body}>One timed challenge a week with numbers nobody else gets and the AI tutor off. Your code is scored on our server and ranked under a handle.</p>
+              <p className={styles.body}>One timed challenge a week with numbers nobody else gets and the AI tutor off. StrikeLab computes your official score after you submit and usually posts it within a day. You&apos;re ranked under a handle.</p>
             </div>
             <div className={styles.card}>
               <span className={styles.step} aria-hidden="true">3</span>
