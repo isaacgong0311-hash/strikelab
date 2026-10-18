@@ -1,0 +1,43 @@
+.picker {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem;
+  margin: 1.25rem 0;
+  color: var(--sl-text);
+  font-weight: 700;
+}
+
+.picker select,
+.picker button {
+  min-height: var(--sl-tap);
+  border-radius: var(--sl-radius-md);
+  font: inherit;
+}
+
+.picker select {
+  max-width: 100%;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid var(--sl-border-strong);
+  background: var(--sl-surface);
+  color: var(--sl-text);
+}
+
+.picker button {
+  padding: 0.5rem 1rem;
+  border: 0;
+  background: var(--sl-brand);
+  color: white;
+  cursor: pointer;
+}
+
+.picker select:focus-visible,
+.picker button:focus-visible {
+  outline: 3px solid var(--sl-focus);
+  outline-offset: 3px;
+}
+
+.clubName {
+  margin: 1.25rem 0;
+  color: var(--sl-text-muted);
+}
