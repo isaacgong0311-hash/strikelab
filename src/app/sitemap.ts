@@ -29,7 +29,6 @@ const STATIC_PAGES: {
   { path: "/seasons", updated: "2026-10-16", priority: 0.8, freq: "weekly" },
   { path: "/intensive", updated: "2026-10-16", priority: 0.6, freq: "monthly" },
   { path: "/pricing", updated: "2026-09-23", priority: 0.7, freq: "monthly" },
-  { path: "/achievements", updated: "2026-08-03", priority: 0.5, freq: "monthly" },
   { path: "/about", updated: "2026-07-27", priority: 0.6, freq: "monthly" },
   { path: "/faq", updated: "2026-07-24", priority: 0.6, freq: "monthly" },
   { path: "/roadmap", updated: "2026-07-27", priority: 0.5, freq: "monthly" },
