@@ -48,7 +48,7 @@ test.describe("signed-in dashboard with seeded season data", () => {
       await page.screenshot({ path: "docs/pr-screenshots/T1.5/dashboard-example-1280.png", fullPage: true });
     }
     await page.getByRole("link", { name: "See your record" }).click();
-    await expect(page.getByRole("heading", { name: "Your record is taking shape." })).toBeVisible();
+    await expect(page.getByRole("heading", { level: 1, name: "Your record" })).toBeVisible();
   });
 
   test("the season action is present without JavaScript", async ({ browser }) => {

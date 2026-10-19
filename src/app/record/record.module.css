@@ -1,0 +1,43 @@
+.page { width: min(100% - 2rem, 72rem); margin: 0 auto; padding: clamp(2rem, 6vw, 4rem) 0 5rem; color: var(--sl-text); }
+.kicker { margin: 0 0 .6rem; color: var(--sl-brand-strong); font-size: .75rem; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; }
+.header { padding: clamp(2rem, 5vw, 4rem); border-radius: var(--sl-radius-xl); background: var(--sl-surface-inverse); color: var(--sl-surface); box-shadow: var(--sl-shadow-2); }
+.header .kicker { color: var(--sl-brand-soft); }
+.header h1 { margin: 0; font: 800 clamp(2.25rem, 6vw, 4rem)/1.08 var(--sl-font-display); }
+.header p:last-child { max-width: 40rem; margin: 1rem 0 0; color: color-mix(in srgb, var(--sl-surface) 82%, transparent); line-height: 1.65; }
+.notice { padding: 1rem; border: 1px solid var(--sl-warning); border-radius: var(--sl-radius-md); background: var(--sl-warning-soft); }
+.section { margin-top: clamp(2.5rem, 5vw, 4rem); }
+.sectionHead { display: flex; justify-content: space-between; align-items: end; gap: 1rem; margin-bottom: 1rem; }
+.sectionHead h2, .share h2 { margin: 0; font: 800 clamp(1.6rem, 3vw, 2.3rem)/1.15 var(--sl-font-display); }
+.sectionHead span { color: var(--sl-text-muted); font-size: .875rem; font-weight: 700; }
+.cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 20rem), 1fr)); gap: 1rem; }
+.card, .empty, .certificateList li { padding: clamp(1.25rem, 3vw, 1.75rem); border: 1px solid var(--sl-border); border-radius: var(--sl-radius-lg); background: var(--sl-surface); box-shadow: var(--sl-shadow-1); }
+.cardHead { display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; }
+.card h3 { margin: 0; font: 800 1.25rem/1.25 var(--sl-font-display); }
+.card p, .empty p { color: var(--sl-text-muted); line-height: 1.6; }
+.verified { flex-shrink: 0; padding: .3rem .55rem; border-radius: var(--sl-radius-pill); background: var(--sl-brand-soft); color: var(--sl-brand-strong); font-size: .75rem; font-weight: 800; }
+.pending { color: var(--sl-warning) !important; font-weight: 700; }
+.scoreList { display: grid; gap: .55rem; margin: 1.25rem 0 0; padding: 0; list-style: none; }
+.scoreList li { display: flex; justify-content: space-between; gap: 1rem; padding-top: .55rem; border-top: 1px solid var(--sl-border); font-variant-numeric: tabular-nums; }
+.scoreList strong { color: var(--sl-brand-strong); }
+.empty a, .card a, .certificateList a, .shareHelp a { color: var(--sl-brand-strong); font-weight: 700; text-underline-offset: 3px; }
+.certificateList { display: grid; gap: .75rem; margin: 0; padding: 0; list-style: none; }
+.certificateList li { display: flex; justify-content: space-between; gap: 1rem; }
+.certificateList span { color: var(--sl-text-muted); }
+.share { display: flex; align-items: center; justify-content: space-between; gap: 2rem; margin-top: clamp(2.5rem, 6vw, 5rem); padding: clamp(1.5rem, 4vw, 2.5rem); border: 1px solid var(--sl-border); border-radius: var(--sl-radius-xl); background: var(--sl-brand-soft); }
+.share > div:first-child { max-width: 34rem; }
+.share p:last-child { margin: .65rem 0 0; color: var(--sl-text-muted); line-height: 1.6; }
+.shareControls { width: min(100%, 26rem); }
+.shareControls label { display: block; margin-bottom: .4rem; font-size: .875rem; font-weight: 700; }
+.shareControls input { width: 100%; min-height: var(--sl-tap); padding: .6rem .75rem; border: 1px solid var(--sl-border-strong); border-radius: var(--sl-radius-md); background: var(--sl-surface); color: var(--sl-text); font: .875rem var(--sl-font-code); }
+.shareActions { display: flex; flex-wrap: wrap; gap: .6rem; margin-top: .75rem; }
+.shareControls button { min-height: var(--sl-tap); padding: .65rem 1rem; border: 0; border-radius: var(--sl-radius-md); background: var(--sl-brand-strong); color: var(--sl-surface); font: 800 .875rem var(--sl-font-body); cursor: pointer; }
+.shareControls button:last-child:not(:first-child) { background: var(--sl-surface); color: var(--sl-brand-strong); border: 1px solid var(--sl-border-strong); }
+.shareControls button:disabled { opacity: .6; cursor: wait; }
+.shareMessage { margin: .6rem 0 0 !important; font-size: .875rem; }
+.shareHelp { max-width: 20rem; }
+.page :is(a, button, input):focus-visible { outline: 3px solid var(--sl-focus); outline-offset: 3px; }
+
+@media (max-width: 48rem) {
+  .share { align-items: stretch; flex-direction: column; }
+  .certificateList li { flex-direction: column; gap: .3rem; }
+}
