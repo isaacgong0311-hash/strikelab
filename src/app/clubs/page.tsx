@@ -114,7 +114,25 @@ export default function ClubsPage() {
         </div>
       </section>
 
-      <section className={styles.section} aria-labelledby="clubs-trust">
+      <section className={styles.section} aria-labelledby="clubs-ap">
+        <div className={styles.wrap}>
+          <h2 id="clubs-ap" className={styles.h2}>Use the lessons in a math or CS class</h2>
+          <p className={styles.lede}>Assign one lesson or a full track. Students can read lessons without an account, and the coding exercises run in a browser.</p>
+          <div className={styles.grid2} style={{ marginTop: "1.5rem" }}>
+            <div className={styles.card}>
+              <h3 className={styles.h3}>AP Statistics connections</h3>
+              <p className={styles.body}>The options lessons use probability distributions and the normal CDF. CAPM and beta offer a concrete regression example: beta measures how returns move with a market benchmark.</p>
+            </div>
+            <div className={styles.card}>
+              <h3 className={styles.h3}>AP Calculus connections</h3>
+              <p className={styles.body}>The option Greeks make derivatives tangible: Delta, Vega, Rho, and Theta track how price changes with an input; Gamma measures how Delta changes. Students can implement and graph them in Python.</p>
+            </div>
+          </div>
+          <p className={styles.fine}>These are curriculum connections, not an official AP endorsement. <Link href="/lessons" className={styles.textLink}>Browse the lessons</Link>.</p>
+        </div>
+      </section>
+
+      <section className={`${styles.section} ${styles.sectionAlt}`} aria-labelledby="clubs-trust">
         <div className={styles.wrap}>
           <h2 id="clubs-trust" className={styles.h2}>What we collect, and what we don&apos;t</h2>
           <ul className={styles.checks} style={{ maxWidth: "44rem" }}>
@@ -126,7 +144,7 @@ export default function ClubsPage() {
         </div>
       </section>
 
-      <section className={`${styles.section} ${styles.sectionAlt}`} aria-labelledby="clubs-faq">
+      <section className={styles.section} aria-labelledby="clubs-faq">
         <div className={styles.narrow}>
           <h2 id="clubs-faq" className={styles.h2}>Questions</h2>
           <Faq items={FAQS} />
@@ -135,7 +153,7 @@ export default function ClubsPage() {
             <TrackedAnchor href={pilotCallHref("clubs")} event="pilot_call_click" eventProps={{ page: "clubs" }} className={styles.secondary}>Talk to the founder</TrackedAnchor>
           </div>
           <p className={styles.fine}>
-            Teaching AP Stats or AP Calc? See <Link href="/for-teachers" className={styles.textLink}>how the lessons line up</Link>.
+            Teaching AP Stats or AP Calc? See <Link href="/clubs#clubs-ap" className={styles.textLink}>how the lessons line up</Link>.
           </p>
         </div>
       </section>
