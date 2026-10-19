@@ -12,87 +12,86 @@ export const metadata = pageMetadata({
   path: "/pricing",
   title: "Pricing",
   description:
-    "Free for students, always. Clubs and schools start with a free six-week pilot, then $199/year per club or $499/year per school instructor.",
+    "Lessons, playground, and seasons are free for students. Clubs get a free chapter board, six-week lab, and scorecard. The optional Intensive is $349; join the waitlist.",
 });
 
-// Decision log 2026-09-23: Student / Club / School, pilots free, Pro paused
-// for new sign-ups (existing subscriptions keep working). Every line below
-// must be something the product does today.
+// The remodel offer is Student / Club / Intensive. Legacy subscriptions and
+// Stripe routes remain available to existing subscribers.
 const TIERS = [
   {
-    name: "Student",
-    price: "$0",
-    per: "always",
+    name: "Students",
+    price: "Free",
+    per: "for every student",
     desc: "For any student, anywhere, with or without a club.",
     features: [
       `All ${TOTAL_LESSONS} lessons, with Python that runs in the browser`,
-      "Short, step-by-step sessions for the first week's lessons",
-      "Greek visualizer and playground",
+      "Playground and Greek visualizer",
+      "Free seasons of timed quant challenges",
       "Progress and code saved to your account",
-      "Certificates when you finish a track",
+      "A private record of verified work, shareable by choice",
     ],
-    cta: { href: "/learn/inv-1.1", label: "Try the first lesson" },
+    cta: { href: "/learn/inv-1.1", label: "Start a lesson" },
     accent: false,
   },
   {
-    name: "Club",
-    price: "$199",
-    per: "/ year, after a free pilot",
-    desc: "For a student-run or teacher-led club running the six-week lab.",
-    badge: "Pilots free",
+    name: "Clubs",
+    price: "Free",
+    per: "for club leaders and members",
+    desc: "Bring your club into the season and give members their own board.",
     features: [
-      "The six-week Quant Foundations Lab, scheduled with break weeks",
+      "Your club's handle-only chapter board",
       "One invite link; students join free",
-      "A home for each student with one clear next step",
-      "Capstones: private by default, shareable by choice",
-      "Scorecard: activation, weekly activity, who needs help, CSV export",
-      "Weekly meeting plan and ready-to-send messages",
+      "Six-week Quant Foundations Lab and weekly meeting plan",
+      "Leader scorecard and CSV export",
+      "Private capstones, shareable by student choice",
     ],
-    cta: { href: "/pilot?src=pricing", label: "Start a free pilot" },
-    accent: true,
+    cta: { href: "/pilot?src=pricing", label: "Set up your club" },
+    accent: false,
   },
   {
-    name: "School",
-    price: "$499",
-    per: "/ year per instructor, after a free pilot",
-    desc: "For a teacher running the lab in class or across several sections.",
+    name: "Intensive",
+    price: "$349",
+    per: "for six weeks",
+    desc: "An optional small-group cohort for motivated students, arranged with parents or guardians.",
+    badge: "Waitlist open",
     features: [
-      "Everything in Club, for all of one instructor's classes",
-      "Invoices and purchase orders",
-      "We'll go through your school's student-data form with you",
+      "Weekly quant projects and mentor review",
+      "A capstone the student explains and defends",
+      "Small cohort of 8 to 12 students",
+      "No payment now; charged only once a cohort fills",
     ],
-    cta: { href: "/pilot?src=pricing", label: "Start a free pilot" },
-    accent: false,
+    cta: { href: "/intensive", label: "Join the waitlist" },
+    accent: true,
   },
 ];
 
 const FAQS = [
   {
-    q: "Do students ever pay?",
-    a: "No. Students use StrikeLab free, whether they join through a club or on their own.",
+    q: "Can students use StrikeLab without paying?",
+    a: "Yes. Lessons, the playground, seasons, and club participation are free. The parent-facing Intensive is an optional separate program.",
   },
   {
-    q: "What's in the free pilot?",
-    a: "The full six-week lab for your club, set up in a few minutes, plus direct help from the founder while it runs. You meet once a week and tell us how it went. No payment details needed to start.",
+    q: "Is the club lab free too?",
+    a: "Yes. Create a club, share the invite link, use its chapter board, and run the six-week lab and scorecard for free.",
   },
   {
-    q: "What happens after the pilot?",
-    a: "You decide. Keep going for $199/year per club or $499/year per school instructor, or stop. Nothing renews or bills automatically.",
+    q: "Will joining the Intensive waitlist charge me?",
+    a: "No. The waitlist only collects an email. The Intensive costs $349 for six weeks, and payment happens only after a cohort fills and the dates are confirmed.",
   },
   {
     q: "Can a school pay by purchase order?",
-    a: "Yes. Email hello@strikelab.app with your process and we'll invoice you directly.",
+    a: "Schools that need an invoice or purchase order can email hello@strikelab.app to discuss their process.",
   },
   {
     q: "What happened to Pro?",
-    a: "Pro ($9/month) is no longer offered: the weekly coding challenges it unlocked were retired so we can focus on club pilots. If you subscribed earlier, email hello@strikelab.app and we will cancel it; you can also cancel yourself from Settings → Billing.",
+    a: "Pro ($9/month) is no longer offered to new subscribers. Existing subscribers can keep using their account, or cancel from Settings → Billing or by emailing hello@strikelab.app.",
   },
 ];
 
 const PRICING_JSON_LD = [
-  { name: `${SITE_NAME} Student`, description: "The full technical-finance curriculum, free for students.", price: "0" },
-  { name: `${SITE_NAME} Club`, description: "The six-week Quant Foundations Lab for one club, after a free pilot.", price: "199", unit: "ANN" },
-  { name: `${SITE_NAME} School`, description: "The six-week Quant Foundations Lab for one instructor's classes, after a free pilot.", price: "499", unit: "ANN" },
+  { name: `${SITE_NAME} Students`, description: "Lessons, playground, and seasons, free for students.", price: "0", href: "/learn/inv-1.1" },
+  { name: `${SITE_NAME} Clubs`, description: "Chapter board, six-week lab, and scorecard, free for clubs.", price: "0", href: "/pilot" },
+  { name: `${SITE_NAME} Intensive`, description: "Optional six-week mentored cohort; join the waitlist.", price: "349", href: "/intensive" },
 ].map((p) => ({
   "@context": "https://schema.org",
   "@type": "Product",
@@ -104,11 +103,7 @@ const PRICING_JSON_LD = [
     "@type": "Offer",
     price: p.price,
     priceCurrency: "USD",
-    ...(p.unit
-      ? { priceSpecification: { "@type": "UnitPriceSpecification", price: p.price, priceCurrency: "USD", billingIncrement: 1, unitCode: p.unit } }
-      : {}),
-    availability: "https://schema.org/InStock",
-    url: `${SITE_URL}${p.price === "0" ? "/learn/inv-1.1" : "/pilot"}`,
+    url: `${SITE_URL}${p.href}`,
   },
 }));
 
@@ -123,10 +118,10 @@ export default function PricingPage() {
       <section className={`${styles.section} ${styles.center}`}>
         <div className={styles.wrap}>
           <p className={styles.kicker}>Pricing</p>
-          <h1 className={styles.h1}>Free for students. Clubs start with a free pilot.</h1>
+          <h1 className={styles.h1}>Students free. Clubs free. Intensive when you&apos;re ready.</h1>
           <p className={styles.lede}>
-            Run the six-week lab with your club at no cost. If it works, keep going for a flat yearly price. Students
-            never pay.
+            Learn and compete at no cost. Bring your club to the season with its own board and an included six-week lab.
+            Families who want a small mentored cohort can join the Intensive waitlist.
           </p>
         </div>
       </section>
@@ -139,7 +134,7 @@ export default function PricingPage() {
               <h2 className={styles.h3}>{t.name}</h2>
               <p className={styles.body}>{t.desc}</p>
               <p className={styles.price}>
-                {t.price}
+                <strong>{t.price}</strong>
                 <span className={styles.pricePer}>{t.per}</span>
               </p>
               <ul className={styles.checks}>
@@ -155,6 +150,9 @@ export default function PricingPage() {
             </div>
           ))}
         </div>
+        <p className={styles.fine} style={{ marginTop: "1.5rem" }}>
+          Schools that need an invoice or purchase order: <a href="mailto:hello@strikelab.app" className={styles.textLink}>hello@strikelab.app</a>.
+        </p>
       </section>
 
       <section className={`${styles.section} ${styles.sectionAlt}`} aria-labelledby="pricing-faq">
