@@ -116,6 +116,18 @@ const service = createServer(async (request, response) => {
       else recordShareToken = null;
       return json(response, 200, recordShareToken);
     }
+    case "/rest/v1/rpc/get_shared_record": {
+      let body = "";
+      for await (const chunk of request) body += chunk;
+      const suppliedToken = JSON.parse(body).p_token;
+      return json(response, 200, recordFixture && recordShareToken && suppliedToken === recordShareToken ? [{
+        handle: "student_one",
+        items: [
+          { kind: "placing", subject_id: "s1:1", verified_at: isoTime(-60) },
+          { kind: "capstone", subject_id: "55555555-5555-4555-8555-555555555555", verified_at: isoTime(-50) },
+        ],
+      }] : []);
+    }
     default: return json(response, 404, { message: `Unseeded route: ${url.pathname}` });
   }
   const singular = request.headers.accept?.includes("application/vnd.pgrst.object+json");
