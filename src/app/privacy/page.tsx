@@ -44,6 +44,13 @@ const SECTIONS: { title: string; body: React.ReactNode }[] = [
           explanation are private to you and are used to compute your score.
         </p>
         <p className="mb-3">
+          <strong>If your work is verified:</strong> we keep the verified item,
+          reviewer, date, a record of parent consent for the review call, and
+          private notes. You can choose to create a record link showing only
+          your handle and verified items. Revoking it stops the link from
+          working; your real name and private notes are never on that page.
+        </p>
+        <p className="mb-3">
           <strong>If a parent joins the intensive waitlist:</strong> we keep
           that parent&rsquo;s email, the student&rsquo;s grade and any note, and
           use them only to contact that parent about the cohort.
