@@ -8,8 +8,9 @@ const apiPort = 54399;
 const appPort = 3113;
 const studentId = "11111111-1111-4111-8111-111111111111";
 const teacherId = "22222222-2222-4222-8222-222222222222";
-const adminFixture = Boolean(process.env.SEASON_ADMIN_E2E);
-const recordFixture = Boolean(process.env.RECORD_E2E);
+const verifyFixture = Boolean(process.env.VERIFY_E2E);
+const adminFixture = Boolean(process.env.SEASON_ADMIN_E2E || verifyFixture);
+const recordFixture = Boolean(process.env.RECORD_E2E || verifyFixture);
 const statusFixture = Boolean(process.env.SEASON_STATUS_E2E || adminFixture || recordFixture);
 const firstClub = { id: "33333333-3333-4333-8333-333333333333", name: "Options Club" };
 const secondClub = { id: "44444444-4444-4444-8444-444444444444", name: "Quant Club" };
@@ -17,6 +18,7 @@ const isoDay = (offset) => new Date(Date.now() + offset * 86_400_000).toISOStrin
 const isoTime = (minutes) => new Date(Date.now() + minutes * 60_000).toISOString();
 const season = { id: "s1", title: "Season 1", starts_on: isoDay(recordFixture ? -30 : -7), ends_on: isoDay(recordFixture ? -1 : 30) };
 let recordShareToken = null;
+const recordedVerifications = [];
 const challenge = (week, opens, closes) => ({
   id: `s1-w${week}`, season_id: "s1", week, template_slug: "put-call-parity",
   opens_at: isoTime(opens), closes_at: isoTime(closes), time_limit_minutes: 60,
@@ -60,6 +62,13 @@ const service = createServer(async (request, response) => {
       ? json(response, 200, { id: userId, aud: "authenticated", role: "authenticated", email: `${token}@example.test`, app_metadata: {}, user_metadata: {}, created_at: "2026-10-01T00:00:00Z" })
       : json(response, 401, { message: "No session" });
   }
+  if (verifyFixture && request.method === "POST" && url.pathname === "/rest/v1/verifications" && token === "fixture-service-role-key") {
+    let body = "";
+    for await (const chunk of request) body += chunk;
+    const row = { ...JSON.parse(body), id: "99999999-9999-4999-8999-999999999999" };
+    recordedVerifications.push(row);
+    return json(response, 201, request.headers.accept?.includes("application/vnd.pgrst.object+json") ? row : [row]);
+  }
 
   let value;
   switch (url.pathname) {
@@ -82,14 +91,15 @@ const service = createServer(async (request, response) => {
       break;
     }
     case "/rest/v1/profiles": value = token === "fixture-service-role-key" ? [{ id: studentId, handle: "student_one", display_name: "Example Student" }] : userId === studentId ? [{ handle: "student_one" }] : []; break;
-    case "/rest/v1/verifications": value = recordFixture && userId === studentId ? [
+    case "/rest/v1/verifications": value = verifyFixture && token === "fixture-service-role-key" ? recordedVerifications : recordFixture && userId === studentId ? [
       { kind: "placing", subject_id: "s1:1", verified_at: isoTime(-60) },
       { kind: "capstone", subject_id: "55555555-5555-4555-8555-555555555555", verified_at: isoTime(-50) },
     ] : []; break;
     case "/rest/v1/record_shares": value = recordFixture && userId === studentId && recordShareToken
       ? [{ token: recordShareToken, revoked_at: null }] : []; break;
-    case "/rest/v1/capstone_submissions": value = recordFixture && userId === studentId ? [{
-      id: "55555555-5555-4555-8555-555555555555", title: "Example capstone", status: "submitted", submitted_at: isoTime(-1_440),
+    case "/rest/v1/capstone_submissions": value = recordFixture && (userId === studentId || (verifyFixture && token === "fixture-service-role-key")) ? [{
+      id: "55555555-5555-4555-8555-555555555555", user_id: studentId, title: "Example capstone", status: "submitted", submitted_at: isoTime(-1_440),
+      thesis: "Example thesis", code: "print('Example capstone')", result_summary: "Example result", reflection: "Example reflection",
     }] : []; break;
     case "/rest/v1/certificates": value = recordFixture && token === "fixture-service-role-key" && url.searchParams.get("user_id") === `eq.${studentId}`
       ? [{ id: "66666666-6666-4666-8666-666666666666", track_id: "investing", issued_at: isoTime(-2_880) }] : []; break;
