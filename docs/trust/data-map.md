@@ -2,13 +2,13 @@
 
 What StrikeLab stores about students, who can see it, where it goes, and how long it's kept. It's written for a club sponsor, principal or district IT reviewer, and it goes in the pilot approval packet (`docs/gtm/outreach-kit.md` §5). It's a plain description of how the product works, not a legal document. The public version is https://strikelab.dev/trust, rendered from `src/lib/trust/dataMap.ts`: change both together.
 
-**Last checked against the code:** 2026-10-16, through migration `0024` (seasons, handles, intensive waitlist). Update this page in the same PR as any migration that adds a table or column holding student data.
+**Last checked against the code:** 2026-10-19, through migration `0025` (verifications and record shares). Update this page in the same PR as any migration that adds a table or column holding student data.
 
 ## Principles
 
 - **13 and up only.** No accounts for under-13s.
 - **Minimal:** an email address, an optional display name, and learning activity. No birth date, address, phone number, school ID, photos, grades or location.
-- **Private by default.** Nothing about a student is public unless they create a share link for their own capstone, and even that shows no name.
+- **Private by default.** A student can choose to share a capstone or record link. A record link shows a handle and verified items, never a real name or private reviewer notes.
 - **No ads, no selling data, no tracking across sites.**
 - **Students can delete everything themselves** (Settings → Delete my account), immediately.
 
@@ -37,10 +37,12 @@ Enforced in the database with row-level security (RLS): each rule below is a dat
 | Optional Discord webhook URL | `profiles.discord_webhook_url` | No | Yes | No | No |
 | Leaderboard handle (chosen by the student; never a real name) | `profiles.handle` | Pseudonym | Yes | Yes, on the chapter board | The handle and season score appear on leaderboards |
 | Season challenge attempts (code, explanation, timing, official score) | `season_attempts` | Student work | Yes | No | Only the handle and total score, on leaderboards |
+| Verified capstones and placings (subject, reviewer, date, consent flag, private notes) | `verifications` | Student work | Yes | No | Only the kind, subject and verification date if the student enables a record link |
+| Revocable record share token and dates | `record_shares` | Activity | Yes | No | An active link shows the handle and verified items, never the owner id or private notes |
 | Intensive waitlist (a parent's email, the student's grade, an optional note) | `intensive_waitlist` | Yes (the parent's) | No | No | No; used only to contact that parent about the cohort |
 | Season schedule and challenge slots | `seasons`, `season_challenges` | No | Public | Public | Public |
 
-**StrikeLab staff** (the founder) can read the database to operate and support the service, and does so only for support, debugging and aggregate pilot metrics. Pilot reports use aggregate numbers only.
+**StrikeLab staff** (the founder) can read the database to operate and support the service. The founder records verification results after review; support and debugging can also require access. Pilot reports use aggregate numbers only.
 
 ## Where data goes (subprocessors)
 
