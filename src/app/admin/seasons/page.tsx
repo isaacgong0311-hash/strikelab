@@ -55,6 +55,7 @@ export default async function AdminSeasonsPage({ searchParams }: { searchParams:
       <p className={styles.kicker}>Founder only</p>
       <h1>Season operations</h1>
       <p className={styles.intro}>Read-only status for official scoring and manual reviews.</p>
+      <p><Link href="/admin/verify">Review capstones and final placings →</Link></p>
 
       {choices.length > 1 && (
         <form method="get" action="/admin/seasons" className={styles.picker}>
