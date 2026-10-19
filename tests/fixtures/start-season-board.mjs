@@ -8,7 +8,8 @@ const apiPort = 54399;
 const appPort = 3113;
 const studentId = "11111111-1111-4111-8111-111111111111";
 const teacherId = "22222222-2222-4222-8222-222222222222";
-const statusFixture = Boolean(process.env.SEASON_STATUS_E2E);
+const adminFixture = Boolean(process.env.SEASON_ADMIN_E2E);
+const statusFixture = Boolean(process.env.SEASON_STATUS_E2E || adminFixture);
 const firstClub = { id: "33333333-3333-4333-8333-333333333333", name: "Options Club" };
 const secondClub = { id: "44444444-4444-4444-8444-444444444444", name: "Quant Club" };
 const isoDay = (offset) => new Date(Date.now() + offset * 86_400_000).toISOString().slice(0, 10);
@@ -36,14 +37,15 @@ const statusAttempts = [
   { challenge_id: "s1-w8", status: "started", deadline: isoTime(-1), official_score: null },
 ];
 
-function json(response, status, value) {
+function json(response, status, value, extraHeaders = {}) {
   response.writeHead(status, {
     "content-type": "application/json",
     "access-control-allow-origin": "*",
     "access-control-allow-headers": "authorization, apikey, content-type, x-client-info, prefer, accept-profile",
-    "access-control-allow-methods": "GET, POST, OPTIONS",
+    "access-control-allow-methods": "GET, HEAD, POST, OPTIONS",
+    ...extraHeaders,
   });
-  response.end(JSON.stringify(value));
+  response.end(response.req.method === "HEAD" ? undefined : JSON.stringify(value));
 }
 
 const service = createServer(async (request, response) => {
@@ -61,8 +63,23 @@ const service = createServer(async (request, response) => {
   switch (url.pathname) {
     case "/rest/v1/seasons": value = [season]; break;
     case "/rest/v1/season_challenges": value = statusFixture ? statusChallenges : []; break;
-    case "/rest/v1/season_attempts": value = statusFixture && userId === studentId ? statusAttempts : []; break;
-    case "/rest/v1/profiles": value = token === "fixture-service-role-key" ? [{ id: studentId, display_name: "Example Student" }] : userId === studentId ? [{ handle: "student_one" }] : []; break;
+    case "/rest/v1/season_attempts": {
+      if (adminFixture && token === "fixture-service-role-key") {
+        value = statusAttempts.map((row) => ({
+          ...row, user_id: studentId, submitted_at: isoTime(-15),
+          code: "print('Example review')", explanation: "Example reasoning for this submission.",
+        }));
+        const challengeFilter = url.searchParams.get("challenge_id");
+        if (challengeFilter?.startsWith("eq.")) value = value.filter((row) => row.challenge_id === challengeFilter.slice(3));
+        if (challengeFilter?.startsWith("in.")) value = value.filter((row) => challengeFilter.slice(4).includes(row.challenge_id));
+        const statusFilter = url.searchParams.get("status");
+        if (statusFilter?.startsWith("eq.")) value = value.filter((row) => row.status === statusFilter.slice(3));
+        const userFilter = url.searchParams.get("user_id");
+        if (userFilter?.startsWith("eq.")) value = value.filter((row) => row.user_id === userFilter.slice(3));
+      } else value = statusFixture && userId === studentId ? statusAttempts : [];
+      break;
+    }
+    case "/rest/v1/profiles": value = token === "fixture-service-role-key" ? [{ id: studentId, handle: "student_one", display_name: "Example Student" }] : userId === studentId ? [{ handle: "student_one" }] : []; break;
     case "/rest/v1/class_members": value = token === "fixture-service-role-key" ? [{ student_id: studentId }] : userId === studentId ? [{ class_id: firstClub.id }, { class_id: secondClub.id }] : []; break;
     case "/rest/v1/classes": value = userId === studentId ? [firstClub, secondClub] : userId === teacherId ? [firstClub] : []; break;
     case "/rest/v1/progress": value = []; break;
@@ -81,7 +98,10 @@ const service = createServer(async (request, response) => {
     default: return json(response, 404, { message: `Unseeded route: ${url.pathname}` });
   }
   const singular = request.headers.accept?.includes("application/vnd.pgrst.object+json");
-  return json(response, 200, singular ? (value[0] ?? null) : value);
+  const countHeader = request.headers.prefer?.includes("count=exact")
+    ? { "content-range": value.length ? `0-${value.length - 1}/${value.length}` : "*/0" }
+    : {};
+  return json(response, 200, singular ? (value[0] ?? null) : value, countHeader);
 });
 
 service.listen(apiPort, "127.0.0.1", () => {
@@ -91,6 +111,7 @@ service.listen(apiPort, "127.0.0.1", () => {
       NEXT_PUBLIC_SUPABASE_URL: `http://127.0.0.1:${apiPort}`,
       NEXT_PUBLIC_SUPABASE_ANON_KEY: "fixture-anon-key",
       SUPABASE_SERVICE_ROLE_KEY: "fixture-service-role-key",
+      ...(adminFixture ? { FOUNDER_USER_IDS: teacherId } : {}),
     },
     stdio: "inherit",
   });
