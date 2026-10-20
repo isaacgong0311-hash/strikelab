@@ -282,6 +282,24 @@ code, pre, .mono {
 .lesson-callout p + p { margin-top: 0.6rem; }
 .lesson-callout strong { color: var(--ink); }
 
+/* "From your desk head" briefing — sits above PrereqBox, below the header.
+   Amber instead of the prereqs box's neutral border so it reads as a
+   message, not a meta note about the lesson. */
+.lesson-briefing {
+  margin: 0 0 1.25rem;
+  padding: 0.85rem 1.1rem;
+  border-left: 2px solid var(--amber);
+  background: var(--amber-tint);
+  border-radius: 0 var(--r-md, 8px) var(--r-md, 8px) 0;
+}
+.lesson-briefing-text {
+  margin: 0;
+  color: var(--ink-2, #3d453f);
+  font-size: 0.88rem;
+  line-height: 1.6;
+  font-style: italic;
+}
+
 /* "Before this lesson" prereq box — sits above the content, below the
    header. Left border instead of the full outline .lesson-callout uses,
    so it reads as a note about the lesson rather than part of it. */
