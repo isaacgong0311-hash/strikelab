@@ -3,42 +3,16 @@ import Link from "next/link";
 import { TRACKS } from "@/lib/tracks";
 import { useProgress } from "@/lib/useProgress";
 import FlameIcon from "@/components/FlameIcon";
-import TrophyIcon from "@/components/TrophyIcon";
-import ConstructionIcon from "@/components/ConstructionIcon";
-import PathScenery, { sceneryForIndex, ChestIcon } from "@/components/PathScenery";
 import { getLessonSessions, resumeSession, type SessionResults } from "@/lib/sessions";
 import { useSessionResults } from "@/lib/sessions/useSessionResults";
 
-const OFFSETS = [0, 44, 62, 44, 0, -44, -62, -44];
-
 /**
- * Where a lesson node points. Unfinished lessons that have bite-sized
+ * Where a lesson row points. Unfinished lessons that have bite-sized
  * sessions open the next session; everything else opens the long-form page.
  */
 function lessonHref(lessonId: string, done: boolean, results: SessionResults): string {
   const next = done ? undefined : resumeSession(lessonId, results);
   return next ? `/learn/${next.id}` : `/lesson/${lessonId}`;
-}
-
-/** Fraction-of-sessions ring drawn around an unfinished node. */
-function SessionRing({ done, total }: { done: number; total: number }) {
-  const fraction = total ? done / total : 0;
-  return (
-    <svg className="dnode-ring" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
-      <circle className="dnode-ring-track" cx="50" cy="50" r="46" pathLength={100} vectorEffect="non-scaling-stroke" />
-      {fraction > 0 && (
-        <circle
-          className="dnode-ring-fill"
-          cx="50"
-          cy="50"
-          r="46"
-          pathLength={100}
-          strokeDasharray={`${fraction * 100} 100`}
-          vectorEffect="non-scaling-stroke"
-        />
-      )}
-    </svg>
-  );
 }
 
 const LEVEL_COLORS: Record<string, string> = {
@@ -79,12 +53,11 @@ export default function LessonsClient() {
           </div>
           <div className="dpath-stats">
             <div className="dstat">
-              <FlameIcon className="i" size={13} style={{ color: "var(--coral)" }} />
+              <FlameIcon className="i" size={12} />
               <b>{hydrated ? streak : 0}</b>
               <span className="l">streak</span>
             </div>
             <div className="dstat">
-              <span className="i">✦</span>
               <b>{hydrated ? xp : 0}</b>
               <span className="l">XP</span>
             </div>
@@ -123,127 +96,64 @@ export default function LessonsClient() {
           ? track.lessons.find((l) => !completed.has(l.id))?.id ?? null
           : track.lessons[0]?.id ?? null;
         const levelColor = LEVEL_COLORS[track.level] ?? "var(--grass)";
+        const trackComplete = trackDone === track.lessons.length;
 
         return (
-          <section key={track.id} aria-labelledby={`track-title-${track.id}`}>
-            {/* Unit banner */}
-            <div
-              className="dunit-banner"
-              style={{ background: levelColor, boxShadow: `0 5px 0 color-mix(in srgb, ${levelColor} 70%, #000)` }}
-            >
+          <section key={track.id} aria-labelledby={`track-title-${track.id}`} className="dunit">
+            <div className="dunit-head" style={{ ["--unit-color" as string]: levelColor }}>
+              <span className="dunit-icon" aria-hidden="true">{track.icon}</span>
               <div>
-                <h2 id={`track-title-${track.id}`} className="t">{track.title}</h2>
-                <div className="s">
+                <h2 id={`track-title-${track.id}`} className="dunit-t">{track.title}</h2>
+                <div className="dunit-s">
                   {track.subtitle} · {track.level} · {trackDone}/{track.lessons.length} complete
                 </div>
               </div>
-              <span className="dunit-icon" aria-hidden="true">{track.icon}</span>
             </div>
 
-            {/* Winding path */}
-            <div className="dpath-nodes" role="list" aria-label={`${track.title} lessons`}>
-              {track.lessons.flatMap((lesson, i) => {
+            <ol className="drows" aria-label={`${track.title} lessons`}>
+              {track.lessons.map((lesson, i) => {
                 const done = hydrated && completed.has(lesson.id);
                 const isActive = !done && lesson.id === activeId;
-                const off = OFFSETS[i % OFFSETS.length];
-                const state = done ? "done" : isActive ? "active" : "open";
-                const scenery = sceneryForIndex(i);
                 const sessions = getLessonSessions(lesson.id);
                 const sessionsDone = sessions.filter((s) => sessionResults[s.id]).length;
-                const showRing = !done && sessions.length > 0;
+                const showSessionProgress = !done && sessions.length > 0;
 
-                const node = (
-                  <div
-                    key={lesson.id}
-                    className={`dnode ${state}`}
-                    role="listitem"
-                    style={{
-                      transform: `translateX(${off}px)`,
-                      "--node-color": levelColor,
-                    } as React.CSSProperties}
-                  >
-                    {scenery && (
-                      <PathScenery
-                        kind={scenery}
-                        side={i % 2 === 0 ? "right" : "left"}
-                        color={levelColor}
-                      />
-                    )}
-                    <div
-                      className="dnode-rise"
-                      style={{ animationDelay: `${Math.min(i, 8) * 60}ms`, display: "flex", flexDirection: "column", alignItems: "center" }}
+                return (
+                  <li key={lesson.id} className={`drow ${done ? "done" : ""} ${isActive ? "active" : ""}`}>
+                    <Link
+                      href={lessonHref(lesson.id, done, sessionResults)}
+                      className="drow-link"
+                      style={{ ["--unit-color" as string]: levelColor }}
+                      aria-label={`${lesson.title}, ${done ? "completed" : isActive ? "recommended next lesson" : "available"}${showSessionProgress ? `, ${sessionsDone} of ${sessions.length} sessions done` : ""}`}
                     >
-                      {isActive && <span className="dnode-start">START</span>}
-                      <span className="dnode-ring-wrap">
-                        {showRing && <SessionRing done={sessionsDone} total={sessions.length} />}
-                        <Link
-                          href={lessonHref(lesson.id, done, sessionResults)}
-                          className="dnode-btn"
-                          style={
-                            state === "done"
-                              ? { background: levelColor, boxShadow: `0 6px 0 color-mix(in srgb, ${levelColor} 70%, #000)` }
-                              : state === "active"
-                              ? { background: "#fff", color: levelColor, border: `3px solid ${levelColor}`, boxShadow: `0 6px 0 color-mix(in srgb, ${levelColor} 20%, #fff)` }
-                              : { background: "#fff", color: levelColor, border: `2px solid ${levelColor}44`, boxShadow: `0 2px 0 #e7e5e4` }
-                          }
-                          aria-label={`${lesson.title}, ${done ? "completed" : isActive ? "recommended next lesson" : "available"}${showRing ? `, ${sessionsDone} of ${sessions.length} sessions done` : ""}`}
-                        >
-                          {state === "done" ? "✓" : i + 1}
-                        </Link>
+                      <span className="drow-n">{done ? "✓" : i + 1}</span>
+                      <span className="drow-body">
+                        <span className="drow-title">{lesson.title}</span>
+                        <span className="drow-meta">
+                          {lesson.duration}
+                          {showSessionProgress && ` · ${sessionsDone}/${sessions.length} sessions`}
+                        </span>
                       </span>
-                      <div className="dnode-label">{lesson.title}</div>
-                    </div>
-                  </div>
+                      {isActive && <span className="drow-tag">Next</span>}
+                    </Link>
+                  </li>
                 );
-
-                // A small reward beat every 4 lessons — skip right before the
-                // finish trophy, which already closes out the track.
-                const showChest = (i + 1) % 4 === 0 && i + 1 < track.lessons.length;
-                if (!showChest) return [node];
-
-                return [
-                  node,
-                  <div key={`${lesson.id}-chest`} className="dnode dchest" aria-hidden="true">
-                    <div className="dchest-btn"><ChestIcon /></div>
-                    <div className="dchest-label">Nice pace</div>
-                  </div>,
-                ];
               })}
 
-              {/* Track-finish trophy */}
-              <div className={`dnode dfinish ${trackDone === track.lessons.length ? "won" : ""}`} role="listitem">
-                <div
-                  className="dfinish-btn"
-                  style={
-                    trackDone === track.lessons.length
-                      ? { background: levelColor, color: "#fff", boxShadow: `0 6px 0 color-mix(in srgb, ${levelColor} 70%, #000)` }
-                      : { background: "#fff", color: levelColor, border: `2px dashed ${levelColor}66` }
-                  }
-                >
-                  <TrophyIcon size={30} />
-                </div>
-                <div className="dnode-label">
-                  {trackDone === track.lessons.length
-                    ? `${track.title} complete`
-                    : `${track.lessons.length - trackDone} more to finish ${track.title}`}
-                </div>
-              </div>
-
-              {/* Coming soon — the path keeps going past what's built */}
               {COMING_SOON[track.id] && (
-                <div
-                  className="dnode locked"
-                  role="listitem"
-                  style={{ transform: `translateX(${OFFSETS[(track.lessons.length + 1) % OFFSETS.length]}px)` }}
-                >
-                  <span className="dnode-soon">COMING SOON</span>
-                  <div className="dnode-btn">
-                    <ConstructionIcon size={24} />
-                  </div>
-                  <div className="dnode-label">{COMING_SOON[track.id]}</div>
-                </div>
+                <li className="drow locked">
+                  <span className="drow-link">
+                    <span className="drow-n">·</span>
+                    <span className="drow-body">
+                      <span className="drow-title">{COMING_SOON[track.id]}</span>
+                      <span className="drow-meta">Coming soon</span>
+                    </span>
+                  </span>
+                </li>
               )}
-            </div>
+            </ol>
+
+            {trackComplete && <div className="dunit-done">{track.title} complete</div>}
           </section>
         );
       })}
