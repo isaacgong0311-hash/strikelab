@@ -13,6 +13,7 @@ export const INVESTING_LESSONS: Lesson[] = [
     title: "What Is a Stock?",
     subtitle: "Ownership, equity, and why companies go public",
     duration: "12 min",
+    deskBriefing: "Welcome to the research desk. Before you cover a single company, you need to know what a share actually is: what you own, how big the company is, and what its price says about its earnings.",
     prereqs: {
       summary: "None — this is the starting point of the curriculum. Just curiosity and comfort with basic arithmetic.",
     },
@@ -142,6 +143,7 @@ print("Tests passed!")
     title: "How Markets Work",
     subtitle: "Exchanges, order types, and the bid-ask spread",
     duration: "14 min",
+    deskBriefing: "Every order you send costs something before the stock even moves. Learn how exchanges match buyers and sellers and what the bid-ask spread takes from you, so you can tell me the real cost of a trade.",
     prereqs: {
       summary: "Builds on Lesson 1's idea of stock ownership — no new math.",
     },
@@ -263,6 +265,7 @@ print("Tests passed!")
     title: "Reading Financial Statements",
     subtitle: "How to understand a company's P&L, balance sheet, and cash flow",
     duration: "18 min",
+    deskBriefing: "Here's your first company to cover. Read its income statement, balance sheet and cash flow statement, and come back with four numbers: gross margin, operating margin, free cash flow and debt-to-equity.",
     prereqs: {
       summary: "Comfortable with basic arithmetic and percentages. No accounting background assumed — every term is defined here.",
       resources: [
@@ -419,6 +422,7 @@ print("Tests passed!")
     title: "Valuation: How Much Is a Company Worth?",
     subtitle: "P/E, EV/EBITDA, and discounted cash flow basics",
     duration: "18 min",
+    deskBriefing: "A client wants to know if a stock is cheap or just looks cheap. Value it three ways — P/E, EV/EBITDA and a simple DCF — and if they disagree, I want to know why.",
     prereqs: {
       summary: "Builds directly on Lesson 3 — know what revenue, earnings, and free cash flow mean before this one.",
     },
@@ -556,6 +560,7 @@ print("Tests passed!")
     title: "Risk, Return, and Diversification",
     subtitle: "The math of building a portfolio that survives",
     duration: "16 min",
+    deskBriefing: "A fund that returned 20% isn't automatically better than one that returned 12%. Measure the volatility and the Sharpe ratio before you tell me which manager actually did the better job.",
     prereqs: {
       summary: "Comfortable with averages; standard deviation is explained from scratch, so no statistics background is required.",
       resources: [
@@ -701,6 +706,7 @@ print("Tests passed!")
     title: "Building Your Portfolio",
     subtitle: "Asset allocation, index funds, and long-term wealth",
     duration: "14 min",
+    deskBriefing: "A new client is 22 and wants a portfolio they can leave alone for decades. Show them what compounding does over 40 years, and how you'd keep their mix on target once the market pushes it off.",
     prereqs: {
       summary: "Builds directly on Lesson 5's diversification concept — this is where it becomes an actual portfolio.",
     },
@@ -844,6 +850,7 @@ print("Tests passed!")
     title: "Bonds and Fixed Income",
     subtitle: "Why bond prices fall when rates rise, and how to read a yield",
     duration: "15 min",
+    deskBriefing: "Rates moved this morning and our bond holdings repriced. Before you explain it to a client, know why bond prices fall when yields rise and how to read the yield on the screen.",
     prereqs: {
       summary: "Comfortable with percentages and the compound-growth idea from Lesson 6 — no new math beyond that.",
       resources: [
@@ -966,6 +973,7 @@ print("Tests passed!")
     title: "Retirement Accounts and Tax Drag",
     subtitle: "401(k)s, IRAs, and why the account you use matters as much as what's in it",
     duration: "14 min",
+    deskBriefing: "Two clients hold the same funds, and one will retire with noticeably more — only because of the account the money sits in. Work out what tax drag costs over a career so you can explain it in one sentence.",
     prereqs: {
       summary: "Builds directly on the compound-growth math from Lesson 6 — same formula, applied to a tax question instead.",
       resources: [
@@ -1071,6 +1079,7 @@ print("Tests passed!")
     title: "Common Investing Mistakes",
     subtitle: "The behavioral traps that cost more than picking the wrong stock",
     duration: "13 min",
+    deskBriefing: "Most of what clients lose isn't from picking the wrong stock. It's fees, panic selling and chasing last year's winner. Learn the traps, and price out what a 1% fee costs over decades so you can talk someone out of one.",
     prereqs: {
       summary: "No new math here — just the concepts from Lessons 1–6, especially diversification and index funds.",
       resources: [
