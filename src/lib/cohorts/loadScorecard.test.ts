@@ -93,6 +93,14 @@ describe("loadCohortScorecard", () => {
     expect((result as { reason: string }).reason).toMatch(/0016/);
   });
 
+  it.each(["class_members", "assignments", "profiles", "progress"])(
+    "says not measurable, instead of an empty cohort, when the %s read fails",
+    async (table) => {
+      getSupabaseAdminMock.mockReturnValue(fakeAdmin({ ...goodTables(), [table]: { data: null, error: { message: "timeout" } } }));
+      expect(await loadCohortScorecard(launched)).toMatchObject({ measurable: false, reason: expect.stringMatching(/couldn't be loaded/) });
+    },
+  );
+
   it("still works before capstones exist (migration 0019): program completion just ignores them", async () => {
     getSupabaseAdminMock.mockReturnValue(fakeAdmin({ ...goodTables(), capstone_submissions: { data: null, error: { message: "relation does not exist" } } }));
     const result = await loadCohortScorecard(launched);
