@@ -21,7 +21,7 @@ import {
   isAiConfigured,
   type ChatMessage,
 } from "@/lib/ai/groq";
-import { consumeAiQuota } from "@/lib/ai/quota";
+import { AI_UNAVAILABLE_REPLY, consumeAiQuota } from "@/lib/ai/quota";
 
 const SIGNED_OUT_REPLY = `I can walk you through this, but I need you signed in first — AI tutoring is capped per account so the bill stays predictable.
 
@@ -93,7 +93,7 @@ export async function POST(req: NextRequest) {
 
   const quota = await consumeAiQuota(auth.supabase, auth.userId, "chat");
   if (!quota.allowed) {
-    return new Response(textStream(quota.reason === "class" ? CLASS_OFF_REPLY : OVER_QUOTA_REPLY), {
+    return new Response(textStream(quota.reason === "class" ? CLASS_OFF_REPLY : quota.reason === "unavailable" ? AI_UNAVAILABLE_REPLY : OVER_QUOTA_REPLY), {
       headers: streamHeaders("fallback"),
     });
   }
