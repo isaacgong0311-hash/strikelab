@@ -20,11 +20,13 @@ const STATIC_PAGES: {
   priority: number;
   freq: MetadataRoute.Sitemap[number]["changeFrequency"];
 }[] = [
-  { path: "/", updated: "2026-09-23", priority: 1.0, freq: "weekly" },
+  { path: "/lab", updated: "2026-10-21", priority: 0.9, freq: "monthly" },
+  { path: "/start", updated: "2026-10-21", priority: 0.8, freq: "monthly" },
+  { path: "/", updated: "2026-10-21", priority: 1.0, freq: "weekly" },
   { path: "/clubs", updated: "2026-10-19", priority: 0.9, freq: "monthly" },
   { path: "/pilot", updated: "2026-09-23", priority: 0.9, freq: "monthly" },
   { path: "/demo", updated: "2026-09-23", priority: 0.8, freq: "monthly" },
-  { path: "/lessons", updated: "2026-06-08", priority: 0.9, freq: "weekly" },
+  { path: "/lessons", updated: "2026-10-21", priority: 0.9, freq: "weekly" },
   { path: "/playground", updated: "2026-07-14", priority: 0.8, freq: "monthly" },
   { path: "/seasons", updated: "2026-10-16", priority: 0.8, freq: "weekly" },
   { path: "/intensive", updated: "2026-10-19", priority: 0.6, freq: "monthly" },
@@ -33,7 +35,7 @@ const STATIC_PAGES: {
   { path: "/faq", updated: "2026-07-24", priority: 0.6, freq: "monthly" },
   { path: "/roadmap", updated: "2026-07-27", priority: 0.5, freq: "monthly" },
   { path: "/blog", updated: "2026-08-11", priority: 0.7, freq: "weekly" },
-  { path: "/privacy", updated: "2026-08-04", priority: 0.3, freq: "yearly" },
+  { path: "/privacy", updated: "2026-10-21", priority: 0.3, freq: "yearly" },
   { path: "/terms", updated: "2026-08-04", priority: 0.3, freq: "yearly" },
   { path: "/trust", updated: "2026-10-01", priority: 0.4, freq: "monthly" },
 ];

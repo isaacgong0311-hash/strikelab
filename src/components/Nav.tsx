@@ -11,6 +11,7 @@ import { PLANNED_SEASON, shortSeasonDate } from "@/lib/seasons/planned";
 const PRIMARY: { href: string; label: string; pro?: boolean }[] = [
   { href: "/dashboard",   label: "Dashboard" },
   { href: "/lessons",     label: "Lessons" },
+  { href: "/lab",         label: "Market Lab" },
   { href: "/playground",  label: "Playground" },
   { href: "/seasons",     label: "Seasons" },
 ];
@@ -36,7 +37,7 @@ const TEACHER: { href: string; label: string }[] = [
 const VISITOR: { href: string; label: string }[] = [
   { href: "/seasons",    label: "Seasons" },
   { href: "/lessons",    label: "Lessons" },
-  { href: "/playground", label: "Playground" },
+  { href: "/lab",        label: "Market Lab" },
   { href: "/clubs",      label: "For clubs" },
   { href: "/intensive",  label: "For parents" },
 ];
