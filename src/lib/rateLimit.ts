@@ -1,5 +1,6 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { NextResponse } from "next/server";
+import { isMissingSchemaError } from "@/lib/supabase/missingSchema";
 
 /** Limits per bucket: [max requests, window in seconds]. */
 export const RATE_LIMITS = {
@@ -17,10 +18,19 @@ export const RATE_LIMITS = {
 export type RateLimitBucket = keyof typeof RATE_LIMITS;
 
 /**
+ * Buckets that refuse the request when the limiter itself errors. Joining by
+ * invite code is the one an attacker would hammer to guess codes, so it must
+ * not lose its limit during a database hiccup. Everything else fails open: a
+ * student saving work shouldn't be blocked because the counter is down.
+ */
+const FAIL_CLOSED: ReadonlySet<RateLimitBucket> = new Set<RateLimitBucket>(["class-join"]);
+
+/**
  * Count one request against the signed-in user's bucket (migration 0021).
- * Returns a 429 response when over the limit, else null. Fails open when
- * the limiter itself is unavailable (e.g. before the migration is applied),
- * so a missing table never locks students out.
+ * Returns a 429 response when over the limit, else null. When the limiter
+ * itself errors: before migration 0021 is applied it always allows (a missing
+ * table never locks students out); after that, FAIL_CLOSED buckets answer 503
+ * and the rest allow.
  */
 export async function rateLimit(supabase: SupabaseClient, bucket: RateLimitBucket): Promise<NextResponse | null> {
   const [limit, windowSeconds] = RATE_LIMITS[bucket];
@@ -30,8 +40,15 @@ export async function rateLimit(supabase: SupabaseClient, bucket: RateLimitBucke
     p_window_seconds: windowSeconds,
   });
   if (error) {
-    console.warn(`[rate-limit] ${bucket} unavailable, allowing:`, error.message);
-    return null;
+    if (isMissingSchemaError(error) || !FAIL_CLOSED.has(bucket)) {
+      console.warn(`[rate-limit] ${bucket} unavailable, allowing:`, error.message);
+      return null;
+    }
+    console.error(`[rate-limit] ${bucket} unavailable, refusing:`, error.message);
+    return NextResponse.json(
+      { error: "We couldn't check this request just now. Try again in a minute." },
+      { status: 503, headers: { "Retry-After": "60" } }
+    );
   }
   if (data === false) {
     const minutes = Math.ceil(windowSeconds / 60);
