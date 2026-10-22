@@ -22,7 +22,7 @@ export default function MarketLabChart({ baseline, scenario, variable, compact =
   return (
     <div className={styles.chart}>
       <svg viewBox="0 0 600 282" role="img" aria-labelledby={`${id}-title ${id}-description`}>
-        <title id={`${id}-title`}>Option model value against {label.toLowerCase()}</title>
+        <title id={`${id}-title`}>{`Option model value against ${label.toLowerCase()}`}</title>
         <desc id={`${id}-description`}>
           Baseline {baseline.option}: {dollars(labPrice(baseline))} at {xLabel(baseline[variable])}.
           Experiment {scenario.option}: {dollars(labPrice(scenario))} at {xLabel(scenario[variable])}.
