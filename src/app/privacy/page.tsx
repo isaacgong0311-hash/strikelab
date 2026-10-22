@@ -30,7 +30,7 @@ const SECTIONS: { title: string; body: React.ReactNode }[] = [
         <p className="mb-3">
           <strong>If you don&rsquo;t create an account:</strong> lesson
           completions, XP, and streak live only in your browser&rsquo;s
-          localStorage. We never see it.
+          localStorage rather than an account record. The starting-point check saves only a suggested lesson on this device, not answers or scores. The Market Lab saves completed mission IDs and up to six experiments with their model inputs on this device. Clear your saved step on the homepage or clear your notebook in the lab. Usage events are described below.
         </p>
         <p className="mb-3">
           <strong>If you create an account</strong> (email + password, or
@@ -102,8 +102,7 @@ const SECTIONS: { title: string; body: React.ReactNode }[] = [
     title: "Analytics & error monitoring",
     body: (
       <>
-        We use Vercel Web Analytics (cookie-free, aggregate page-view counts —
-        it doesn&rsquo;t track you individually) and Sentry for error
+        We use Vercel Web Analytics (cookie-free page views and usage events, including starting-point check starts, completions, lesson clicks and opens. Those check events include only an event type and an optional curriculum destination, without answers, scores, names or account IDs) and Sentry for error
         monitoring, which can capture a stack trace and the page you were on
         when something breaks, so we can fix it.
       </>

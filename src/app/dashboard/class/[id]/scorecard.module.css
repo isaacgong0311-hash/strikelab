@@ -10,6 +10,17 @@
   color: var(--sl-text);
 }
 .head { display: flex; flex-wrap: wrap; align-items: flex-start; justify-content: space-between; gap: 0.75rem; }
+.exportActions { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+.definitions { color: var(--sl-text-muted); font-size: 0.875rem; line-height: 1.6; }
+.definitions summary { min-height: var(--sl-tap); display: list-item; align-content: center; cursor: pointer; color: var(--sl-text); font-weight: 700; }
+.definitions ul { margin: 0.5rem 0 0; padding-left: 1.25rem; list-style: disc; }
+.definitions li + li { margin-top: 0.5rem; }
+.definitions summary:focus-visible, .tableScroll:focus-visible { outline: 3px solid var(--sl-focus); outline-offset: 3px; }
+.tableScroll { max-width: 100%; overflow-x: auto; }
+.progressTable { width: 100%; border-collapse: collapse; text-align: left; font-size: 0.875rem; }
+.progressTable th, .progressTable td { padding: 0.75rem 0.5rem; border-bottom: 1px solid var(--sl-border); vertical-align: top; }
+.progressTable thead th { color: var(--sl-text-muted); font-size: 0.75rem; }
+.progressTable td { color: var(--sl-text-muted); }
 .title { margin: 0; font: 800 1.25rem/1.25 var(--sl-font-display); }
 .note { margin: 0.25rem 0 0; color: var(--sl-text-muted); font-size: 0.875rem; }
 .muted { color: var(--sl-text-subtle); }

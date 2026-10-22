@@ -16,6 +16,7 @@ const NAV_GROUPS = [
     title: "Product",
     links: [
       { href: "/lessons",    label: "Lessons" },
+      { href: "/lab",        label: "Market Lab" },
       { href: "/playground", label: "Playground" },
       { href: "/seasons",    label: "Seasons" },
       { href: "/dashboard",  label: "Dashboard" },
