@@ -11,6 +11,7 @@ import { useOrigin } from "@/lib/useOrigin";
 import CohortScorecard from "./CohortScorecard";
 import LeaderToolkit from "./LeaderToolkit";
 import AiTutorSwitch from "./AiTutorSwitch";
+import ChapterSeasonBoard from "./ChapterSeasonBoard";
 import type { CohortScorecard as Scorecard } from "@/lib/cohorts/loadScorecard";
 
 interface RosterEntry {
@@ -77,7 +78,7 @@ function SignInPrompt() {
   );
 }
 
-export default function ClassRosterClient() {
+export default function ClassRosterClient({ season }: { season: { id: string; title: string } | null }) {
   const { user, loading } = useAuth();
   const params = useParams<{ id: string }>();
   const classId = params.id;
@@ -206,6 +207,12 @@ export default function ClassRosterClient() {
       {state === "ready" && scorecard && (
         <div className="mb-6">
           <CohortScorecard scorecard={scorecard} className={className} classId={classId} />
+        </div>
+      )}
+
+      {state === "ready" && season && (
+        <div className="mb-6">
+          <ChapterSeasonBoard classId={classId} season={season} />
         </div>
       )}
 

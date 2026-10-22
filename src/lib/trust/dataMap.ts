@@ -35,6 +35,20 @@ export const STORED_DATA: StoredData[] = [
     others: "Only the handle and total score, on leaderboards",
   },
   {
+    what: "Verified capstones and placings (subject, reviewer, date, consent flag, private notes)",
+    tables: ["verifications"],
+    student: "Yes",
+    leader: "No",
+    others: "Only the kind, subject and verification date when the student enables a record link",
+  },
+  {
+    what: "Revocable record share token and creation or revocation dates",
+    tables: ["record_shares"],
+    student: "Yes",
+    leader: "No",
+    others: "Someone with an active link sees the handle and verified items, never the token's owner id or private notes",
+  },
+  {
     what: "Intensive waitlist (a parent's email, the student's grade, an optional note)",
     tables: ["intensive_waitlist"],
     student: "No",

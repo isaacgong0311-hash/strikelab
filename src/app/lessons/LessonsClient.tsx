@@ -1,5 +1,6 @@
 "use client";
 import Link from "next/link";
+import { PLANNED_SEASON } from "@/lib/seasons/planned";
 import { TRACKS } from "@/lib/tracks";
 import { useProgress } from "@/lib/useProgress";
 import FlameIcon from "@/components/FlameIcon";
@@ -19,13 +20,6 @@ const LEVEL_COLORS: Record<string, string> = {
   Beginner:     "var(--sky)",
   Intermediate: "var(--grass)",
   Advanced:     "var(--coral)",
-};
-
-// Roadmap items ("planned"/"in-progress" on /roadmap) shown as a preview
-// past each track's finish line — the path keeps going, it's just not paved
-// yet. Update alongside ROADMAP in src/app/roadmap/page.tsx.
-const COMING_SOON: Record<string, string> = {
-  quant: "VaR, GARCH & Monte Carlo",
 };
 
 export default function LessonsClient() {
@@ -139,24 +133,18 @@ export default function LessonsClient() {
                   </li>
                 );
               })}
-
-              {COMING_SOON[track.id] && (
-                <li className="drow locked">
-                  <span className="drow-link">
-                    <span className="drow-n">·</span>
-                    <span className="drow-body">
-                      <span className="drow-title">{COMING_SOON[track.id]}</span>
-                      <span className="drow-meta">Coming soon</span>
-                    </span>
-                  </span>
-                </li>
-              )}
             </ol>
 
             {trackComplete && <div className="dunit-done">{track.title} complete</div>}
           </section>
         );
       })}
+
+      {/* Past the last track: the path leads into a season, not more lessons */}
+      <Link href="/seasons?src=lessons" className="dpath-next" style={{ marginTop: "2rem" }}>
+        <span><small>Then prove it</small><strong>{PLANNED_SEASON.title}: timed challenges, ranked under a handle</strong></span>
+        <span aria-hidden="true">See seasons →</span>
+      </Link>
     </div>
   );
 }

@@ -8,7 +8,7 @@ const NAV_GROUPS = [
       { href: "/clubs",        label: "For clubs & teachers" },
       { href: "/pilot?src=footer", label: "Free pilot" },
       { href: "/demo",         label: "Demo" },
-      { href: "/for-teachers", label: "AP alignment" },
+      { href: "/clubs#clubs-ap", label: "AP alignment" },
       { href: "/intensive",    label: "Intensive (parents)" },
     ],
   },
@@ -61,8 +61,8 @@ export default function Footer() {
             </span>
           </div>
           <p className="text-xs leading-relaxed mb-5 max-w-xs" style={{ color: "var(--fg-mute)" }}>
-            Learn quant finance by building it: lessons, real Python and a
-            six-week lab for clubs. Free for students.
+            Learn quant finance, then prove it: lessons, real Python and
+            free seasons of timed challenges. Free for students.
           </p>
           <div className="flex gap-2 flex-wrap mb-5">
             {["Free for students", "Runs in your browser", "Private by default"].map((tag) => (
