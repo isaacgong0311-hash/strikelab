@@ -44,6 +44,14 @@ export async function GET(request: NextRequest) {
           }
           cookieStore.delete("sl_role");
         }
+        // The 13+ confirmation ticked on /sign-up before "Continue with Google".
+        if (cookieStore.get("sl_age13")?.value === "1") {
+          const { data: userData } = await supabase.auth.getUser();
+          if (userData.user && !userData.user.user_metadata?.age_13_plus_confirmed_at) {
+            await supabase.auth.updateUser({ data: { age_13_plus_confirmed_at: new Date().toISOString() } });
+          }
+          cookieStore.delete("sl_age13");
+        }
         return NextResponse.redirect(`${origin}${next}`);
       }
     }

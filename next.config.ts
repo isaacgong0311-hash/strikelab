@@ -3,6 +3,34 @@ import { withSentryConfig } from "@sentry/nextjs";
 
 const LEGACY_HOST = "strikelabco.vercel.app";
 
+/**
+ * Content-Security-Policy in REPORT-ONLY mode (build plan T3.6): browsers
+ * enforce nothing, they report what this policy would have blocked to
+ * /api/csp-report, which logs it. Once a few weeks of real traffic report
+ * nothing unexpected, rename the header to Content-Security-Policy.
+ *
+ * - 'unsafe-inline' scripts: Next's inline bootstrap scripts (no nonces yet).
+ * - 'wasm-unsafe-eval': the in-browser Python (Pyodide) compiles WebAssembly.
+ * - cdn.jsdelivr.net: Pyodide's fallback source when /pyodide is blocked.
+ * - *.supabase.co: auth and data (https + realtime wss).
+ * - *.sentry.io: browser error reports. va.vercel-scripts.com: Analytics.
+ * - api.web3forms.com: the newsletter form.
+ */
+const CSP_REPORT_ONLY = [
+  "default-src 'self'",
+  "script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval' https://cdn.jsdelivr.net https://va.vercel-scripts.com",
+  "worker-src 'self' blob:",
+  "style-src 'self' 'unsafe-inline'",
+  "img-src 'self' data: blob: https:",
+  "font-src 'self' data:",
+  "connect-src 'self' https://*.supabase.co wss://*.supabase.co https://cdn.jsdelivr.net https://*.sentry.io https://api.web3forms.com https://va.vercel-scripts.com",
+  "frame-ancestors 'none'",
+  "base-uri 'self'",
+  "form-action 'self'",
+  "object-src 'none'",
+  "report-uri /api/csp-report",
+].join("; ");
+
 const nextConfig: NextConfig = {
   output: "standalone",
   poweredByHeader: false,
@@ -45,6 +73,7 @@ const nextConfig: NextConfig = {
           { key: "X-Frame-Options", value: "DENY" },
           { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
           { key: "Permissions-Policy", value: "camera=(), microphone=(), geolocation=()" },
+          { key: "Content-Security-Policy-Report-Only", value: CSP_REPORT_ONLY },
         ],
       },
     ];

@@ -21,6 +21,7 @@ export default function SetupWizard() {
   const { user } = useAuth();
   const [klass, setKlass] = useState<{ id: string; name: string } | null>(null);
   const [name, setName] = useState("");
+  const [leaderConfirmed, setLeaderConfirmed] = useState(false);
   const [startsOn, setStartsOn] = useState("");
   const detectedZone = useBrowserTimezone();
   const [pickedZone, setPickedZone] = useState<string | null>(null);
@@ -44,14 +45,17 @@ export default function SetupWizard() {
       const res = await fetch("/api/classes", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name }),
+        body: JSON.stringify({ name, leaderConfirmed }),
       });
       const data = await res.json().catch(() => ({}));
       if (!res.ok) throw new Error(data.error ?? "Couldn't create the class");
       setKlass({ id: data.id, name: data.name });
       // Mark the account as a leader so the nav shows "My classes".
-      if (user?.user_metadata?.signup_role !== "leader") {
-        getSupabaseBrowser()?.auth.updateUser({ data: { signup_role: "leader" } }).catch(() => {});
+      // Also records the "I'm responsible for these students" confirmation.
+      if (user?.user_metadata?.signup_role !== "leader" || !user?.user_metadata?.leader_confirmed_at) {
+        getSupabaseBrowser()
+          ?.auth.updateUser({ data: { signup_role: "leader", leader_confirmed_at: new Date().toISOString() } })
+          .catch(() => {});
       }
     } catch (createError) {
       setError(createError instanceof Error ? createError.message : "Couldn't create the class");
@@ -102,6 +106,15 @@ export default function SetupWizard() {
               value={name}
               onChange={(e) => setName(e.target.value)}
             />
+          </label>
+          <label className={styles.attest}>
+            <input
+              type="checkbox"
+              required
+              checked={leaderConfirmed}
+              onChange={(e) => setLeaderConfirmed(e.target.checked)}
+            />
+            <span>I&apos;m a teacher, club advisor or club leader, and I&apos;m responsible for the students who join this class.</span>
           </label>
           {error && <p className={styles.error} role="alert">{error}</p>}
           <div className={styles.actions}>

@@ -42,6 +42,9 @@ export default function SignUpPage() {
   // Where to land after auth, e.g. /join/CODE from a class invite link.
   const nextPath = useNextPath();
   const [checkEmail, setCheckEmail] = useState(false);
+  // StrikeLab is for ages 13 and up (privacy page, "Age"). Asked of everyone,
+  // and recorded on the account (build plan T3.6).
+  const [ageConfirmed, setAgeConfirmed] = useState(false);
   const signupSource = useSignupSource();
   // Leaders coming from /pilot (next=/teach/...) and students from an invite
   // (next=/join/...) get the obvious answer preselected; anyone else picks.
@@ -70,7 +73,13 @@ export default function SignUpPage() {
       email,
       password,
       options: {
-        data: { display_name: name, full_name: name, signup_source: signupSource, signup_role: role },
+        data: {
+          display_name: name,
+          full_name: name,
+          signup_source: signupSource,
+          signup_role: role,
+          age_13_plus_confirmed_at: new Date().toISOString(),
+        },
         emailRedirectTo: `${window.location.origin}/auth/callback?next=${encodeURIComponent(destination)}`,
       },
     });
@@ -94,9 +103,14 @@ export default function SignUpPage() {
   async function handleGoogle() {
     const supabase = getSupabaseBrowser();
     if (!supabase) return;
+    if (!ageConfirmed) {
+      setError("Please confirm you're 13 or older first.");
+      return;
+    }
     setError(null);
-    // Google can't carry signup metadata, so the callback reads this cookie.
+    // Google can't carry signup metadata, so the callback reads these cookies.
     if (role) document.cookie = `sl_role=${role}; path=/; max-age=3600; SameSite=Lax`;
+    document.cookie = "sl_age13=1; path=/; max-age=3600; SameSite=Lax";
     const { error } = await supabase.auth.signInWithOAuth({
       provider: "google",
       options: { redirectTo: `${window.location.origin}/auth/callback?next=${encodeURIComponent(destination)}` },
@@ -201,6 +215,15 @@ export default function SignUpPage() {
               aria-describedby="signup-password-help"
             />
             <span id="signup-password-help" className="auth-help">Use at least 8 characters.</span>
+          </label>
+          <label className={styles.attest}>
+            <input
+              type="checkbox"
+              required
+              checked={ageConfirmed}
+              onChange={(e) => setAgeConfirmed(e.target.checked)}
+            />
+            <span>I&apos;m 13 or older.</span>
           </label>
           <button type="submit" disabled={loading} className="v2-btn" style={{ width: "100%", marginTop: 4 }}>
             {loading ? "Creating account…" : <>Create free account <span className="v2-arr">→</span></>}
