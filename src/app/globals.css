@@ -1983,11 +1983,11 @@ h1, h2, h3, h4 {
 .db-ghost-btn {
   font-family: var(--font-mono);
   font-size: 13px;
-  color: var(--ink-2);
-  opacity: 0.7;
-  transition: opacity .12s;
+  /* Quiet via color, not opacity: 0.7 opacity on ink-2 fell to 3.5:1. */
+  color: var(--muted);
+  transition: color .12s;
 }
-.db-ghost-btn:hover { opacity: 1; }
+.db-ghost-btn:hover { color: var(--ink); }
 .db-hero-progress-wrap { padding: 0; }
 
 /* thin progress bar at bottom of hero */
