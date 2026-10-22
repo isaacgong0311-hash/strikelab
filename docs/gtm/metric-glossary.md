@@ -44,7 +44,7 @@ The funnel from a leader's sign-up to their first student comes from Postgres, n
 
 ## What needs which migration
 
-Every metric above is measurable once migrations 0016 (lesson completions) and 0019 (capstones) are applied in production; `scripts/metrics/check-migrations.sql` says whether they are. Until then the scorecard says "not measurable" instead of estimating. Don't approximate activation or retention from the aggregate `progress.completed` array with invented timestamps: report "not yet measurable" rather than a fabricated number.
+Every metric above is measurable once migrations 0016 (lesson completions) and 0019 (capstones) are applied in production; `scripts/metrics/check-migrations.sql` says whether they are. Until then the scorecard says "not measurable" instead of estimating. It says the same if the roster, assignment, profile or progress read fails, so a database hiccup never shows as "0 enrolled". Don't approximate activation or retention from the aggregate `progress.completed` array with invented timestamps: report "not yet measurable" rather than a fabricated number.
 
 ## Pipeline metrics (before any cohort runs)
 
