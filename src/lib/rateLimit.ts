@@ -11,6 +11,7 @@ export const RATE_LIMITS = {
   "season-handle": [10, 3600],
   "capstone-save": [600, 3600],
   "capstone-share": [20, 3600],
+  "record-share": [20, 3600],
   "account-delete": [5, 3600],
 } as const satisfies Record<string, readonly [number, number]>;
 

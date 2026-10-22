@@ -19,3 +19,19 @@ test("the intensive page shows the price and asks a parent to confirm before joi
   await page.getByRole("button", { name: "Join the waitlist" }).click();
   await expect(page.getByText(/You're on the list/)).toHaveCount(0);
 });
+
+// Records and defenses (0025). Without a database the private record explains
+// itself, shared links 404, and the founder page never reveals it exists.
+test("the record page explains itself without a database, and unknown or bad links 404", async ({ page }) => {
+  await page.goto("/record");
+  await expect(page.getByText(/Records need the database/)).toBeVisible();
+  const shared = await page.goto("/record/11111111-1111-4111-8111-111111111111");
+  expect(shared?.status()).toBe(404);
+  const bad = await page.goto("/record/not-a-token");
+  expect(bad?.status()).toBe(404);
+});
+
+test("the defense sign-off page is a 404 for visitors", async ({ page }) => {
+  const res = await page.goto("/admin/defenses");
+  expect(res?.status()).toBe(404);
+});

@@ -42,6 +42,11 @@ const SECTIONS: { title: string; body: React.ReactNode }[] = [
           <strong>If you play a season:</strong> the handle you choose (never
           your real name) and your score appear on leaderboards; your code and
           explanation are private to you and are used to compute your score.
+          If you defend a capstone or a top-10 placing in a live conversation,
+          we record whether it was verified, the date and the reviewer&rsquo;s
+          name. Your record page is private unless you share it; sharing makes
+          a link that shows your handle, never your name, and turning sharing
+          off makes that link stop working.
         </p>
         <p className="mb-3">
           <strong>If a parent joins the intensive waitlist:</strong> we keep
