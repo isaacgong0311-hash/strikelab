@@ -282,6 +282,24 @@ code, pre, .mono {
 .lesson-callout p + p { margin-top: 0.6rem; }
 .lesson-callout strong { color: var(--ink); }
 
+/* "From your desk head" briefing — sits above PrereqBox, below the header.
+   Amber instead of the prereqs box's neutral border so it reads as a
+   message, not a meta note about the lesson. */
+.lesson-briefing {
+  margin: 0 0 1.25rem;
+  padding: 0.85rem 1.1rem;
+  border-left: 2px solid var(--amber);
+  background: var(--amber-tint);
+  border-radius: 0 var(--r-md, 8px) var(--r-md, 8px) 0;
+}
+.lesson-briefing-text {
+  margin: 0;
+  color: var(--ink-2, #3d453f);
+  font-size: 0.88rem;
+  line-height: 1.6;
+  font-style: italic;
+}
+
 /* "Before this lesson" prereq box — sits above the content, below the
    header. Left border instead of the full outline .lesson-callout uses,
    so it reads as a note about the lesson rather than part of it. */
@@ -1403,192 +1421,62 @@ body:has(.sk-home) .v2-bg-vignette { display: none; }
 /* ════════════════════════════════════════════════════════════════════════════
    DUOLINGO-STYLE LESSON PATH  (/lessons)
    ════════════════════════════════════════════════════════════════════════════ */
-.dpath { max-width: 660px; margin: 0 auto; padding: 36px 20px 90px; font-family: var(--font-ui), system-ui, sans-serif; }
-.dpath-head { margin-bottom: 24px; }
+.dpath { max-width: 720px; margin: 0 auto; padding: 36px 20px 90px; font-family: var(--font-ui), system-ui, sans-serif; }
+.dpath-head { margin-bottom: 28px; }
 .dpath-head-row { display: flex; justify-content: space-between; align-items: flex-end; gap: 16px; flex-wrap: wrap; margin-bottom: 16px; }
-.dpath-title { font-family: var(--font-display), Georgia, serif; font-weight: 600; font-size: clamp(28px, 5vw, 40px); letter-spacing: -0.02em; color: var(--ink); margin-top: 8px; }
-.dpath-stats { display: flex; gap: 10px; }
-.dstat {
-  display: flex; flex-direction: column; align-items: center; gap: 1px;
-  background: var(--card); border: 1px solid var(--line); border-radius: var(--r-md);
-  padding: 8px 14px; min-width: 62px; box-shadow: 0 1px 2px rgba(28,25,23,0.05);
-}
-.dstat .i { font-size: 13px; line-height: 1; }
-.dstat b { font-family: var(--font-display), Georgia, serif; font-weight: 600; font-size: 19px; color: var(--ink); line-height: 1.1; }
-.dstat .l { font-family: var(--font-mono); font-size: 9px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-3); }
-.dpath-progress { height: 14px; border-radius: var(--r-full); background: var(--bg2); border: 1px solid var(--line); overflow: hidden; }
-.dpath-progress-fill { height: 100%; background: var(--grass); border-radius: var(--r-full); transition: width .6s cubic-bezier(.2,.7,.3,1); }
+.dpath-title { font-family: var(--font-display), Georgia, serif; font-weight: 600; font-size: clamp(26px, 4.5vw, 36px); letter-spacing: -0.02em; color: var(--ink); margin-top: 8px; }
+.dpath-stats { display: flex; gap: 20px; }
+.dstat { display: flex; align-items: baseline; gap: 5px; }
+.dstat .i { color: var(--ink-3); }
+.dstat b { font-family: var(--font-mono); font-weight: 600; font-size: 15px; color: var(--ink); font-variant-numeric: tabular-nums; }
+.dstat .l { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-3); }
+.dpath-progress { height: 4px; background: var(--bg2); overflow: hidden; }
+.dpath-progress-fill { height: 100%; background: var(--grass); transition: width .5s ease-out; }
 
-.dunit-banner {
-  display: flex; justify-content: space-between; align-items: center;
-  background: var(--grass); color: #fff; border-radius: var(--r-lg); padding: 16px 22px;
-  box-shadow: 0 2px 0 var(--grass-d); margin: 38px 0 4px;
-}
-.dunit-banner .t { font-family: var(--font-display), Georgia, serif; font-weight: 600; font-size: 18px; }
-.dunit-banner .s { font-size: 13px; opacity: 0.88; margin-top: 2px; }
-.dunit-icon { font-family: var(--font-display), Georgia, serif; font-size: 30px; opacity: 0.9; }
+/* .dpath-next is styled unconditionally in src/styles/foundation.css
+   (the --sl-* token system) — intentionally left alone here. */
 
-.dpath-nodes { display: flex; flex-direction: column; align-items: center; gap: 26px; padding: 40px 0 32px; position: relative; }
-.dpath-nodes::before {
-  content: ''; position: absolute; top: 30px; bottom: 30px; left: 50%; width: 3px;
-  background: repeating-linear-gradient(var(--line-2) 0 8px, transparent 8px 17px);
-  transform: translateX(-50%); z-index: 0;
+/* ── One track = a hairline header, then a flat list of rows. No path,
+   no circular nodes, no scenery/chests/trophy — restraint over theme-park
+   gamification (see 2026-10-20 design pass). */
+.dunit { margin-top: 40px; }
+.dunit-head { display: flex; align-items: flex-start; gap: 12px; padding-bottom: 14px; border-bottom: 1px solid var(--line); margin-bottom: 4px; }
+.dunit-icon { font-family: var(--font-display), Georgia, serif; font-size: 20px; color: var(--unit-color, var(--grass)); line-height: 1.3; }
+.dunit-t { font-family: var(--font-display), Georgia, serif; font-weight: 600; font-size: 17px; color: var(--ink); }
+.dunit-s { font-size: 12.5px; color: var(--ink-3); margin-top: 2px; }
+
+.drows { list-style: none; margin: 0; padding: 0; }
+.drow { border-bottom: 1px solid var(--line); }
+.drow:last-child { border-bottom: none; }
+.drow-link {
+  display: flex; align-items: center; gap: 14px;
+  padding: 13px 4px; text-decoration: none;
+  transition: background .1s ease;
 }
-.dnode {
-  position: relative; z-index: 1; display: flex; flex-direction: column; align-items: center;
+a.drow-link:hover { background: var(--card2); }
+.drow-n {
+  flex-shrink: 0; width: 26px; text-align: center;
+  font-family: var(--font-mono); font-size: 13px; color: var(--ink-3);
+  font-variant-numeric: tabular-nums;
 }
-/* Entrance fade only — .dnode's own `transform` is already the winding-path
-   offset (set inline per node), so the mount animation lives on a wrapper
-   around the button+label instead of fighting that transform. */
-.dnode-rise { animation: dnode-in .5s cubic-bezier(.2,.7,.3,1) both; }
-@keyframes dnode-in {
-  from { opacity: 0; transform: translateY(10px) scale(.94); }
-  to   { opacity: 1; transform: translateY(0) scale(1); }
+.drow.done .drow-n { color: var(--grass); }
+.drow-body { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 1px; }
+.drow-title { font-weight: 500; color: var(--ink); font-size: 14.5px; }
+.drow.done .drow-title { color: var(--ink-2); }
+.drow-meta { font-family: var(--font-mono); font-size: 11px; color: var(--ink-3); letter-spacing: 0.01em; }
+.drow-tag {
+  flex-shrink: 0; font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase;
+  color: var(--unit-color, var(--grass)); border: 1px solid currentColor; border-radius: var(--r-xs); padding: 3px 7px;
+}
+.drow.locked .drow-title, .drow.locked .drow-meta { color: var(--ink-3); }
+
+.dunit-done {
+  margin-top: 10px; font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase;
+  color: var(--grass);
 }
 @media (prefers-reduced-motion: reduce) {
-  .dnode-rise { animation: none; }
+  .drow-link, .dpath-progress-fill, .dpath-next { transition: none; }
 }
-
-/* Decorative scenery beside the path — trees, bushes, the occasional rock.
-   Only shown where there's genuinely room for it beside the 660px-wide
-   path without colliding on tablet/mobile. */
-.dpath-scenery {
-  display: none;
-  animation: scenery-sway 4.5s ease-in-out infinite;
-  transform-origin: bottom center;
-}
-@media (min-width: 940px) {
-  .dpath-scenery { display: block; }
-}
-@keyframes scenery-sway {
-  0%, 100% { transform: rotate(-2deg); }
-  50%      { transform: rotate(2deg); }
-}
-@media (prefers-reduced-motion: reduce) {
-  .dpath-scenery { animation: none; }
-}
-.dnode-btn {
-  position: relative; overflow: hidden;
-  width: 74px; height: 66px; border-radius: 50%;
-  display: grid; place-items: center;
-  font-family: var(--font-display), Georgia, serif; font-weight: 600; font-size: 26px; color: #fff;
-  background: var(--grass); box-shadow: 0 2px 0 var(--grass-d);
-  border: none; cursor: pointer;
-  transition: transform .12s ease, box-shadow .12s ease, filter .15s ease;
-}
-/* Glossy highlight — a fixed light-catch in the upper-left, independent of
-   whatever solid color the button's `background` inline style sets. Reads
-   clearly on filled (done/finish) buttons, harmlessly faint on white ones. */
-.dnode-btn::before, .dfinish-btn::before {
-  content: ''; position: absolute; inset: 0; border-radius: inherit;
-  background: radial-gradient(120% 120% at 30% 20%, rgba(255,255,255,0.65), transparent 48%);
-  pointer-events: none;
-}
-/* Session-progress ring around unfinished lessons that have bite-sized
-   sessions. Sits outside the button so it tracks either button size. */
-.dnode-ring-wrap { position: relative; display: grid; place-items: center; }
-.dnode-ring {
-  position: absolute; inset: -7px; width: calc(100% + 14px); height: calc(100% + 14px);
-  overflow: visible; pointer-events: none; transform: rotate(-90deg);
-}
-.dnode-ring circle { fill: none; stroke-width: 5px; }
-.dnode-ring-track { stroke: color-mix(in srgb, var(--node-color, var(--grass)) 18%, transparent); }
-.dnode-ring-fill {
-  stroke: var(--node-color, var(--grass)); stroke-linecap: round;
-  transition: stroke-dasharray .32s ease;
-}
-@media (prefers-reduced-motion: reduce) {
-  .dnode-ring-fill { transition: none; }
-}
-.dnode-btn:hover { filter: brightness(1.05); transform: translateY(-2px); }
-.dnode-btn:active { transform: translateY(4px); box-shadow: 0 2px 0 var(--grass-d); }
-.dnode.open .dnode-btn { background: #fff; color: var(--grass); border: 3px solid var(--grass); box-shadow: 0 6px 0 var(--grass-tint); }
-.dnode.locked .dnode-btn { background: #e2ddd0; color: #b3ac9c; box-shadow: 0 6px 0 #cfc8b8; cursor: default; font-size: 22px; }
-.dnode.active::after {
-  content: ''; position: absolute; top: -6px; width: 88px; height: 80px; border-radius: 50%;
-  border: 3px solid var(--grass); opacity: 0.45; animation: dpulse 1.7s ease-out infinite;
-  pointer-events: none;
-}
-@keyframes dpulse { 0% { transform: scale(0.98); opacity: 0.5; } 100% { transform: scale(1.28); opacity: 0; } }
-/* Slow shine sweep across the active node — a second, subtler cue beyond
-   the pulse ring, so the "go here next" node reads as alive, not static. */
-.dnode.active .dnode-btn::after {
-  content: ''; position: absolute; inset: 0; border-radius: inherit;
-  background: linear-gradient(115deg, transparent 40%, rgba(255,255,255,0.55) 50%, transparent 60%);
-  background-size: 220% 220%;
-  animation: dshine 2.6s ease-in-out infinite;
-  pointer-events: none;
-}
-@keyframes dshine {
-  0%   { background-position: 130% 130%; }
-  55%  { background-position: -30% -30%; }
-  100% { background-position: -30% -30%; }
-}
-@media (prefers-reduced-motion: reduce) {
-  .dnode.active .dnode-btn::after { animation: none; }
-  .dnode-btn:hover { transform: none; }
-}
-.dnode-start {
-  position: absolute; top: -36px; z-index: 2;
-  background: var(--ink); color: #fff; font-weight: 700; font-size: 11px; letter-spacing: 0.08em;
-  padding: 5px 13px; border-radius: var(--r-sm); box-shadow: 0 3px 0 rgba(0,0,0,0.22);
-  animation: dbounce 1.4s ease-in-out infinite;
-  pointer-events: none;
-}
-.dnode-start::after { content: ''; position: absolute; bottom: -4px; left: 50%; transform: translateX(-50%) rotate(45deg); width: 8px; height: 8px; background: var(--ink); }
-@keyframes dbounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-4px); } }
-.dnode-soon {
-  position: absolute; top: -30px; z-index: 2;
-  background: #e2ddd0; color: #8a8478; font-weight: 700; font-size: 9px; letter-spacing: 0.1em;
-  padding: 4px 10px; border-radius: var(--r-sm);
-  font-family: var(--font-mono);
-  pointer-events: none;
-}
-/* Labels sit on a canvas-coloured pill so the dashed spine never runs
-   through the text. */
-.dnode-label {
-  position: relative; z-index: 1;
-  margin-top: 10px; padding: 4px 12px;
-  border-radius: 999px;
-  background: var(--sl-canvas, var(--bg));
-  box-shadow: 0 0 0 4px var(--sl-canvas, var(--bg));
-  font-family: var(--font-display), Georgia, serif; font-weight: 600; font-size: 14px; color: var(--ink);
-  text-align: center; max-width: 230px; line-height: 1.25;
-}
-.dnode.locked { margin-top: 30px; }
-.dchest-label { position: relative; z-index: 1; padding: 2px 8px; border-radius: 999px; background: var(--sl-canvas, var(--bg)); }
-.dnode.locked .dnode-label { color: var(--ink-3); }
-
-.dfinish { margin-top: 4px; }
-.dfinish-btn {
-  position: relative; overflow: hidden;
-  width: 84px; height: 84px; border-radius: 50%;
-  display: grid; place-items: center;
-  transition: transform .1s ease, box-shadow .1s ease, filter .15s ease;
-}
-.dfinish:not(.won) .dnode-label { color: var(--ink-3); font-weight: 500; }
-.dfinish.won .dfinish-btn { animation: dfinish-pop .5s cubic-bezier(.2,.8,.3,1.2); }
-
-/* ── Chest milestone — a small non-interactive reward beat every few
-   lessons, purely decorative (no bonus is actually granted — it's a pacing
-   cue, not a promise). Same glossy-bubble language as the lesson nodes. */
-.dchest { display: flex; flex-direction: column; align-items: center; }
-.dchest-btn {
-  position: relative; overflow: visible;
-  width: 56px; height: 56px; border-radius: 50%;
-  display: grid; place-items: center;
-  background: #fdf6e3; border: 2px dashed #e0c66b;
-  animation: dchest-bob 2.8s ease-in-out infinite;
-}
-.dchest-label {
-  margin-top: 8px; font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.1em;
-  text-transform: uppercase; color: var(--ink-3);
-}
-@keyframes dchest-bob { 0%, 100% { transform: translateY(0) rotate(-2deg); } 50% { transform: translateY(-5px) rotate(2deg); } }
-@media (prefers-reduced-motion: reduce) {
-  .dchest-btn { animation: none; }
-}
-@keyframes dfinish-pop { 0% { transform: scale(0.85); } 60% { transform: scale(1.06); } 100% { transform: scale(1); } }
 
 /* ════════════════════════════════════════════════════════════════════════════
    AUTH (sign-in / sign-up) — friendly light
@@ -1863,16 +1751,10 @@ body:has(.sk-home) .v2-bg-vignette { display: none; }
   letter-spacing: -0.01em;
   background: var(--grass);
   color: #ffffff;
-  box-shadow: 0 2px 0 var(--grass-d), 0 0 0 1px var(--grass);
-  transition: transform .1s, box-shadow .1s, filter .12s;
+  transition: filter .12s;
   white-space: nowrap;
 }
-.nav-cta:hover {
-  filter: brightness(1.06);
-  transform: translateY(-1px);
-  box-shadow: 0 2px 0 var(--grass-d), 0 0 0 1px var(--grass);
-}
-.nav-cta:active { transform: translateY(1px); box-shadow: 0 1px 0 var(--grass-d), 0 0 0 1px var(--grass); }
+.nav-cta:hover { filter: brightness(1.08); }
 
 /* Mobile hamburger toggle — only shown below the .nav-links breakpoint */
 .nav-hamburger {
@@ -2057,21 +1939,11 @@ h1, h2, h3, h4 {
 /* ── Hero ── */
 .db-hero {
   position: relative;
-  background: linear-gradient(140deg, var(--card) 0%, var(--card2) 100%);
+  background: var(--card);
   border: 1px solid var(--line);
-  border-radius: var(--r-xl);
+  border-radius: var(--r-md);
   overflow: hidden;
   margin-bottom: 16px;
-  box-shadow: 0 1px 2px rgba(28,25,23,0.05);
-}
-.db-hero::after {
-  content: "";
-  position: absolute;
-  top: -60px; right: -60px;
-  width: 240px; height: 240px;
-  border-radius: 50%;
-  background: radial-gradient(circle, rgba(34,197,94,0.07) 0%, transparent 70%);
-  pointer-events: none;
 }
 .db-hero-content { padding: 32px 36px 28px; }
 .db-hero-eyebrow {
@@ -2100,23 +1972,22 @@ h1, h2, h3, h4 {
   padding: 12px 24px;
   background: var(--grass);
   color: #fff;
-  border-radius: var(--r-md);
+  border-radius: var(--r-sm);
   font-family: var(--font-mono);
   font-size: 13px;
   font-weight: 700;
-  box-shadow: 0 2px 0 var(--grass-d);
   white-space: nowrap;
-  transition: transform .12s, box-shadow .12s;
+  transition: filter .12s;
 }
-.db-cta-btn:hover { transform: translateY(-2px); box-shadow: 0 2px 0 var(--grass-d); }
+.db-cta-btn:hover { filter: brightness(1.08); }
 .db-ghost-btn {
   font-family: var(--font-mono);
   font-size: 13px;
-  color: var(--ink-2);
-  opacity: 0.7;
-  transition: opacity .12s;
+  /* Quiet via color, not opacity: 0.7 opacity on ink-2 fell to 3.5:1. */
+  color: var(--muted);
+  transition: color .12s;
 }
-.db-ghost-btn:hover { opacity: 1; }
+.db-ghost-btn:hover { color: var(--ink); }
 .db-hero-progress-wrap { padding: 0; }
 
 /* thin progress bar at bottom of hero */
@@ -2127,10 +1998,9 @@ h1, h2, h3, h4 {
 }
 .db-mini-bar-fill {
   height: 100%;
-  background: linear-gradient(90deg, var(--grass), var(--sky));
-  transition: width 1.2s cubic-bezier(.2,.7,.3,1);
+  background: var(--grass);
+  transition: width .5s ease-out;
   min-width: 4px;
-  border-radius: 0 3px 3px 0;
 }
 
 /* ── Metric tiles ── */
@@ -2143,27 +2013,19 @@ h1, h2, h3, h4 {
 .db-metric {
   background: var(--card);
   border: 1px solid var(--line);
-  border-radius: var(--r-xl);
-  padding: 20px 18px 18px;
+  border-radius: var(--r-md);
+  padding: 16px 18px;
   display: flex;
   flex-direction: column;
-  box-shadow: 0 1px 2px rgba(28,25,23,0.05);
-  transition: transform .12s, box-shadow .12s;
-}
-.db-metric:hover { transform: translateY(-2px); box-shadow: 0 8px 20px -10px rgba(40,30,10,.22); }
-.db-metric-icon {
-  width: 40px; height: 40px;
-  border-radius: var(--r-md);
-  display: grid; place-items: center;
-  font-size: 19px;
-  margin-bottom: 12px;
 }
 .db-metric-v {
-  font-family: var(--font-display), Georgia, serif;
-  font-weight: 700;
-  font-size: 28px;
-  line-height: 1;
-  letter-spacing: -0.02em;
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+  font-size: 26px;
+  line-height: 1.1;
+  color: var(--ink);
+  letter-spacing: -0.01em;
 }
 .db-metric-l {
   font-family: var(--font-mono);

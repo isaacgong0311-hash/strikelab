@@ -56,11 +56,11 @@ function writeLocal(state: ProgressState) {
 // which is the level every brand-new account sits at. Same hues, one step
 // darker; measured ratios on white in the comment.
 export const XP_LEVELS = [
-  { min: 0,    max: 99,   label: "Novice",          color: "#6b6b6b" }, // 5.33:1
-  { min: 100,  max: 299,  label: "Options Student",  color: "#147038" }, // 6.17:1
-  { min: 300,  max: 599,  label: "Greek Scholar",    color: "#1d4ed8" }, // 6.70:1
-  { min: 600,  max: 899,  label: "Quant Analyst",    color: "#7e22ce" }, // 6.99:1
-  { min: 900,  max: 9999, label: "Black-Scholes Pro",color: "#92400e" }, // 7.09:1
+  { min: 0,    max: 99,   label: "New Hire",        color: "#6b6b6b" }, // 5.33:1
+  { min: 100,  max: 299,  label: "Intern",          color: "#147038" }, // 6.17:1
+  { min: 300,  max: 599,  label: "Analyst",         color: "#1d4ed8" }, // 6.70:1
+  { min: 600,  max: 899,  label: "Associate",       color: "#7e22ce" }, // 6.99:1
+  { min: 900,  max: 9999, label: "Desk Head",       color: "#92400e" }, // 7.09:1
 ];
 
 export function getLevel(xp: number) {

@@ -9,6 +9,7 @@ import { trackLessonStart, trackTestsPassed, trackLessonComplete, trackQuizAnswe
 import Eyebrow from "@/components/Eyebrow";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import PrereqBox from "@/components/PrereqBox";
+import DeskBriefing from "@/components/DeskBriefing";
 import SessionsCallout from "@/components/SessionsCallout";
 import AiTutor from "@/components/AiTutor";
 import LessonToc from "@/components/LessonToc";
@@ -416,6 +417,8 @@ export default function LessonClient({ lesson, sections, chunks, prev, next, tra
             </p>
           )}
         </div>
+
+        {lesson.deskBriefing && <DeskBriefing text={lesson.deskBriefing} />}
 
         {lesson.prereqs && <PrereqBox prereqs={lesson.prereqs} />}
 

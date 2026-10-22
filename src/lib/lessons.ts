@@ -61,6 +61,12 @@ export interface Lesson {
   subtitle: string;
   duration: string;
   content: string; // markdown-like HTML string
+  /**
+   * A short note "from your desk head" framing the lesson as a task you've
+   * been assigned, not a topic to read about. Optional — only the Options
+   * Pricing track has these for now (a pilot; see DeskBriefing.tsx).
+   */
+  deskBriefing?: string;
   prereqs?: LessonPrereqs;
   sandboxes?: FormulaSandboxConfig[];
   visuals?: LessonVisual[];
@@ -78,6 +84,7 @@ export const LESSONS: Lesson[] = [
     title: "What Is an Option?",
     subtitle: "Calls, puts, and why they exist",
     duration: "15 min",
+    deskBriefing: "You're starting on the options desk this week. Before you touch a real book, you need to know what you're even trading — read up on calls and puts, and be ready to tell me why anyone would buy either side.",
     prereqs: {
       summary: "Comfortable with the stock basics from Investing Fundamentals (what a share is, how prices move) — no options background assumed.",
       resources: [
@@ -201,6 +208,7 @@ print("Tests passed!")
     title: "Put-Call Parity",
     subtitle: "The iron law of options pricing",
     duration: "15 min",
+    deskBriefing: "A trader two desks over quoted me a call and a put on the same strike that don't add up to the stock price. Learn put-call parity before your first day on the floor — if the math doesn't tie out, don't trade it.",
     prereqs: {
       summary: "Builds directly on Lesson 1's call and put definitions. Comfortable rearranging a simple algebraic equation.",
     },
@@ -317,6 +325,7 @@ print("Tests passed!")
     title: "Black-Scholes Formula",
     subtitle: "The equation that changed markets",
     duration: "20 min",
+    deskBriefing: "Every pricing model on this desk traces back to one formula. You can't price anything until you understand where Black-Scholes comes from — not just how to type it into a spreadsheet.",
     prereqs: {
       summary: "Comfortable with exponents and natural logs, and willing to treat the normal distribution N(d) as a lookup at first — it's explained here, not assumed.",
       resources: [
@@ -460,6 +469,7 @@ print("Tests passed!")
     title: "Delta: Directional Exposure",
     subtitle: "The most important Greek",
     duration: "15 min",
+    deskBriefing: "First real task: tell me how much a position's value moves when the stock does. That number has a name — delta — and it's the first thing I check on every book you show me.",
     prereqs: {
       summary: "Builds directly on the Black-Scholes formula from Lesson 3 — Delta is just one of its terms, isolated and explained.",
     },
@@ -582,6 +592,7 @@ print("Tests passed!")
     title: "Theta: Time Decay",
     subtitle: "Why options are a race against the clock",
     duration: "15 min",
+    deskBriefing: "Every option on this desk is losing a little value just from the clock ticking, even if nothing else moves. Learn theta before you hold anything overnight.",
     prereqs: {
       summary: "Builds on Delta (Lesson 4) — same Black-Scholes formula, a different partial derivative.",
     },
@@ -715,6 +726,7 @@ print("Tests passed!")
     title: "Gamma: Rate of Change of Delta",
     subtitle: "Why delta hedging requires constant rebalancing",
     duration: "15 min",
+    deskBriefing: "Delta isn't fixed — it moves too, and that's the part that blows up hedges nobody rebalanced. Gamma is why \"set it and forget it\" doesn't work on this desk.",
     prereqs: {
       summary: "Builds directly on Delta (Lesson 4) — Gamma is defined as Delta's own rate of change.",
     },
@@ -834,6 +846,7 @@ print("Tests passed!")
     title: "Vega: Volatility Sensitivity",
     subtitle: "How option prices respond to changes in implied vol",
     duration: "15 min",
+    deskBriefing: "The market just repriced its fear. I need to know how much that move alone is worth to our book — that's vega, and it's often bigger than anyone expects.",
     prereqs: {
       summary: "Builds on the Greeks introduced in Lessons 4–6 (Delta, Theta, Gamma) — same formula family, one more term.",
     },
@@ -968,6 +981,7 @@ print("Tests passed!")
     title: "Implied Volatility",
     subtitle: "What the market thinks about uncertainty",
     duration: "18 min",
+    deskBriefing: "Stop guessing at volatility — the market already told you what it thinks, it's baked into the price. Learn to pull it back out with Newton-Raphson, and you'll see the number everyone else on the floor is quoting.",
     prereqs: {
       summary: "Builds on Black-Scholes (Lesson 3) and Vega (Lesson 7). The numerical solving method (Newton-Raphson) is taught from scratch — no prior exposure needed.",
       resources: [
@@ -1139,6 +1153,7 @@ print("Tests passed!")
     title: "Option Strategies",
     subtitle: "Spreads, straddles, and how to use the Greeks",
     duration: "20 min",
+    deskBriefing: "A client wants defined risk on a view they're not totally sure about. Before you call them back, know your spreads, straddles, and condors cold enough to recommend one without hesitating.",
     prereqs: {
       summary: "Builds on calls and puts (Lesson 1) and payoff thinking — no new math beyond what's already covered.",
     },
@@ -1271,6 +1286,7 @@ print("Tests passed!")
     title: "Binomial Trees",
     subtitle: "The discrete-time approach to option pricing",
     duration: "18 min",
+    deskBriefing: "Black-Scholes assumes you can't exercise early. American options don't play by that rule. Binomial trees are how the desk actually prices them — slower, but it doesn't lie to you.",
     prereqs: {
       summary: "Builds on Black-Scholes (Lesson 3); comfortable with basic probability (expected value of a coin-flip-style outcome).",
       resources: [
@@ -1437,6 +1453,7 @@ print("Tests passed!")
     title: "Rho: Interest Rate Sensitivity",
     subtitle: "The forgotten Greek that matters most when rates move",
     duration: "13 min",
+    deskBriefing: "Rates moved again this morning, and the desk head wants to know what it did to the long-dated book. Rho is the Greek everyone forgets about — until a day like today.",
     prereqs: {
       summary: "Builds on the Greeks from Lessons 4–7 — same formula family, the last of the five.",
     },
