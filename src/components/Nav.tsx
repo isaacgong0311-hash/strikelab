@@ -6,6 +6,11 @@ import { useProgress } from "@/lib/useProgress";
 import { useAuth } from "@/lib/auth/AuthProvider";
 import BrandMark from "@/components/BrandMark";
 import AccessibilityMenu from "@/components/accessibility/AccessibilityMenu";
+import { PLANNED_SEASON } from "@/lib/seasons/planned";
+
+const SEASON_START = new Intl.DateTimeFormat("en-US", { month: "short", day: "numeric", timeZone: "UTC" }).format(
+  new Date(`${PLANNED_SEASON.startsOn}T00:00:00Z`),
+);
 
 const PRIMARY: { href: string; label: string; pro?: boolean }[] = [
   { href: "/dashboard",   label: "Dashboard" },
@@ -32,6 +37,7 @@ const TEACHER: { href: string; label: string }[] = [
 // Signed-out visitors are students and club leaders alike (decision log
 // 2026-09-30): the learning surfaces first, then one clear door for leaders.
 const VISITOR: { href: string; label: string }[] = [
+  { href: "/seasons",    label: "Seasons" },
   { href: "/lessons",    label: "Lessons" },
   { href: "/playground", label: "Playground" },
   { href: "/clubs",      label: "For clubs & teachers" },
@@ -211,8 +217,8 @@ export default function Nav() {
       {/* ─── Announcement bar ──────────────────────────────────────────────── */}
       {showAnnounce && (
         <div className="nav-announce">
-          <Link href="/pilot?src=announce" className="nav-announce-link">
-            Clubs &amp; teachers: free pilots this fall →
+          <Link href="/seasons?src=announce" className="nav-announce-link">
+            Season 1 starts {SEASON_START}: free timed quant challenges →
           </Link>
         </div>
       )}

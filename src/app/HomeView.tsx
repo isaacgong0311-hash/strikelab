@@ -13,7 +13,13 @@ import { LAB_WEEKS, pilotCallHref } from "@/lib/marketing/lab";
 import { heroExample, sampleGreeks } from "@/lib/marketing/heroExample";
 import TrackedLink, { TrackedAnchor } from "@/components/marketing/TrackedLink";
 
+import { PLANNED_SEASON } from "@/lib/seasons/planned";
+
 const TOTAL_LESSONS = TRACKS.reduce((n, t) => n + t.lessons.length, 0);
+
+function seasonDate(date: string): string {
+  return new Intl.DateTimeFormat("en-US", { month: "long", day: "numeric", timeZone: "UTC" }).format(new Date(`${date}T00:00:00Z`));
+}
 
 const FAQS = [
   { q: "Do I need to know finance or coding?", a: "No. Lesson 1 starts at what a stock is. Python comes in gradually, with the hard parts already written, and it runs in your browser." },
@@ -44,18 +50,19 @@ export default function HomeView() {
         <div className={`${styles.wrap} ${home.heroGrid}`}>
           <div>
             <p className={styles.kicker}>Quant finance for high school</p>
-            <h1 className={styles.h1}>Learn quant finance by building it.</h1>
+            <h1 className={styles.h1}>Prove you can do real quant work.</h1>
             <p className={styles.lede}>
-              Price options, code the Greeks and backtest strategies in real Python, right in the browser. Free for
-              students, and ready to run as a six-week lab for your club or class.
+              Learn by pricing options and coding the Greeks in Python, right in the browser. Then compete in free
+              seasons of timed challenges with your own numbers, scored on our server. {PLANNED_SEASON.title} runs{" "}
+              {seasonDate(PLANNED_SEASON.startsOn)} to {seasonDate(PLANNED_SEASON.endsOn)}.
             </p>
             <div className={home.doors}>
               <div className={home.door}>
                 <span className={home.doorWho}>I&apos;m a student</span>
-                <span className={home.doorWhat}>{TOTAL_LESSONS} lessons, from &ldquo;what is a stock?&rdquo; to Black-Scholes. No signup to start.</span>
+                <span className={home.doorWhat}>Free, ranked under a handle, ending in a record you can show. Train first with {TOTAL_LESSONS} lessons; no signup to start.</span>
                 <div className={home.doorActions}>
-                  <TrackedLink href="/learn/inv-1.1?src=home-hero" event="hero_cta" eventProps={{ target: "lesson" }} className={styles.primary}>Start lesson 1</TrackedLink>
-                  <TrackedLink href="/lessons" event="hero_cta" eventProps={{ target: "path" }} className={home.doorLink}>See the path</TrackedLink>
+                  <TrackedLink href="/seasons?src=home-hero" event="hero_cta" eventProps={{ target: "seasons" }} className={styles.primary}>Join {PLANNED_SEASON.title}</TrackedLink>
+                  <TrackedLink href="/learn/inv-1.1?src=home-hero" event="hero_cta" eventProps={{ target: "lesson" }} className={home.doorLink}>Start lesson 1</TrackedLink>
                 </div>
               </div>
               <div className={home.door}>
@@ -106,6 +113,38 @@ export default function HomeView() {
           <li><b>$0</b> for students</li>
         </ul>
       </div>
+
+      {/* ── Seasons (copy mirrors /seasons) ──────────────── */}
+      <section className={styles.section} aria-labelledby="home-seasons">
+        <div className={styles.wrap}>
+          <p className={styles.kicker}>Seasons</p>
+          <h2 id="home-seasons" className={styles.h2}>A record that&apos;s hard to fake</h2>
+          <p className={styles.lede}>
+            AI makes take-home work worthless as proof, so a season is built to assume it exists.
+          </p>
+          <div className={styles.grid3} style={{ marginTop: "1.75rem" }}>
+            <div className={styles.card}>
+              <span className={styles.step} aria-hidden="true">1</span>
+              <h3 className={styles.h3}>Your numbers, your clock</h3>
+              <p className={styles.body}>Each challenge uses numbers only you get. When you start, a timer starts and the AI tutor switches off until you submit.</p>
+            </div>
+            <div className={styles.card}>
+              <span className={styles.step} aria-hidden="true">2</span>
+              <h3 className={styles.h3}>Scored on our server</h3>
+              <p className={styles.body}>You submit code and a short explanation of why it works. We re-run your code with your numbers, not in your browser.</p>
+            </div>
+            <div className={styles.card}>
+              <span className={styles.step} aria-hidden="true">3</span>
+              <h3 className={styles.h3}>Defended, then recorded</h3>
+              <p className={styles.body}>Top finishers and capstones are verified in a short live conversation before they appear on a record. Boards show handles, never names.</p>
+            </div>
+          </div>
+          <div className={styles.ctaRow}>
+            <Link href="/seasons?src=home-seasons" className={styles.primary}>See {PLANNED_SEASON.title}</Link>
+            <Link href="/lessons" className={styles.secondary}>Train with the lessons first</Link>
+          </div>
+        </div>
+      </section>
 
       {/* ── The path ─────────────────────────────────────── */}
       <section className={styles.section} aria-labelledby="home-path">
