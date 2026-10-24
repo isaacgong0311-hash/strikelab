@@ -62,6 +62,7 @@ export default function HomeView() {
                 <div className={home.doorActions}>
                   <TrackedLink href="/seasons?src=home-hero" event="hero_cta" eventProps={{ target: "season" }} className={styles.primary}>Join {PLANNED_SEASON.title}</TrackedLink>
                   <TrackedLink href="/learn/inv-1.1?src=home-hero" event="hero_cta" eventProps={{ target: "lesson" }} className={home.doorLink}>Start lesson 1</TrackedLink>
+                  <Link href="/seasons/practice" className={home.doorLink}>Try a coding challenge</Link>
                 </div>
               </div>
               <div className={home.door}>
