@@ -37,3 +37,10 @@ The deeper disagreement with the original framing: this is no longer simply a pa
 ## What success would prove
 
 Before November 2, a cold visitor should understand the build-and-prove loop and run real Python without creating an account. The founder should be able to insert actual production counts into the application with source, as-of date, and definitions, or say unknown. After launch, only real students returning for weekly challenges and a leader choosing to repeat or pay can validate the company thesis.
+
+## Implementation and verification
+
+- `bdf8c1e` adds the decision log, aggregate evidence query, and a database test. The query passed against the repository's migration-backed test schema. **No production count was retrieved.**
+- `648490e` and `f9f4d9d` add a playable, no-account practice challenge, put it in the student entry path, and label its limits. A browser test failed the unfinished starter and passed a correct solution using real Pyodide.
+- `4b4b88e` fixes the asynchronous generated-practice check so success waits for Python and the test. A unit test verifies an asynchronous test failure propagates instead of reporting a pass.
+- The final local build generated all 23 lesson routes. A Pyodide test executed all 14 coding starters and parsed their check programs; 9 investing lessons use sessions and knowledge checks instead of Python exercises. The full unit/database suite passed (513 tests in 90 files), as did 14 focused browser tests for sessions, Python recovery, and practice. These are local checks, not production usage or a school-network rehearsal.

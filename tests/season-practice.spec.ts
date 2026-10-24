@@ -2,7 +2,9 @@ import { expect, test } from "@playwright/test";
 
 test("a signed-out visitor can run a real practice challenge without earning an official score", async ({ page }) => {
   test.setTimeout(120_000);
-  await page.goto("/seasons/practice", { waitUntil: "domcontentloaded" });
+  await page.goto("/", { waitUntil: "domcontentloaded" });
+  await page.getByRole("link", { name: "Try a coding challenge" }).click();
+  await expect(page).toHaveURL(/\/seasons\/practice/);
   await expect(page.getByRole("heading", { name: "Can you price a put from a call?" })).toBeVisible();
   await expect(page.getByText(/no timer, official score, leaderboard rank, or saved submission/i)).toBeVisible();
 
