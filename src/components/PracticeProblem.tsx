@@ -1,6 +1,8 @@
 "use client";
 import { useState, useCallback } from "react";
 import dynamic from "next/dynamic";
+import { loadPythonRuntime } from "@/lib/pythonRuntime";
+import { checkPracticeCode } from "@/lib/practiceCode";
 
 const MiniEditor = dynamic(() => import("@/components/MiniEditor"), { ssr: false });
 
@@ -63,10 +65,8 @@ export default function PracticeProblem({ lessonId }: { lessonId: string }) {
     setStatus("running");
     setOutput("Running tests…");
     try {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const pyodide = await (window as any).__pyodideReady;
-      pyodide.runPython(code);
-      pyodide.runPython(problem.testCode);
+      const pyodide = await loadPythonRuntime();
+      await checkPracticeCode(pyodide, code, problem.testCode);
       setOutput("All tests passed!");
       setStatus("pass");
     } catch (err: unknown) {
@@ -104,7 +104,7 @@ export default function PracticeProblem({ lessonId }: { lessonId: string }) {
     <div className="pr">
       <div className="pr-head">
         <span className="pr-title">{problem?.title}</span>
-        <button type="button" className="pr-again" onClick={generate}>
+        <button type="button" className="pr-again" onClick={generate} disabled={status === "running"}>
           Another
         </button>
       </div>
@@ -112,7 +112,11 @@ export default function PracticeProblem({ lessonId }: { lessonId: string }) {
       <p className="pr-prompt">{problem?.prompt}</p>
 
       <div className="pr-editor">
-        <MiniEditor value={code} onChange={setCode} ariaLabel={`${problem?.title ?? "Practice problem"} Python editor`} />
+        <MiniEditor value={code} onChange={(value) => {
+          setCode(value);
+          setOutput("");
+          setStatus("ready");
+        }} readOnly={status === "running"} ariaLabel={`${problem?.title ?? "Practice problem"} Python editor`} />
       </div>
 
       <div className="pr-actions">
