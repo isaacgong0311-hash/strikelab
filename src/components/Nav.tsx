@@ -327,6 +327,9 @@ export default function Nav() {
                   <Link href="/dashboard" className="nav-account-item" onClick={() => setAccountOpen(false)}>
                     Dashboard
                   </Link>
+                  <Link href="/record" className="nav-account-item" onClick={() => setAccountOpen(false)}>
+                    Your record
+                  </Link>
                   <Link href="/settings" className="nav-account-item" onClick={() => setAccountOpen(false)}>
                     Settings
                   </Link>
@@ -411,6 +414,9 @@ export default function Nav() {
                     {displayName}
                   </Link>
                 )}
+                <Link href="/record" className="nav-mobile-link" onClick={() => setMenuOpen(false)}>
+                  Your record
+                </Link>
                 <button type="button" onClick={handleSignOut} className="nav-mobile-link nav-mobile-signout">
                   Sign out
                 </button>

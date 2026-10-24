@@ -87,6 +87,7 @@ export default async function SeasonsPage() {
             <li>Leaderboards show handles, never real names. Clubs can play together and get their own board.</li>
             <li>Top finishers and capstones are verified in a short live conversation before they appear on a record.</li>
           </ul>
+          {signedIn && <p className={styles.body}><Link href="/record" className={styles.textLink}>See your record →</Link></p>}
         </div>
       </section>
 
