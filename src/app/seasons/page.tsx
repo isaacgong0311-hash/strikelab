@@ -98,9 +98,12 @@ export default async function SeasonsPage({ searchParams }: { searchParams: Prom
           </p>
           {!signedIn && (
             <div className={styles.ctaRow}>
-              <Link href="/sign-up?next=%2Fseasons" className={styles.primary}>Create a free account to play</Link>
-              <Link href="/lessons" className={styles.secondary}>Train with the lessons first</Link>
+              <Link href="/seasons/practice" className={styles.primary}>Try a practice challenge</Link>
+              <Link href="/sign-up?next=%2Fseasons" className={styles.secondary}>Create a free account for Season 1</Link>
             </div>
+          )}
+          {signedIn && challenges.length === 0 && (
+            <div className={styles.ctaRow}><Link href="/seasons/practice" className={styles.primary}>Try a practice challenge</Link></div>
           )}
           {needsHandle && <div style={{ marginTop: "1.5rem" }}><HandleForm /></div>}
         </div>
@@ -123,7 +126,7 @@ export default async function SeasonsPage({ searchParams }: { searchParams: Prom
         <div className={styles.wrap}>
           <h2 id="season-challenges" className={styles.h2}>This season&apos;s challenges</h2>
           {challenges.length === 0 ? (
-            <p className={styles.body}>The challenges appear here when the season is scheduled.</p>
+            <p className={styles.body}>The official challenges are not scheduled here yet. <Link href="/seasons/practice" className={styles.textLink}>Try the real Python practice challenge now</Link>; it does not count toward a season score.</p>
           ) : (
             <ol className={styles.checks}>
               {challenges.map((c) => {
@@ -152,7 +155,7 @@ export default async function SeasonsPage({ searchParams }: { searchParams: Prom
           <div className={styles.wrap}>
             <h2 id="your-status" className={styles.h2}>Your status</h2>
             {challenges.length === 0 ? (
-              <p className={styles.body}>Your weekly challenges will appear here when the season is scheduled.</p>
+              <p className={styles.body}>Your weekly challenges will appear here when the season is scheduled. <Link href="/seasons/practice" className={styles.textLink}>Practice with browser Python while you wait</Link>.</p>
             ) : (
               <ol className={statusStyles.list}>
                 {challenges.map((challenge) => {

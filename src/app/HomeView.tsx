@@ -57,6 +57,7 @@ export default function HomeView() {
             <div className={styles.ctaRow}>
               <TrackedLink href="/lab" event="hero_cta" eventProps={{ target: "market-lab" }} className={home.heroPrimary}>Enter the Market Lab <span aria-hidden="true">↗</span></TrackedLink>
               <Link href="/lessons" className={home.heroSecondary}>Explore the curriculum →</Link>
+              <TrackedLink href="/seasons/practice?src=home-hero" event="hero_cta" eventProps={{ target: "season-practice" }} className={home.heroSecondary}>Try a coding challenge →</TrackedLink>
             </div>
             <p className={home.heroFine}>Free for students. No installs. No signup to start.</p>
             <LearningNextStep />
