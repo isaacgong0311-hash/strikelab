@@ -37,6 +37,10 @@ export default function SeasonPracticePage() {
             starterCode={challenge.starterCode}
             previewTest={challenge.previewTest}
           />
+          <noscript>
+            <p>Enable JavaScript to run Python in your browser. Here is the starter code:</p>
+            <pre className={practice.starterFallback}>{challenge.starterCode}</pre>
+          </noscript>
           <div className={practice.next}>
             <div>
               <h2>Want to understand the rule?</h2>

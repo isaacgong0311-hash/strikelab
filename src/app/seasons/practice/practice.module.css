@@ -38,3 +38,4 @@
 .next p { margin: 0; color: var(--sl-text-muted); }
 .next a, .back a { color: var(--sl-brand-strong); font-weight: 750; text-underline-offset: 3px; }
 .back { margin: 2rem 0 0; }
+.starterFallback { overflow-x: auto; padding: 1rem; border-radius: var(--sl-radius-md); background: var(--sl-surface); }

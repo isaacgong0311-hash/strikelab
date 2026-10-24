@@ -60,9 +60,9 @@ export default function HomeView() {
                   {PLANNED_SEASON.title} runs {seasonDates}: one timed challenge a week, free. Train with {TOTAL_LESSONS} lessons first, no signup needed.
                 </span>
                 <div className={home.doorActions}>
-                  <TrackedLink href="/seasons?src=home-hero" event="hero_cta" eventProps={{ target: "season" }} className={styles.primary}>Join {PLANNED_SEASON.title}</TrackedLink>
+                  <TrackedLink href="/seasons/practice?src=home-hero" event="hero_cta" eventProps={{ target: "season-practice" }} className={styles.primary}>Try a coding challenge</TrackedLink>
                   <TrackedLink href="/learn/inv-1.1?src=home-hero" event="hero_cta" eventProps={{ target: "lesson" }} className={home.doorLink}>Start lesson 1</TrackedLink>
-                  <Link href="/seasons/practice" className={home.doorLink}>Try a coding challenge</Link>
+                  <Link href="/seasons" className={home.doorLink}>See {PLANNED_SEASON.title}</Link>
                 </div>
               </div>
               <div className={home.door}>
