@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { downloadCsv, toCsv } from "@/lib/csv";
 import type { CohortScorecard as Scorecard } from "@/lib/cohorts/loadScorecard";
+import { cohortEvidenceRows } from "@/lib/cohorts/evidence";
 import styles from "./scorecard.module.css";
 
 function shortDate(value: string): string {
@@ -67,15 +68,27 @@ export default function CohortScorecard({
             {shortDate(metrics.today)}
           </p>
         </div>
-        {metrics.enrolled > 0 && (
+        <div className={styles.exportActions}>
           <button
             type="button"
             className="v2-btn ghost sm"
-            onClick={() => downloadCsv(`${className || "cohort"}-outcomes.csv`, toCsv(csv))}
+            onClick={() => downloadCsv(
+              `${classId === "demo" ? "sample-" : ""}strikelab-pilot-summary-${metrics.today}.csv`,
+              toCsv(cohortEvidenceRows(metrics, { sample: classId === "demo" })),
+            )}
           >
-            Export cohort CSV →
+            Export aggregate summary
           </button>
-        )}
+          {metrics.enrolled > 0 && (
+            <button
+              type="button"
+              className="v2-btn ghost sm"
+              onClick={() => downloadCsv(`${className || "cohort"}-outcomes.csv`, toCsv(csv))}
+            >
+              Export cohort CSV →
+            </button>
+          )}
+        </div>
       </div>
 
       <dl className={styles.tiles}>
@@ -95,7 +108,7 @@ export default function CohortScorecard({
           value={metrics.week4Retained?.pct != null ? `${metrics.week4Retained.pct}%` : "—"}
           detail={
             metrics.week4Retained
-              ? `${metrics.week4Retained.count} of ${metrics.week4Retained.of} activated${metrics.week4Retained.final ? "" : " · week 4 in progress"}`
+              ? `${metrics.week4Retained.count} of ${metrics.week4Retained.of} activated${!metrics.week4Retained.final ? " · week 4 in progress" : metrics.activated.pending > 0 ? " · activation pending" : ""}`
               : week4
                 ? `Measured from ${shortDate(week4.startsOn)}`
                 : undefined
@@ -109,6 +122,17 @@ export default function CohortScorecard({
           />
         )}
       </dl>
+
+      <details className={styles.definitions}>
+        <summary>What these numbers mean</summary>
+        <ul>
+          <li>Activated: first assigned lesson completed by seven days after joining or the program start, whichever is later. Earlier recorded completions count too. Pending windows remain in the enrolled denominator.</li>
+          <li>Active: at least one dated assigned-lesson completion during that program week, not a login or a starting-point check.</li>
+          <li>Week-4 retention: activated students who completed assigned work in week 4. The rate is preliminary while week 4 or activation windows remain open.</li>
+          <li>Capstones: submitted work, not a reviewed mastery score. Completion and activity alone do not demonstrate learning gains.</li>
+          <li>The aggregate summary omits student names and identifiers. The cohort CSV includes the roster; review small-cohort aggregates before sharing either file.</li>
+        </ul>
+      </details>
 
       <div className={styles.weeks} role="list" aria-label="Students active each week">
         {metrics.weeks.map((w) => {
@@ -129,6 +153,30 @@ export default function CohortScorecard({
           );
         })}
       </div>
+
+      <section className={styles.help} aria-labelledby="student-progress-title">
+        <h3 id="student-progress-title" className={styles.helpTitle}>Student progress</h3>
+        {metrics.students.length === 0 ? (
+          <p className={styles.note}>Progress appears after students join and complete assigned work.</p>
+        ) : (
+          <div className={styles.tableScroll} role="region" aria-label="Student progress table" tabIndex={0}>
+            <table className={styles.progressTable}>
+              <caption className="sl-visually-hidden">Assigned work completed and support needed for each student</caption>
+              <thead><tr><th scope="col">Student</th><th scope="col">Lessons done</th><th scope="col">Capstone</th><th scope="col">Next action</th></tr></thead>
+              <tbody>
+                {metrics.students.map((student) => (
+                  <tr key={student.studentId}>
+                    <th scope="row">{student.displayName}</th>
+                    <td>{student.lessonsDone} of {student.lessonsTotal}</td>
+                    <td>{metrics.capstones === null ? "Unavailable" : student.capstone?.status === "submitted" ? "Submitted" : student.capstone ? "Draft" : "Not started"}</td>
+                    <td>{student.needsHelp ?? (student.programCompleted ? "Review completed work" : "Continue assigned work")}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </section>
 
       {metrics.students.some((s) => s.capstone) && (
         <div className={styles.help}>

@@ -1,6 +1,8 @@
 import Link from "next/link";
+import HomeLabPreview from "@/components/lab/HomeLabPreview";
+import LearningNextStep from "@/components/LearningNextStep";
+import { LAB_MISSIONS } from "@/lib/marketLab";
 import Faq from "@/components/marketing/Faq";
-import ProofStrip from "@/components/marketing/ProofStrip";
 import CompareTable from "@/components/marketing/CompareTable";
 import styles from "@/components/marketing/marketing.module.css";
 import home from "./home.module.css";
@@ -10,7 +12,7 @@ import { EXAMPLE_CAPSTONES } from "@/lib/demo/exampleCapstones";
 import { getCapstonePrompt } from "@/lib/capstone/prompts";
 import { TRACKS } from "@/lib/tracks";
 import { LAB_WEEKS, pilotCallHref } from "@/lib/marketing/lab";
-import { heroExample, sampleGreeks } from "@/lib/marketing/heroExample";
+import { sampleGreeks } from "@/lib/marketing/heroExample";
 import TrackedLink, { TrackedAnchor } from "@/components/marketing/TrackedLink";
 import { PLANNED_SEASON, shortSeasonDate } from "@/lib/seasons/planned";
 
@@ -37,89 +39,49 @@ const FAQS = [
 export default function HomeView() {
   const demo = buildDemoData();
   const [pricing, backtest] = EXAMPLE_CAPSTONES;
-  const example = heroExample();
   const greeks = sampleGreeks();
   const needNudge = demo.metrics.students.filter((s) => s.needsHelp).length;
 
   return (
     <div className={styles.page}>
-      {/* ── Hero: one promise, two doors ─────────────────── */}
-      <section className={home.hero}>
+      <section className={home.hero} aria-labelledby="home-title">
         <div className={`${styles.wrap} ${home.heroGrid}`}>
           <div>
-            <p className={styles.kicker}>Quant finance for high school</p>
-            <h1 className={styles.h1}>Learn quant finance. Then prove it.</h1>
-            <p className={styles.lede}>
-              Price options, code the Greeks and backtest strategies in real Python, right in the browser. Then take
-              on a free season of timed challenges, ranked under a handle, and finish with a record you can show.
+            <p className={home.eyebrow}><span /> A hands-on way into quantitative finance</p>
+            <h1 id="home-title" className={home.headline}>Learn finance.<br />Change the inputs.<br /><em>See it click.</em></h1>
+            <p className={home.heroLede}>
+              Turn “what if?” into a working model. Explore how markets behave,
+              test your intuition, and build real pricing engines in Python.
+              All in your browser.
             </p>
-            <div className={home.doors}>
-              <div className={home.door}>
-                <span className={home.doorWho}>I&apos;m a student</span>
-                <span className={home.doorWhat}>
-                  {PLANNED_SEASON.title} runs {seasonDates}: one timed challenge a week, free. Train with {TOTAL_LESSONS} lessons first, no signup needed.
-                </span>
-                <div className={home.doorActions}>
-                  <TrackedLink href="/seasons/practice?src=home-hero" event="hero_cta" eventProps={{ target: "season-practice" }} className={styles.primary}>Try a coding challenge</TrackedLink>
-                  <TrackedLink href="/learn/inv-1.1?src=home-hero" event="hero_cta" eventProps={{ target: "lesson" }} className={home.doorLink}>Start lesson 1</TrackedLink>
-                  <Link href="/seasons" className={home.doorLink}>See {PLANNED_SEASON.title}</Link>
-                </div>
-              </div>
-              <div className={home.door}>
-                <span className={home.doorWho}>I lead a club or teach</span>
-                <span className={home.doorWhat}>Play the season together on your club&apos;s own board, with a ready six-week plan if you want one. Free for clubs.</span>
-                <div className={home.doorActions}>
-                  <TrackedLink href="/clubs?src=home-hero" event="hero_cta" eventProps={{ target: "clubs" }} className={styles.primary}>Bring your club</TrackedLink>
-                  <TrackedLink href="/demo" event="hero_cta" eventProps={{ target: "demo" }} className={home.doorLink}>See the teacher view</TrackedLink>
-                </div>
-              </div>
+            <div className={styles.ctaRow}>
+              <TrackedLink href="/lab" event="hero_cta" eventProps={{ target: "market-lab" }} className={home.heroPrimary}>Enter the Market Lab <span aria-hidden="true">↗</span></TrackedLink>
+              <Link href="/lessons" className={home.heroSecondary}>Explore the curriculum →</Link>
+              <TrackedLink href="/seasons/practice?src=home-hero" event="hero_cta" eventProps={{ target: "season-practice" }} className={home.heroSecondary}>Try a coding challenge →</TrackedLink>
             </div>
-            <p className={styles.fine}>
-              Parent or guardian?{" "}
-              <TrackedLink href="/intensive?src=home-hero" event="hero_cta" eventProps={{ target: "intensive" }} className={styles.textLink}>
-                See the January Intensive
-              </TrackedLink>
-              , a small six-week cohort that ends with a capstone your student defends live.
-            </p>
+            <p className={home.heroFine}>Free for students. No installs. No signup to start.</p>
+            <LearningNextStep />
           </div>
-          <figure className={home.heroVisual}>
-            <div className={home.code} aria-hidden="true">
-              <div className={home.codeBar}>
-                <span className={home.codeFile}>pricing_engine.py</span>
-                <span className={home.codePass}>✓ Tests passed</span>
-              </div>
-              <pre className={home.codeBody}>
-                <code>
-                  <span className={home.kw}>def</span> <span className={home.fn}>black_scholes_call</span>(S, K, T, r, sigma):{"\n"}
-                  {"    "}d1 = (log(S / K) + (r + sigma**<span className={home.num}>2</span> / <span className={home.num}>2</span>) * T){"\n"}
-                  {"         "}/ (sigma * sqrt(T)){"\n"}
-                  {"    "}d2 = d1 - sigma * sqrt(T){"\n"}
-                  {"    "}<span className={home.kw}>return</span> S * N(d1) - K * exp(-r * T) * N(d2){"\n"}
-                  {"\n"}
-                  <span className={home.fn}>black_scholes_call</span>(S=<span className={home.num}>{example.S}</span>, K=<span className={home.num}>{example.K}</span>, T=<span className={home.num}>{example.T}</span>,{"\n"}
-                  {"                   "}r=<span className={home.num}>{example.r}</span>, sigma=<span className={home.num}>{example.sigma}</span>)
-                </code>
-              </pre>
-              <div className={home.codeOut}>
-                <span className={home.codeOutLabel}>Out</span> {example.price}
-              </div>
-            </div>
-            <figcaption className={home.caption}>From lesson 3: you write it, and tests check it as you go.</figcaption>
-          </figure>
+          <HomeLabPreview />
+        </div>
+        <div className={`${styles.wrap} ${home.proofStrip}`}>
+          <span><strong>{TOTAL_LESSONS}</strong> hands-on lessons</span>
+          <span><strong>3</strong> guided experiments</span>
+          <span><strong>Python</strong> runs in your browser</span>
+          <span><strong>$0</strong> for students</span>
         </div>
       </section>
 
-      <ProofStrip />
+      <section className={home.leaderBand} aria-label="For clubs and teachers">
+        <div className={styles.wrap}><p><strong>Bring your whole club.</strong> Free seasons for your club, a private board, and a six-week meeting plan.</p><Link href="/clubs?src=home-leader-band">Bring your club ↗</Link></div>
+      </section>
 
-      {/* ── Facts (all true, all derived) ────────────────── */}
-      <div className={home.facts}>
-        <ul className={`${styles.wrap} ${home.factList}`}>
-          <li><b>{TOTAL_LESSONS}</b> lessons</li>
-          <li><b>{PLANNED_SEASON.title}</b> starts {seasonStart}</li>
-          <li><b>Python</b> in your browser</li>
-          <li><b>$0</b> for students</li>
-        </ul>
-      </div>
+      <section className={styles.section} aria-labelledby="home-experiments">
+        <div className={styles.wrap}>
+          <div className={home.sectionIntro}><div><p className={styles.kicker}>Less abstract. More “what if?”</p><h2 id="home-experiments" className={styles.h2}>Your first three experiments.</h2></div><p>Predict the result, move one input, and explain what changed. Then write the Python behind it.</p></div>
+          <div className={home.experimentCards}>{LAB_MISSIONS.map((mission) => <Link key={mission.id} href={`/lab?mission=${mission.id}`} className={home.experimentCard}><span className={home.experimentNumber}>EXPERIMENT {mission.number} <span aria-hidden="true">↗</span></span><span className={home.experimentGlyph} aria-hidden="true">{mission.id === "volatility" ? "σ" : mission.id === "time" ? "θ" : "Δ"}</span><h3>{mission.title}</h3><p>{mission.description}</p><span className={home.experimentLink}>Predict. Experiment. Explain. →</span></Link>)}</div>
+        </div>
+      </section>
 
       {/* ── The loop: train, compete, prove ──────────────── */}
       <section className={`${styles.section} ${styles.sectionAlt}`} aria-labelledby="home-loop">

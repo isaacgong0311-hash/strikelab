@@ -3,6 +3,7 @@ import JsonLd from "@/components/JsonLd";
 import { pageMetadata, breadcrumbJsonLd, isoDuration } from "@/lib/seo";
 import { SITE_URL, SITE_NAME } from "@/lib/site";
 import { TRACKS } from "@/lib/tracks";
+import { getLessonSessions } from "@/lib/sessions";
 
 export const metadata = pageMetadata({
   path: "/lessons",
@@ -73,7 +74,13 @@ export default function LessonsPage() {
     <>
       <JsonLd data={COURSES_JSON_LD} />
       <JsonLd data={BREADCRUMB_JSON_LD} />
-      <LessonsClient />
+      <LessonsClient tracks={TRACKS.map((track) => ({
+        id: track.id, title: track.title, subtitle: track.subtitle, level: track.level,
+        lessons: track.lessons.map((lesson) => ({
+          id: lesson.id, title: lesson.title, subtitle: lesson.subtitle, duration: lesson.duration,
+          sessionIds: getLessonSessions(lesson.id).map((session) => session.id),
+        })),
+      }))} />
     </>
   );
 }

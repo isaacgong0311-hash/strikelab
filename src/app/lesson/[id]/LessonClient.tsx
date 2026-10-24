@@ -6,6 +6,7 @@ import { QUIZZES, type QuizQuestion } from "@/lib/quizzes";
 import dynamic from "next/dynamic";
 import { useProgress } from "@/lib/useProgress";
 import { trackLessonStart, trackTestsPassed, trackLessonComplete, trackQuizAnswer } from "@/lib/analytics";
+import { completeSavedLesson } from "@/lib/learningNextStep";
 import Eyebrow from "@/components/Eyebrow";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import PrereqBox from "@/components/PrereqBox";
@@ -239,6 +240,10 @@ export default function LessonClient({ lesson, sections, chunks, prev, next, tra
 
   const quizQuestions = QUIZZES[lesson.id] ?? [];
   const alreadyDone = hydrated && completed.has(lesson.id);
+
+  useEffect(() => {
+    if (alreadyDone) completeSavedLesson(lesson.id);
+  }, [alreadyDone, lesson.id]);
 
   // No-code lessons: completion gates on the Knowledge Check instead of a
   // passed exercise. Fires once, the moment the last question is answered.
