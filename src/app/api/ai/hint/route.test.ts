@@ -46,8 +46,13 @@ describe("consumeHintQuota", () => {
     expect(await consumeHintQuota(supabase, "user-1")).toBe(false);
   });
 
-  it("fails open (returns true) on an RPC error", async () => {
+  it("refuses on an RPC error, so the route serves the canned hint instead of an unmetered paid one", async () => {
     const supabase = fakeSupabase(() => ({ data: null, error: { message: "timeout" } }));
+    expect(await consumeHintQuota(supabase, "user-1")).toBe(false);
+  });
+
+  it("allows when the function doesn't exist yet (migration 0008 not applied)", async () => {
+    const supabase = fakeSupabase(() => ({ data: null, error: { code: "PGRST202", message: "not found" } }));
     expect(await consumeHintQuota(supabase, "user-1")).toBe(true);
   });
 });
