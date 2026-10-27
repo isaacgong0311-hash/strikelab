@@ -20,6 +20,7 @@ with expected(table_name) as (
     ('profiles'),
     ('progress'),
     ('rate_limits'),
+    ('record_shares'),
     ('sandbox_accounts'),
     ('sandbox_positions'),
     ('sandbox_trades'),
@@ -27,7 +28,8 @@ with expected(table_name) as (
     ('season_challenges'),
     ('seasons'),
     ('session_completions'),
-    ('subscriptions')
+    ('subscriptions'),
+    ('verifications')
 )
 select e.table_name,
        c.oid is not null as table_present,
