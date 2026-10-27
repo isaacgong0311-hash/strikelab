@@ -14,6 +14,10 @@ export const metadata = pageMetadata({
     "Create your free StrikeLab club, share one invite link, and compete together in Season 1. Your club's board appears on Seasons; a six-week meeting plan is included.",
 });
 
+// The sample invite's first meeting is "one week from today"; rebuild hourly
+// so it never shows a date that has already passed.
+export const revalidate = 3600;
+
 // Signed-out leaders are sent through sign-up and back to setup.
 const SETUP_HREF = "/teach/new?src=pilot";
 
