@@ -31,13 +31,18 @@ export default function CohortScorecard({
   className,
   classId,
   capstoneHrefPrefix,
+  studentHrefPrefix,
 }: {
   scorecard: Scorecard;
   className: string;
   classId: string;
   /** Prefix for a capstone's "Open" link (id appended); the demo points at example capstones. */
   capstoneHrefPrefix?: string;
+  /** Prefix for a student's work page (id appended); names are plain text without it. */
+  studentHrefPrefix?: string;
 }) {
+  const studentName = (s: { studentId: string; displayName: string }) =>
+    studentHrefPrefix ? <Link href={`${studentHrefPrefix}${s.studentId}`} className={styles.studentLink}>{s.displayName}</Link> : s.displayName;
   if (!scorecard.measurable) {
     return (
       <section className={styles.card} aria-labelledby="scorecard-title">
@@ -166,7 +171,7 @@ export default function CohortScorecard({
               <tbody>
                 {metrics.students.map((student) => (
                   <tr key={student.studentId}>
-                    <th scope="row">{student.displayName}</th>
+                    <th scope="row">{studentName(student)}</th>
                     <td>{student.lessonsDone} of {student.lessonsTotal}</td>
                     <td>{metrics.capstones === null ? "Unavailable" : student.capstone?.status === "submitted" ? "Submitted" : student.capstone ? "Draft" : "Not started"}</td>
                     <td>{student.needsHelp ?? (student.programCompleted ? "Review completed work" : "Continue assigned work")}</td>
@@ -208,7 +213,7 @@ export default function CohortScorecard({
           <ul className={styles.helpList}>
             {helpList.map((s) => (
               <li key={s.studentId}>
-                <strong>{s.displayName}</strong>
+                <strong>{studentName(s)}</strong>
                 <span>{s.needsHelp}</span>
                 {s.lastActiveOn && <span className={styles.muted}>Last active {shortDate(s.lastActiveOn)}</span>}
               </li>

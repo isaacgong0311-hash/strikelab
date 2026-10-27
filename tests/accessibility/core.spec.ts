@@ -15,6 +15,7 @@ const PUBLIC_ROUTES = [
   "/demo",
   "/demo?view=student",
   "/demo?view=tour",
+  "/demo/student/s2",
   "/teach",
   "/teach/new",
   "/sign-up?next=%2Fteach%2Fnew",

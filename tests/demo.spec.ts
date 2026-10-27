@@ -68,3 +68,29 @@ test.describe("guided demo", () => {
     await expect(tour.getByText("Step 1 of 8")).toBeVisible();
   });
 });
+
+test("a leader can open a student from the demo scorecard and read their code", async ({ page }) => {
+  await page.goto("/demo", { waitUntil: "domcontentloaded" });
+  await page.getByRole("table", { name: /Assigned work completed/ }).getByRole("link", { name: "Jonah K." }).click();
+
+  await expect(page).toHaveURL(/\/demo\/student\/s2$/);
+  await expect(page.getByRole("heading", { level: 1, name: "Jonah K." })).toBeVisible();
+  await expect(page.getByText("Sample data.")).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Assigned work" })).toBeVisible();
+
+  // Passing code is collapsed until asked for, then shown read-only.
+  const code = page.getByText("View passing code").first();
+  await code.click();
+  await expect(page.locator("pre").filter({ hasText: "def " }).first()).toBeVisible();
+
+  await page.getByRole("link", { name: /^← Demo Club/ }).click();
+  await expect(page).toHaveURL(/\/demo$/);
+});
+
+test("the demo student page fits a phone without sideways scrolling", async ({ page }) => {
+  await page.setViewportSize({ width: 320, height: 700 });
+  await page.goto("/demo/student/s6", { waitUntil: "domcontentloaded" });
+  await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
+  const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
+  expect(overflow).toBeLessThanOrEqual(0);
+});

@@ -70,6 +70,7 @@ export default async function DemoPage({ searchParams }: { searchParams: Promise
             className={DEMO_CLASS_NAME}
             classId="demo"
             capstoneHrefPrefix="/demo/capstone/"
+            studentHrefPrefix="/demo/student/"
           />
           <DemoKickoff />
           <LeaderToolkit classId="demo" metrics={demo.metrics} assignments={demo.assignments} />

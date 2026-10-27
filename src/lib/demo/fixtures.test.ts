@@ -62,3 +62,35 @@ describe("demoStartsOn", () => {
     expect(demoStartsOn(new Date("2026-12-28T00:00:00Z"))).toBe("2027-01-04");
   });
 });
+
+import { buildDemoData as buildDemo, demoStudentSubmissions, DEMO_TZ as TZ } from "./fixtures";
+import { buildStudentWork } from "@/lib/teach/studentWork";
+
+describe("demoStudentSubmissions", () => {
+  const demo = buildDemo(new Date("2026-10-21T17:00:00Z"));
+  const workFor = (id: string) =>
+    buildStudentWork({
+      assignments: demo.assignments,
+      completions: demo.completions.filter((c) => c.studentId === id),
+      submissions: demoStudentSubmissions(demo, id),
+      today: demo.today,
+      timezone: TZ,
+    });
+
+  it("gives an on-pace student passed code and one lesson in progress", () => {
+    const work = workFor("s2");
+    expect(work.assigned.some((w) => w.status === "passed" && w.code)).toBe(true);
+    expect(work.assigned.filter((w) => w.status === "attempted")).toHaveLength(1);
+  });
+
+  it("agrees with the scorecard on how many assigned lessons each student finished", () => {
+    for (const s of demo.metrics.students) {
+      expect(workFor(s.studentId).counts.finished).toBe(s.lessonsDone);
+    }
+  });
+
+  it("leaves a student who never started with nothing to show", () => {
+    const work = workFor("s9");
+    expect(work.assigned.every((w) => w.status === "not-started" && w.code === null)).toBe(true);
+  });
+});

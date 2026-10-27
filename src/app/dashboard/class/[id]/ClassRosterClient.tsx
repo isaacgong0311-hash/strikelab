@@ -12,7 +12,10 @@ import CohortScorecard from "./CohortScorecard";
 import LeaderToolkit from "./LeaderToolkit";
 import AiTutorSwitch from "./AiTutorSwitch";
 import ChapterSeasonBoard from "./ChapterSeasonBoard";
+import StudentsPanel from "./StudentsPanel";
+import { WORKSPACE_TABS, type WorkspaceTab } from "./workspaceTabs";
 import type { CohortScorecard as Scorecard } from "@/lib/cohorts/loadScorecard";
+import styles from "./scorecard.module.css";
 
 interface RosterEntry {
   studentId: string;
@@ -78,7 +81,19 @@ function SignInPrompt() {
   );
 }
 
-export default function ClassRosterClient({ season }: { season: { id: string; title: string } | null }) {
+/**
+ * The class workspace: Overview (outcomes and who needs help), Students
+ * (each one's work), Plan (schedule, meeting plans, assignments) and
+ * Settings (invite, AI tutor, exports). The tab comes from ?tab= so each
+ * section has a link a leader can bookmark.
+ */
+export default function ClassRosterClient({
+  season,
+  tab,
+}: {
+  season: { id: string; title: string } | null;
+  tab: WorkspaceTab;
+}) {
   const { user, loading } = useAuth();
   const params = useParams<{ id: string }>();
   const classId = params.id;
@@ -89,7 +104,6 @@ export default function ClassRosterClient({ season }: { season: { id: string; ti
   const [roster, setRoster] = useState<RosterEntry[]>([]);
   const [assignments, setAssignments] = useState<AssignmentWithCompletion[]>([]);
   const [totals, setTotals] = useState({ tracks: 0, lessons: 0 });
-  const [generatedAt, setGeneratedAt] = useState<string | null>(null);
   const [scorecard, setScorecard] = useState<Scorecard | null>(null);
 
   const load = useCallback(async () => {
@@ -105,7 +119,6 @@ export default function ClassRosterClient({ season }: { season: { id: string; ti
       setRoster(data.roster ?? []);
       setAssignments(data.assignments ?? []);
       setTotals(data.totals ?? { tracks: 0, lessons: 0 });
-      setGeneratedAt(data.generatedAt ?? null);
       setScorecard(data.scorecard ?? null);
       setState("ready");
     } catch {
@@ -141,17 +154,6 @@ export default function ClassRosterClient({ season }: { season: { id: string; ti
     downloadCsv(`${className || "class"}-roster.csv`, toCsv([header, ...rows]));
   }
 
-  const avgProgressPct = roster.length && totals.lessons
-    ? Math.round(
-        (roster.reduce((sum, r) => sum + r.lessonsCompleted, 0) / (roster.length * totals.lessons)) * 100
-      )
-    : 0;
-  const activeThisWeek = roster.filter((r) => {
-    if (!r.lastActivityDate || !generatedAt) return false;
-    const days = (new Date(generatedAt).getTime() - new Date(r.lastActivityDate).getTime()) / 86_400_000;
-    return days <= 7;
-  }).length;
-
   if (loading) return null;
   if (!user) return <SignInPrompt />;
 
@@ -167,150 +169,141 @@ export default function ClassRosterClient({ season }: { season: { id: string; ti
         <p className="text-sm mb-6" style={{ color: "var(--muted2)" }}>
           Either this class doesn&rsquo;t exist, or it isn&rsquo;t yours.
         </p>
-        <Link href="/settings" className="v2-btn ghost">Back to Settings</Link>
+        <Link href="/teach" className="v2-btn ghost">Back to your classes</Link>
       </div>
     );
   }
 
+  const ready = state === "ready";
+  const metrics = scorecard?.measurable ? scorecard.metrics : null;
+  const launched = !!classSummary?.templateId && !!classSummary?.startsOn;
+  const helpCount = metrics?.students.filter((s) => s.needsHelp).length ?? 0;
+  const status = metrics?.status;
+  const statusText = !status
+    ? null
+    : status.kind === "week"
+      ? `Week ${status.week} of ${metrics.weeks.length}`
+      : status.kind === "break"
+        ? "Break week"
+        : status.kind === "before"
+          ? "Starts soon"
+          : "Program finished";
+
   return (
     <div className="max-w-4xl mx-auto px-6 py-14">
-      <div className="mb-6 flex items-start justify-between gap-4 flex-wrap">
+      <div className="flex items-start justify-between gap-4 flex-wrap">
         <div>
+          <p className="text-sm mb-1" style={{ color: "var(--muted2)" }}>
+            <Link href="/teach">Your classes</Link>
+          </p>
           <h1
             className="text-3xl font-semibold mb-2"
             style={{ fontFamily: "var(--font-display)", color: "var(--ink)" }}
           >
-            {state === "loading" ? "Loading…" : className}
+            {ready ? className : "Loading…"}
           </h1>
           <p className="text-sm" style={{ color: "var(--muted2)" }}>
             {roster.length} student{roster.length === 1 ? "" : "s"}
+            {statusText && ` · ${statusText}`}
           </p>
-          {classSummary?.joinCode && <InviteLink code={classSummary.joinCode} />}
         </div>
-        {roster.length > 0 && (
-          <button type="button" onClick={exportCsv} className="v2-btn ghost sm">
-            Export CSV →
-          </button>
-        )}
       </div>
 
-      <div className="mb-6">
-        {state === "ready" && classSummary && (
-          <CohortLaunchPanel
-            classId={classId}
-            cohort={classSummary}
-            onLaunched={load}
-          />
-        )}
-      </div>
+      <nav className={styles.tabs} aria-label="Class workspace">
+        {WORKSPACE_TABS.map((t) => (
+          <Link
+            key={t.id}
+            href={`/dashboard/class/${classId}${t.id === "overview" ? "" : `?tab=${t.id}`}`}
+            className={styles.tab}
+            aria-current={tab === t.id ? "page" : undefined}
+            scroll={false}
+          >
+            {t.label}
+            {t.id === "students" && helpCount > 0 && (
+              <span className={styles.tabBadge}>
+                {helpCount}
+                <span className="sl-visually-hidden"> need a nudge</span>
+              </span>
+            )}
+          </Link>
+        ))}
+      </nav>
 
-      {state === "ready" && scorecard && (
-        <div className="mb-6">
-          <CohortScorecard scorecard={scorecard} className={className} classId={classId} />
+      {!ready ? (
+        <p className="text-sm" style={{ color: "var(--muted2)" }}>Loading your class…</p>
+      ) : tab === "overview" ? (
+        <div className={styles.stack}>
+          {!launched && classSummary && (
+            <CohortLaunchPanel classId={classId} cohort={classSummary} onLaunched={load} />
+          )}
+          {roster.length === 0 && classSummary?.joinCode && (
+            <section className={styles.card} aria-labelledby="invite-title">
+              <h2 id="invite-title" className={styles.title}>Invite your students</h2>
+              <p className={styles.note}>Nobody has joined yet. Send this link; students make a free account and land in your class.</p>
+              <InviteLink code={classSummary.joinCode} />
+            </section>
+          )}
+          {scorecard && (
+            <CohortScorecard
+              scorecard={scorecard}
+              className={className}
+              classId={classId}
+              studentHrefPrefix={`/dashboard/class/${classId}/student/`}
+            />
+          )}
+          {season && <ChapterSeasonBoard classId={classId} season={season} />}
+          {launched && !scorecard && (
+            <p className={styles.note}>Outcomes appear here once students join and start the assigned lessons.</p>
+          )}
         </div>
-      )}
-
-      {state === "ready" && season && (
-        <div className="mb-6">
-          <ChapterSeasonBoard classId={classId} season={season} />
-        </div>
-      )}
-
-      {state === "ready" && scorecard?.measurable && (
-        <div className="mb-6">
-          <LeaderToolkit classId={classId} metrics={scorecard.metrics} assignments={assignments} />
-        </div>
-      )}
-
-      {state === "ready" && classSummary && (
-        <div className="mb-6">
-          <AiTutorSwitch classId={classId} initial={classSummary.aiTutorEnabled === true} />
-        </div>
-      )}
-
-      <div className="mb-6">
-        <AssignLessonsPanel
+      ) : tab === "students" ? (
+        <StudentsPanel
           classId={classId}
-          assignedLessonIds={assignments.map((a) => a.lessonId)}
-          onAssigned={load}
+          roster={roster}
+          students={metrics?.students ?? null}
+          totalLessons={totals.lessons}
         />
-      </div>
-
-      {state === "ready" && roster.length === 0 && (
-        <p className="text-sm" style={{ color: "var(--muted2)" }}>
-          No students yet. Share the invite link above.
-        </p>
-      )}
-
-      {roster.length > 0 && (
-        <>
-          <div className="roster-metrics">
-            <div className="db-metric">
-              <div className="db-metric-icon" style={{ background: "var(--grass-tint)", color: "var(--grass)" }}>◉</div>
-              <div className="db-metric-v" style={{ color: "var(--grass)" }}>{roster.length}</div>
-              <div className="db-metric-l">Students</div>
-            </div>
-            <div className="db-metric">
-              <div className="db-metric-icon" style={{ background: "rgba(251,191,36,0.12)", color: "var(--amber)" }}>◆</div>
-              <div className="db-metric-v" style={{ color: "var(--amber)" }}>{avgProgressPct}%</div>
-              <div className="db-metric-l">Avg. progress</div>
-            </div>
-            <div className="db-metric">
-              <div className="db-metric-icon" style={{ background: "var(--coral-tint)", color: "var(--coral)" }}>△</div>
-              <div className="db-metric-v" style={{ color: "var(--coral)" }}>{activeThisWeek}</div>
-              <div className="db-metric-l">Active this week</div>
-            </div>
-          </div>
-
-          <div className="db-panel">
-            <div className="roster-head-row">
-              <span>Student</span>
-              <span>Tracks</span>
-              <span>Lessons</span>
-              <span>Last active</span>
-            </div>
-            <div className="flex flex-col">
-              {roster.map((r) => {
-                const initials = r.displayName
-                  .split(" ")
-                  .filter(Boolean)
-                  .slice(0, 2)
-                  .map((w) => w[0]?.toUpperCase())
-                  .join("") || "?";
-                const trackPct = totals.tracks ? Math.round((r.tracksCompleted / totals.tracks) * 100) : 0;
-                const lessonPct = totals.lessons ? Math.round((r.lessonsCompleted / totals.lessons) * 100) : 0;
-                return (
-                  <div key={r.studentId} className="roster-row">
-                    <div className="roster-name">
-                      <span className="roster-avatar">{initials}</span>
-                      <span className="roster-name-text">{r.displayName}</span>
-                    </div>
-                    <div className="roster-progress-cell">
-                      <span className="roster-cell-label">Tracks</span>
-                      <div className="db-mini-bar"><div className="db-mini-bar-fill" style={{ width: `${trackPct}%`, background: "var(--grass)" }} /></div>
-                      <span className="roster-stat">{r.tracksCompleted}/{totals.tracks}</span>
-                    </div>
-                    <div className="roster-progress-cell">
-                      <span className="roster-cell-label">Lessons</span>
-                      <div className="db-mini-bar"><div className="db-mini-bar-fill" style={{ width: `${lessonPct}%` }} /></div>
-                      <span className="roster-stat">{r.lessonsCompleted}/{totals.lessons}</span>
-                    </div>
-                    <span className="roster-activity">
-                      {r.lastActivityDate ? `Last active ${r.lastActivityDate}` : "No activity yet"}
-                    </span>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-
-          <AssignmentsPanel
+      ) : tab === "plan" ? (
+        <div className={styles.stack}>
+          {classSummary && <CohortLaunchPanel classId={classId} cohort={classSummary} onLaunched={load} />}
+          {metrics && <LeaderToolkit classId={classId} metrics={metrics} assignments={assignments} />}
+          <AssignLessonsPanel
             classId={classId}
-            assignments={assignments}
-            roster={roster.map((r) => ({ studentId: r.studentId, displayName: r.displayName }))}
-            onDeleted={load}
+            assignedLessonIds={assignments.map((a) => a.lessonId)}
+            onAssigned={load}
           />
-        </>
+          {assignments.length > 0 && (
+            <AssignmentsPanel
+              classId={classId}
+              assignments={assignments}
+              roster={roster.map((r) => ({ studentId: r.studentId, displayName: r.displayName }))}
+              onDeleted={load}
+            />
+          )}
+        </div>
+      ) : (
+        <div className={styles.stack}>
+          <section className={styles.card} aria-labelledby="settings-invite-title">
+            <h2 id="settings-invite-title" className={styles.title}>Invite link</h2>
+            <p className={styles.note}>Anyone with this link can join your class after making a free account.</p>
+            {classSummary?.joinCode && <InviteLink code={classSummary.joinCode} />}
+            <p className={styles.note}>
+              <Link href={`/teach/${classId}/invite`}>Printable invite and kickoff view →</Link>
+            </p>
+          </section>
+          {classSummary && <AiTutorSwitch classId={classId} initial={classSummary.aiTutorEnabled === true} />}
+          <section className={styles.card} aria-labelledby="settings-export-title">
+            <h2 id="settings-export-title" className={styles.title}>Export</h2>
+            <p className={styles.note}>
+              A roster with lifetime progress and each assignment&rsquo;s status. Cohort outcome exports live on the Overview scorecard.
+            </p>
+            <div className={styles.exportActions}>
+              <button type="button" onClick={exportCsv} className="v2-btn ghost sm" disabled={roster.length === 0}>
+                Export roster CSV →
+              </button>
+            </div>
+          </section>
+        </div>
       )}
     </div>
   );
