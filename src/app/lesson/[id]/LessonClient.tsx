@@ -27,6 +27,7 @@ import Dialog from "@/components/ui/Dialog";
 
 import { CODE_SYNC_LABELS, useSyncedCode } from "@/lib/submissions/useSyncedCode";
 import { loadPythonRuntime, type PythonRuntime } from "@/lib/pythonRuntime";
+import { friendlyPythonError, type PythonPhase } from "@/lib/pythonErrors";
 
 // The runtime is about 13 MB the first time. On school Wi-Fi that can take a
 // minute, and "Running tests…" with no progress looks like a hang.
@@ -339,8 +340,10 @@ export default function LessonClient({ lesson, sections, chunks, prev, next, tra
     }
 
     setOutput("Running tests…");
+    let phase: PythonPhase = "code";
     try {
       await pyodide.runPython(code);
+      phase = "tests";
       await pyodide.runPython(lesson.exercise.testFn);
       setOutput("✓ All tests passed!");
       setStatus("pass");
@@ -355,7 +358,7 @@ export default function LessonClient({ lesson, sections, chunks, prev, next, tra
       }
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : String(err);
-      setOutput(msg);
+      setOutput(friendlyPythonError(msg, phase));
       setStatus("fail");
     }
   }, [code, lesson.exercise.testFn, lesson.id, markComplete, markPassed, python]);
