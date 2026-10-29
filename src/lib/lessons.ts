@@ -63,8 +63,9 @@ export interface Lesson {
   content: string; // markdown-like HTML string
   /**
    * A short note "from your desk head" framing the lesson as a task you've
-   * been assigned, not a topic to read about. Optional — only the Options
-   * Pricing track has these for now (a pilot; see DeskBriefing.tsx).
+   * been assigned, not a topic to read about. Every lesson in all three
+   * tracks has one (a test checks); optional only so a new lesson can be
+   * drafted without it.
    */
   deskBriefing?: string;
   prereqs?: LessonPrereqs;
@@ -1453,7 +1454,7 @@ print("Tests passed!")
     title: "Rho: Interest Rate Sensitivity",
     subtitle: "The forgotten Greek that matters most when rates move",
     duration: "13 min",
-    deskBriefing: "Rates moved again this morning, and the desk head wants to know what it did to the long-dated book. Rho is the Greek everyone forgets about — until a day like today.",
+    deskBriefing: "Rates moved again this morning, and I need to know what it did to our long-dated book. Rho is the Greek everyone forgets about — until a day like today.",
     prereqs: {
       summary: "Builds on the Greeks from Lessons 4–7 — same formula family, the last of the five.",
     },
