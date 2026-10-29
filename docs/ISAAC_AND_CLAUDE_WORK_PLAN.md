@@ -4,6 +4,10 @@
 
 This plan sets out who does what. The detail is in other documents: [YC submission plan](yc/w27-submission-plan.md) and [application draft](yc/application-draft.md) (both on PR #72), the [investor readiness plan](INVESTOR_READINESS_WORK_PLAN.md), the [claim ledger](investor/claim-ledger.md) and the [founder plan](STRIKELAB_FOUNDER_WORK_PLAN.md). If this plan conflicts with them, the more specific document wins for its own topic. This plan wins on ownership.
 
+## Codex workstream added October 29
+
+Isaac asked Codex to work alongside Claude on outreach drafts, learning research, curriculum, and AI help. [Draft PR #79](https://github.com/isaacgong0311-hash/strikelab/pull/79) contains the first isolated slice: five unsent email drafts, an options lesson converted to short sessions, and an optional AI explanation after a missed answer. Codex owns that PR's files until review. Claude's YC submission, production checks, and existing PR work remain the current priority. Isaac reviews the copy and decides when the PR ships; outreach remains unsent.
+
 ## Where things stand
 
 - **Production:** strikelab.dev runs master `e5ebe32` (PR #77). Students and clubs are free. The Intensive ($349) is waitlist-only. Season 1 opens Nov 30 with three challenges, which run through Dec 20.
