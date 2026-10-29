@@ -42,7 +42,7 @@ const TIMELINE = [
   { date: "Aug 2026", event: "Certificates of completion and Discord integration ship.", state: "done" },
   { date: "Aug 2026", event: "Classroom rosters ship — teachers create a class in Settings, students join with a code.", state: "done" },
   { date: "Sep 2026", event: "Six-week club lab ships: cohort launch, invite links, a student home, a leader scorecard and private capstones.", state: "done" },
-  { date: "Oct 2026", event: "The paper-trading sandbox and the old challenges are retired. Seasons replace them: timed challenges with per-student numbers, server scoring and handle-only leaderboards.", state: "done" },
+  { date: "Oct 2026", event: "The paper-trading sandbox and the old challenges are retired. Seasons replace them: timed challenges with per-student numbers, official scores computed by StrikeLab and handle-only leaderboards.", state: "done" },
   { date: "Nov 30, 2026", event: "Season 1: three weekly challenges, through Dec 20.", state: "planned" },
   { date: "Jan 2027", event: "First Intensive cohort: six weeks, ending in a capstone defended live.", state: "planned" },
 ];
