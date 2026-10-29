@@ -17,11 +17,11 @@
 - [ ] Check what the form accepts for the founder video and the demo (upload or link, length, file size) and write it at the top of the draft.
 
 ### Thu Oct 29 (about 1.5 h): facts from production
-- [ ] Confirm the production deployment on Vercel is READY and note its commit (several PRs were merging on Oct 27).
-- [ ] In the Supabase SQL editor (production, read-only queries):
-  - `scripts/metrics/check-migrations.sql`: are `0024_seasons` and `0025_verifications_and_records` applied?
-  - `scripts/metrics/baseline.sql`: registered users, users with a completed lesson, completions, clubs, students in clubs, signups by source.
-  - If `0024` is applied: `select count(*) from public.intensive_waitlist;` and `select count(*) from public.profiles where handle is not null;`
+- [ ] Confirm the production deployment on Vercel is READY and note its commit (Oct 28: `e5ebe32`).
+- [ ] In the Supabase SQL editor of the production project (`urmfsymdmmzstbelqryw`, the one strikelab.dev calls; the Claude Supabase connector can't reach it, so this is yours to run):
+  - `scripts/metrics/check-migrations.sql`: is every row `applied`, including `0024_seasons` and `0025_verifications_and_records`?
+  - `scripts/metrics/yc-snapshot.sql`: one read-only query with 15 aggregate rows: users (all-time, new and active in the last 30 days), lesson completions, clubs, cohorts, capstones, season handles, challenges scheduled, attempts, Intensive waitlist size. A table that isn't there reads `MISSING`.
+  - Optional: the second query in `baseline.sql` for sign-ups by `?src=` source.
 - [ ] Paste the numbers into the draft with today's date and "source: production query". Aggregates only, no names or emails.
 - [ ] Stripe: confirm revenue (expect $0, since nothing is for sale). Write $0 only after checking.
 - [x] ~~If Season 1 isn't scheduled, apply the migrations and run the seed.~~ Done: on Oct 28 strikelab.dev/seasons lists all three challenges from the database. Still run `check-migrations.sql` to confirm `0025` too.

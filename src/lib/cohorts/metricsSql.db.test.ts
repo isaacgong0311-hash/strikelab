@@ -130,6 +130,22 @@ describe("scripts/metrics", () => {
     expect(after.filter((r) => r.state !== "applied").map((r) => r.migration)).toEqual(["0020_subscription_event_order"]);
   });
 
+  it("yc-snapshot.sql returns one aggregate row per number, and MISSING for an absent table", async () => {
+    const t = await createTestDb();
+    const student = await t.user();
+    await t.db.query("update profiles set handle = 'quant_kid' where id = $1", [student]);
+    type Row = { ord: number; metric: string; value: string };
+    const { rows } = await t.db.query<Row>(sql("yc-snapshot.sql"));
+    expect(rows).toHaveLength(15);
+    expect(rows.every((r) => /^\d+$/.test(r.value))).toBe(true);
+    expect(rows.find((r) => r.metric === "registered users")?.value).toBe("1");
+    expect(rows.find((r) => r.metric === "season handles set")?.value).toBe("1");
+
+    await t.db.exec("drop table public.intensive_waitlist");
+    const after = (await t.db.query<Row>(sql("yc-snapshot.sql"))).rows;
+    expect(after.find((r) => r.metric.startsWith("Intensive waitlist"))?.value).toBe("MISSING");
+  });
+
   it("rls-audit.sql lists every table the migrations create, and flags one with RLS off", async () => {
     const t = await createTestDb();
     const dir = join(__dirname, "..", "..", "..", "supabase", "migrations");

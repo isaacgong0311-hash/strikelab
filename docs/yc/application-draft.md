@@ -28,7 +28,7 @@
 **Who writes code, or does other technical work on your product? Was any of it done by a non-founder? Please explain.**
 Facts you can use (from git history, Oct 27): the repo started May 7, 2026; production `master` has 279 commits on 46 different days; 184 of those commits carry a "Co-Authored-By: Claude" line, because AI coding tools wrote much of the code under the founder's direction. `[NEEDS FOUNDER]` In your own words: who wrote and reviewed the code, what you decided and what the tools did, and whether anyone besides you (the outreach teammate, anyone else) touched the product.
 
-**Are you looking for a cofounder?** `[NEEDS FOUNDER]` (decide whether the outreach teammate is a cofounder; see checklist item 6.)
+**Are you looking for a cofounder?** **Decided Oct 28: the outreach teammate is a cofounder on this application.** They fill in their own founder profile and appear in the founder video. Before submitting, agree the equity split in writing (Equity section) and sign a contributor/IP agreement, with a parent involved for anyone under 18. That agreement is still an open decision in `docs/PLAN.md`. `[NEEDS FOUNDER]` Their profile, and what they actually did (outreach, community, any product work), in your words and theirs.
 
 **Please tell us about an impressive thing you've built or achieved.** `[NEEDS FOUNDER]` StrikeLab counts, but this answer is stronger with something else (a competition, another project, with links). If StrikeLab is the answer, pick one verifiable fact from the claims table, not a list.
 
@@ -124,7 +124,7 @@ All prices are guesses to test `[NO PROOF YET]`. "How much could you make": `[NE
 
 ## Batch choice `[VERIFY ON LIVE FORM]`
 
-**Which batch do you want to apply for?** `[NEEDS FOUNDER]` The choices reported on YC's Early Decision page are **Winter 2027** or **A batch after Winter 2027**.
+**Which batch do you want to apply for?** **Decided Oct 28: A batch after Winter 2027 (Early Decision).** Confirm the option's exact wording on the live form, and confirm with your parents before submitting. Answer every availability question with your real school timeline and when you could go full-time. The choices reported on YC's Early Decision page are **Winter 2027** or **A batch after Winter 2027**.
 - **Winter 2027** means committing to work on StrikeLab full-time during the batch (roughly January to March) and after. Choose it only if that's actually possible for you.
 - **A batch after Winter 2027 (Early Decision)** is meant for students who want to finish school first. If accepted, YC funds now and holds your spot for a later batch. If you can't commit full-time from January to March, this is the honest choice, and the rest of this application stays the same.
 Whatever you choose, answer every availability question the same way and without overstating. This draft doesn't answer it for you.
@@ -137,12 +137,12 @@ Everything above marked `[NEEDS FOUNDER]` is here. Do it in this order, because 
 
 | # | Item | Time | Who |
 |---|---|---|---|
-| 1 | **Batch choice + availability.** Read YC's FAQ and Early Decision pages yourself. Decide: Winter 2027 (full-time Jan to Mar) or "A batch after Winter 2027". Discuss with your parents. | 10 min | You + parents |
+| 1 | ~~**Batch choice.**~~ Decided Oct 28: "A batch after Winter 2027" (Early Decision). Still to do: confirm with your parents, read YC's FAQ and Early Decision pages yourself, and write your availability answer. | 10 min | You + parents |
 | 2 | **Founder profile.** Name, age, school, location, links, where the company would be based. Facts only. | 5 min | You |
-| 3 | **Facts you look up.** (a) Run `scripts/metrics/baseline.sql` on production and paste the numbers with the date. (b) Confirm revenue in Stripe. (c) Legal entity: yes/no. (d) Any investment or incubator: yes/no. | 10 min | You |
+| 3 | **Facts you look up.** (a) Paste `scripts/metrics/yc-snapshot.sql` into the production Supabase SQL editor (one read-only query, 15 aggregate rows), then copy the numbers in with the date. Also run `check-migrations.sql`. (b) Confirm revenue in Stripe. (c) Legal entity: yes/no. (d) Any investment or incubator: yes/no. | 10 min | You |
 | 4 | **Why this idea** (about 150 words) and **why YC / how you heard**. | 15 min | You |
 | 5 | **Impressive thing** and **non-computer hack**: one real story each. | 10 min | You |
-| 6 | **Team.** Is the outreach teammate a cofounder? If yes, their profile and planned split; if no, answer "solo" and say who helps. Anyone under 18 needs a parent involved. | 5 min | You (+ teammate) |
+| 6 | **Team.** Decided Oct 28: the outreach teammate is a cofounder. Still to do: their profile, a written equity split, and a contributor/IP agreement, with parents involved for anyone under 18. Their parents should know about the application too. | 30 min | You + cofounder + parents |
 | 7 | **Short fills.** Hours per week and full-time history; AI coding tools you use; who did what in the code; other ideas; category; pick the one-liner. | 5 min | You |
 
 Number-dependent sentences (the market-size estimate, any user counts) stay out unless item 3 or a sourced input backs them.
