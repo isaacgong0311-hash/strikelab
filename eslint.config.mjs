@@ -15,6 +15,8 @@ const eslintConfig = defineConfig([
     // The Python runtime, copied from node_modules at dev/build time
     // (scripts/copy-pyodide.mjs): vendor code, not ours.
     "public/pyodide/**",
+    // Nested Claude worktrees have their own .next and node_modules.
+    ".claude/worktrees/**",
   ]),
 ]);
 

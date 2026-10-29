@@ -1,7 +1,7 @@
 /**
  * POST /api/seasons/challenges/[id]/submit { code, explanation, previewPassed }
  * — one submission, before the deadline (submit_attempt, 0024). The official
- * score is computed later on the server; the browser preview never counts.
+ * score is computed later by the founder-run scorer; the browser preview never counts.
  */
 import { NextRequest, NextResponse } from "next/server";
 import { requireUser } from "@/lib/supabase/requireUser";

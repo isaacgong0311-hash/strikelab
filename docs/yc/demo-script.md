@@ -1,5 +1,7 @@
 # Two-Minute Demo Script (v0, 2026-10-01)
 
+**Superseded for Winter 2027:** this script demos the earlier club tour. For the W27 application, use the product demo in [`w27-submission-plan.md`](w27-submission-plan.md) (Oct 31).
+
 **Readiness plan item Y4.1.** The demo for the YC application video, investor calls and leader calls. It runs on `strikelab.dev/demo?view=tour` ("Watch the six weeks"), which plays the real product on a sample club, so it works without signing in and can't break on a live database.
 
 **Rules:** every screen in the demo is either sample data that says "sample data" on screen, or real data from a leader who has consented in writing. Never present the sample club as a real one. Re-record once real numbers exist (FW-20).

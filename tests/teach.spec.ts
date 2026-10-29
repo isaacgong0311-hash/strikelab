@@ -1,8 +1,19 @@
 import { expect, test } from "@playwright/test";
 
-test("the pilot page's setup button starts class setup", async ({ page }) => {
+test("the pilot page leads with free club setup and the season board", async ({ page }) => {
   await page.goto("/pilot");
-  await expect(page.getByRole("link", { name: "Set it up now" }).first()).toHaveAttribute("href", "/teach/new?src=pilot");
+  await expect(page.getByRole("heading", { level: 1, name: "Set up your club for Season 1." })).toBeVisible();
+  await expect(page.getByRole("link", { name: "Create your club" }).first()).toHaveAttribute("href", "/teach/new?src=pilot");
+  await expect(page.getByRole("heading", { name: "Your board appears" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Want a plan for every meeting? It's included." })).toBeVisible();
+});
+
+test("the clubs page leads to the pilot with source tracking", async ({ page }) => {
+  await page.goto("/clubs");
+  await expect(page.getByRole("heading", { level: 1, name: "Bring your club to Season 1: your own board, free." })).toBeVisible();
+  await expect(page.getByRole("link", { name: "Set up your club" }).first()).toHaveAttribute("href", "/pilot?src=clubs");
+  await expect(page.getByRole("heading", { name: "See your club's board" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Want a plan for every meeting? It's included." })).toBeVisible();
 });
 
 test("leaders arriving from setup get the leader sign-up with their role preselected", async ({ page }) => {
@@ -34,9 +45,9 @@ test("the pilot page previews the scorecard and the invite message, labelled as 
   await expect(page).toHaveURL(/\/pilot$/);
 });
 
-test("the homepage gives leaders the same weight as students and doesn't promise zero prep", async ({ page }) => {
+test("the homepage gives leaders their own door and doesn't promise zero prep", async ({ page }) => {
   await page.goto("/");
-  await expect(page.getByRole("link", { name: "Start a free pilot" }).first()).toBeVisible();
+  await expect(page.getByRole("link", { name: "Bring your club" }).first()).toBeVisible();
   await expect(page.getByText(/No prep\./)).toHaveCount(0);
   await expect(page.getByText(/Zero prep/)).toHaveCount(0);
   // The club section now comes before the Greeks tour.

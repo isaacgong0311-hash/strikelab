@@ -30,7 +30,7 @@ const SECTIONS: { title: string; body: React.ReactNode }[] = [
         <p className="mb-3">
           <strong>If you don&rsquo;t create an account:</strong> lesson
           completions, XP, and streak live only in your browser&rsquo;s
-          localStorage. We never see it.
+          localStorage rather than an account record. The starting-point check saves only a suggested lesson on this device, not answers or scores. The Market Lab saves completed mission IDs and up to six experiments with their model inputs on this device. Clear your saved step on the homepage or clear your notebook in the lab. Usage events are described below.
         </p>
         <p className="mb-3">
           <strong>If you create an account</strong> (email + password, or
@@ -42,6 +42,13 @@ const SECTIONS: { title: string; body: React.ReactNode }[] = [
           <strong>If you play a season:</strong> the handle you choose (never
           your real name) and your score appear on leaderboards; your code and
           explanation are private to you and are used to compute your score.
+        </p>
+        <p className="mb-3">
+          <strong>If your work is verified:</strong> we keep the verified item,
+          reviewer, date, a record of parent consent for the review call, and
+          private notes. You can choose to create a record link showing only
+          your handle and verified items. Revoking it stops the link from
+          working; your real name and private notes are never on that page.
         </p>
         <p className="mb-3">
           <strong>If a parent joins the intensive waitlist:</strong> we keep
@@ -95,8 +102,7 @@ const SECTIONS: { title: string; body: React.ReactNode }[] = [
     title: "Analytics & error monitoring",
     body: (
       <>
-        We use Vercel Web Analytics (cookie-free, aggregate page-view counts —
-        it doesn&rsquo;t track you individually) and Sentry for error
+        We use Vercel Web Analytics (cookie-free page views and usage events, including starting-point check starts, completions, lesson clicks and opens. Those check events include only an event type and an optional curriculum destination, without answers, scores, names or account IDs) and Sentry for error
         monitoring, which can capture a stack trace and the page you were on
         when something breaks, so we can fix it.
       </>

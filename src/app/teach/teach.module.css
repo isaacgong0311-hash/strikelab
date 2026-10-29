@@ -211,9 +211,9 @@
 }
 
 @media print {
-  :global(body) * { visibility: hidden; }
-  .printCard,
-  .printCard * { visibility: visible; }
+  :global(body):has(.printCard) * { visibility: hidden; }
+  :global(body) .printCard,
+  :global(body) .printCard * { visibility: visible; }
   .printCard { position: absolute; inset: 0 auto auto 0; width: 100%; box-shadow: none; }
 }
 
