@@ -7,7 +7,7 @@
 ## The two things that decide the application
 
 1. **Batch choice (Wednesday).** Winter 2027 means working on StrikeLab full-time during the batch (about January to March) and after it ([YC FAQ](https://www.ycombinator.com/faq)). If that isn't possible, apply with **"A batch after Winter 2027"** through [Early Decision](https://www.ycombinator.com/early-decision). YC funds accepted students right away and holds a place in a later batch, and the rest of the application stays the same. This is your call, made with your parents. Every availability answer has to match it.
-2. **Honest usage (Thursday).** As of Oct 27, usage is unknown, not zero. Production has the product, but Season 1 isn't scheduled in the production database. What can honestly be shown by Nov 2 is listed below.
+2. **Honest usage (Thursday).** As of Oct 28, usage is unknown, not zero. Production has the product, and Season 1's three challenges are now scheduled in the production database (they weren't on Oct 27). What can honestly be shown by Nov 2 is listed below.
 
 ## Day by day
 
@@ -24,7 +24,7 @@
   - If `0024` is applied: `select count(*) from public.intensive_waitlist;` and `select count(*) from public.profiles where handle is not null;`
 - [ ] Paste the numbers into the draft with today's date and "source: production query". Aggregates only, no names or emails.
 - [ ] Stripe: confirm revenue (expect $0, since nothing is for sale). Write $0 only after checking.
-- [ ] If Season 1 isn't scheduled: decide whether to apply the missing migrations and run `supabase/seed/season-1.sql` in production before Saturday. Use the usual process (build, PR, green CI, deploy, smoke test). It's a production write, so it's your decision. If you skip it, the application and demo must say "opens Nov 30", not show a schedule.
+- [x] ~~If Season 1 isn't scheduled, apply the migrations and run the seed.~~ Done: on Oct 28 strikelab.dev/seasons lists all three challenges from the database. Still run `check-migrations.sql` to confirm `0025` too.
 
 ### Fri Oct 30 (about 1.5 h): your answers and the founder video
 - [ ] Write checklist items 4 and 5 yourself (why this idea, why YC, the impressive thing, the non-computer hack). No AI drafting: these answers are about you.
@@ -48,7 +48,7 @@
 | 1:45–2:00 | `/pricing` → `/intensive` | Free for students and clubs; Intensive waitlist at $349, no payment yet |
 
   - Don't show: the founder metrics page, admin pages, any real student's name or email, club boards with real members, or numbers that aren't in the draft.
-  - Don't demo AI-generated practice problems unless the Oct 27 fix (PR #66) is confirmed deployed.
+  - PR #66 (practice problems said "All tests passed!" for wrong answers) is deployed as of Oct 28. Still submit one wrong answer to a practice problem before deciding to show it.
   - Sample data on screen must say it's sample data. Re-record rather than edit around a mistake.
 - [ ] Do checklist items 6 and 7 (team, short fills).
 
