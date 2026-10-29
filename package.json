@@ -15,6 +15,7 @@
     "pipeline": "node scripts/metrics/pipeline.mjs",
     "support": "node scripts/metrics/support.mjs",
     "season:score": "node --env-file=.env.local scripts/seasons/score.mjs",
+    "season:benchmark": "node scripts/seasons/benchmark.mjs",
     "db:combine": "node scripts/supabase/combine-migrations.mjs",
     "rehearsal:seed": "node --env-file=.env.local scripts/rehearsal/seed.mjs",
     "test:a11y": "playwright test tests/accessibility",
