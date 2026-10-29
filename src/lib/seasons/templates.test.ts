@@ -69,6 +69,12 @@ describe("season challenge templates", () => {
       expect(run(template.starterCode, template.officialTest(p)).score).toBe(0);
     });
 
+    it(`${slug}: the official test and starter code use the template's entry point`, () => {
+      const p = deriveParams(template.paramSpecs, { challengeId: `s1-${slug}`, userId: "u0" }, "test-secret");
+      expect(template.officialTest(p)).toContain(`${template.entry}(*_c)`);
+      expect(template.starterCode).toContain(`def ${template.entry}(`);
+    });
+
     it(`${slug}: the preview test (sent to the browser) contains no reference answer`, () => {
       expect(template.previewTest).not.toMatch(/_ref|_score|_cases/);
     });
