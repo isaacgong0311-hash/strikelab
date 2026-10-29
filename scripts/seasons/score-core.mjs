@@ -25,6 +25,13 @@ const LOAD_TIMEOUT_MS = 60_000;
 const STUDENT_SCRIPT = realpathSync(fileURLToPath(new URL("./score-student.mjs", import.meta.url)));
 const PYODIDE_DIR = realpathSync(dirname(createRequire(import.meta.url).resolve("pyodide/package.json")));
 const IDENTIFIER = /^[A-Za-z_][A-Za-z0-9_]*$/;
+// The permission model is --permission from Node 22.13 / 23.5, and
+// --experimental-permission before that (Node 20, which CI runs).
+const [NODE_MAJOR, NODE_MINOR] = process.versions.node.split(".").map(Number);
+const PERMISSION_FLAG =
+  NODE_MAJOR >= 24 || (NODE_MAJOR === 23 && NODE_MINOR >= 5) || (NODE_MAJOR === 22 && NODE_MINOR >= 13)
+    ? "--permission"
+    : "--experimental-permission";
 
 export function autoScore({ fraction, usedSeconds, limitSeconds }) {
   const f = Math.min(1, Math.max(0, Number(fraction) || 0));
@@ -42,7 +49,7 @@ export function autoScore({ fraction, usedSeconds, limitSeconds }) {
 export function runStudent(code, entry, cases, { timeoutMs = RUN_TIMEOUT_MS } = {}) {
   const child = fork(STUDENT_SCRIPT, [pathToFileURL(join(PYODIDE_DIR, "pyodide.mjs")).href], {
     // Explicit, so nothing is inherited from this process (e.g. --env-file).
-    execArgv: ["--permission", `--allow-fs-read=${PYODIDE_DIR}/`, `--allow-fs-read=${STUDENT_SCRIPT}`],
+    execArgv: [PERMISSION_FLAG, `--allow-fs-read=${PYODIDE_DIR}/`, `--allow-fs-read=${STUDENT_SCRIPT}`],
     env: {},
     stdio: ["ignore", "ignore", "ignore", "ipc"],
     serialization: "advanced",
