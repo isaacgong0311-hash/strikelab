@@ -125,6 +125,15 @@ export function labCurve(scenario: LabScenario, variable: LabVariable): { x: num
   });
 }
 
+/** Price-axis ticks on a round step (1, 2, 2.5 or 5 × 10ⁿ), so every label matches its gridline. */
+export function priceAxisTicks(peak: number): number[] {
+  const top = Math.max(peak, 0.01);
+  const magnitude = 10 ** Math.floor(Math.log10(top / 5));
+  const step = [1, 2, 2.5, 5, 10].map((f) => f * magnitude).find((s) => top / s <= 5) ?? 10 * magnitude;
+  const count = Math.ceil(top / step - 1e-9);
+  return Array.from({ length: count + 1 }, (_, i) => Math.round(i * step * 1e6) / 1e6);
+}
+
 export function experimentCsvRows(baseline: LabScenario, scenario: LabScenario): string[][] {
   const before = labPrice(baseline);
   const after = labPrice(scenario);

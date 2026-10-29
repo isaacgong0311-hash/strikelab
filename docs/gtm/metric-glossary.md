@@ -59,3 +59,27 @@ Until the first cohort starts, the weekly scorecard tracks the leader pipeline i
 | **Verbal yes with a date** | The leader said they'll run it and named a week-1 date. |
 | **Locked pilot** | A verbal yes, plus approval done or confirmed not needed, plus the date on both calendars. |
 | **Approval path** | A = no approval needed; B = sponsor or principal sign-off; C = district vendor or data-privacy review (work plan §2.4). |
+
+## Starting-point and continuation funnel (October 21, 2026)
+
+`trackStartingPoint` emits only an event name and an optional allowlisted curriculum destination. It deliberately excludes diagnostic answers, score, account identity, persistent run IDs, and attribution parameters. The optional destination is not a student record.
+
+| Event | Trigger | Interpretation |
+| --- | --- | --- |
+| `starting_point_started` | First answer is checked, including “I'm not sure” | An attempted check, not a page view or unique student |
+| `starting_point_completed` | Student leaves the fourth feedback screen for their recommendation | A completed informal check, not activation or measured learning gain |
+| `starting_point_lesson_click` | Recommendation or saved-step link clicked | Navigation intent; not proof that the lesson loaded |
+| `starting_point_lesson_open` | Existing lesson/session start handler runs on the saved destination | Recommended content opened; refreshes, later visits, and development Strict Mode can repeat events |
+
+These are aggregate event counts, not a matched per-student conversion funnel. Retries count as new attempts. Custom-event collection depends on the deployed analytics configuration, plan, blockers, and network; local code does not prove collection. Keep the existing server-derived definition of activation. Do not report check completion or a lesson click as an activated student.
+
+A versioned browser bookmark (`strikelab:next-step:v1`) stores only the suggested curriculum URL. Completion of a bookmarked session advances it to the next unfinished session, or the full lesson when all sessions are done. Finishing the full lesson clears its bookmark. The card never writes lesson completion or awards XP. Blocked browser storage only disables the bookmark.
+
+## Aggregate pilot summary export (cohort metrics v1)
+
+The teacher scorecard offers two distinct exports:
+
+- **Aggregate summary:** `src/lib/cohorts/evidence.ts` formats the already computed `CohortMetrics`. It includes snapshot date, numerators, denominators, percentages when defined, program-week dates, pending activation, and preliminary/closed-window labels. It omits class names, student identifiers, roster rows and work. Small-cohort aggregates can still be identifying in context, so review them before sharing. This is not an anonymization guarantee or automatic permission to publish.
+- **Cohort CSV:** the existing named student roster and individual progress. Keep it restricted to authorized recipients.
+
+Demo aggregate exports include `SAMPLE DATA` in their contents and `sample-` in the filename. Future weeks and unavailable data stay blank/unmeasured; an empty cohort has zero enrolled with undefined percentages. A rate after week 4 remains qualified if some activation windows are still open. Neither export independently verifies payment, retained organizations, reviewed capstone quality, or improvement in student knowledge. Current enrolled membership is the denominator; removing students can change a later snapshot. Keep dated exports if comparing snapshots and disclose membership changes.

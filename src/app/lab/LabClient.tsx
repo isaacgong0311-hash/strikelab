@@ -92,9 +92,16 @@ function ExperimentWorkspace({ mode, initialScenario }: { mode: LabMode; initial
   const [phase, setPhase] = useState<"predict" | "experiment" | "explain" | "done">(mission ? "predict" : "experiment");
   const [prediction, setPrediction] = useState<"up" | "down" | null>(null);
   const [reflection, setReflection] = useState<number | null>(null);
-  const [message, setMessage] = useState("");
+  const [message, setMessage] = useState({ text: "", warn: false });
   const [freeVariable, setFreeVariable] = useState<LabVariable>("stock");
   const title = useRef<HTMLHeadingElement>(null);
+  // The explain and done cards sit below the controls; focusing the title would scroll away from them.
+  const checkpoint = useRef<HTMLHeadingElement>(null);
+  const say = (text: string, warn = false) => setMessage({ text, warn });
+  const revealCheckpoint = () => requestAnimationFrame(() => {
+    checkpoint.current?.focus({ preventScroll: true });
+    checkpoint.current?.scrollIntoView({ block: "center" });
+  });
   const before = labPrice(baseline);
   const after = labPrice(scenario);
   const difference = after - before;
@@ -104,8 +111,9 @@ function ExperimentWorkspace({ mode, initialScenario }: { mode: LabMode; initial
 
   function transition(next: typeof phase) {
     setPhase(next);
-    setMessage("");
-    requestAnimationFrame(() => title.current?.focus());
+    say("");
+    if (next === "explain") revealCheckpoint();
+    else requestAnimationFrame(() => title.current?.focus());
   }
 
   function reset() {
@@ -118,12 +126,12 @@ function ExperimentWorkspace({ mode, initialScenario }: { mode: LabMode; initial
   function finish() {
     if (!mission) return;
     if (reflection !== mission.correct) {
-      setMessage("Revisit the result: " + mission.explanation + " Choose the explanation that matches it.");
+      say("Revisit the result: " + mission.explanation + " Choose the explanation that matches it.", true);
       return;
     }
     setPhase("done");
-    setMessage(recordMissionComplete(mission.id) ? "Mission saved to your notebook on this device." : "Mission complete for this visit. Browser storage is unavailable.");
-    requestAnimationFrame(() => title.current?.focus());
+    say(recordMissionComplete(mission.id) ? "Mission saved to your notebook on this device." : "Mission complete for this visit. Browser storage is unavailable.");
+    revealCheckpoint();
   }
 
   return (
@@ -151,25 +159,25 @@ function ExperimentWorkspace({ mode, initialScenario }: { mode: LabMode; initial
           {(Object.keys(LAB_CONTROLS) as LabVariable[]).map((key) => {
             const control = LAB_CONTROLS[key];
             return <div className={styles.control} key={key}><div><label htmlFor={`lab-${key}`}>{control.label}</label><output htmlFor={`lab-${key}`}>{key === "stock" ? `$${scenario[key]}` : `${scenario[key]}${key === "days" ? " days" : "%"}`}</output></div>
-              <input id={`lab-${key}`} type="range" min={control.min} max={control.max} step={control.step} value={scenario[key]} disabled={Boolean(locked || (mission && key !== mission.variable))} style={rangeFill(scenario[key], control.min, control.max)} onChange={(e) => { setScenario({ ...scenario, [key]: Number(e.target.value) }); setMessage(""); }} />
+              <input id={`lab-${key}`} type="range" min={control.min} max={control.max} step={control.step} value={scenario[key]} disabled={Boolean(locked || (mission && key !== mission.variable))} style={rangeFill(scenario[key], control.min, control.max)} onChange={(e) => { setScenario({ ...scenario, [key]: Number(e.target.value) }); say(""); }} />
             </div>;
           })}
           {mission && <p className={styles.target}>{phase === "predict" ? "Make your prediction to unlock the experiment." : mission.target}</p>}
           {mission && phase === "experiment" && <button type="button" className={styles.primary} onClick={() => {
-            if (!meetsMissionTarget(mission, scenario)) { setMessage(mission.target); return; }
+            if (!meetsMissionTarget(mission, scenario)) { say(mission.target, true); return; }
             transition("explain");
           }}>Test my scenario →</button>}
-          <div className={styles.saveActions}><button type="button" className={styles.secondary} disabled={phase === "predict"} onClick={() => setMessage(saveExperiment(mode, scenario) ? "Experiment saved. Find it in your lab notebook below." : "Could not save to this browser. You can still export your experiment.")}>Save experiment</button><button type="button" className={styles.textButton} onClick={() => downloadCsv("strikelab-experiment.csv", toCsv(experimentCsvRows(baseline, scenario)))}>Export CSV ↗</button></div>
+          <div className={styles.saveActions}><button type="button" className={styles.secondary} disabled={phase === "predict"} onClick={() => saveExperiment(mode, scenario) ? say("Experiment saved. Find it in your lab notebook below.") : say("Could not save to this browser. You can still export your experiment.", true)}>Save experiment</button><button type="button" className={styles.textButton} onClick={() => downloadCsv("strikelab-experiment.csv", toCsv(experimentCsvRows(baseline, scenario)))}>Export CSV ↗</button></div>
         </div>
       </div>
 
       {mission && (phase === "explain" || phase === "done") && <section className={styles.checkpoint} aria-label="Explain the result">
         <p className={styles.eyebrow}>{prediction === mission.prediction ? "Your prediction held up" : "A useful surprise"}</p>
-        <h3>{phase === "done" ? "Experiment complete. Now build the model." : mission.reflection}</h3>
+        <h3 ref={checkpoint} tabIndex={-1}>{phase === "done" ? "Experiment complete. Now build the model." : mission.reflection}</h3>
         <p className={styles.muted}>The call moved from {dollars(before)} to {dollars(after)} per share with only {LAB_CONTROLS[mission.variable].label.toLowerCase()} changed.</p>
-        {phase === "explain" ? <><fieldset className={styles.reflections}><legend className="sl-visually-hidden">Choose an explanation</legend>{mission.answers.map((answer, i) => <label key={answer}><input type="radio" name="reflection" checked={reflection === i} onChange={() => { setReflection(i); setMessage(""); }} /><span>{answer}</span></label>)}</fieldset><button type="button" className={styles.primary} disabled={reflection === null} onClick={finish}>Finish mission →</button></> : <><p>{mission.explanation}</p><div className={styles.actions}><Link href={mission.lessonHref} className={styles.primary}>{mission.lessonTitle} in Python ↗</Link>{nextMission && <Link href={`/lab?mission=${nextMission.id}`} className={styles.secondary}>Next experiment →</Link>}<Link href="/playground" className={styles.textButton}>Open coding playground</Link></div></>}
+        {phase === "explain" ? <><fieldset className={styles.reflections}><legend className="sl-visually-hidden">Choose an explanation</legend>{mission.answers.map((answer, i) => <label key={answer}><input type="radio" name="reflection" checked={reflection === i} onChange={() => { setReflection(i); say(""); }} /><span>{answer}</span></label>)}</fieldset><button type="button" className={styles.primary} disabled={reflection === null} onClick={finish}>Finish mission →</button></> : <><p>{mission.explanation}</p><div className={styles.actions}><Link href={mission.lessonHref} className={styles.primary}>{mission.lessonTitle} in Python ↗</Link>{nextMission && <Link href={`/lab?mission=${nextMission.id}`} className={styles.secondary}>Next experiment →</Link>}<Link href="/playground" className={styles.textButton}>Open coding playground</Link></div></>}
       </section>}
-      <p role="status" className={styles.status}>{message}</p>
+      <p role="status" className={message.warn ? `${styles.status} ${styles.warn}` : styles.status}>{message.text}</p>
     </>
   );
 }

@@ -14,7 +14,7 @@ const MIGRATIONS_DIR = join(__dirname, "..", "migrations");
 
 const SUPABASE_STUBS = `
 create schema auth;
-create table auth.users (id uuid primary key, email text, raw_user_meta_data jsonb not null default '{}'::jsonb);
+create table auth.users (id uuid primary key, email text, raw_user_meta_data jsonb not null default '{}'::jsonb, created_at timestamptz not null default now(), last_sign_in_at timestamptz);
 create function auth.uid() returns uuid language sql stable as $$
   select nullif(current_setting('request.jwt.claim.sub', true), '')::uuid
 $$;
