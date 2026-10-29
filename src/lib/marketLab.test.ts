@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { DEFAULT_SCENARIO, LAB_MISSIONS, experimentCsvRows, isLabScenario, labCurve, labPrice, meetsMissionTarget } from "./marketLab";
+import { DEFAULT_SCENARIO, LAB_MISSIONS, experimentCsvRows, isLabScenario, labCurve, labPrice, meetsMissionTarget, priceAxisTicks } from "./marketLab";
 import { getLessonById } from "./tracks";
 
 describe("Market Lab model", () => {
@@ -52,5 +52,16 @@ describe("Market Lab model", () => {
     expect(rows.find((row) => row[0] === "Annual volatility (%)")).toEqual(["Annual volatility (%)", "20", "40"]);
     expect(Number(rows.find((row) => row[0] === "Model value ($ per share)")![2])).toBeCloseTo(labPrice({ ...DEFAULT_SCENARIO, volatility: 40 }), 5);
     expect(rows[2][1]).toContain("not profit");
+  });
+  it("labels the price axis with round steps that cover the peak", () => {
+    expect(priceAxisTicks(10.2)).toEqual([0, 2.5, 5, 7.5, 10, 12.5]);
+    expect(priceAxisTicks(1.12)).toEqual([0, 0.25, 0.5, 0.75, 1, 1.25]);
+    expect(priceAxisTicks(50)).toEqual([0, 10, 20, 30, 40, 50]);
+    for (const peak of [0.4, 3.3, 7, 18, 63, 120]) {
+      const ticks = priceAxisTicks(peak);
+      expect(ticks[ticks.length - 1]).toBeGreaterThanOrEqual(peak);
+      expect(ticks.length).toBeGreaterThanOrEqual(3);
+      expect(ticks.length).toBeLessThanOrEqual(6);
+    }
   });
 });

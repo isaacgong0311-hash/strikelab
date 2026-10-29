@@ -21,6 +21,10 @@ export const metadata: Metadata = {
   twitter: { card: "summary_large_image", title: TITLE, description: DESCRIPTION },
 };
 
+// The Demo Club preview's dates are relative to today; without this the page
+// is built once and its due dates drift into the past.
+export const revalidate = 3600;
+
 export default function Page() {
   return <HomeView />;
 }

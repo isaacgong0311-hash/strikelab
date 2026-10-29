@@ -123,6 +123,26 @@ describe("scripts/metrics", () => {
     // One row per migration file, so a new migration can't be forgotten here.
     const files = readdirSync(join(__dirname, "..", "..", "..", "supabase", "migrations")).filter((f) => f.endsWith(".sql"));
     expect(rows.map((r) => r.migration.slice(0, 4))).toEqual(files.map((f) => f.slice(0, 4)).sort());
+
+    // And it really detects a gap, rather than printing a fixed list.
+    await t.db.exec("alter table public.subscriptions drop column last_event_created");
+    const after = (await t.db.query<{ migration: string; state: string }>(sql("check-migrations.sql"))).rows;
+    expect(after.filter((r) => r.state !== "applied").map((r) => r.migration)).toEqual(["0020_subscription_event_order"]);
+  });
+
+  it("rls-audit.sql lists every table the migrations create, and flags one with RLS off", async () => {
+    const t = await createTestDb();
+    const dir = join(__dirname, "..", "..", "..", "supabase", "migrations");
+    const created = readdirSync(dir).flatMap((f) =>
+      [...readFileSync(join(dir, f), "utf8").matchAll(/create table if not exists public\.([a-z_]+)/gi)].map((m) => m[1].toLowerCase()),
+    );
+    const { rows } = await t.db.query<{ table_name: string; state: string }>(sql("rls-audit.sql"));
+    expect(rows.map((r) => r.table_name)).toEqual([...new Set(created)].sort());
+    expect(rows.filter((r) => r.state !== "RLS ON")).toEqual([]);
+
+    await t.db.exec("alter table public.lesson_submissions disable row level security");
+    const after = (await t.db.query<{ table_name: string; state: string }>(sql("rls-audit.sql"))).rows;
+    expect(after.filter((r) => r.state !== "RLS ON").map((r) => r.table_name)).toEqual(["lesson_submissions"]);
   });
 
   it("leader-funnel.sql follows leaders from sign-up to their first student, by source", async () => {
