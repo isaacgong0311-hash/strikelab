@@ -869,7 +869,7 @@ print("Tests passed!")
   <li><strong>Moneyness:</strong> vega peaks right at the ATM strike and tapers off on either side. Deep OTM options are close to binary bets — they'll be worth either a lot or nothing — so a small shift in vol barely changes that calculus. Deep ITM options are close to certain to be exercised regardless, so vol doesn't move the needle much there either.</li>
   <li><strong>Time to expiry:</strong> vega scales with √T. A 1-year ATM option carries roughly √12 ≈ 3.46× the vega of a 1-month ATM option — more time on the clock means more room for volatility to actually matter.</li>
 </ul>
-<p>The upshot is that long-dated options behave more like a bet on volatility than a bet on direction. A 2-year at-the-money LEAPS option on a $100 stock sits around $0.50 of vega — a 5-point move in vol shifts its price by about $2.50, often more than the delta-driven move you'd get from a comparable stretch of time.</p>
+<p>The upshot is that long-dated options behave more like a bet on volatility than a bet on direction. A 2-year at-the-money LEAPS option on a $100 stock sits around $0.50 of vega — a 5-point move in vol shifts its price by about $2.50. With a delta near 0.69, the stock itself would have to move about $3.60 to do the same.</p>
 
 <h2>Implied Volatility: The Market's Forecast</h2>
 <p>Black-Scholes takes σ as one of its inputs, but here's the catch: nobody can actually observe σ directly. What you do observe is the option's <em>market price</em>. So traders run the formula backwards — given this market price, what σ would make Black-Scholes spit out that exact number? That backed-out σ is <strong>implied volatility (IV)</strong>.</p>
@@ -1470,7 +1470,7 @@ print("Tests passed!")
 <p>As with vega, dividing by 100 expresses rho "per 1 percentage point" of rate move rather than per unit (a 1.00 move in r, i.e. a 100-point move, would be absurd). Check which convention a source uses before comparing numbers across textbooks.</p>
 
 <h2>Why Rho Scales With Time</h2>
-<p>Rho contains a T term directly in the formula, and it shows up again inside N(d₂). This means rho grows roughly linearly with time to expiration — a much stronger relationship than vega's √T scaling. A 30-day option might have a rho of $0.02; the same option struck two years out could have a rho of $1.50 or more.</p>
+<p>Rho contains a T term directly in the formula, and it shows up again inside N(d₂). This means rho grows roughly linearly with time to expiration — a much stronger relationship than vega's √T scaling. With the inputs from this lesson's exercise (S = K = 100, r = 5%, σ = 20%), a 30-day at-the-money call has a rho of about $0.04, the one-year call about $0.53, and the two-year call about $1.06: 24 times the time, roughly 25 times the rho.</p>
 <p>This is why rho is nearly ignored for short-dated options and taken seriously for LEAPS (Long-term Equity AnticiPation Securities, options expiring a year or more out) and for anything priced off a long-dated bond or rate future. A trader running a book of 2-year options who ignores rho is implicitly making an unhedged bet on interest rates, whether they meant to or not.</p>
 
 <h2>The 2022–2023 Lesson</h2>

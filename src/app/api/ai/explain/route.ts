@@ -10,7 +10,7 @@ import { NextRequest } from "next/server";
 import { requireUser } from "@/lib/supabase/requireUser";
 import { getLessonContext } from "@/lib/tracks";
 import { streamGroqChat, textStream, streamHeaders, isAiConfigured } from "@/lib/ai/groq";
-import { consumeAiQuota } from "@/lib/ai/quota";
+import { AI_CLASS_OFF_REPLY, consumeAiQuota } from "@/lib/ai/quota";
 
 /** Long selections mean "explain the whole section", which this isn't for. */
 const MAX_SELECTION_CHARS = 600;
@@ -58,7 +58,8 @@ export async function POST(req: NextRequest) {
 
   const quota = await consumeAiQuota(auth.supabase, auth.userId, "explain");
   if (!quota.allowed) {
-    return new Response(textStream(OVER_QUOTA), { headers: streamHeaders("fallback") });
+    const reply = quota.reason === "class" ? AI_CLASS_OFF_REPLY : quota.reason === "unavailable" ? UNAVAILABLE : OVER_QUOTA;
+    return new Response(textStream(reply), { headers: streamHeaders("fallback") });
   }
 
   const stream = await streamGroqChat({

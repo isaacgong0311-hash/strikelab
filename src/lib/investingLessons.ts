@@ -569,7 +569,7 @@ print("Tests passed!")
     },
     content: `
 <h2>The Risk-Return Tradeoff</h2>
-<p>Markets don't hand out free returns. If something offers a higher expected payoff, it comes bundled with more risk — that trade is basically the whole discipline of finance in one sentence. Three-month U.S. Treasury bills pay around 5% and are about as close to risk-free as money gets. The S&P 500 has averaged closer to 10% historically, but "historically" is doing a lot of work in that sentence — it includes 2008 (−37%) and 2022 (−18%). Put money into early-stage startup equity and you might see 50%+ returns, or you might see zero. All of it, forever.</p>
+<p>Markets don't hand out free returns. If something offers a higher expected payoff, it comes bundled with more risk — that trade is basically the whole discipline of finance in one sentence. Three-month U.S. Treasury bills pay whatever the current short-term rate is (roughly 4–5% through most of 2023–2025) and are about as close to risk-free as money gets. The S&P 500 has averaged closer to 10% historically, but "historically" is doing a lot of work in that sentence — it includes 2008 (−37%) and 2022 (−18%). Put money into early-stage startup equity and you might see 50%+ returns, or you might see zero. All of it, forever.</p>
 <p>The standard way to measure risk is <strong>volatility</strong> — the standard deviation of returns. A stock with 25% annual volatility will typically wander within about ±25% of its expected return in roughly two years out of three. That's not a guarantee, just what "one standard deviation" means in practice.</p>
 
 <h2>Measuring Volatility</h2>
@@ -761,7 +761,7 @@ print("Tests passed!")
   <li>After 30 years: $174,494</li>
   <li>After 40 years: $452,593</li>
 </ul>
-<p>Einstein is often credited with calling compound interest "the eighth wonder of the world." He almost certainly never said it, but look at those numbers again and it's easy to see why people keep attributing it to him anyway. Start at 18 instead of 28 — just ten extra years — and your ending balance roughly doubles. Nothing else in this lesson moves the needle that much for that little effort.</p>
+<p>Einstein is often credited with calling compound interest "the eighth wonder of the world." He almost certainly never said it, but look at those numbers again and it's easy to see why people keep attributing it to him anyway. Start at 18 instead of 28 — just ten extra years — and your ending balance is about 2.6 times bigger (that's 1.10<sup>10</sup>, the same jump as between any two rows above). Nothing else in this lesson moves the needle that much for that little effort.</p>
 
 <h2>Rebalancing</h2>
 <p>Your target allocation doesn't hold still on its own. If stocks have a great run, you might look up and find yourself at 90% equities when you meant to be at 70%. Rebalancing once a year — selling a bit of whatever grew, buying a bit of whatever lagged — pulls you back to target. It also does something psychologically useful: it forces "buy low, sell high" as a mechanical habit, instead of a decision you have to make in the moment with your emotions involved.</p>

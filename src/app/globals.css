@@ -2572,26 +2572,6 @@ h1, h2, h3, h4 {
   font-weight: 700;
 }
 
-/* Standalone achievements page */
-.ach-page-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 14px;
-}
-.ach-page-card { padding: 26px 18px 22px; }
-.ach-page-card .db-ach-icon { font-size: 34px; }
-.ach-page-progress { width: 100%; margin-top: 4px; display: flex; align-items: center; gap: 8px; }
-.ach-page-progress .db-mini-bar { flex: 1; border-radius: var(--r-full); }
-.ach-page-progress .db-mini-bar-fill { border-radius: var(--r-full); }
-.ach-page-progress-n { font-family: var(--font-mono); font-size: 10px; color: var(--ink-3); flex-shrink: 0; }
-.ach-page-status { font-family: var(--font-mono); font-size: 10px; text-transform: uppercase; letter-spacing: 0.08em; margin-top: 2px; }
-@media (max-width: 700px) {
-  .ach-page-grid { grid-template-columns: repeat(2, 1fr); }
-}
-@media (max-width: 420px) {
-  .ach-page-grid { grid-template-columns: 1fr; }
-}
-
 /* ── Class roster (dashboard/class/[id]) ── */
 .roster-metrics {
   display: grid;

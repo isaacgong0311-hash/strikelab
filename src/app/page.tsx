@@ -2,14 +2,9 @@ import type { Metadata } from "next";
 import HomeView from "./HomeView";
 import { SITE_URL, SITE_NAME } from "@/lib/site";
 
-// Decision log 2026-09-30: one homepage for independent students and club
-// leaders; the title leads with what everyone does here.
-const TITLE = "StrikeLab: learn quant finance by building it";
+const TITLE = "StrikeLab: learn finance by building it";
 const DESCRIPTION =
-  "Price options, code the Greeks and backtest strategies in real Python, right in the browser. Free for high-school students, and ready to run as a six-week lab for clubs and classes.";
-
-// The hero's sample data is relative to today; refresh it hourly.
-export const revalidate = 3600;
+  "Interactive finance experiments, 23 hands-on lessons, and real Python in your browser. Explore options, risk, and backtesting. Free for students, with a six-week club program.";
 
 export const metadata: Metadata = {
   title: { absolute: TITLE },
@@ -25,6 +20,10 @@ export const metadata: Metadata = {
   },
   twitter: { card: "summary_large_image", title: TITLE, description: DESCRIPTION },
 };
+
+// The Demo Club preview's dates are relative to today; without this the page
+// is built once and its due dates drift into the past.
+export const revalidate = 3600;
 
 export default function Page() {
   return <HomeView />;

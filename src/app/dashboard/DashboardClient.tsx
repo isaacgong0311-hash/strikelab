@@ -456,9 +456,7 @@ export default function DashboardClient() {
       {/* ── ACHIEVEMENTS ─────────────────────────────────── */}
       <div className="db-section-head" style={{ marginTop: 8 }}>
         <h2 className="db-section-title">Achievements</h2>
-        <Link href="/achievements" className="db-section-meta db-section-link">
-          {unlockedAch} / {ACHIEVEMENTS.length} unlocked · View all →
-        </Link>
+        <span className="db-section-meta">{unlockedAch} / {ACHIEVEMENTS.length} unlocked</span>
       </div>
       <div className="db-ach-grid">
         {ACHIEVEMENTS.map(a => {

@@ -8,7 +8,7 @@ export const metadata = pageMetadata({
   path: "/roadmap",
   title: "Roadmap",
   description:
-    "What's shipping next on StrikeLab — guided cohorts, VaR/GARCH/Monte Carlo lessons, and more cohort tools.",
+    "What's shipping next on StrikeLab: seasons of timed challenges, verified records and the January Intensive.",
 });
 
 const ROADMAP = [
@@ -27,7 +27,7 @@ const ROADMAP = [
     items: [
       { title: "Mobile-responsive layout", state: "in-progress", desc: "All lessons + playground fully usable on phone." },
       { title: "Rho lesson ✓", state: "done", desc: "The interest-rate Greek — how rate changes move long-dated options, and why it mattered so much during the 2022-2023 hiking cycle." },
-      { title: "Achievement system ✓", state: "done", desc: "12 badges for completing tracks, perfect Greek scores, and streak milestones — live on the dashboard and at /achievements." },
+      { title: "Achievement system ✓", state: "done", desc: "12 badges for completing tracks, perfect Greek scores, and streak milestones — live on the dashboard." },
       { title: "Interactive payoff diagrams ✓", state: "done", desc: "Strategy payoff charts live in the Option Strategies lesson — pick a strategy, drag the stock price, watch the P&L curve." },
       { title: "Binomial tree visualizer ✓", state: "done", desc: "Interactive lattice in the Binomial Trees lesson — click any node to see its early-exercise decision." },
       { title: "Certificates of completion ✓", state: "done", desc: "Finish a track, claim a shareable certificate at /certificate/[id] — LinkedIn-ready card, verifiable by URL." },
@@ -45,8 +45,10 @@ const ROADMAP = [
     label: "Next up",
     color: "#1d4ed8",
     items: [
-      { title: "Guided cohort pilots", state: "in-progress", desc: "A ready-to-run six-week Quant Foundations program with scheduled lessons, a facilitator guide, and measurable cohort outcomes." },
-      { title: "Lesson 9–11: VaR, GARCH, Monte Carlo", state: "planned", desc: "Bridge to quant research and risk." },
+      { title: "Seasons", state: "in-progress", desc: "Timed weekly challenges with per-student numbers, the AI tutor off during an attempt, official scores computed by StrikeLab after submission, and handle-only season and club leaderboards." },
+      { title: "Season 1 (Nov 30 to Dec 20)", state: "planned", desc: "Three challenges: put-call parity, Black-Scholes and option delta." },
+      { title: "Verified records", state: "planned", desc: "A private page per student listing seasons, placings and a capstone verified in a short live conversation, shareable by link." },
+      { title: "The Intensive (January)", state: "planned", desc: "A six-week cohort of 8 to 12 students with mentor review, ending in a capstone the student defends live." },
     ],
   },
   {
