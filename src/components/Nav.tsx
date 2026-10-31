@@ -6,15 +6,12 @@ import { useProgress } from "@/lib/useProgress";
 import { useAuth } from "@/lib/auth/AuthProvider";
 import BrandMark from "@/components/BrandMark";
 import AccessibilityMenu from "@/components/accessibility/AccessibilityMenu";
-import { PLANNED_SEASON } from "@/lib/seasons/planned";
-
-const SEASON_START = new Intl.DateTimeFormat("en-US", { month: "short", day: "numeric", timeZone: "UTC" }).format(
-  new Date(`${PLANNED_SEASON.startsOn}T00:00:00Z`),
-);
+import { PLANNED_SEASON, shortSeasonDate } from "@/lib/seasons/planned";
 
 const PRIMARY: { href: string; label: string; pro?: boolean }[] = [
   { href: "/dashboard",   label: "Dashboard" },
   { href: "/lessons",     label: "Lessons" },
+  { href: "/lab",         label: "Market Lab" },
   { href: "/playground",  label: "Playground" },
   { href: "/seasons",     label: "Seasons" },
 ];
@@ -34,18 +31,18 @@ const TEACHER: { href: string; label: string }[] = [
   { href: "/dashboard", label: "Dashboard" },
 ];
 
-// Signed-out visitors are students and club leaders alike (decision log
-// 2026-09-30): the learning surfaces first, then one clear door for leaders.
+// Signed-out visitors: seasons first (proving-ground direction, PLAN.md
+// 2026-10-16), then the training surfaces, then one door each for club
+// leaders and parents. Pricing and the demo stay in the footer and on /clubs.
 const VISITOR: { href: string; label: string }[] = [
   { href: "/seasons",    label: "Seasons" },
   { href: "/lessons",    label: "Lessons" },
-  { href: "/playground", label: "Playground" },
-  { href: "/clubs",      label: "For clubs & teachers" },
-  { href: "/demo",       label: "Demo" },
-  { href: "/pricing",    label: "Pricing" },
+  { href: "/lab",        label: "Market Lab" },
+  { href: "/clubs",      label: "For clubs" },
+  { href: "/intensive",  label: "For parents" },
 ];
 
-// The leaders' announcement shows only on these marketing pages, never in a
+// The season announcement shows only on these marketing pages, never in a
 // lesson, a cohort or a leader's own pages (frontend work plan FW-2).
 const ANNOUNCE_PATHS = new Set(["/", "/lessons", "/pricing", "/about", "/faq"]);
 
@@ -218,7 +215,7 @@ export default function Nav() {
       {showAnnounce && (
         <div className="nav-announce">
           <Link href="/seasons?src=announce" className="nav-announce-link">
-            Season 1 starts {SEASON_START}: free timed quant challenges →
+            {PLANNED_SEASON.title} starts {shortSeasonDate(PLANNED_SEASON.startsOn)}: free, timed, ranked under a handle →
           </Link>
         </div>
       )}
@@ -327,9 +324,6 @@ export default function Nav() {
                   <Link href="/dashboard" className="nav-account-item" onClick={() => setAccountOpen(false)}>
                     Dashboard
                   </Link>
-                  <Link href="/record" className="nav-account-item" onClick={() => setAccountOpen(false)}>
-                    Your record
-                  </Link>
                   <Link href="/settings" className="nav-account-item" onClick={() => setAccountOpen(false)}>
                     Settings
                   </Link>
@@ -414,9 +408,6 @@ export default function Nav() {
                     {displayName}
                   </Link>
                 )}
-                <Link href="/record" className="nav-mobile-link" onClick={() => setMenuOpen(false)}>
-                  Your record
-                </Link>
                 <button type="button" onClick={handleSignOut} className="nav-mobile-link nav-mobile-signout">
                   Sign out
                 </button>

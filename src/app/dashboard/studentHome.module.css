@@ -1,0 +1,129 @@
+.page {
+  width: min(100% - 2rem, 72rem);
+  margin: 0 auto;
+  padding: clamp(1.5rem, 5vw, 3.5rem) 0 5rem;
+  color: var(--sl-text);
+}
+
+.header { margin-bottom: 1.25rem; }
+.kicker, .seasonEyebrow, .lessonLabel {
+  margin: 0 0 .5rem;
+  font-size: .75rem;
+  font-weight: 800;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+}
+.kicker { color: var(--sl-brand-strong); }
+.header h1 { margin: 0; font: 800 clamp(2rem, 5vw, 3.5rem)/1.08 var(--sl-font-display); }
+
+.season {
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 2rem;
+  overflow: hidden;
+  padding: clamp(1.5rem, 4vw, 2.75rem);
+  background: radial-gradient(circle at 85% 0%, color-mix(in srgb, var(--sl-brand) 55%, transparent), transparent 45%), var(--sl-surface-inverse);
+  border-radius: var(--sl-radius-xl);
+  box-shadow: var(--sl-shadow-2);
+  color: var(--sl-surface);
+}
+.season::after {
+  content: "";
+  position: absolute;
+  right: -3rem;
+  bottom: -5rem;
+  width: 16rem;
+  aspect-ratio: 1;
+  border: 1px solid color-mix(in srgb, var(--sl-surface) 20%, transparent);
+  border-radius: 50%;
+  box-shadow: 0 0 0 2.5rem color-mix(in srgb, var(--sl-surface) 4%, transparent), 0 0 0 5rem color-mix(in srgb, var(--sl-surface) 3%, transparent);
+  pointer-events: none;
+}
+.seasonCopy, .seasonAction { position: relative; z-index: 1; }
+.seasonEyebrow { color: color-mix(in srgb, var(--sl-surface) 76%, transparent); }
+.season h2 { max-width: 19ch; margin: 0; font: 800 clamp(1.65rem, 4vw, 2.75rem)/1.12 var(--sl-font-display); }
+.seasonCopy > p:last-child { margin: .85rem 0 0; color: color-mix(in srgb, var(--sl-surface) 84%, transparent); line-height: 1.55; }
+.seasonAction {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  gap: .75rem;
+  min-height: var(--sl-tap);
+  flex-shrink: 0;
+  padding: .8rem 1.15rem;
+  background: var(--sl-surface);
+  border-radius: var(--sl-radius-md);
+  color: var(--sl-brand-strong);
+  font-weight: 800;
+  text-decoration: none;
+}
+.seasonAction:hover { background: var(--sl-brand-soft); }
+
+.training, .record, .achievements { margin-top: clamp(2rem, 5vw, 3.5rem); }
+.sectionHeading { display: flex; align-items: end; justify-content: space-between; gap: 1rem; margin-bottom: 1.25rem; }
+.sectionHeading h2, .record h2 { margin: 0; font: 800 clamp(1.5rem, 3vw, 2.25rem)/1.15 var(--sl-font-display); }
+.streak, .sectionHeading > span { color: var(--sl-text-muted); font-size: .875rem; font-weight: 700; }
+.trainingGrid { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: 1rem; }
+.nextLesson, .progress {
+  padding: clamp(1.25rem, 3vw, 2rem);
+  background: var(--sl-surface);
+  border: 1px solid var(--sl-border);
+  border-radius: var(--sl-radius-lg);
+  box-shadow: var(--sl-shadow-1);
+}
+.lessonLabel { color: var(--sl-brand-strong); }
+.nextLesson h3 { margin: 0; font: 800 clamp(1.5rem, 3vw, 2.25rem)/1.2 var(--sl-font-display); }
+.nextLesson p:not(.lessonLabel) { margin: .75rem 0 1.5rem; color: var(--sl-text-muted); line-height: 1.6; }
+.nextLesson a:not(.cohortLink), .record a {
+  display: inline-flex;
+  align-items: center;
+  gap: .75rem;
+  min-height: var(--sl-tap);
+  padding: .75rem 1rem;
+  border-radius: var(--sl-radius-md);
+  background: var(--sl-brand-strong);
+  color: var(--sl-surface);
+  font-weight: 800;
+  text-decoration: none;
+}
+.cohortLink { display: block; width: fit-content; margin-top: 1rem; color: var(--sl-brand-strong); font-weight: 700; }
+.progressHead, .track > div:first-child { display: flex; justify-content: space-between; gap: .75rem; align-items: baseline; }
+.progressHead { margin-bottom: 1.25rem; }
+.progressHead h3 { margin: 0; font: 800 1.1rem/1.2 var(--sl-font-display); }
+.progressHead span, .track span { color: var(--sl-text-muted); font-size: .8125rem; font-variant-numeric: tabular-nums; }
+.track { margin-top: 1.15rem; }
+.track strong { font-size: .875rem; }
+.trackBar { height: .5rem; overflow: hidden; margin-top: .5rem; border-radius: var(--sl-radius-pill); background: var(--sl-canvas-subtle); }
+.trackBar span { display: block; height: 100%; border-radius: inherit; background: var(--sl-brand); }
+.pathLink { display: inline-block; margin-top: 1.5rem; color: var(--sl-brand-strong); font-weight: 700; }
+.record {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 2rem;
+  padding: clamp(1.5rem, 3vw, 2.25rem);
+  background: var(--sl-brand-soft);
+  border: 1px solid var(--sl-border);
+  border-radius: var(--sl-radius-lg);
+}
+.record p:last-child { max-width: 34rem; margin: .6rem 0 0; line-height: 1.6; color: var(--sl-text-muted); }
+.record a { flex-shrink: 0; }
+.achievementStrip { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: .75rem; }
+.achievement { display: grid; gap: .2rem; padding: 1rem; border: 1px solid var(--sl-border); border-radius: var(--sl-radius-md); background: var(--sl-surface); }
+.achievement > span { font-size: 1.3rem; }
+.achievement strong { font-size: .875rem; }
+.achievement small { color: var(--sl-text-muted); }
+.page a:focus-visible { outline: 3px solid var(--sl-focus); outline-offset: 3px; }
+
+@media (max-width: 48rem) {
+  .season, .record { align-items: stretch; flex-direction: column; }
+  .seasonAction, .record a { align-self: flex-start; }
+  .trainingGrid { grid-template-columns: 1fr; }
+  .achievementStrip { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+@media (max-width: 24rem) {
+  .sectionHeading { align-items: flex-start; flex-direction: column; }
+}

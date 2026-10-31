@@ -18,7 +18,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { requireUser } from "@/lib/supabase/requireUser";
 import { getLessonContext } from "@/lib/tracks";
 import { completeGroqJson, isAiConfigured } from "@/lib/ai/groq";
-import { consumeAiQuota } from "@/lib/ai/quota";
+import { AI_CLASS_OFF_REPLY, AI_UNAVAILABLE_REPLY, consumeAiQuota } from "@/lib/ai/quota";
 
 export interface PracticeProblem {
   title: string;
@@ -94,6 +94,8 @@ export async function POST(req: NextRequest) {
   }
 
   const quota = await consumeAiQuota(auth.supabase, auth.userId, "practice");
+  if (quota.reason === "class") return NextResponse.json({ error: AI_CLASS_OFF_REPLY }, { status: 403 });
+  if (quota.reason === "unavailable") return NextResponse.json({ error: AI_UNAVAILABLE_REPLY }, { status: 503 });
   if (!quota.allowed) {
     return NextResponse.json(
       { error: "You've used today's AI budget — it resets at midnight UTC." },

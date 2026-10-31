@@ -1,0 +1,61 @@
+.shell {
+  width: min(100% - 2rem, 68rem);
+  margin: 0 auto;
+  padding: clamp(2rem, 6vw, 4rem) 0;
+  color: var(--sl-text);
+}
+
+.shell h1 {
+  margin: 0;
+  font: 800 clamp(2rem, 5vw, 3rem)/1.1 var(--sl-font-display);
+}
+
+.shell h2 {
+  margin: 0 0 1rem;
+  font: 800 clamp(1.4rem, 3vw, 2rem)/1.2 var(--sl-font-display);
+}
+
+.kicker {
+  margin: 0 0 0.5rem;
+  color: var(--sl-brand-strong);
+  font-size: 0.8125rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.intro { color: var(--sl-text-muted); line-height: 1.6; }
+.section { margin-top: 2.5rem; }
+
+.picker {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem;
+  margin: 2rem 0;
+}
+
+.picker select,
+.picker button { min-height: var(--sl-tap); padding: 0.5rem 0.75rem; font: inherit; border-radius: var(--sl-radius-md); }
+.picker select { max-width: 100%; border: 1px solid var(--sl-border-strong); background: var(--sl-surface); color: var(--sl-text); }
+.picker button { border: 0; background: var(--sl-brand); color: white; font-weight: 800; cursor: pointer; }
+.picker :is(select, button):focus-visible,
+.shell a:focus-visible { outline: 3px solid var(--sl-focus); outline-offset: 3px; }
+
+.scroll { max-width: 100%; overflow-x: auto; }
+.scrollHint { display: none; color: var(--sl-text-muted); font-size: 0.875rem; }
+.table { width: 100%; min-width: 44rem; border-collapse: collapse; font-variant-numeric: tabular-nums; }
+.table caption { padding: 0 0 0.75rem; text-align: left; font-weight: 800; }
+.table th,
+.table td { padding: 0.75rem; border-bottom: 1px solid var(--sl-border); text-align: left; }
+.table tbody th { min-width: 16rem; }
+.table thead th { color: var(--sl-text-muted); font-size: 0.8125rem; }
+.reviews { display: grid; gap: 0.75rem; padding-left: 1.25rem; line-height: 1.6; }
+.shell a { color: var(--sl-brand-strong); font-weight: 700; text-underline-offset: 3px; }
+.shell pre { max-width: 100%; overflow-x: auto; padding: 1rem; border-radius: var(--sl-radius-md); background: var(--sl-surface-inverse); color: white; }
+.code { white-space: pre-wrap; overflow-wrap: anywhere; }
+.explanation { white-space: pre-wrap; overflow-wrap: anywhere; line-height: 1.6; }
+
+@media (max-width: 44rem) {
+  .scrollHint { display: block; }
+}

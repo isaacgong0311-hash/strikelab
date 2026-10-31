@@ -14,6 +14,12 @@ test("the intensive page shows the price and asks a parent to confirm before joi
   await page.goto("/intensive");
   await expect(page.getByText(/\$349/).first()).toBeVisible();
   await expect(page.getByText(/Nothing is charged now/)).toBeVisible();
+  await expect(page.getByRole("heading", { name: "What a week looks like" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "The capstone defense" })).toBeVisible();
+  await expect(page.getByText(/10 minutes to explain/)).toBeVisible();
+  await expect(page.getByText(/two adults are present, or it is recorded/)).toBeVisible();
+  await expect(page.getByRole("link", { name: "Read the example capstone" })).toHaveCount(2);
+  await expect(page.getByText(/They are not student submissions/)).toBeVisible();
   await page.getByLabel("Parent or guardian email").fill("parent@example.com");
   // The browser blocks submission until the guardian box is ticked.
   await page.getByRole("button", { name: "Join the waitlist" }).click();

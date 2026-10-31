@@ -28,5 +28,6 @@ from (values
   ('0021_rate_limits',              to_regclass('public.rate_limits') is not null),
   ('0022_private_challenge_board',  to_regprocedure('public.challenge_leaderboard(text, integer)') is not null),
   ('0023_class_ai_tutor',            to_regprocedure('public.ai_tutor_allowed()') is not null),
-  ('0024_seasons',                  to_regclass('public.season_attempts') is not null)
+  ('0024_seasons',                  to_regclass('public.season_attempts') is not null),
+  ('0025_verifications_and_records', to_regclass('public.record_shares') is not null)
 ) as m(migration, present);

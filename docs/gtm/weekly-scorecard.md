@@ -41,6 +41,8 @@ Copy the row template below to the bottom of the log each week — don't edit pa
 
 ## Log
 
+The September 14 entry below is a historical planning snapshot, not a current product or production-status statement. Later code includes timestamped completions and capstones, but their live migration status and actual cohort data have not been verified in this repo. Add a new dated entry after running the current production queries; do not rewrite the old entry or interpret its dashes as zeros.
+
 ### Week of 2026-09-14 (Phase 0 baseline)
 
 | Metric | Value |

@@ -1,4 +1,5 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
+import { isMissingSchemaError } from "@/lib/supabase/missingSchema";
 import { aiAllowedForUser } from "./classPolicy";
 
 /**
@@ -30,9 +31,20 @@ export interface QuotaResult {
   allowed: boolean;
   used: number;
   limit: number;
-  /** Set when `allowed` is false for a reason other than the daily cap. */
-  reason?: "class";
+  /**
+   * Set when `allowed` is false for a reason other than the daily cap:
+   * "class" = the leader turned the tutor off; "unavailable" = the budget
+   * couldn't be checked, so no paid call is made.
+   */
+  reason?: "class" | "unavailable";
 }
+
+/** Shown instead of an AI reply when the student's class has the tutor off. */
+export const AI_CLASS_OFF_REPLY = "The AI tutor is switched off for your class. Your club leader decides that.";
+
+/** Shown instead of an AI reply when the budget couldn't be checked. */
+export const AI_UNAVAILABLE_REPLY =
+  "The AI tutor is paused for a moment because we couldn't check today's budget. Try again in a minute; the lesson, the exercise and the solution all still work.";
 
 /**
  * Checks and increments today's AI budget for a user, atomically, via the
@@ -44,10 +56,11 @@ export interface QuotaResult {
  * statement, so two concurrent requests can't both read the same
  * pre-increment count and both get allowed through.
  *
- * Fails OPEN on an RPC error — a transient Supabase hiccup shouldn't block
- * a student mid-lesson. The tradeoff is that a sustained DB outage also
- * disables the cap; that's deliberate, since the outage itself is the louder
- * problem and Groq spend is bounded by traffic in the meantime.
+ * Fails CLOSED on an RPC error (build plan T3.8): this is a spend cap on a
+ * free product, so "couldn't check" must not mean "unlimited". The student
+ * gets AI_UNAVAILABLE_REPLY and everything that isn't AI keeps working. The
+ * one exception is a missing function (migration 0008 not applied), which
+ * allows, so an unapplied migration doesn't switch the tutor off for everyone.
  */
 export async function consumeAiQuota(
   supabase: SupabaseClient,
@@ -66,9 +79,13 @@ export async function consumeAiQuota(
     .rpc("consume_ai_quota", { p_user_id: userId, p_cost: cost, p_cap: DAILY_AI_ACTIONS })
     .single();
 
-  if (error || !data) {
-    console.error("[ai/quota] consume_ai_quota failed:", error?.message);
+  if (error && isMissingSchemaError(error)) {
+    console.warn("[ai/quota] consume_ai_quota not installed, allowing:", error.message);
     return { allowed: true, used: 0, limit: DAILY_AI_ACTIONS };
+  }
+  if (error || !data) {
+    console.error("[ai/quota] consume_ai_quota failed, refusing:", error?.message);
+    return { allowed: false, used: 0, limit: DAILY_AI_ACTIONS, reason: "unavailable" };
   }
 
   const row = data as { new_count: number; allowed: boolean };

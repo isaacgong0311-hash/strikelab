@@ -6,11 +6,12 @@ The P-numbers match `docs/superpowers/plans/2026-09-29-work-plan-to-first-kickof
 
 ## P1. Migrations (about 1.5h)
 
-Production is already running code that expects every migration through 0021, and this release adds 0022 (the challenge leaderboard stops showing names publicly). The app degrades rather than crashing when one is missing, but a missing 0015 makes every signed-in read of classes, members and assignments error, and a missing 0016 makes activation unmeasurable.
+Production code expects every file in `supabase/migrations/` (0001 → 0024 as of Oct 21, 2026; the open season PRs add more). The app degrades rather than crashing when one is missing, but a missing 0015 makes every signed-in read of classes, members and assignments error, and a missing 0016 makes activation unmeasurable.
 
-- [ ] In the Supabase SQL editor, run `scripts/metrics/check-migrations.sql`. It lists all 22 migrations as `applied` or `MISSING`.
+- [ ] In the Supabase SQL editor, run `scripts/metrics/check-migrations.sql`. It lists one row per migration file as `applied` or `MISSING`. Each row checks one object that migration creates: a sign it ran, not proof that every policy or function body in it is current.
 - [ ] Apply each `MISSING` file from `supabase/migrations/` by pasting it into the SQL editor. **If 0015 is missing, apply it first**, then the rest in number order. Every migration is written to be safe to re-run.
-- [ ] Re-run the check. **Pass:** all 22 rows say `applied`.
+- [ ] Re-run the check. **Pass:** every row says `applied`.
+- [ ] Run `scripts/metrics/rls-audit.sql`. **Pass:** every table says `RLS ON`. A `policy_count` of 0 is expected for server-only tables (e.g. `rate_limits`); investigate any other. RLS being on doesn't prove the policies are right, so also check with two test students that one can't see the other's progress, submissions or capstone, and that a leader sees only their own classes' students.
 - [ ] Signed in as a real user on strikelab.dev, open `/dashboard`, a class page (`/dashboard/class/<id>`), `/cohort/<id>` and `/teach`. None of them shows an error, and nothing new appears in Sentry.
 
 From now on, apply each new migration here *before* merging the PR that depends on it (master plan §12).
@@ -35,7 +36,7 @@ Students sign up with email and a password, then confirm through a link (`src/ap
 
 ## P4. Keys, alerts and uptime (about 45 min)
 
-- [ ] Vercel → Project → Settings → Environment Variables (Production) has `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY`, `NEXT_PUBLIC_SITE_URL` (= `https://strikelab.dev`), `GROQ_API_KEY`, `NEXT_PUBLIC_SENTRY_DSN` and `OPS_DISCORD_WEBHOOK_URL`.
+- [ ] Vercel → Project → Settings → Environment Variables (Production) has `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY`, `GROQ_API_KEY`, `NEXT_PUBLIC_SENTRY_DSN` and `OPS_DISCORD_WEBHOOK_URL`. (`NEXT_PUBLIC_SITE_URL` isn't needed: canonical URLs are fixed in `src/lib/site.ts`. The [Oct 9 name-only audit](production-config-audit-2026-10-09.md) found `OPS_DISCORD_WEBHOOK_URL` and the Stripe variables missing.)
 - [ ] Optional: `NEXT_PUBLIC_PILOT_CALL_URL` = your Cal.com link, so `/pilot` "Talk first" books a call instead of opening email.
 - [ ] `FOUNDER_USER_IDS` = your own Supabase user id (Supabase → Authentication → Users → your row → UID). It unlocks `/admin/metrics` for you only; everyone else gets a 404. Sign in and open `strikelab.dev/admin/metrics` to check.
 - [ ] **Sentry:** trigger a test error (for example, temporarily open a URL that throws on a preview deploy, or use Sentry's "send test event"). It shows up in the dashboard within a few minutes.
@@ -48,7 +49,7 @@ Students sign up with email and a password, then confirm through a link (`src/ap
 Rehearsals and smoke tests should never touch real student data.
 
 - [ ] Create a second Supabase project (the free tier allows two), called e.g. `strikelab-staging`.
-- [ ] Apply every migration in order (0001 → 0022) and run `check-migrations.sql`: all `applied`.
+- [ ] Apply every migration in order and run `check-migrations.sql` and `rls-audit.sql`: all `applied`, all `RLS ON`.
 - [ ] Vercel → Environment Variables: set the three Supabase variables for the **Preview** environment to the staging project's values, so preview deploys use staging.
 - [ ] Apply the same P2 email choice there too, or turn confirmation off on staging.
 

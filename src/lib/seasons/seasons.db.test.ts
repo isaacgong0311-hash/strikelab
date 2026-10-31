@@ -103,6 +103,11 @@ describe("seasons (0024)", () => {
     expect(await board(member)).toBe(1);
     expect(await board(teacher)).toBe(1);
     expect(await board(outsider)).toBe(0);
+    const anonymous = await t.db.transaction(async (tx) => {
+      await tx.exec("set local role anon");
+      return (await tx.query("select handle from season_leaderboard('s1', $1)", [klass])).rows;
+    });
+    expect(anonymous).toEqual([]);
   });
 
   it("switches the AI tutor off while a timed attempt is running", async () => {

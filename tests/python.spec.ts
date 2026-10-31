@@ -38,6 +38,36 @@ test("with every Python source blocked, Run says so instead of hanging", async (
   await expect(page.getByText(/Python couldn't load/)).toBeVisible({ timeout: 30_000 });
 });
 
+// On school Wi-Fi the first download can take a minute. Run has to say it's
+// loading Python, not show a red "Error" over "Running tests…" (build plan T5.9).
+test("on a slow network, Run says Python is loading, then runs the tests", async ({ page }) => {
+  await page.route(/cdn\.jsdelivr\.net/, (route) => route.abort());
+  await page.route(/\/pyodide\/.*pyodide\.asm\.wasm/, async (route) => {
+    await new Promise((r) => setTimeout(r, 6_000));
+    await route.continue();
+  });
+  await page.goto("/lesson/3", { waitUntil: "domcontentloaded" });
+  await expect(page.getByText("Loading Python in the background…")).toBeVisible({ timeout: 30_000 });
+
+  await page.getByRole("button", { name: /run/i }).first().click();
+  await expect(page.getByRole("button", { name: /Loading Python…/ })).toBeVisible();
+  await expect(page.getByText(/Loading Python first/)).toBeVisible();
+  await expect(page.getByText("Error", { exact: true })).toHaveCount(0);
+
+  // The starter code fails its tests: a real result, reached without a second click.
+  await expect(page.getByText(/Loading Python first/)).toBeHidden({ timeout: 60_000 });
+  await expect(page.getByText("Running tests…")).toBeHidden({ timeout: 30_000 });
+  await expect(page.getByText(/Python couldn't load/)).toHaveCount(0);
+});
+
+test("when Python can't load in the background, the lesson says so before Run", async ({ page }) => {
+  await page.route(/cdn\.jsdelivr\.net|\/pyodide\//, (route) => route.abort());
+  await page.goto("/lesson/3", { waitUntil: "domcontentloaded" });
+  await expect(page.getByText("Python didn't load. Press Run to try again.")).toBeVisible({ timeout: 30_000 });
+  await page.getByRole("button", { name: /run/i }).first().click();
+  await expect(page.getByText(/ask IT to allow strikelab\.dev/)).toBeVisible({ timeout: 30_000 });
+});
+
 // A student typing `while True:` used to freeze their whole tab. Python now
 // runs in a worker with a time limit (build plan T3.3).
 test("an infinite loop is stopped, explained, and the page stays usable", async ({ page }) => {

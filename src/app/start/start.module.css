@@ -1,0 +1,9 @@
+.panel { margin-top: 2rem; padding: clamp(1rem, 4vw, 2rem); border: 1px solid var(--sl-border); border-radius: var(--sl-radius-lg); background: var(--sl-surface); }
+.options { border: 0; padding: 0; margin: 1.5rem 0; display: grid; gap: 0.75rem; min-width: 0; }
+.option { display: flex; align-items: baseline; gap: 0.75rem; padding: 1rem; border: 1px solid var(--sl-border-strong); border-radius: var(--sl-radius-md); cursor: pointer; line-height: 1.5; }
+.option:has(:checked) { border-color: var(--sl-brand); background: var(--sl-brand-soft); }
+.option:focus-within { outline: 3px solid var(--sl-focus); outline-offset: 3px; }
+.panel button { cursor: pointer; }
+.panel button:disabled { opacity: 0.5; cursor: not-allowed; }
+.reset { margin-top: 1.5rem; color: var(--sl-brand-strong); text-decoration: underline; background: transparent; border: 0; padding: 0.5rem; font: inherit; }
+.reset:focus-visible { outline: 3px solid var(--sl-focus); outline-offset: 3px; }

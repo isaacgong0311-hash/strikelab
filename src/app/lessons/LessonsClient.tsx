@@ -1,162 +1,76 @@
 "use client";
+
 import Link from "next/link";
-import { TRACKS } from "@/lib/tracks";
+import { useState } from "react";
 import { useProgress } from "@/lib/useProgress";
-import FlameIcon from "@/components/FlameIcon";
-import { getLessonSessions, resumeSession, type SessionResults } from "@/lib/sessions";
 import { useSessionResults } from "@/lib/sessions/useSessionResults";
+import { filterHubTracks, hubLessonState, nextHubLesson, type HubTrack, type LessonFilter } from "@/lib/learningHub";
+import styles from "./hub.module.css";
 
-/**
- * Where a lesson row points. Unfinished lessons that have bite-sized
- * sessions open the next session; everything else opens the long-form page.
- */
-function lessonHref(lessonId: string, done: boolean, results: SessionResults): string {
-  const next = done ? undefined : resumeSession(lessonId, results);
-  return next ? `/learn/${next.id}` : `/lesson/${lessonId}`;
-}
-
-const LEVEL_COLORS: Record<string, string> = {
-  Beginner:     "var(--sky)",
-  Intermediate: "var(--grass)",
-  Advanced:     "var(--coral)",
+const TRACK_OUTCOMES: Record<string, string> = {
+  investing: "Understand the market before you model it.",
+  options: "Build a working options-pricing engine.",
+  quant: "Test a strategy without fooling yourself.",
 };
 
-// Roadmap items ("planned"/"in-progress" on /roadmap) shown as a preview
-// past each track's finish line — the path keeps going, it's just not paved
-// yet. Update alongside ROADMAP in src/app/roadmap/page.tsx.
-const COMING_SOON: Record<string, string> = {
-  quant: "VaR, GARCH & Monte Carlo",
-};
-
-export default function LessonsClient() {
+export default function LessonsClient({ tracks }: { tracks: HubTrack[] }) {
   const { completed, hydrated, xp, streak } = useProgress();
-  const sessionResults = useSessionResults();
+  const results = useSessionResults();
+  const [trackId, setTrackId] = useState("all");
+  const [query, setQuery] = useState("");
+  const [filter, setFilter] = useState<LessonFilter>("all");
+  const knownCompleted = hydrated ? completed : new Set<string>();
+  const allLessons = tracks.flatMap((track) => track.lessons);
+  const doneCount = allLessons.filter((lesson) => knownCompleted.has(lesson.id)).length;
+  const next = nextHubLesson(tracks, knownCompleted, results);
+  const visible = filterHubTracks(tracks, query, trackId, filter, knownCompleted, results);
+  const visibleCount = visible.reduce((count, track) => count + track.lessons.length, 0);
 
-  const totalLessons = TRACKS.reduce((s, t) => s + t.lessons.length, 0);
-  const doneCount = hydrated
-    ? TRACKS.flatMap((t) => t.lessons).filter((l) => completed.has(l.id)).length
-    : 0;
-
-  const pct = totalLessons ? (doneCount / totalLessons) * 100 : 0;
-  const nextLesson = hydrated
-    ? TRACKS.flatMap((track) => track.lessons).find((lesson) => !completed.has(lesson.id))
-    : TRACKS[0]?.lessons[0];
+  function clearFilters() { setTrackId("all"); setQuery(""); setFilter("all"); }
 
   return (
-    <div className="dpath">
-      {/* Header */}
-      <div className="dpath-head">
-        <div className="dpath-head-row">
-          <div>
-            <div className="v2-sec-label">Curriculum</div>
-            <h1 className="dpath-title">Your learning path</h1>
-          </div>
-          <div className="dpath-stats">
-            <div className="dstat">
-              <FlameIcon className="i" size={12} />
-              <b>{hydrated ? streak : 0}</b>
-              <span className="l">streak</span>
-            </div>
-            <div className="dstat">
-              <b>{hydrated ? xp : 0}</b>
-              <span className="l">XP</span>
-            </div>
-            <div className="dstat">
-              <b>{doneCount}/{totalLessons}</b>
-              <span className="l">done</span>
-            </div>
-          </div>
-        </div>
-        <div className="dpath-progress">
-          <div
-            className="dpath-progress-fill"
-            role="progressbar"
-            aria-label="Overall curriculum progress"
-            aria-valuemin={0}
-            aria-valuemax={totalLessons}
-            aria-valuenow={doneCount}
-            aria-valuetext={`${doneCount} of ${totalLessons} lessons complete`}
-            style={{ width: `${pct}%` }}
-          />
-        </div>
-        {nextLesson && (
-          <Link href={lessonHref(nextLesson.id, false, sessionResults)} className="dpath-next">
-            <span><small>Recommended next</small><strong>{nextLesson.title}</strong></span>
-            <span aria-hidden="true">Continue →</span>
-          </Link>
-        )}
-      </div>
-
-      {/* Tracks */}
-      {TRACKS.map((track) => {
-        const trackDone = hydrated
-          ? track.lessons.filter((l) => completed.has(l.id)).length
-          : 0;
-        const activeId = hydrated
-          ? track.lessons.find((l) => !completed.has(l.id))?.id ?? null
-          : track.lessons[0]?.id ?? null;
-        const levelColor = LEVEL_COLORS[track.level] ?? "var(--grass)";
-        const trackComplete = trackDone === track.lessons.length;
-
-        return (
-          <section key={track.id} aria-labelledby={`track-title-${track.id}`} className="dunit">
-            <div className="dunit-head" style={{ ["--unit-color" as string]: levelColor }}>
-              <span className="dunit-icon" aria-hidden="true">{track.icon}</span>
-              <div>
-                <h2 id={`track-title-${track.id}`} className="dunit-t">{track.title}</h2>
-                <div className="dunit-s">
-                  {track.subtitle} · {track.level} · {trackDone}/{track.lessons.length} complete
-                </div>
-              </div>
-            </div>
-
-            <ol className="drows" aria-label={`${track.title} lessons`}>
-              {track.lessons.map((lesson, i) => {
-                const done = hydrated && completed.has(lesson.id);
-                const isActive = !done && lesson.id === activeId;
-                const sessions = getLessonSessions(lesson.id);
-                const sessionsDone = sessions.filter((s) => sessionResults[s.id]).length;
-                const showSessionProgress = !done && sessions.length > 0;
-
-                return (
-                  <li key={lesson.id} className={`drow ${done ? "done" : ""} ${isActive ? "active" : ""}`}>
-                    <Link
-                      href={lessonHref(lesson.id, done, sessionResults)}
-                      className="drow-link"
-                      style={{ ["--unit-color" as string]: levelColor }}
-                      aria-label={`${lesson.title}, ${done ? "completed" : isActive ? "recommended next lesson" : "available"}${showSessionProgress ? `, ${sessionsDone} of ${sessions.length} sessions done` : ""}`}
-                    >
-                      <span className="drow-n">{done ? "✓" : i + 1}</span>
-                      <span className="drow-body">
-                        <span className="drow-title">{lesson.title}</span>
-                        <span className="drow-meta">
-                          {lesson.duration}
-                          {showSessionProgress && ` · ${sessionsDone}/${sessions.length} sessions`}
-                        </span>
-                      </span>
-                      {isActive && <span className="drow-tag">Next</span>}
-                    </Link>
-                  </li>
-                );
-              })}
-
-              {COMING_SOON[track.id] && (
-                <li className="drow locked">
-                  <span className="drow-link">
-                    <span className="drow-n">·</span>
-                    <span className="drow-body">
-                      <span className="drow-title">{COMING_SOON[track.id]}</span>
-                      <span className="drow-meta">Coming soon</span>
-                    </span>
-                  </span>
-                </li>
-              )}
-            </ol>
-
-            {trackComplete && <div className="dunit-done">{track.title} complete</div>}
+    <div className={styles.page}>
+      <header className={styles.header}>
+        <div><p className={styles.eyebrow}>The learning workspace</p><h1>From curious to capable.</h1><p>Learn the idea. Run the experiment. Write the model.</p></div>
+        <div className={styles.stats} aria-label="Your course progress"><span><b>{doneCount}<small>/{allLessons.length}</small></b>lessons done</span><span><b>{hydrated ? xp : 0}</b>XP earned</span><span><b>{hydrated ? streak : 0}</b>day streak</span></div>
+      </header>
+      <div className={styles.layout}>
+        <aside className={styles.sidebar} aria-label="Learning tracks">
+          <p className={styles.eyebrow}>Your curriculum</p>
+          <button type="button" className={styles.trackButton} aria-pressed={trackId === "all"} onClick={() => setTrackId("all")}><strong>All tracks</strong><small>{allLessons.length} lessons · one connected path</small></button>
+          {tracks.map((track, i) => {
+            const count = track.lessons.filter((lesson) => knownCompleted.has(lesson.id)).length;
+            return <button key={track.id} type="button" className={styles.trackButton} aria-pressed={trackId === track.id} onClick={() => setTrackId(track.id)}><span className={styles.trackIndex}>0{i + 1} / {track.level}</span><strong>{track.title}</strong><small>{count} of {track.lessons.length} complete</small><span className={styles.miniProgress} aria-hidden="true"><i style={{ width: `${count / track.lessons.length * 100}%` }} /></span></button>;
+          })}
+          <div className={styles.sidebarNote}><strong>All paths are open.</strong><p>Start where you are. Lessons, experiments and browser coding are free for students.</p><Link href="/start">Find your starting point ↗</Link></div>
+        </aside>
+        <div className={styles.main}>
+          <section className={styles.continueCard} aria-label="Continue your learning">
+            <div><p className={styles.eyebrow}>{next ? "Your next move" : "Curriculum completed"}</p><h2>{next?.title ?? "Put your models to the test."}</h2><p>{next?.subtitle ?? "Explore a new scenario in the Market Lab and explain the result."}</p></div>
+            <Link href={next ? hubLessonState(next, knownCompleted, results).href : "/lab?mission=free"} className={styles.primary} aria-label={next ? `Recommended next: ${next.title}` : "Open Market Lab"}>Continue learning <span aria-hidden="true">↗</span></Link>
           </section>
-        );
-      })}
+          <section className={styles.tools} aria-label="Hands-on learning tools">
+            <Link href="/lab" className={styles.toolCard}><span className={styles.toolIcon} aria-hidden="true">↗</span><div><p className={styles.eyebrow}>New / Market Lab</p><h2>What if you changed one thing?</h2><p>Three guided experiments. Live model curves. Your own lab notebook.</p></div><span aria-hidden="true">→</span></Link>
+            <Link href="/playground" className={styles.toolCard}><span className={styles.toolIcon} aria-hidden="true">ƒ</span><div><p className={styles.eyebrow}>Python playground</p><h2>Build the engine yourself.</h2><p>Write real Python and watch your code turn into pricing and risk curves.</p></div><span aria-hidden="true">→</span></Link>
+          </section>
+          <div className={styles.toolbar}>
+            <label className={styles.search}><span className="sl-visually-hidden">Search lessons</span><span aria-hidden="true">⌕</span><input type="search" value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Search lessons, models, concepts…" /></label>
+            <div className={styles.filters} role="group" aria-label="Lesson status">{([ ["all", "All lessons"], ["in-progress", "In progress"], ["completed", "Completed"] ] as const).map(([value, label]) => <button type="button" key={value} aria-pressed={filter === value} onClick={() => setFilter(value)}>{label}</button>)}</div>
+          </div>
+          <p className={styles.resultCount} role="status">{visibleCount} {visibleCount === 1 ? "lesson" : "lessons"}{query.trim() ? ` matching “${query.trim()}”` : " available"}</p>
+          {visible.length === 0 ? <div className={styles.empty}><h2>No matching lessons.</h2><p>Try another concept or explore a different track.</p><button type="button" className={styles.primary} onClick={clearFilters}>Show all lessons</button></div> : visible.map((track) => (
+            <section className={styles.track} id={track.id} key={track.id} aria-labelledby={`track-title-${track.id}`}>
+              <div className={styles.trackHead}><div><p className={styles.eyebrow}>{track.level} / {track.lessons.length} lessons</p><h2 id={`track-title-${track.id}`}>{track.title}</h2><p>{TRACK_OUTCOMES[track.id] ?? track.subtitle}</p></div><span className={styles.trackSymbol} aria-hidden="true">{track.id === "investing" ? "∑" : track.id === "options" ? "∂" : "β"}</span></div>
+              <ol className={styles.lessonList}>{track.lessons.map((lesson) => {
+                const state = hubLessonState(lesson, knownCompleted, results);
+                const ordinal = tracks.find((item) => item.id === track.id)!.lessons.findIndex((item) => item.id === lesson.id) + 1;
+                const label = `${lesson.title}, ${state.done ? "completed" : state.started ? "in progress" : "available"}${!state.done && lesson.sessionIds.length ? `, ${state.sessionsDone} of ${lesson.sessionIds.length} sessions done` : ""}`;
+                return <li key={lesson.id}><Link href={state.href} prefetch={false} className={styles.lesson} data-complete={state.done || undefined} aria-label={label}><span className={styles.lessonNumber} aria-hidden="true">{state.done ? "✓" : String(ordinal).padStart(2, "0")}</span><span className={styles.lessonBody}><strong>{lesson.title}</strong><span>{lesson.subtitle}</span><small>{lesson.duration}{lesson.sessionIds.length ? ` · ${state.sessionsDone} of ${lesson.sessionIds.length} sessions done` : track.id === "investing" ? " · Knowledge check" : " · Python exercise"}</small></span><span className={styles.lessonState}>{state.done ? "Completed" : state.started ? "Continue" : "Start"}<span aria-hidden="true"> ↗</span></span></Link></li>;
+              })}</ol>
+            </section>
+          ))}
+        </div>
+      </div>
     </div>
   );
 }

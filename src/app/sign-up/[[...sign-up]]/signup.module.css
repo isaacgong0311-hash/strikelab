@@ -19,3 +19,19 @@
 .role:has(input:checked) { border-color: var(--sl-brand); background: var(--sl-brand-soft); box-shadow: 0 0 0 1px var(--sl-brand); }
 .role:has(input:focus-visible) { outline: 3px solid var(--sl-focus); outline-offset: 2px; }
 .role input { accent-color: var(--sl-brand); width: 1.125rem; height: 1.125rem; flex: 0 0 auto; }
+
+/* Attestation checkbox: a full-width tappable row (build plan T3.6). */
+.attest {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.625rem;
+  min-height: 44px;
+  padding: 0.25rem 0;
+  color: var(--sl-text);
+  font-weight: 600;
+  font-size: 0.9375rem;
+  line-height: 1.4;
+  cursor: pointer;
+}
+.attest input { accent-color: var(--sl-brand); width: 1.125rem; height: 1.125rem; margin-top: 0.125rem; flex: 0 0 auto; }
+.attest:has(input:focus-visible) { outline: 3px solid var(--sl-focus); outline-offset: 2px; border-radius: var(--sl-radius-sm, 4px); }

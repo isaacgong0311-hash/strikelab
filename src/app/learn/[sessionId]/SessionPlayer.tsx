@@ -23,6 +23,7 @@ import {
 } from "@/lib/sessions";
 import type { Session, Step } from "@/lib/sessions/types";
 import { trackSessionComplete, trackSessionStart, trackStepAnswered } from "@/lib/analytics";
+import { completeLearningNextStep } from "@/lib/learningNextStep";
 import styles from "./session.module.css";
 
 /** Renders **bold** spans; session copy is plain data, never HTML. */
@@ -100,6 +101,11 @@ export default function SessionPlayer({ session, lessonTitle, sessionIds, nextSe
     const before = readSessionResults();
     const wasFinished = isLessonFinished(session.lessonId, before);
     const results = saveSessionResult(session.id, { completedAt: new Date().toISOString(), accuracy, durationMs });
+    const nextUnfinishedSession = sessionIds.find((id) => !results[id]);
+    completeLearningNextStep(
+      `/learn/${session.id}`,
+      nextUnfinishedSession ? `/learn/${nextUnfinishedSession}` : `/lesson/${session.lessonId}`,
+    );
     // XP is awarded once per lesson, through the same path as the long-form
     // lesson, so finishing sessions after reading the lesson can't double it.
     const earnedXp = !wasFinished && isLessonFinished(session.lessonId, results) && !completed.has(session.lessonId);
@@ -110,7 +116,7 @@ export default function SessionPlayer({ session, lessonTitle, sessionIds, nextSe
     }
     trackSessionComplete(session.id, accuracy, durationMs);
     setSummary({ accuracy, durationMs, lessonJustFinished: earnedXp, results });
-  }, [finished, summary, run, steps, session.id, session.lessonId, completed, markComplete, user]);
+  }, [finished, summary, run, steps, session.id, session.lessonId, sessionIds, completed, markComplete, user]);
 
   // Number keys pick a multiple-choice option, like Duolingo.
   useEffect(() => {

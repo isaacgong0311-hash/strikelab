@@ -15,6 +15,8 @@ export interface ChallengeTemplate {
   title: string;
   concept: string;
   paramSpecs: readonly ParamSpec[];
+  /** The function the student writes; the official test calls it by name. */
+  entry: string;
   prompt(p: Params): string;
   starterCode: string;
   previewTest: string;
@@ -31,6 +33,7 @@ const putCallParity: ChallengeTemplate = {
   slug: "put-call-parity",
   title: "Price a put from a call",
   concept: "Put-call parity",
+  entry: "put_from_parity",
   paramSpecs: [
     { name: "C", min: 2, max: 20, step: 0.5 },
     { name: "S", min: 80, max: 120, step: 1 },
@@ -74,6 +77,7 @@ const blackScholesCall: ChallengeTemplate = {
   slug: "black-scholes-call",
   title: "Price a call with Black-Scholes",
   concept: "Black-Scholes",
+  entry: "black_scholes_call",
   paramSpecs: [
     { name: "S", min: 80, max: 120, step: 1 },
     { name: "K", min: 80, max: 120, step: 1 },
@@ -120,6 +124,7 @@ const callDelta: ChallengeTemplate = {
   slug: "call-delta",
   title: "Measure a call's delta",
   concept: "Delta",
+  entry: "call_delta",
   paramSpecs: [
     { name: "S", min: 80, max: 120, step: 1 },
     { name: "K", min: 80, max: 120, step: 1 },

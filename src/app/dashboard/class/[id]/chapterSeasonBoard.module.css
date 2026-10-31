@@ -1,0 +1,40 @@
+.card {
+  padding: clamp(1.25rem, 3vw, 1.75rem);
+  border: 1px solid var(--sl-border);
+  border-radius: var(--sl-radius-lg);
+  background: var(--sl-surface);
+  color: var(--sl-text);
+}
+
+.heading {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.heading h2 {
+  margin: 0;
+  font: 800 1.35rem/1.2 var(--sl-font-display);
+}
+
+.heading p {
+  margin: 0.5rem 0 0;
+  color: var(--sl-text-muted);
+}
+
+.heading a {
+  min-height: var(--sl-tap);
+  display: inline-flex;
+  align-items: center;
+  color: var(--sl-brand-strong);
+  font-weight: 700;
+  text-underline-offset: 3px;
+}
+
+.heading a:focus-visible {
+  outline: 3px solid var(--sl-focus);
+  outline-offset: 3px;
+}

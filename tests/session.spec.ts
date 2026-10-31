@@ -23,6 +23,11 @@ async function continueButton(page: Page) {
 test.use({ viewport: { width: 390, height: 844 } });
 
 test("a learner can finish a session with the keyboard, retrying a missed question", async ({ page }) => {
+  await page.addInitScript(() => {
+    if (!localStorage.getItem("strikelab:next-step:v1")) {
+      localStorage.setItem("strikelab:next-step:v1", JSON.stringify({ version: 1, href: "/learn/inv-1.1" }));
+    }
+  });
   await open(page, "/learn/inv-1.1");
   await expect(page.getByRole("heading", { level: 1, name: "Companies need money" })).toBeVisible();
   await shot(page, "1-explain");
@@ -74,6 +79,8 @@ test("a learner can finish a session with the keyboard, retrying a missed questi
   await expect(page.getByRole("heading", { level: 1, name: "Session complete!" })).toBeVisible();
   await expect(page.getByText("67%")).toBeVisible(); // 2 of 3 questions right first time
   await expect(page.getByRole("link", { name: "Next session" })).toHaveAttribute("href", "/learn/inv-1.2");
+  await expect.poll(() => page.evaluate(() => JSON.parse(localStorage.getItem("strikelab:next-step:v1") ?? "null")?.href))
+    .toBe("/learn/inv-1.2");
   await shot(page, "5-complete");
 
   // The lesson page now offers to continue where the learner left off.

@@ -50,10 +50,18 @@ export async function POST(req: NextRequest) {
   const limited = await rateLimit(auth.supabase, "class-create");
   if (limited) return limited;
 
-  const body = (await req.json().catch(() => ({}))) as { name?: string };
+  const body = (await req.json().catch(() => ({}))) as { name?: string; leaderConfirmed?: boolean };
   const name = (body.name ?? "").trim().slice(0, 80);
   if (!name) {
     return NextResponse.json({ error: "Class name is required" }, { status: 400 });
+  }
+  // Classes hold minors' work, so whoever creates one confirms they're the
+  // responsible adult (build plan T3.6). The setup wizard sends this.
+  if (body.leaderConfirmed !== true) {
+    return NextResponse.json(
+      { error: "Confirm you're the teacher or leader responsible for this class." },
+      { status: 400 }
+    );
   }
 
   for (let attempt = 0; attempt < 5; attempt++) {

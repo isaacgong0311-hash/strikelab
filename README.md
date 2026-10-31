@@ -11,6 +11,7 @@ A club leader launches a cohort from a fixed template in minutes, shares an invi
 - The plan and gates: [`docs/superpowers/plans/2026-09-29-mega-plan.md`](docs/superpowers/plans/2026-09-29-mega-plan.md)
 - YC readiness: [`docs/superpowers/plans/2026-10-01-yc-readiness-plan.md`](docs/superpowers/plans/2026-10-01-yc-readiness-plan.md)
 - Pilot instruments: [`docs/gtm/`](docs/gtm/)
+- Investor claims: [`docs/investor/claim-ledger.md`](docs/investor/claim-ledger.md) separates implemented features from verified live usage and revenue; [`docs/INVESTOR_READINESS_WORK_PLAN.md`](docs/INVESTOR_READINESS_WORK_PLAN.md) is the evidence plan
 
 **Try it in two minutes:** open [strikelab.dev/demo](https://strikelab.dev/demo) for the leader and student views, or start lesson 1 at [strikelab.dev](https://strikelab.dev).
 

@@ -6,6 +6,7 @@ export const QUANT_LESSONS: Lesson[] = [
     title: "CAPM and Beta",
     subtitle: "Why some risk is rewarded and some isn't",
     duration: "16 min",
+    deskBriefing: "A portfolio manager asked whether our tech names are beating the market or just riding it. Measure each stock's beta and what CAPM says it should earn — then we'll know how much of the return is skill and how much is just extra market exposure.",
     prereqs: {
       summary: "Builds on diversification (Investing Fundamentals, Lesson 5) and standard deviation. Comfortable with basic algebra — the regression math is explained, not assumed.",
     },
@@ -141,6 +142,7 @@ print("Tests passed!")
     title: "Backtesting a Strategy",
     subtitle: "Testing ideas on historical data without fooling yourself",
     duration: "18 min",
+    deskBriefing: "Someone on the team swears a moving-average crossover would have made a fortune. Backtest it on real history before anyone risks a dollar, and show me the drawdown, not just the headline return. A backtest that looks too good usually is.",
     prereqs: {
       summary: "Builds on CAPM/Beta (Lesson 1 of this track) and comfort writing basic Python loops from the Playground.",
     },
@@ -297,6 +299,7 @@ print("Tests passed!")
     title: "Portfolio Optimization",
     subtitle: "Building the efficient frontier in Python",
     duration: "20 min",
+    deskBriefing: "We hold two assets and I want the mix with the least risk, not a guess. Work out the portfolio's return and variance, then find the minimum-variance weights — that's where every allocation this desk signs off on starts.",
     prereqs: {
       summary: "Builds on risk/diversification (Investing Fundamentals, Lesson 5) and CAPM (Lesson 1 of this track). Comfortable with basic summation notation.",
     },

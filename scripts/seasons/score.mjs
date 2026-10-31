@@ -51,7 +51,7 @@ for (const a of attempts) {
   if (!template) result = { kind: "test", error: `unknown template ${ch?.template_slug}` };
   else {
     const params = deriveParams(template.paramSpecs, { challengeId: a.challenge_id, userId: a.user_id }, secret);
-    result = await scorer.run(a.code ?? "", template.officialTest(params));
+    result = await scorer.run(a.code ?? "", template.officialTest(params), template.entry);
   }
   const row = outcome(result, { usedSeconds, limitSeconds });
   tally[row.status]++;

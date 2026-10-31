@@ -17,10 +17,16 @@ export async function loadCohortScorecard(klass: OwnedClass): Promise<CohortScor
   const admin = getSupabaseAdmin();
   if (!admin) return { measurable: false, reason: "The server isn't connected to the database." };
 
-  const [{ data: members }, { data: assignments }] = await Promise.all([
+  const [membersRes, assignmentsRes] = await Promise.all([
     admin.from("class_members").select("student_id, joined_at").eq("class_id", klass.id),
     admin.from("assignments").select("lesson_id, week_number, position, due_on").eq("class_id", klass.id),
   ]);
+  // A failed read must not look like an empty cohort ("0 enrolled").
+  if (membersRes.error || assignmentsRes.error) {
+    return { measurable: false, reason: "The roster or assignments couldn't be loaded. Try again shortly." };
+  }
+  const members = membersRes.data;
+  const assignments = assignmentsRes.data;
   const studentIds = (members ?? []).map((m) => m.student_id as string);
 
   const [profilesRes, progressRes, completionsRes, capstonesRes] = studentIds.length
@@ -30,8 +36,11 @@ export async function loadCohortScorecard(klass: OwnedClass): Promise<CohortScor
         admin.from("lesson_completions").select("user_id, lesson_id, completed_at").in("user_id", studentIds),
         admin.from("capstone_submissions").select("id, user_id, status, submitted_at").eq("class_id", klass.id),
       ])
-    : [{ data: [] }, { data: [] }, { data: [], error: null }, { data: [], error: null }];
+    : [{ data: [], error: null }, { data: [], error: null }, { data: [], error: null }, { data: [], error: null }];
 
+  if (profilesRes.error || progressRes.error) {
+    return { measurable: false, reason: "Student details couldn't be loaded. Try again shortly." };
+  }
   if (completionsRes.error) {
     // Migration 0016 not applied yet: say so rather than show made-up numbers.
     return { measurable: false, reason: "Completion timestamps aren't set up yet (database migration 0016)." };

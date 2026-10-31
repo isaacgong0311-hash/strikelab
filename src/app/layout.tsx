@@ -54,7 +54,7 @@ const jetbrains = JetBrains_Mono({
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
-    default: "StrikeLab — Learn quant finance by building it",
+    default: "StrikeLab — Learn quant finance, then prove it",
     template: "%s — StrikeLab",
   },
   description: SITE_DESCRIPTION,
@@ -87,14 +87,14 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     siteName: SITE_NAME,
-    title: "StrikeLab — Learn quant finance by building it",
+    title: "StrikeLab — Learn quant finance, then prove it",
     description: SITE_DESCRIPTION,
     url: SITE_URL,
     locale: "en_US",
   },
   twitter: {
     card: "summary_large_image",
-    title: "StrikeLab — Learn quant finance by building it",
+    title: "StrikeLab — Learn quant finance, then prove it",
     description: SITE_DESCRIPTION,
   },
   robots: {

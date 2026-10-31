@@ -6,6 +6,7 @@ import { QUIZZES, type QuizQuestion } from "@/lib/quizzes";
 import dynamic from "next/dynamic";
 import { useProgress } from "@/lib/useProgress";
 import { trackLessonStart, trackTestsPassed, trackLessonComplete, trackQuizAnswer } from "@/lib/analytics";
+import { completeSavedLesson } from "@/lib/learningNextStep";
 import Eyebrow from "@/components/Eyebrow";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import PrereqBox from "@/components/PrereqBox";
@@ -25,7 +26,13 @@ import FlameIcon from "@/components/FlameIcon";
 import Dialog from "@/components/ui/Dialog";
 
 import { CODE_SYNC_LABELS, useSyncedCode } from "@/lib/submissions/useSyncedCode";
-import { loadPythonRuntime } from "@/lib/pythonRuntime";
+import { loadPythonRuntime, type PythonRuntime } from "@/lib/pythonRuntime";
+import { friendlyPythonError, type PythonPhase } from "@/lib/pythonErrors";
+
+// The runtime is about 13 MB the first time. On school Wi-Fi that can take a
+// minute, and "Running tests…" with no progress looks like a hang.
+const PYTHON_LOADING_OUTPUT =
+  "Loading Python first. The first time can take up to a minute on school Wi-Fi; your tests run as soon as it's ready.";
 
 const MiniEditor = dynamic(() => import("@/components/MiniEditor"), { ssr: false });
 
@@ -223,6 +230,7 @@ export default function LessonClient({ lesson, sections, chunks, prev, next, tra
   const { code, setCode, status: codeSync, markPassed } = useSyncedCode(lesson.id, lesson.exercise.starterCode);
   const [output, setOutput] = useState("");
   const [status, setStatus] = useState<"idle" | "running" | "pass" | "fail">("idle");
+  const [python, setPython] = useState<"loading" | "ready" | "failed">("loading");
   const [showCelebration, setShowCelebration] = useState(false);
   const [showHint, setShowHint] = useState(false);
   const [quizAnsweredCount, setQuizAnsweredCount] = useState(0);
@@ -239,6 +247,10 @@ export default function LessonClient({ lesson, sections, chunks, prev, next, tra
 
   const quizQuestions = QUIZZES[lesson.id] ?? [];
   const alreadyDone = hydrated && completed.has(lesson.id);
+
+  useEffect(() => {
+    if (alreadyDone) completeSavedLesson(lesson.id);
+  }, [alreadyDone, lesson.id]);
 
   // No-code lessons: completion gates on the Knowledge Check instead of a
   // passed exercise. Fires once, the moment the last question is answered.
@@ -298,13 +310,40 @@ export default function LessonClient({ lesson, sections, chunks, prev, next, tra
       .filter((entry): entry is [number, LessonVisual] => entry !== null)
   );
 
+  // Start loading Python as soon as the exercise is on screen, so Run is fast.
+  // Investing lessons have no editor, so they skip the download entirely.
+  useEffect(() => {
+    if (!hasCodingExercise) return;
+    let active = true;
+    loadPythonRuntime().then(
+      () => active && setPython("ready"),
+      () => active && setPython("failed"), // Run tries again.
+    );
+    return () => {
+      active = false;
+    };
+  }, [hasCodingExercise]);
+
   const runCode = useCallback(async () => {
     setStatus("running");
-    setOutput("Running tests…");
+    setOutput(python === "ready" ? "Running tests…" : PYTHON_LOADING_OUTPUT);
 
+    let pyodide: PythonRuntime;
     try {
-      const pyodide = await loadPythonRuntime();
+      pyodide = await loadPythonRuntime();
+      setPython("ready");
+    } catch (err: unknown) {
+      setPython("failed");
+      setOutput(err instanceof Error ? err.message : String(err));
+      setStatus("fail");
+      return;
+    }
+
+    setOutput("Running tests…");
+    let phase: PythonPhase = "code";
+    try {
       await pyodide.runPython(code);
+      phase = "tests";
       await pyodide.runPython(lesson.exercise.testFn);
       setOutput("✓ All tests passed!");
       setStatus("pass");
@@ -319,10 +358,10 @@ export default function LessonClient({ lesson, sections, chunks, prev, next, tra
       }
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : String(err);
-      setOutput(msg);
+      setOutput(friendlyPythonError(msg, phase));
       setStatus("fail");
     }
-  }, [code, lesson.exercise.testFn, lesson.id, markComplete, markPassed]);
+  }, [code, lesson.exercise.testFn, lesson.id, markComplete, markPassed, python]);
 
   useEffect(() => {
     runRef.current = runCode;
@@ -554,7 +593,7 @@ export default function LessonClient({ lesson, sections, chunks, prev, next, tra
                 {status === "running" ? (
                   <>
                     <span className="animate-spin inline-block" style={{ fontSize: 12 }}>◌</span>
-                    Running…
+                    {python === "ready" ? "Running…" : "Loading Python…"}
                   </>
                 ) : (
                   <>
@@ -594,9 +633,14 @@ export default function LessonClient({ lesson, sections, chunks, prev, next, tra
               </button>
             </div>
 
-            {status === "idle" && !showHint && (
+            {status === "idle" && !showHint && python !== "failed" && (
               <span className="text-xs" style={{ color: "var(--muted)", fontFamily: "var(--font-mono)" }}>
-                Write your solution, then run
+                {python === "loading" ? "Loading Python in the background…" : "Write your solution, then run"}
+              </span>
+            )}
+            {status === "idle" && !showHint && python === "failed" && (
+              <span className="text-xs" role="status" style={{ color: "var(--amber)", fontFamily: "var(--font-mono)" }}>
+                Python didn&apos;t load. Press Run to try again.
               </span>
             )}
             {status === "fail" && !showHint && (
@@ -613,18 +657,18 @@ export default function LessonClient({ lesson, sections, chunks, prev, next, tra
                 className="flex items-center gap-2 px-5 py-2 border-b text-[10px] uppercase tracking-widest"
                 style={{
                   borderColor: "var(--border)",
-                  color: status === "pass" ? "var(--check)" : "#dc2626",
+                  color: status === "pass" ? "var(--check)" : status === "running" ? "var(--muted)" : "#dc2626",
                   fontFamily: "var(--font-mono)",
                   background: "var(--bg2)",
                 }}
               >
-                <span>{status === "pass" ? "✓" : "✗"}</span>
-                <span>{status === "pass" ? "Tests passed" : "Error"}</span>
+                <span aria-hidden="true">{status === "pass" ? "✓" : status === "running" ? "◌" : "✗"}</span>
+                <span>{status === "pass" ? "Tests passed" : status === "running" ? "Running" : "Error"}</span>
               </div>
               <pre
                 className="px-5 py-4 text-xs font-mono whitespace-pre-wrap overflow-auto"
                 style={{
-                  color: status === "pass" ? "var(--check)" : "#dc2626",
+                  color: status === "pass" ? "var(--check)" : status === "running" ? "var(--fg-mute)" : "#dc2626",
                   background: "var(--bg)",
                   maxHeight: "12rem",
                 }}
@@ -657,11 +701,6 @@ export default function LessonClient({ lesson, sections, chunks, prev, next, tra
           )}
         </section>
         )}
-
-        {/* Pyodide loader — only needed when there's a Python exercise on
-            the page (Options/Quant). Loading a WASM Python runtime for an
-            Investing lesson that has no code editor was pure waste. */}
-        {hasCodingExercise && <PyodideLoader />}
 
         {/* Related lessons — same track, nearest-position-first, excluding
             prev/next (those already have their own nav buttons below). */}
@@ -724,14 +763,4 @@ export default function LessonClient({ lesson, sections, chunks, prev, next, tra
       </div>
     </>
   );
-}
-
-function PyodideLoader() {
-  // Start loading Python as soon as the exercise is on screen, so Run is fast.
-  useEffect(() => {
-    loadPythonRuntime().catch(() => {
-      // Reported when the student clicks Run, which retries.
-    });
-  }, []);
-  return null;
 }

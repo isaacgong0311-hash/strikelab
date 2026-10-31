@@ -38,6 +38,9 @@ export interface DemoData {
   csv: string[][];
   studentView: StudentCohortView;
   assignments: { lessonId: string; lessonTitle: string; weekNumber: number; position: number; dueOn: string }[];
+  completions: { studentId: string; lessonId: string; completedAt: string }[];
+  /** Today in the demo club's timezone, YYYY-MM-DD. */
+  today: string;
 }
 
 /** Day 16 is Tuesday-ish of week 3: the default everywhere except the guided tour. */
@@ -109,10 +112,33 @@ export function buildDemoData(now: Date = new Date(), { daysIn = DEMO_DEFAULT_DA
     today,
   });
 
-  return { metrics, csv: cohortCsvRows(metrics), studentView, assignments };
+  return { metrics, csv: cohortCsvRows(metrics), studentView, assignments, completions, today };
 }
 
 /** A believable "first meeting" date for sample messages: one week from now, YYYY-MM-DD. */
 export function demoStartsOn(now: Date = new Date()): string {
   return new Date(now.getTime() + 7 * 86_400_000).toISOString().slice(0, 10);
+}
+
+/**
+ * A sample student's saved exercise code for the demo's student page: the
+ * reference solution for every coding lesson they finished, and their
+ * starter code with a note for the next one, so the page shows passed,
+ * in-progress and untouched work. Labeled as sample data where it appears.
+ */
+export function demoStudentSubmissions(demo: DemoData, studentId: string) {
+  const done = new Map(demo.completions.filter((c) => c.studentId === studentId).map((c) => [c.lessonId, c.completedAt]));
+  const coding = demo.assignments
+    .map((a) => getLessonById(a.lessonId))
+    .filter((l): l is NonNullable<typeof l> => l !== null && l.trackId !== "investing");
+  const passed = coding
+    .filter((l) => done.has(l.id))
+    .map((l) => ({ lessonId: l.id, code: l.exercise.solution, updatedAt: done.get(l.id)!, lastPassedAt: done.get(l.id)! }));
+  const next = coding.find((l) => !done.has(l.id));
+  const student = STUDENTS.find((s) => s.id === studentId);
+  const working =
+    next && student && student.pace > 0
+      ? [{ lessonId: next.id, code: `${next.exercise.starterCode.trimEnd()}\n\n# Still working on this one\n`, updatedAt: noonIso(demo.today), lastPassedAt: null }]
+      : [];
+  return [...passed, ...working];
 }

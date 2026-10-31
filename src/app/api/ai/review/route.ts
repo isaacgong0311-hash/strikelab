@@ -13,7 +13,7 @@ import { NextRequest } from "next/server";
 import { requireUser } from "@/lib/supabase/requireUser";
 import { getLessonContext } from "@/lib/tracks";
 import { streamGroqChat, textStream, streamHeaders, isAiConfigured } from "@/lib/ai/groq";
-import { consumeAiQuota } from "@/lib/ai/quota";
+import { AI_CLASS_OFF_REPLY, consumeAiQuota } from "@/lib/ai/quota";
 
 const SIGNED_OUT = `Sign in to get your solution reviewed.
 
@@ -70,7 +70,8 @@ export async function POST(req: NextRequest) {
 
   const quota = await consumeAiQuota(auth.supabase, auth.userId, "review");
   if (!quota.allowed) {
-    return new Response(textStream(OVER_QUOTA), { headers: streamHeaders("fallback") });
+    const reply = quota.reason === "class" ? AI_CLASS_OFF_REPLY : quota.reason === "unavailable" ? UNAVAILABLE : OVER_QUOTA;
+    return new Response(textStream(reply), { headers: streamHeaders("fallback") });
   }
 
   const stream = await streamGroqChat({

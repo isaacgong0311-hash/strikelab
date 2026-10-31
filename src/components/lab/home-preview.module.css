@@ -1,0 +1,20 @@
+.panel { color: var(--sl-text); background: var(--sl-surface); padding: clamp(1rem, 3vw, 1.75rem); border: 1px solid var(--sl-border); border-radius: 1.25rem; box-shadow: 0 24px 70px rgb(15 40 25 / 0.1); transform: rotate(1deg); }
+.top { display: flex; justify-content: space-between; gap: 0.75rem; padding-bottom: 1rem; border-bottom: 1px solid var(--sl-border); font: 600 0.625rem var(--sl-font-code); color: var(--sl-text-muted); }
+.top>span:first-child { color: var(--sl-brand-strong); display: inline-flex; gap: 0.5rem; align-items: center; }
+.top i { width: 6px; height: 6px; border-radius: 50%; background: var(--sl-brand); }
+.heading { margin-top: 1.5rem; }
+.heading p { font-size: 0.875rem; margin: 0 0 0.25rem; color: var(--sl-text-muted); }
+.heading h2 { font: 800 1.75rem var(--sl-font-display); letter-spacing: -0.04em; margin: 0; }
+.prices { display: flex; align-items: center; gap: 1.5rem; margin-top: 1.5rem; }
+.prices span { color: var(--sl-text-muted); font-size: 0.6875rem; }
+.prices strong { display: block; font: 700 2.125rem var(--sl-font-code); letter-spacing: -0.06em; margin-top: 0.25rem; }
+.prices>div:last-child strong { color: var(--sl-brand-strong); }
+.prices .arrow { font-size: 1.25rem; }
+.sliderLabel { display: flex; justify-content: space-between; gap: 0.5rem; margin-top: 1.25rem; font-size: 0.75rem; font-weight: 600; }
+.sliderLabel output { color: var(--sl-brand-strong); font-family: var(--sl-font-code); }
+.slider { width: 100%; margin-block: 1rem; accent-color: var(--sl-brand); }
+.bottom { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem; padding-top: 1rem; border-top: 1px solid var(--sl-border); }
+.bottom>span { color: var(--sl-text-muted); font-size: 0.625rem; line-height: 1.6; }
+.bottom a { color: var(--sl-brand-strong); font-weight: 700; font-size: 0.75rem; text-underline-offset: 4px; padding-block: 0.5rem; }
+.panel :is(a, input):focus-visible { outline: 3px solid var(--sl-focus); outline-offset: 4px; }
+@media (max-width: 700px) { .panel { transform: none; } }

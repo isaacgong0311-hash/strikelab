@@ -1,6 +1,7 @@
 "use client";
 import { useState, useCallback } from "react";
 import dynamic from "next/dynamic";
+import { loadPythonRuntime } from "@/lib/pythonRuntime";
 
 const MiniEditor = dynamic(() => import("@/components/MiniEditor"), { ssr: false });
 
@@ -63,10 +64,11 @@ export default function PracticeProblem({ lessonId }: { lessonId: string }) {
     setStatus("running");
     setOutput("Running tests…");
     try {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const pyodide = await (window as any).__pyodideReady;
-      pyodide.runPython(code);
-      pyodide.runPython(problem.testCode);
+      // Python runs in a worker, so every run is async. Without the awaits a
+      // failing solution still printed "All tests passed!".
+      const pyodide = await loadPythonRuntime();
+      await pyodide.runPython(code);
+      await pyodide.runPython(problem.testCode);
       setOutput("All tests passed!");
       setStatus("pass");
     } catch (err: unknown) {

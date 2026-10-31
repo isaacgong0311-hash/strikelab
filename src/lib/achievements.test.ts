@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import { ACHIEVEMENTS, isUnlocked } from "./achievements";
 import { TRACKS } from "./tracks";
 
-// isUnlocked drives both the dashboard achievement grid and /achievements —
+// isUnlocked drives the dashboard achievement grid —
 // a wrong result here either shows a badge as earned when it isn't, or
 // leaves a genuinely-earned badge looking locked. Zero coverage before this
 // file.

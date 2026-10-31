@@ -9,6 +9,8 @@
 export const FAKE_EMAIL_DOMAIN = "rehearsal.invalid";
 export const REHEARSAL_JOIN_CODE = "RHSL42";
 export const REHEARSAL_CLASS_NAME = "REHEARSAL: Quant Club (fake data)";
+export const REHEARSAL_SEASON_ID = "rehearsal";
+export const REHEARSAL_CHALLENGE_ID = "rehearsal-w1";
 export const TEMPLATE_ID = "quant-foundations-v1";
 export const TIMEZONE = "America/Chicago";
 
@@ -53,6 +55,52 @@ export function studentName(n) {
 }
 export function studentEmail(n) {
   return `rehearsal-${String(n).padStart(2, "0")}@${FAKE_EMAIL_DOMAIN}`;
+}
+export function studentHandle(n) {
+  return `rehearsal_${String(n).padStart(2, "0")}`;
+}
+
+/** One open challenge, all four attempt states, and a scored chapter board. */
+export function buildRehearsalSeasonPlan({ today, studentIds, now = new Date() }) {
+  if (studentIds.length !== STUDENTS.length) throw new Error(`need ${STUDENTS.length} student ids`);
+  const started = new Date(now.getTime() - 20 * 60_000).toISOString();
+  const deadline = new Date(now.getTime() + 40 * 60_000).toISOString();
+  const submitted = new Date(now.getTime() - 10 * 60_000).toISOString();
+  const statuses = ["scored", "scored", "scored", "submitted", "submitted", "submitted", "pending_review", "pending_review", "started", "started"];
+  const scores = [82.5, 69, 55];
+  const code = "from math import exp\ndef put_from_parity(call, S, K, T, r):\n    return call - S + K * exp(-r * T)\n";
+  return [
+    {
+      op: "insert", table: "seasons", rows: [{
+        id: REHEARSAL_SEASON_ID,
+        title: "REHEARSAL: Season (fake data)",
+        starts_on: addDays(today, -1), ends_on: addDays(today, 3),
+      }],
+    },
+    {
+      op: "insert", table: "season_challenges", rows: [{
+        id: REHEARSAL_CHALLENGE_ID, season_id: REHEARSAL_SEASON_ID,
+        week: 1, template_slug: "put-call-parity",
+        opens_at: new Date(now.getTime() - 60 * 60_000).toISOString(),
+        closes_at: new Date(now.getTime() + 2 * 24 * 60 * 60_000).toISOString(),
+        time_limit_minutes: 60,
+      }],
+    },
+    {
+      op: "insert", table: "season_attempts", rows: studentIds.map((user_id, index) => ({
+        user_id,
+        challenge_id: REHEARSAL_CHALLENGE_ID,
+        started_at: started,
+        deadline,
+        submitted_at: statuses[index] === "started" ? null : submitted,
+        code: statuses[index] === "started" ? null : code,
+        explanation: statuses[index] === "started" ? null : "Parity rules out a free-money trade between matching calls, puts, stock, and cash. Rehearsal data only.",
+        preview_passed: statuses[index] === "started" ? null : true,
+        official_score: statuses[index] === "scored" ? scores[index] : null,
+        status: statuses[index],
+      })),
+    },
+  ];
 }
 
 /**
@@ -158,7 +206,7 @@ export function buildRehearsalPlan({ today, teacherId, studentIds, schedule, cla
   ops.push({
     op: "update-profiles",
     table: "profiles",
-    rows: studentIds.map((id, i) => ({ id, display_name: studentName(STUDENTS[i].n) })),
+    rows: studentIds.map((id, i) => ({ id, display_name: studentName(STUDENTS[i].n), handle: studentHandle(STUDENTS[i].n) })),
   });
   ops.push({ op: "insert", table: "class_members", rows: members });
   // Completions first with real dates; the progress trigger then skips them.
@@ -166,6 +214,7 @@ export function buildRehearsalPlan({ today, teacherId, studentIds, schedule, cla
   ops.push({ op: "insert", table: "progress", rows: progress });
   if (submissions.length) ops.push({ op: "insert", table: "lesson_submissions", rows: submissions });
   if (capstones.length) ops.push({ op: "insert", table: "capstone_submissions", rows: capstones });
+  ops.push(...buildRehearsalSeasonPlan({ today, studentIds, now }));
   return ops;
 }
 

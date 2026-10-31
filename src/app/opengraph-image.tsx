@@ -1,7 +1,7 @@
 import { ImageResponse } from "next/og";
 import { SITE_URL } from "@/lib/site";
 
-export const alt = "StrikeLab: learn quant finance by building it";
+export const alt = "StrikeLab: learn quant finance, then prove it";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
@@ -42,7 +42,7 @@ export default function OpengraphImage() {
               letterSpacing: "-0.02em",
             }}
           >
-            Learn quant finance by building it.
+            Learn quant finance. Then prove it.
           </div>
           <div style={{ fontSize: 30, color: "#9bbfae", maxWidth: 900 }}>
             Price options, code the Greeks and backtest strategies in Python,

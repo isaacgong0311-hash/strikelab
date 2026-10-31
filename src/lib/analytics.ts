@@ -11,12 +11,14 @@
 
 import { track } from "@vercel/analytics";
 import { getAttribution } from "./attribution";
+import { isLearningDestination, readLearningNextStep } from "./learningNextStep";
 
 // ─── Lesson funnel ────────────────────────────────────────────────────────────
 
 /** User clicks into a lesson page */
 export function trackLessonStart(lessonId: string) {
   track("lesson_start", { lessonId });
+  trackSavedLearningDestination(`/lesson/${lessonId}`);
 }
 
 /** User passes the coding exercise unit tests */
@@ -70,6 +72,7 @@ export function trackVisualizerInteraction(param: "S" | "K" | "T" | "r" | "sigma
 /** Learner opens a session in the session player */
 export function trackSessionStart(sessionId: string) {
   track("session_start", { sessionId, ...getAttribution() });
+  trackSavedLearningDestination(`/learn/${sessionId}`);
 }
 
 /** Learner checks an answer on a question step */
@@ -106,5 +109,24 @@ export function trackMarketing(event: MarketingEvent, props: Record<string, stri
   ensureQueue();
   // Explicit props win over first-touch attribution (e.g. the page-view src).
   track(event, { ...getAttribution(), ...props });
+}
+
+// Event counts, not unique learners or a matched learning-outcome cohort.
+// No diagnostic answers, scores, run IDs, or student identifiers are sent.
+export function trackStartingPoint(
+  action: "started" | "completed" | "lesson_click" | "lesson_open",
+  destination?: string,
+): void {
+  if (destination !== undefined && !isLearningDestination(destination)) return;
+  try {
+    ensureQueue();
+    track(`starting_point_${action}`, destination ? { destination } : {});
+  } catch {
+    // Analytics failures must never stop the check or navigation.
+  }
+}
+
+function trackSavedLearningDestination(href: string): void {
+  if (readLearningNextStep() === href) trackStartingPoint("lesson_open", href);
 }
 

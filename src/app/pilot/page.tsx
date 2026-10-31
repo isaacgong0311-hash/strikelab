@@ -9,10 +9,14 @@ import PilotPreview from "./PilotPreview";
 
 export const metadata = pageMetadata({
   path: "/pilot",
-  title: "Run a free pilot with your club",
+  title: "Set up your club for Season 1",
   description:
-    "Run StrikeLab's six-week quant lab with your club this term, free. One 45–60 minute meeting a week; students code real market models and finish with a capstone.",
+    "Create your free StrikeLab club, share one invite link, and compete together in Season 1. Your club's board appears on Seasons; a six-week meeting plan is included.",
 });
+
+// The sample invite's first meeting is "one week from today"; rebuild hourly
+// so it never shows a date that has already passed.
+export const revalidate = 3600;
 
 // Signed-out leaders are sent through sign-up and back to setup.
 const SETUP_HREF = "/teach/new?src=pilot";
@@ -20,9 +24,9 @@ const SETUP_HREF = "/teach/new?src=pilot";
 const FAQS = [
   { q: "Do I need a finance or coding background?", a: "No. The platform teaches; you run the meeting. Each week comes with a goal, discussion prompts, common sticking points and a message you can send your students." },
   { q: "What devices do students need?", a: "A laptop or Chromebook with a modern browser. Python runs in the browser, so there's nothing to install. Phones work for the short lessons; the coding exercises are easier on a laptop." },
-  { q: "My school needs to approve outside tools. What do you collect?", a: "Only what's needed to run the program: an email, a display name, and progress in the lessons you assign. Nothing is public, there are no ads, and students can delete their account at any time. If your school has its own data agreement or form, email it to us and we'll go through it with you." },
+  { q: "My school needs to approve outside tools. What do you collect?", a: "We collect account details and learning progress needed to run the club. Season boards show handles, not student names; student work stays private unless they choose to share it. There are no ads, and students can delete their account. If your school has a data agreement or form, email it to us and we'll go through it with you." },
   { q: "How many students?", a: "The lab is designed for a club-sized group, roughly 10 to 25 students. Smaller works too." },
-  { q: "What does it cost after the pilot?", a: "$199/year for a club or $499/year for a school instructor, if you want to continue. Nothing bills automatically, and students never pay." },
+  { q: "What does it cost?", a: "Club setup, Season 1 participation, and the six-week lab are free. Students never pay to participate. Other programs are listed on the pricing page." },
   { q: "What if our schedule has a break in the middle?", a: "Mark break weeks when you set it up (Thanksgiving, exams, spring break). Nothing is due on a break, and due dates shift for you." },
 ];
 
@@ -32,15 +36,15 @@ export default function PilotPage() {
       <TrackPageView event="pilot_page_view" />
       <section className={styles.section}>
         <div className={styles.wrap}>
-          <p className={styles.kicker}>Free pilot · this term</p>
-          <h1 className={styles.h1}>Run the six-week quant lab with your club, free.</h1>
+          <p className={styles.kicker}>Clubs · Season 1</p>
+          <h1 className={styles.h1}>Set up your club for Season 1.</h1>
           <p className={styles.lede}>
-            One 45–60 minute meeting a week. Students code real market models in the browser and finish with a
-            capstone they can show. You get a weekly plan, ready-to-send messages, and a scorecard of who&apos;s active
-            and who needs help.
+            Create your club, share one link, and let students join for free. They&apos;ll compete in timed quant
+            challenges, and your club&apos;s own board will appear on <Link href="/seasons" className={styles.textLink}>Seasons</Link>.
+            Want a plan for every meeting? The six-week lab is included.
           </p>
           <div className={styles.ctaRow}>
-            <Link href={SETUP_HREF} className={styles.primary}>Set it up now</Link>
+            <Link href={SETUP_HREF} className={styles.primary}>Create your club</Link>
             <TrackedAnchor href={pilotCallHref("pilot")} event="pilot_call_click" eventProps={{ page: "pilot" }} className={styles.secondary}>Talk to the founder first</TrackedAnchor>
           </div>
           <p className={styles.fine}>
@@ -52,21 +56,26 @@ export default function PilotPage() {
       <section className={`${styles.section} ${styles.sectionAlt}`} aria-labelledby="pilot-how">
         <div className={styles.wrap}>
           <h2 id="pilot-how" className={styles.h2}>How it works</h2>
-          <div className={styles.grid3} style={{ marginTop: "1.5rem" }}>
+          <div className={styles.stepsGrid} style={{ marginTop: "1.5rem" }}>
             <div className={styles.card}>
               <span className={styles.step} aria-hidden="true">1</span>
-              <h3 className={styles.h3}>Set up in minutes</h3>
-              <p className={styles.body}>Create your class, pick your first meeting date and any break weeks, and share one invite link.</p>
+              <h3 className={styles.h3}>Create the club</h3>
+              <p className={styles.body}>Set up your club in a few minutes. You can add a meeting plan and break weeks if you want them.</p>
             </div>
             <div className={styles.card}>
               <span className={styles.step} aria-hidden="true">2</span>
-              <h3 className={styles.h3}>Meet once a week</h3>
-              <p className={styles.body}>Students work through short steps and real code; you run a 45–60 minute session with the week&apos;s plan.</p>
+              <h3 className={styles.h3}>Share one link</h3>
+              <p className={styles.body}>Copy the invite link from your club page and send it to students.</p>
             </div>
             <div className={styles.card}>
               <span className={styles.step} aria-hidden="true">3</span>
-              <h3 className={styles.h3}>See it working</h3>
-              <p className={styles.body}>Your scorecard shows who started, who&apos;s active each week and who needs a nudge. Week 6 ends in capstones.</p>
+              <h3 className={styles.h3}>Students join</h3>
+              <p className={styles.body}>They create a free account, join your club, and take on the season challenges.</p>
+            </div>
+            <div className={styles.card}>
+              <span className={styles.step} aria-hidden="true">4</span>
+              <h3 className={styles.h3}>Your board appears</h3>
+              <p className={styles.body}>Once Season 1 is live, club members can see their handle-only board on <Link href="/seasons" className={styles.textLink}>Seasons</Link>.</p>
             </div>
           </div>
         </div>
@@ -76,7 +85,8 @@ export default function PilotPage() {
 
       <section className={styles.section} aria-labelledby="pilot-weeks">
         <div className={styles.wrap}>
-          <h2 id="pilot-weeks" className={styles.h2}>What your students build</h2>
+          <h2 id="pilot-weeks" className={styles.h2}>Want a plan for every meeting? It&apos;s included.</h2>
+          <p className={styles.lede}>The optional six-week lab gives you weekly goals, ready-to-send messages, a scorecard, and a capstone for students who want to go deeper.</p>
           <div className={styles.grid3} style={{ marginTop: "1.5rem" }}>
             {LAB_WEEKS.map((w) => (
               <div key={w.week} className={styles.card}>
@@ -91,31 +101,26 @@ export default function PilotPage() {
 
       <section className={`${styles.section} ${styles.sectionAlt}`} aria-labelledby="pilot-deal">
         <div className={styles.wrap}>
-          <h2 id="pilot-deal" className={styles.h2}>The deal</h2>
+          <h2 id="pilot-deal" className={styles.h2}>What your club gets</h2>
           <div className={styles.grid2} style={{ marginTop: "1.5rem" }}>
             <div className={styles.card}>
               <h3 className={styles.h3}>You bring</h3>
               <ul className={styles.checks}>
-                <li>A weekly meeting time, in person or online</li>
-                <li>Your students (designed for roughly 10–25)</li>
+                <li>A club leader to create the club and share its invite link</li>
+                <li>Your students (the lab is designed for roughly 10–25)</li>
                 <li>School approval, if your school requires it</li>
-                <li>A 15-minute conversation at the end about what worked</li>
               </ul>
             </div>
             <div className={styles.card}>
               <h3 className={styles.h3}>StrikeLab brings</h3>
               <ul className={styles.checks}>
-                <li>The platform, free for every student</li>
-                <li>A plan for each week, so no finance or coding background is needed</li>
+                <li>Season 1 challenges and your club&apos;s handle-only board</li>
+                <li>The optional six-week meeting plan, free for every student</li>
                 <li>A scorecard and CSV of your club&apos;s progress</li>
-                <li>Direct help from the founder: a kickoff call and quick weekly check-ins</li>
+                <li>A demo and a way to ask the founder for help</li>
               </ul>
             </div>
           </div>
-          <p className={styles.note} style={{ marginTop: "1rem" }}>
-            <strong>After the pilot:</strong> keep going for $199/year per club or $499/year per school instructor, or
-            stop. That&apos;s a conversation for later, not a condition of the pilot.
-          </p>
         </div>
       </section>
 
@@ -124,7 +129,7 @@ export default function PilotPage() {
           <h2 id="pilot-faq" className={styles.h2}>Questions leaders ask</h2>
           <Faq items={FAQS} />
           <div className={`${styles.ctaRow}`}>
-            <Link href={SETUP_HREF} className={styles.primary}>Set it up now</Link>
+            <Link href={SETUP_HREF} className={styles.primary}>Create your club</Link>
             <TrackedAnchor href={pilotCallHref("pilot-faq")} event="pilot_call_click" eventProps={{ page: "pilot-faq" }} className={styles.secondary}>Talk to the founder</TrackedAnchor>
           </div>
         </div>

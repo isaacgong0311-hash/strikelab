@@ -6,9 +6,8 @@ import { consumeAiQuota, DAILY_AI_ACTIONS, AI_COST } from "./quota";
 // exercised against a real database from this test run. This file locks in
 // the JS-side half of that contract: the right RPC is called with the right
 // cost/cap, and the response shape maps to QuotaResult correctly — including
-// the fail-open behavior on an RPC error, which is a real production
-// requirement (a DB hiccup must not block a student mid-lesson), not just an
-// edge case.
+// the fail-closed behavior on an RPC error: this is a spend cap on a free
+// product, so "couldn't check" must not become "unlimited" (build plan T3.8).
 
 function fakeSupabase(
   rpcImpl: (args: unknown) => { data: unknown; error: unknown },
@@ -54,10 +53,15 @@ describe("consumeAiQuota", () => {
     expect(result).toEqual({ allowed: false, used: DAILY_AI_ACTIONS, limit: DAILY_AI_ACTIONS });
   });
 
-  it("fails open (allows the request) on an RPC error, per the documented tradeoff", async () => {
+  it("fails closed on an RPC error, and says why, so no unmetered paid call is made", async () => {
     const supabase = fakeSupabase(() => ({ data: null, error: { message: "connection reset" } }));
     const result = await consumeAiQuota(supabase, "user-1", "chat");
-    expect(result.allowed).toBe(true);
+    expect(result).toMatchObject({ allowed: false, reason: "unavailable" });
+  });
+
+  it("allows when consume_ai_quota doesn't exist yet (migration 0008 not applied)", async () => {
+    const supabase = fakeSupabase(() => ({ data: null, error: { code: "42883", message: "function does not exist" } }));
+    expect((await consumeAiQuota(supabase, "user-1", "chat")).allowed).toBe(true);
   });
 });
 

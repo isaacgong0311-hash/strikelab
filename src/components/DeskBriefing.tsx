@@ -2,8 +2,8 @@ import Eyebrow from "@/components/Eyebrow";
 
 /**
  * "From your desk head" note — sits above PrereqBox, framing the lesson as
- * an assigned task rather than a topic to read about. Pilot: only the
- * Options Pricing track has `deskBriefing` text for now (see lessons.ts).
+ * an assigned task rather than a topic to read about. Every lesson in all
+ * three tracks has one (see `deskBriefing` in lessons.ts).
  */
 export default function DeskBriefing({ text }: { text: string }) {
   return (

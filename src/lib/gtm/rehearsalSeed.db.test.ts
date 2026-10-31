@@ -20,7 +20,7 @@ describe("rehearsal seed (Q16)", () => {
 
     for (const op of plan) {
       if (op.op === "update-profiles") {
-        for (const r of op.rows) await t.db.query("update profiles set display_name = $1 where id = $2", [r.display_name, r.id]);
+        for (const r of op.rows) await t.db.query("update profiles set display_name = $1, handle = $2 where id = $3", [r.display_name, r.handle, r.id]);
         continue;
       }
       for (const row of op.rows) {
@@ -80,6 +80,41 @@ describe("rehearsal seed (Q16)", () => {
     const flagged = metrics.students.filter((s) => s.needsHelp);
     expect(flagged.length).toBeGreaterThanOrEqual(3);
     expect(metrics.students.find((s) => s.displayName.includes("01"))).toMatchObject({ lessonsDone: 11 });
+
+    // The same ten fake members power the season and chapter views.
+    const season = (await q<{ id: string; title: string }>("select id, title from seasons where id = $1", [seed.REHEARSAL_SEASON_ID]))[0];
+    expect(season.title).toContain("REHEARSAL");
+    const challenge = (await q<{ id: string; season_id: string; opens_at: Date; closes_at: Date }>(
+      "select id, season_id, opens_at, closes_at from season_challenges where season_id = $1", [seed.REHEARSAL_SEASON_ID]
+    ))[0];
+    expect(challenge.id).toBe(seed.REHEARSAL_CHALLENGE_ID);
+    expect(challenge.opens_at.getTime()).toBeLessThan(Date.now());
+    expect(challenge.closes_at.getTime()).toBeGreaterThan(Date.now());
+    const statuses = await q<{ status: string; count: number }>(
+      "select status, count(*)::integer as count from season_attempts where challenge_id = $1 group by status order by status",
+      [seed.REHEARSAL_CHALLENGE_ID]
+    );
+    expect(Object.fromEntries(statuses.map((row) => [row.status, row.count]))).toEqual({
+      pending_review: 2, scored: 3, started: 2, submitted: 3,
+    });
+    const chapterBoard = await t.as(studentIds[0], async (tx) =>
+      (await tx.query<{ handle: string; rank: number }>("select handle, rank from season_leaderboard($1, $2)", [seed.REHEARSAL_SEASON_ID, klass.id])).rows
+    );
+    expect(chapterBoard.map((row) => row.handle)).toEqual([seed.studentHandle(1), seed.studentHandle(2), seed.studentHandle(3)]);
+    const ownAttempts = await t.as(studentIds[0], async (tx) =>
+      (await tx.query<{ status: string; official_score: string }>("select status, official_score from season_attempts")).rows
+    );
+    expect(ownAttempts).toHaveLength(1);
+    expect(ownAttempts[0].status).toBe("scored");
+    const pendingCapstones = await q<{ user_id: string; handle: string }>(
+      "select c.user_id, p.handle from capstone_submissions c join profiles p on p.id = c.user_id where c.status = 'submitted'"
+    );
+    expect(pendingCapstones).toEqual([{ user_id: studentIds[0], handle: seed.studentHandle(1) }]);
+
+    // The one-line season delete cascades to its challenge and attempts.
+    await t.db.query("delete from seasons where id = $1", [seed.REHEARSAL_SEASON_ID]);
+    expect(await q("select id from season_challenges where id = $1", [seed.REHEARSAL_CHALLENGE_ID])).toHaveLength(0);
+    expect(await q("select user_id from season_attempts where challenge_id = $1", [seed.REHEARSAL_CHALLENGE_ID])).toHaveLength(0);
   });
 
   it("refuses unless the host is named, matches, and is not protected", () => {

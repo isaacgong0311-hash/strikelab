@@ -13,7 +13,7 @@ export const metadata = pageMetadata({
 });
 
 /** The date this page was last checked against the code and migrations. */
-const LAST_CHECKED = "October 1, 2026";
+const LAST_CHECKED = "October 19, 2026";
 
 export default function TrustPage() {
   return (
@@ -36,7 +36,7 @@ export default function TrustPage() {
         <ul className={styles.points}>
           <li><strong>13 and up.</strong> StrikeLab is built for ages 13 to 18.</li>
           <li><strong>Minimal.</strong> An email address, a display name and learning activity. No birth date, address, phone number, school ID, photos, grades or location.</li>
-          <li><strong>Private by default.</strong> Nothing about a student is public unless they create a share link for their own capstone, and even that shows no name.</li>
+          <li><strong>Private by default.</strong> A student can choose to share a capstone or a record link. A record link shows a handle and verified items, never a real name or private reviewer notes.</li>
           <li><strong>No ads, no selling data, no cross-site tracking.</strong></li>
           <li><strong>Students can delete everything themselves</strong>, immediately, from Settings.</li>
         </ul>
@@ -60,8 +60,8 @@ export default function TrustPage() {
           ))}
         </ul>
         <p className={styles.body}>
-          <strong>StrikeLab staff</strong> (the founder) can read the database to run and support the service, and does so only for
-          support, debugging and aggregate pilot numbers. Pilot reports use aggregate numbers only.
+          <strong>StrikeLab staff</strong> (the founder) can read the database to run and support the service. The founder records
+          verification results after review; support and debugging can also require access. Pilot reports use aggregate numbers only.
         </p>
       </section>
 

@@ -56,6 +56,9 @@ export default function MiniEditor({ value, onChange, readOnly, ariaLabel = "Pyt
         highlightActiveLine: !readOnly,
         autocompletion: true,
         foldGutter: false,
+        // Every starter file indents with 4 spaces. CodeMirror's default unit is 2,
+        // so Enter inside a function body produced an IndentationError on run.
+        tabSize: 4,
       }}
       style={{ fontSize: "0.85rem" }}
     />
