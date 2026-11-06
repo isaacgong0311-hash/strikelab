@@ -69,6 +69,11 @@ describe("worked answers", () => {
     expect(answer("inv-5.1.annualize-calc")).toBeCloseTo(1 * Math.sqrt(252), 1);
     expect(answer("inv-5.2.portfolio-vol")).toBeCloseTo(Math.sqrt(0.25 * 0.04 + 0.25 * 0.04) * 100, 1);
     expect(answer("inv-5.3.sharpe-calc")).toBeCloseTo((12 - 5) / 14);
+    expect(answer("1.1.contract-cost")).toBeCloseTo(2.75 * 100);
+    expect(answer("1.2.value-up")).toBeCloseTo(Math.max(210 - 195, 0));
+    expect(answer("1.2.net-profit")).toBeCloseTo((210 - 195 - 4.5) * 100);
+    expect(answer("1.2.break-even")).toBeCloseTo(195 + 4.5);
+    expect(answer("1.3.extrinsic")).toBeCloseTo(9 - Math.max(190 - 185, 0));
   });
 });
 

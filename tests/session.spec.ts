@@ -115,6 +115,20 @@ test("unknown sessions 404", async ({ page }) => {
   expect(response?.status()).toBe(404);
 });
 
+test("the options desk starts with a decision and retries a missed answer", async ({ page }) => {
+  await open(page, "/learn/1.1");
+  await expect(page.getByRole("heading", { level: 1, name: "Your first desk decision" })).toBeVisible();
+  await page.keyboard.press("Enter");
+  await expect(page.getByRole("heading", { level: 1, name: /stock falls and exercising a call/ })).toBeVisible();
+  await page.keyboard.press("2");
+  await page.keyboard.press("Enter");
+  await expect(page.getByRole("status")).toContainText("Correct answer: Decline to exercise");
+  await expect(page.getByRole("status")).toContainText("see this one again");
+  await expect(page.getByRole("button", { name: "Explain my mistake with AI" })).toHaveCount(0);
+  await page.keyboard.press("Enter");
+  await expect(page.getByRole("heading", { level: 1, name: "Two choices" })).toBeVisible();
+});
+
 test("finishing the last session completes the lesson and awards XP once", async ({ page }) => {
   const done = { completedAt: "2026-09-16T12:00:00Z", accuracy: 1, durationMs: 60_000 };
   await page.addInitScript((results) => {

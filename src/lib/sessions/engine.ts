@@ -22,6 +22,12 @@ export function gradeNumeric(step: NumericStep, raw: string): boolean {
   return Math.abs(value - step.answer) <= tolerance;
 }
 
+/** Human-readable answer for feedback and the mistake coach. */
+export function formatNumericAnswer(step: NumericStep): string {
+  if (step.unit === "$") return `$${step.answer.toLocaleString("en-US")}`;
+  return `${step.answer}${step.unit ? ` ${step.unit}` : ""}`;
+}
+
 export function gradeMcq(step: McqStep, choice: number): boolean {
   return choice === step.correct;
 }

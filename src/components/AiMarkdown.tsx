@@ -60,12 +60,15 @@ export async function streamInto(
   url: string,
   payload: unknown,
   onChunk: (chunk: string) => void,
+  signal?: AbortSignal,
 ): Promise<void> {
   const res = await fetch(url, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(payload),
+    signal,
   });
+  if (!res.ok) throw new Error(`AI request failed: ${res.status}`);
   if (!res.body) throw new Error("no response body");
 
   const reader = res.body.getReader();
