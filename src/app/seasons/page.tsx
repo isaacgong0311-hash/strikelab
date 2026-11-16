@@ -8,6 +8,9 @@ import { PLANNED_SEASON } from "@/lib/seasons/planned";
 import { remainingLabel, statusForWeek, type OwnAttempt } from "@/lib/seasons/status";
 import LeaderboardTable, { type LeaderboardRow } from "@/components/seasons/LeaderboardTable";
 import HandleForm from "./HandleForm";
+import InviteCard from "./InviteCard";
+import inviteStyles from "./invite.module.css";
+import { inviterFromSrc } from "@/lib/seasons/invite";
 import WeekStatus from "./WeekStatus";
 import boardStyles from "./board.module.css";
 import statusStyles from "./status.module.css";
@@ -32,16 +35,24 @@ function readable(date: string): string {
 
 async function load(requestedClubId: string | undefined) {
   const supabase = await getSupabaseServer();
-  if (!supabase) return { season: null, challenges: [], attempts: [], board: [], clubBoard: null, clubs: [], selectedClub: null, needsHandle: false, signedIn: false };
+  if (!supabase) return { season: null, challenges: [], attempts: [], board: [], clubBoard: null, clubs: [], selectedClub: null, needsHandle: false, signedIn: false, handle: null, invited: null };
   const today = new Date().toISOString().slice(0, 10);
   const { data: seasons } = await supabase.from("seasons").select("id, title, starts_on, ends_on").gte("ends_on", today).order("starts_on").limit(1);
   const season = (seasons?.[0] as SeasonRow | undefined) ?? null;
   const { data: auth } = await supabase.auth.getUser();
   let needsHandle = false;
+  let handle: string | null = null;
+  let invited: number | null = null;
   let clubs: ClubOption[] = [];
   if (auth.user) {
     const { data: profile } = await supabase.from("profiles").select("handle").eq("id", auth.user.id).maybeSingle();
-    needsHandle = !profile?.handle;
+    handle = (profile?.handle as string | null | undefined) ?? null;
+    needsHandle = !handle;
+    if (handle) {
+      // Null (count hidden) until migration 0026 is applied.
+      const { data: count, error } = await supabase.rpc("my_invite_count");
+      invited = error || typeof count !== "number" ? null : count;
+    }
     const { data: memberships } = await supabase.from("class_members").select("class_id").eq("student_id", auth.user.id);
     const ids = (memberships ?? []).map((membership) => membership.class_id);
     if (ids.length > 0) {
@@ -49,7 +60,7 @@ async function load(requestedClubId: string | undefined) {
       clubs = (classes ?? []) as ClubOption[];
     }
   }
-  if (!season) return { season: null, challenges: [], attempts: [], board: [], clubBoard: null, clubs, selectedClub: null, needsHandle, signedIn: Boolean(auth.user) };
+  if (!season) return { season: null, challenges: [], attempts: [], board: [], clubBoard: null, clubs, selectedClub: null, needsHandle, signedIn: Boolean(auth.user), handle, invited };
   const selectedClub = clubs.find((club) => club.id === requestedClubId) ?? clubs[0] ?? null;
   const [{ data: challenges }, { data: board }, clubResult] = await Promise.all([
     supabase.from("season_challenges").select("id, week, template_slug, opens_at, closes_at, time_limit_minutes").eq("season_id", season.id).order("week"),
@@ -73,12 +84,15 @@ async function load(requestedClubId: string | undefined) {
     selectedClub,
     needsHandle,
     signedIn: Boolean(auth.user),
+    handle,
+    invited,
   };
 }
 
-export default async function SeasonsPage({ searchParams }: { searchParams: Promise<{ club?: string | string[] }> }) {
-  const { club } = await searchParams;
-  const { season, challenges, attempts, board, clubBoard, clubs, selectedClub, needsHandle, signedIn } = await load(typeof club === "string" ? club : undefined);
+export default async function SeasonsPage({ searchParams }: { searchParams: Promise<{ club?: string | string[]; src?: string | string[] }> }) {
+  const { club, src } = await searchParams;
+  const { season, challenges, attempts, board, clubBoard, clubs, selectedClub, needsHandle, signedIn, handle, invited } = await load(typeof club === "string" ? club : undefined);
+  const inviter = signedIn ? null : inviterFromSrc(typeof src === "string" ? src : null);
   const now = new Date();
   const attemptsByChallenge = new Map(attempts.map((attempt) => [attempt.challenge_id, attempt]));
   const seasonRank = board.find((row) => row.is_you)?.rank ?? null;
@@ -90,6 +104,7 @@ export default async function SeasonsPage({ searchParams }: { searchParams: Prom
     <div className={styles.page}>
       <section className={styles.section}>
         <div className={styles.wrap}>
+          {inviter && <p className={inviteStyles.banner}>@{inviter} invited you to play</p>}
           <p className={styles.kicker}>Seasons</p>
           <h1 className={styles.h1}>Prove you can do quant work.</h1>
           <p className={styles.lede}>
@@ -103,6 +118,12 @@ export default async function SeasonsPage({ searchParams }: { searchParams: Prom
             </div>
           )}
           {needsHandle && <div style={{ marginTop: "1.5rem" }}><HandleForm /></div>}
+          {handle && <InviteCard handle={handle} invited={invited} seasonTitle={title} />}
+          {!signedIn && (
+            <p className={styles.body}>
+              <a href="/seasons/calendar.ics" download className={styles.textLink}>Add the challenge dates to your calendar</a>
+            </p>
+          )}
         </div>
       </section>
 
