@@ -1,9 +1,11 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 /** Pick the public name shown on leaderboards. Shown only to signed-in students without one. */
 export default function HandleForm() {
+  const router = useRouter();
   const [value, setValue] = useState("");
   const [saved, setSaved] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -22,6 +24,8 @@ export default function HandleForm() {
       const data = (await res.json().catch(() => ({}))) as { handle?: string; error?: string };
       if (!res.ok) throw new Error(data.error ?? "Couldn't save your handle");
       setSaved(data.handle ?? value);
+      // Re-render the page so the invite card for the new handle appears.
+      router.refresh();
     } catch (err) {
       setError(err instanceof Error ? err.message : "Couldn't save your handle");
     } finally {
