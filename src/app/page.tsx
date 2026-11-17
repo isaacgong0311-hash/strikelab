@@ -2,9 +2,9 @@ import type { Metadata } from "next";
 import HomeView from "./HomeView";
 import { SITE_URL, SITE_NAME } from "@/lib/site";
 
-const TITLE = "StrikeLab: learn finance by building it";
+const TITLE = "StrikeLab: learn quant finance, then prove it";
 const DESCRIPTION =
-  "Interactive finance experiments, 23 hands-on lessons, and real Python in your browser. Explore options, risk, and backtesting. Free for students, with a six-week club program.";
+  "Free for high schoolers: 23 hands-on lessons with real Python in your browser, then weekly timed quant challenges ranked under a handle, and a record you can show. Clubs play free too.";
 
 export const metadata: Metadata = {
   title: { absolute: TITLE },
@@ -21,8 +21,8 @@ export const metadata: Metadata = {
   twitter: { card: "summary_large_image", title: TITLE, description: DESCRIPTION },
 };
 
-// The Demo Club preview's dates are relative to today; without this the page
-// is built once and its due dates drift into the past.
+// The hero's "Season 1 opens in N days" is relative to today; without this the
+// page is built once and the count drifts.
 export const revalidate = 3600;
 
 export default function Page() {

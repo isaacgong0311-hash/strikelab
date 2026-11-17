@@ -50,8 +50,9 @@ test("the homepage gives leaders their own door and doesn't promise zero prep", 
   await expect(page.getByRole("link", { name: "Bring your club" }).first()).toBeVisible();
   await expect(page.getByText(/No prep\./)).toHaveCount(0);
   await expect(page.getByText(/Zero prep/)).toHaveCount(0);
-  // The club section now comes before the Greeks tour.
+  // The loop (train, compete, prove) leads; the club section follows it.
+  const loop = await page.locator("#home-loop").boundingBox();
   const clubs = await page.locator("#home-clubs").boundingBox();
-  const greeks = await page.locator("#home-greeks").boundingBox();
-  expect(clubs && greeks && clubs.y < greeks.y).toBe(true);
+  expect(loop && clubs && loop.y < clubs.y).toBe(true);
+  await expect(page.getByRole("link", { name: "Set up your club" })).toHaveAttribute("href", /\/pilot\?src=home-clubs/);
 });

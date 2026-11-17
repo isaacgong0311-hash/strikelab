@@ -207,7 +207,6 @@ export default function Nav() {
   const isLeader = user?.user_metadata?.signup_role === "leader";
   const primary = !user ? VISITOR : isLeader ? TEACHER : PRIMARY;
   const allLinks = (user ? [...primary, ...SECONDARY] : VISITOR) as { href: string; label: string; pro?: boolean }[];
-  const primaryCount = primary.length;
 
   return (
     <header className="site-header">
@@ -232,13 +231,13 @@ export default function Nav() {
             </span>
           </Link>
 
+          {/* Only the primary links: the secondary set (Pricing, About, Roadmap) lives in the footer and
+              the mobile menu, which is what lets the full bar fit a 1024px laptop. */}
           <div className="nav-links">
-            {allLinks.map((l, i) => {
+            {(primary as { href: string; label: string; pro?: boolean }[]).map((l) => {
               const active = isActive(l.href);
-              const isFirstSecondary = i === primaryCount;
               return (
                 <span key={l.href} className="nav-link-wrap">
-                  {isFirstSecondary && <div className="nav-divider" />}
                   <Link
                     href={l.href}
                     className={`nav-link${active ? " active" : ""}`}
@@ -336,8 +335,8 @@ export default function Nav() {
           ) : (
             <>
               <Link href="/sign-in" className="nav-signin">Sign in</Link>
-              <Link href="/learn/inv-1.1?src=nav" className="nav-cta">
-                Start lesson 1 <span aria-hidden="true">→</span>
+              <Link href="/seasons/practice?src=nav" className="nav-cta">
+                Try a practice round <span aria-hidden="true">→</span>
               </Link>
             </>
           )}
@@ -415,8 +414,8 @@ export default function Nav() {
             ) : (
               <>
                 <Link href="/sign-in" className="nav-mobile-link">Sign in</Link>
-                <Link href="/learn/inv-1.1?src=nav-mobile" className="nav-cta" style={{ marginTop: 8, justifyContent: "center" }}>
-                  Start lesson 1 <span aria-hidden="true">→</span>
+                <Link href="/seasons/practice?src=nav-mobile" className="nav-cta" style={{ marginTop: 8, justifyContent: "center" }}>
+                  Try a practice round <span aria-hidden="true">→</span>
                 </Link>
                 <Link href="/pilot?src=nav-mobile" className="nav-mobile-link">
                   Clubs &amp; teachers: start a free pilot
