@@ -266,3 +266,5 @@
 @media (max-width: 860px) { .heroGrid { grid-template-columns: 1fr; gap: 2.5rem; } .heroLede { max-width: 35rem; } .headline { font-size: clamp(2.875rem, 8vw, 4rem); } .proofStrip { margin-top: 2.5rem; } }
 @media (max-width: 650px) { .experimentCards { grid-template-columns: 1fr; } .experimentGlyph { margin-block: 1.25rem; } .proofStrip { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; } }
 @media (prefers-reduced-motion: reduce) { .experimentCard { transition: none; } .experimentCard:hover { transform: none; } }
+
+.startAnywhere { margin-top: 2.25rem; }

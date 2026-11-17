@@ -168,6 +168,7 @@ test.describe("timed challenge workspace", () => {
 
 test("the seasons page leads with the practice round and the opening", async ({ page }) => {
   await page.goto("/seasons");
-  await expect(page.getByRole("link", { name: "Try a practice round" })).toHaveAttribute("href", "/seasons/practice");
+  // The header button and the hero button share this text, so look in the page body.
+  await expect(page.getByRole("main").getByRole("link", { name: "Try a practice round" })).toHaveAttribute("href", "/seasons/practice");
   await expect(page.getByText(/Opens in \d+ days? ·|Live now|Season ended/)).toBeVisible();
 });

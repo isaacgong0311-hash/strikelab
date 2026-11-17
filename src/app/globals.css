@@ -1569,13 +1569,20 @@ a.drow-link:hover { background: var(--card2); }
   gap: 2px;
   height: 60px;
 }
-/* 768px used to be the "full nav" breakpoint, but the actual link set
-   (logo + 8 links + stat pills + avatar + GitHub + sign-in + CTA) needs
-   ~1274px to lay out without wrapping — so everything from 768px to
-   ~1270px (most tablets and a lot of laptop windows) got a nav bar wider
-   than the viewport and the whole page scrolled horizontally. Pushed the
-   "full nav" breakpoint out past where it actually fits, with margin. */
-@media (min-width: 1360px) { .nav-links { display: flex; } }
+/* The "full nav" breakpoint is 1024px. It used to be 1360px because the
+   old link set (logo + 8 links + stat pills + avatar + GitHub + sign-in + CTA)
+   needed ~1274px, and at 768px the bar overflowed the page horizontally. The
+   desktop bar now carries only the primary links, and the lower-priority
+   items step aside in the 1024px to 1279px band (tighter spacing, no GitHub
+   button, no streak/XP pills; the dashboard and the mobile menu still show
+   them). tests/nav.spec.ts checks the bar never overflows between 1024px and
+   1440px. */
+@media (min-width: 1024px) { .nav-links { display: flex; } }
+@media (min-width: 1024px) and (max-width: 1279px) {
+  .nav-left { gap: 18px; }
+  .nav-link { padding: 6px 8px; }
+  .nav-stat-pill { display: none; }
+}
 .nav-link-wrap { display: flex; align-items: center; }
 .nav-divider {
   width: 1px;
@@ -1722,7 +1729,7 @@ a.drow-link:hover { background: var(--card2); }
   background: transparent;
   transition: border-color .12s, color .12s;
 }
-@media (min-width: 1360px) { .nav-ghost-btn { display: flex; } }
+@media (min-width: 1280px) { .nav-ghost-btn { display: flex; } }
 .nav-ghost-btn:hover { border-color: var(--fg-mute); color: var(--fg); }
 
 /* Sign in link */
@@ -1771,14 +1778,14 @@ a.drow-link:hover { background: var(--card2); }
   transition: border-color .12s;
 }
 .nav-hamburger:hover { border-color: var(--fg-mute); }
-@media (min-width: 1360px) { .nav-hamburger { display: none; } }
+@media (min-width: 1024px) { .nav-hamburger { display: none; } }
 
 /* ── Mobile touch targets ───────────────────────────────────────────────────
    Measured on a 375px viewport, 18 interactive elements were under 44x44 —
    including the hamburger (34px), which is the *only* way to reach the nav on
    mobile, and the primary "Start free" CTA (38px tall). Desktop keeps its
    tighter density; this only relaxes below the nav breakpoint. */
-@media (max-width: 1359px) {
+@media (max-width: 1023px) {
   .nav-hamburger {
     width: var(--tap);
     height: var(--tap);
@@ -1811,7 +1818,7 @@ a.drow-link:hover { background: var(--card2); }
   z-index: 49;
   animation: nav-overlay-in .18s ease both;
 }
-@media (min-width: 1360px) { .nav-mobile-overlay { display: none; } }
+@media (min-width: 1024px) { .nav-mobile-overlay { display: none; } }
 .nav-mobile-panel {
   background: var(--paper, #fafaf9);
   border-bottom: 1px solid var(--border);
