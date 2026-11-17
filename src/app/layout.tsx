@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Plus_Jakarta_Sans, Inter, JetBrains_Mono } from "next/font/google";
+import localFont from "next/font/local";
 import "./globals.css";
 import "../styles/tokens.css";
 import "../styles/foundation.css";
@@ -13,6 +13,12 @@ import { AuthProvider } from "@/lib/auth/AuthProvider";
 import AccessibilityProvider from "@/components/accessibility/AccessibilityProvider";
 import { ACCESSIBILITY_BOOT_SCRIPT } from "@/lib/accessibility/preferences";
 
+// All three fonts are self-hosted (src/fonts, latin subset, variable weight).
+// They used to come from next/font/google, which fetches from Google at build
+// and dev-server time: that fetch intermittently failed in CI, on Vercel and on
+// school-filtered networks ("Can't resolve .../internal/font/google/font"),
+// taking builds down with it. See src/fonts/README.md.
+//
 // Plus Jakarta Sans — headings.
 //
 // Replaces Syne, which was a geometric *poster/fashion* display face. Two
@@ -23,10 +29,11 @@ import { ACCESSIBILITY_BOOT_SCRIPT } from "@/lib/accessibility/preferences";
 //
 // Jakarta keeps some warmth and personality at heavy weights without the
 // costume, and its numerals are unambiguous.
-const jakarta = Plus_Jakarta_Sans({
+const jakarta = localFont({
+  src: "../fonts/plus-jakarta-sans-latin.woff2",
   variable: "--font-display",
-  subsets: ["latin"],
-  weight: ["500", "600", "700", "800"],
+  weight: "500 800",
+  display: "swap",
 });
 
 // Inter — UI and body.
@@ -34,17 +41,19 @@ const jakarta = Plus_Jakarta_Sans({
 // Replaces Space Grotesk. Inter is the workhorse behind most modern learning
 // products for a reason: it is boring in the way interface type should be,
 // and stays legible at the 11-13px the nav, pills and labels rely on.
-const inter = Inter({
+const inter = localFont({
+  src: "../fonts/inter-latin.woff2",
   variable: "--font-ui",
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
+  weight: "400 700",
+  display: "swap",
 });
 
 // JetBrains Mono — best-in-class coding mono for the Python exercises
-const jetbrains = JetBrains_Mono({
+const jetbrains = localFont({
+  src: "../fonts/jetbrains-mono-latin.woff2",
   variable: "--font-mono",
-  subsets: ["latin"],
-  weight: ["300", "400", "500", "600", "700"],
+  weight: "300 700",
+  display: "swap",
   // Code and small labels only: not worth competing with the page's own
   // content for bandwidth on a slow school network (work plan AG4). It
   // still loads, with a fallback font until it arrives.
