@@ -52,7 +52,7 @@
 - Reach the first Run sooner (a jump-to-exercise control, or exercise first), and check coding on a phone.
 
 ### R5. Foundations
-- Self-host the three fonts with `next/font/local` so builds and local dev don't depend on Google Fonts.
+- **Done (PR `fix/self-host-fonts`):** the three fonts are self-hosted from `src/fonts/` with `next/font/local`, so builds and local dev no longer depend on Google Fonts. The Google fetch had failed intermittently in CI (twice on Nov 16, including master's own run), on one Vercel build, and in local dev.
 - Delete legacy `globals.css` selectors as each page moves to tokens and modules.
 
 ## Rules for every phase

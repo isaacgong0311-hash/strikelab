@@ -19,6 +19,14 @@ StrikeLab uses a student-first “premium learning lab” visual language: calm 
 - Dialogs contain focus, close with Escape, restore focus, and make background content inert. Disclosures and tabs use their complete native/ARIA keyboard patterns.
 - Charts provide a concise text equivalent. Complex manipulatives provide a keyboard-operable control that reaches the same values as pointer input.
 
+## Fonts
+
+Plus Jakarta Sans (headings), Inter (interface) and JetBrains Mono (code) are
+self-hosted from `src/fonts/` with `next/font/local`, as latin-subset variable
+files, so builds never depend on a request to Google. Consume them through the
+`--sl-font-display`, `--sl-font-body` and `--sl-font-code` tokens. How the files
+were produced and how to refresh them: `src/fonts/README.md`.
+
 ## Accessibility preferences
 
 `reduceMotion` and `enhancedContrast` are `boolean | null`. `null` follows the device; a boolean is an explicit override. Preferences use the versioned `strikelab:a11y:v1` local-storage key and resolve to `data-motion` and `data-contrast` on the root element before paint.
