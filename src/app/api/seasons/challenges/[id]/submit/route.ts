@@ -6,8 +6,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { requireUser } from "@/lib/supabase/requireUser";
 import { rateLimit } from "@/lib/rateLimit";
-
-export const MIN_EXPLANATION = 20;
+import { MAX_EXPLANATION, MIN_EXPLANATION } from "@/lib/seasons/limits";
 
 const MESSAGES: Record<string, [number, string]> = {
   too_late: [409, "Time was up, so this submission wasn't accepted."],
@@ -27,8 +26,8 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
     return NextResponse.json({ error: "Include your code (up to 50,000 characters)." }, { status: 400 });
   }
   const explanation = typeof body.explanation === "string" ? body.explanation.trim() : "";
-  if (explanation.length < MIN_EXPLANATION || explanation.length > 2000) {
-    return NextResponse.json({ error: `Explain your answer in at least ${MIN_EXPLANATION} characters (up to 2,000).` }, { status: 400 });
+  if (explanation.length < MIN_EXPLANATION || explanation.length > MAX_EXPLANATION) {
+    return NextResponse.json({ error: `Explain your answer in at least ${MIN_EXPLANATION} characters (up to ${MAX_EXPLANATION.toLocaleString("en-US")}).` }, { status: 400 });
   }
 
   const { id } = await params;
