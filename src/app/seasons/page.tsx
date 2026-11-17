@@ -4,7 +4,9 @@ import { pageMetadata } from "@/lib/seo";
 import { getSupabaseServer } from "@/lib/supabase/server";
 import { getTemplate } from "@/lib/seasons/templates";
 import { challengeStatus } from "@/lib/seasons/window";
-import { PLANNED_SEASON } from "@/lib/seasons/planned";
+import { PLANNED_SEASON, seasonPhase } from "@/lib/seasons/planned";
+import { trainLinkFor } from "@/lib/seasons/train";
+import seasonStyles from "./seasons.module.css";
 import { remainingLabel, statusForWeek, type OwnAttempt } from "@/lib/seasons/status";
 import LeaderboardTable, { type LeaderboardRow } from "@/components/seasons/LeaderboardTable";
 import HandleForm from "./HandleForm";
@@ -99,12 +101,19 @@ export default async function SeasonsPage({ searchParams }: { searchParams: Prom
   const title = season?.title ?? PLANNED_SEASON.title;
   const starts = season?.starts_on ?? PLANNED_SEASON.startsOn;
   const ends = season?.ends_on ?? PLANNED_SEASON.endsOn;
+  const phase = seasonPhase(now, starts, ends);
 
   return (
     <div className={styles.page}>
       <section className={styles.section}>
         <div className={styles.wrap}>
           {inviter && <p className={inviteStyles.banner}>@{inviter} invited you to play</p>}
+          <p className={seasonStyles.phase} data-kind={phase.kind}>
+            <span className={seasonStyles.dot} aria-hidden="true" />
+            {phase.kind === "upcoming"
+              ? `Opens in ${phase.days} ${phase.days === 1 ? "day" : "days"} · ${readable(starts)}`
+              : phase.kind === "live" ? "Live now" : "Season ended"}
+          </p>
           <p className={styles.kicker}>Seasons</p>
           <h1 className={styles.h1}>Prove you can do quant work.</h1>
           <p className={styles.lede}>
@@ -114,16 +123,16 @@ export default async function SeasonsPage({ searchParams }: { searchParams: Prom
           {!signedIn && (
             <div className={styles.ctaRow}>
               <Link href="/sign-up?next=%2Fseasons" className={styles.primary}>Create a free account to play</Link>
-              <Link href="/lessons" className={styles.secondary}>Train with the lessons first</Link>
+              <Link href="/seasons/practice" className={styles.secondary}>Try a practice round</Link>
             </div>
           )}
           {needsHandle && <div style={{ marginTop: "1.5rem" }}><HandleForm /></div>}
           {handle && <InviteCard handle={handle} invited={invited} seasonTitle={title} />}
-          {!signedIn && (
-            <p className={styles.body}>
-              <a href="/seasons/calendar.ics" download className={styles.textLink}>Add the challenge dates to your calendar</a>
-            </p>
-          )}
+          <p className={seasonStyles.quiet}>
+            {signedIn && <Link href="/seasons/practice" className={seasonStyles.link}>Try the 15-minute practice round</Link>}
+            {!signedIn && <Link href="/lessons" className={seasonStyles.link}>Train with the lessons first</Link>}
+            {!signedIn && <a href="/seasons/calendar.ics" download className={seasonStyles.link}>Add the challenge dates to your calendar</a>}
+          </p>
         </div>
       </section>
 
@@ -147,19 +156,29 @@ export default async function SeasonsPage({ searchParams }: { searchParams: Prom
           {challenges.length === 0 ? (
             <p className={styles.body}>The challenges appear here when the season is scheduled.</p>
           ) : (
-            <ol className={styles.checks}>
+            <ol className={seasonStyles.cards}>
               {challenges.map((c) => {
                 const t = getTemplate(c.template_slug);
+                const train = trainLinkFor(c.template_slug);
                 const status = challengeStatus(now, c.opens_at, c.closes_at);
                 return (
-                  <li key={c.id}>
-                    <strong>Week {c.week}: {t?.title ?? "Challenge"}</strong> ({t?.concept ?? ""}, {c.time_limit_minutes} minutes).{" "}
-                    {status === "open" ? (
-                      <Link href={`/seasons/${c.id}`} className={styles.textLink}>Open now</Link>
-                    ) : status === "upcoming" ? (
-                      <span>Opens {readable(c.opens_at.slice(0, 10))}</span>
-                    ) : (
-                      <span>Closed</span>
+                  <li key={c.id} className={seasonStyles.card}>
+                    <p className={seasonStyles.week}>Week {c.week}</p>
+                    <h3 className={seasonStyles.cardTitle}>{t?.title ?? "Challenge"}</h3>
+                    <p className={seasonStyles.meta}>{t?.concept ?? ""} · {c.time_limit_minutes} minutes</p>
+                    <p className={seasonStyles.state}>
+                      {status === "open" ? (
+                        <Link href={`/seasons/${c.id}`} className={styles.textLink}>Open now</Link>
+                      ) : status === "upcoming" ? (
+                        <span>Opens {readable(c.opens_at.slice(0, 10))}</span>
+                      ) : (
+                        <span>Closed</span>
+                      )}
+                    </p>
+                    {train && (
+                      <p className={seasonStyles.train}>
+                        <Link href={`/lesson/${train.lessonId}`} className={seasonStyles.link}>Train first: {train.label}</Link>
+                      </p>
                     )}
                   </li>
                 );
@@ -186,6 +205,13 @@ export default async function SeasonsPage({ searchParams }: { searchParams: Prom
                         <p className={statusStyles.week}>Week {challenge.week}</p>
                         <h3 className={statusStyles.title}>{template?.title ?? "Challenge"}</h3>
                         <p className={statusStyles.concept}>{template?.concept ?? ""} · {challenge.time_limit_minutes} minutes</p>
+                        {trainLinkFor(challenge.template_slug) && (
+                          <p className={statusStyles.concept}>
+                            <Link href={`/lesson/${trainLinkFor(challenge.template_slug)!.lessonId}`} className={seasonStyles.link}>
+                              Train first: {trainLinkFor(challenge.template_slug)!.label}
+                            </Link>
+                          </p>
+                        )}
                       </div>
                       <WeekStatus
                         view={view}

@@ -55,6 +55,7 @@ export async function POST(_req: NextRequest, { params }: { params: Promise<{ id
     deadline: row.deadline,
     status: row.status,
     title: template.title,
+    entry: template.entry,
     concept: template.concept,
     prompt: template.prompt(p),
     params: p,

@@ -22,6 +22,7 @@ const PUBLIC_ROUTES = [
   "/trust",
   "/warmup",
   "/seasons",
+  "/seasons/practice",
   "/intensive",
 ];
 
