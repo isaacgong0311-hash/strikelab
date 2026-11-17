@@ -118,6 +118,8 @@ const service = createServer(async (request, response) => {
           : [{ rank: 1, handle: "student_one", total_score: 90, solved: 1, is_you: userId === studentId }, { rank: 2, handle: "quant_friend", total_score: 75, solved: 1, is_you: false }];
       break;
     }
+    // Scalar function: PostgREST returns the bare number, not a row set.
+    case "/rest/v1/rpc/my_invite_count": return json(response, 200, userId === studentId ? 2 : 0);
     case "/rest/v1/rpc/set_record_sharing": {
       if (!recordFixture || !userId) return json(response, 401, { message: "Not authenticated" });
       let body = "";

@@ -44,7 +44,7 @@
 - Show nav links from about 960px; trim the signed-in link set so it fits.
 - Homepage: lead with Train, Compete, Prove; keep the Market Lab widget as the interactive hook; cut to roughly half the length; point the header button somewhere that fits a math-team student.
 
-### R3. After sign-up
+### R3. After sign-up (built on `feat/r3-after-signup`)
 - Student home shows season status, the practice round and a short checklist (handle, practice, calendar, invite).
 - Sign-up page says "play Season 1" when the visitor came from `/seasons`.
 

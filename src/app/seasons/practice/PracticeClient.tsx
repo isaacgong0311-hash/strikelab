@@ -9,6 +9,7 @@ import styles from "@/components/marketing/marketing.module.css";
 import { useAuth } from "@/lib/auth/AuthProvider";
 import { friendlyPythonError } from "@/lib/pythonErrors";
 import { loadPythonRuntime } from "@/lib/pythonRuntime";
+import { markReadiness } from "@/lib/seasons/checklist";
 import { browserStorage, clearDraft, draftKey } from "@/lib/seasons/draft";
 import {
   clearPracticeState, describeResult, forgetFunctionProgram, loadPracticeState, newPracticeSeed, parsePracticeResult,
@@ -129,6 +130,7 @@ function Round() {
       const usedSeconds = state.startedAt === null ? 0 : Math.round((Date.now() - state.startedAt) / 1000);
       setSummary({ result: lastResult.current, usedSeconds: Math.min(usedSeconds, PRACTICE_MINUTES * 60) });
       clearPracticeState(browserStorage());
+      markReadiness(browserStorage(), "practice");
     },
     [runChecks, state.startedAt],
   );

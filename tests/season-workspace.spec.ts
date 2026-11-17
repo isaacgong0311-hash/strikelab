@@ -40,6 +40,8 @@ test.describe("practice round", () => {
     await expect(page.getByRole("heading", { level: 1, name: "Every check passed." })).toBeVisible({ timeout: 60_000 });
     await expect(page.getByText(/Nothing from this round was saved or ranked/)).toBeVisible();
     await expect(page.getByRole("link", { name: /Create a free account to play Season 1/ })).toBeVisible();
+    // Finishing the round ticks "Try the practice round" on the student's checklist (this device only).
+    expect(await page.evaluate(() => localStorage.getItem("strikelab:season-ready:v1"))).toContain('"practice":true');
   });
 
   test("the starter code fails with a plain note, and finishing needs an explanation", async ({ page }) => {

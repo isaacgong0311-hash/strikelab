@@ -36,7 +36,7 @@ test.describe("signed-in dashboard with seeded season data", () => {
     expect(bounds!.y + bounds!.height).toBeLessThanOrEqual(900);
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
     const headings = await page.locator("main h2").allTextContents();
-    expect(headings.slice(0, 3)).toEqual(["Price a put from a call", "Your next lesson", "Build a record worth sharing."]);
+    expect(headings.slice(0, 4)).toEqual(["Price a put from a call", "Get ready for Season 1", "Your next lesson", "Build a record worth sharing."]);
     await expect(page.getByRole("link", { name: "See your record" })).toHaveAttribute("href", "/record");
     const accessibility = await new AxeBuilder({ page }).analyze();
     expect(accessibility.violations.filter((violation) => violation.impact === "critical" || violation.impact === "serious")).toEqual([]);
@@ -49,6 +49,23 @@ test.describe("signed-in dashboard with seeded season data", () => {
     }
     await page.getByRole("link", { name: "See your record" }).click();
     await expect(page.getByRole("heading", { level: 1, name: "Your record" })).toBeVisible();
+  });
+
+  test("the get-ready checklist reflects the handle, friends who joined, and what this device has done", async ({ page }) => {
+    await signIn(page);
+    await page.goto("/dashboard");
+    const ready = page.getByRole("region", { name: "Get ready for Season 1" });
+    // The seeded student has a handle and two friends who joined through their link.
+    await expect(ready.getByText("2 of 4 done")).toBeVisible();
+    await expect(ready.getByText("You're @student_one on the boards.")).toBeVisible();
+    await expect(ready.getByText("2 friends have joined through your link.")).toBeVisible();
+    await expect(ready.getByRole("link", { name: /^Start/ })).toHaveAttribute("href", "/seasons/practice");
+    // Downloading the calendar ticks it on this device.
+    const download = page.waitForEvent("download");
+    await ready.getByRole("link", { name: "Download" }).click();
+    await download;
+    await expect(ready.getByText("3 of 4 done")).toBeVisible();
+    await expect(ready.getByText("Downloaded on this device.")).toBeVisible();
   });
 
   test("the season action is present without JavaScript", async ({ browser }) => {
