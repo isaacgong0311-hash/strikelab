@@ -437,12 +437,12 @@ export default function DashboardClient() {
         {/* Quick actions */}
         <div className="db-actions">
           {[
-            { href: "/lessons",    glyph: "≡", title: "Learning path",    sub: "Duolingo-style path view",  ic: "var(--grass)",   bg: "var(--grass-tint)" },
-            { href: "/playground", glyph: "∂", title: "Playground",       sub: "Live Black-Scholes sandbox", ic: "var(--sky)",     bg: "var(--sky-tint)" },
-            { href: "/roadmap",    glyph: "→", title: "Roadmap",          sub: "What's shipping next",       ic: "var(--coral)",   bg: "var(--coral-tint)" },
+            { href: "/lessons",    glyph: "≡", title: "Learning path",    sub: "Duolingo-style path view" },
+            { href: "/playground", glyph: "∂", title: "Playground",       sub: "Live Black-Scholes sandbox" },
+            { href: "/roadmap",    glyph: "→", title: "Roadmap",          sub: "What's shipping next" },
           ].map(q => (
             <Link key={q.href} href={q.href} className="db-action">
-              <span className="db-action-icon" style={{ background: q.bg, color: q.ic }}>{q.glyph}</span>
+              <span className="db-action-icon" aria-hidden="true">{q.glyph}</span>
               <div className="db-action-copy">
                 <div className="db-action-t">{q.title}</div>
                 <div className="db-action-s">{q.sub}</div>
@@ -463,7 +463,6 @@ export default function DashboardClient() {
           const unlocked = hydrated && isUnlocked(a, completed);
           return (
             <div key={a.id} className={`db-ach ${unlocked ? "unlocked" : ""}`} title={a.desc}>
-              {unlocked && <div className="db-ach-glow" />}
               <div className="db-ach-icon">{a.icon}</div>
               <div className="db-ach-name">{a.name}</div>
               <div className="db-ach-desc">{a.desc}</div>

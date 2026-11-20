@@ -1,4 +1,7 @@
 import Link from "next/link";
+import Faq from "@/components/marketing/Faq";
+import JsonLd from "@/components/JsonLd";
+import { SEASON_FAQ } from "@/lib/seasons/faq";
 import styles from "@/components/marketing/marketing.module.css";
 import { pageMetadata } from "@/lib/seo";
 import { getSupabaseServer } from "@/lib/supabase/server";
@@ -25,6 +28,16 @@ export const metadata = pageMetadata({
 });
 
 export const dynamic = "force-dynamic";
+
+const FAQ_JSON_LD = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: SEASON_FAQ.map((item) => ({
+    "@type": "Question",
+    name: item.q,
+    acceptedAnswer: { "@type": "Answer", text: item.a },
+  })),
+};
 
 interface SeasonRow { id: string; title: string; starts_on: string; ends_on: string }
 interface ChallengeRow { id: string; week: number; template_slug: string; opens_at: string; closes_at: string; time_limit_minutes: number }
@@ -105,6 +118,7 @@ export default async function SeasonsPage({ searchParams }: { searchParams: Prom
 
   return (
     <div className={styles.page}>
+      <JsonLd data={FAQ_JSON_LD} />
       <section className={styles.section}>
         <div className={styles.wrap}>
           {inviter && <p className={inviteStyles.banner}>@{inviter} invited you to play</p>}
@@ -252,6 +266,16 @@ export default async function SeasonsPage({ searchParams }: { searchParams: Prom
           </div>
         </section>
       )}
+
+      <section className={styles.section} aria-labelledby="season-faq">
+        <div className={styles.narrow}>
+          <h2 id="season-faq" className={styles.h2}>Questions</h2>
+          <Faq items={SEASON_FAQ} />
+          <p className={styles.fine}>
+            More about StrikeLab itself is in the <Link href="/faq" className={styles.textLink}>full FAQ</Link>.
+          </p>
+        </div>
+      </section>
     </div>
   );
 }

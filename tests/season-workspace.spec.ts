@@ -174,3 +174,19 @@ test("the seasons page leads with the practice round and the opening", async ({ 
   await expect(page.getByRole("main").getByRole("link", { name: "Try a practice round" })).toHaveAttribute("href", "/seasons/practice");
   await expect(page.getByText(/Opens in \d+ days? ·|Live now|Season ended/)).toBeVisible();
 });
+
+test("the seasons page answers the common questions, without JavaScript too", async ({ browser }) => {
+  // The FAQ is native <details>, so it must open with scripts off.
+  const context = await browser.newContext({ javaScriptEnabled: false });
+  const page = await context.newPage();
+  await page.goto("/seasons");
+  const faq = page.getByRole("region", { name: "Questions" });
+  await expect(faq.getByText("How many tries do I get?")).toBeVisible();
+  // Keyboard, not click: with scripts off Playwright's click never sees the
+  // element as "stable". Enter on a <summary> is also the keyboard path.
+  await faq.getByText("How many tries do I get?").press("Enter");
+  await expect(faq.getByText(/One attempt per challenge/)).toBeVisible();
+  const ld = await page.locator('script[type="application/ld+json"]').allTextContents();
+  expect(ld.some((json) => json.includes('"FAQPage"') && json.includes("What if I miss a week?"))).toBe(true);
+  await context.close();
+});
