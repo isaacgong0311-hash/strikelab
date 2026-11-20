@@ -8,6 +8,7 @@ import BrandMark from "@/components/BrandMark";
 import AuthError from "@/components/AuthError";
 import { useNextPath } from "@/lib/auth/useNextPath";
 import { getAttribution } from "@/lib/attribution";
+import { PLANNED_SEASON } from "@/lib/seasons/planned";
 import styles from "./signup.module.css";
 import CheckEmail from "./CheckEmail";
 
@@ -46,14 +47,17 @@ export default function SignUpPage() {
   // and recorded on the account (build plan T3.6).
   const [ageConfirmed, setAgeConfirmed] = useState(false);
   const signupSource = useSignupSource();
-  // Leaders coming from /pilot (next=/teach/...) and students from an invite
-  // (next=/join/...) get the obvious answer preselected; anyone else picks.
+  // Leaders coming from /pilot (next=/teach/...), and students from an invite
+  // (next=/join/...) or the season page (next=/seasons), get the obvious
+  // answer preselected; anyone else picks.
   const [roleChoice, setRoleChoice] = useState<SignupRole | null>(null);
   const role: SignupRole | null =
-    roleChoice ?? (nextPath.startsWith("/teach") ? "leader" : nextPath.startsWith("/join") ? "student" : null);
+    roleChoice ?? (nextPath.startsWith("/teach") ? "leader" : nextPath.startsWith("/join") || nextPath.startsWith("/seasons") ? "student" : null);
   // A new leader with nowhere particular to go starts class setup.
   const destination = role === "leader" && nextPath === "/dashboard" ? "/teach/new" : nextPath;
   const leaderFlow = nextPath.startsWith("/teach");
+  // Arrived from the season page: say what this account is for.
+  const seasonFlow = !leaderFlow && nextPath.startsWith("/seasons");
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -138,6 +142,11 @@ export default function SignUpPage() {
           <>
             <h1 className="auth-title">Create your leader account</h1>
             <p className="auth-sub">Pilots are free. Setting up your class takes about three minutes.</p>
+          </>
+        ) : seasonFlow ? (
+          <>
+            <h1 className="auth-title">Join {PLANNED_SEASON.title}</h1>
+            <p className="auth-sub">Free. Next you&apos;ll pick a leaderboard handle. Boards show handles, never real names.</p>
           </>
         ) : (
           <>

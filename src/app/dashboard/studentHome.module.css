@@ -61,7 +61,7 @@
 }
 .seasonAction:hover { background: var(--sl-brand-soft); }
 
-.training, .record, .achievements { margin-top: clamp(2rem, 5vw, 3.5rem); }
+.ready, .training, .record, .achievements { margin-top: clamp(2rem, 5vw, 3.5rem); }
 .sectionHeading { display: flex; align-items: end; justify-content: space-between; gap: 1rem; margin-bottom: 1.25rem; }
 .sectionHeading h2, .record h2 { margin: 0; font: 800 clamp(1.5rem, 3vw, 2.25rem)/1.15 var(--sl-font-display); }
 .streak, .sectionHeading > span { color: var(--sl-text-muted); font-size: .875rem; font-weight: 700; }
@@ -126,4 +126,53 @@
 
 @media (max-width: 24rem) {
   .sectionHeading { align-items: flex-start; flex-direction: column; }
+}
+
+/* Get-ready checklist */
+.readyList { display: grid; gap: .625rem; margin: 0; padding: 0; list-style: none; }
+.readyItem {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: .875rem;
+  padding: .875rem 1rem;
+  background: var(--sl-surface);
+  border: 1px solid var(--sl-border);
+  border-radius: var(--sl-radius-md);
+}
+.readyItem[data-done="true"] { background: var(--sl-brand-soft); }
+.readyMark {
+  display: grid;
+  place-items: center;
+  width: 1.625rem;
+  height: 1.625rem;
+  border: 2px solid var(--sl-border-strong);
+  border-radius: 50%;
+  color: var(--sl-surface);
+  font-size: .875rem;
+  font-weight: 900;
+}
+.readyItem[data-done="true"] .readyMark { background: var(--sl-brand); border-color: var(--sl-brand); }
+.readyText { display: grid; gap: .125rem; min-width: 0; }
+.readyText strong { font-size: .9375rem; }
+.readyText > span { color: var(--sl-text-muted); font-size: .8125rem; line-height: 1.45; }
+.readyAction {
+  display: inline-flex;
+  align-items: center;
+  gap: .375rem;
+  min-height: var(--sl-tap);
+  padding: .5rem .875rem;
+  border: 1px solid var(--sl-brand);
+  border-radius: var(--sl-radius-md);
+  color: var(--sl-brand-strong);
+  font-weight: 800;
+  font-size: .875rem;
+  text-decoration: none;
+  white-space: nowrap;
+}
+.readyAction:hover { background: var(--sl-brand-soft); }
+
+@media (max-width: 40rem) {
+  .readyItem { grid-template-columns: auto minmax(0, 1fr); }
+  .readyAction { grid-column: 2; justify-self: start; }
 }

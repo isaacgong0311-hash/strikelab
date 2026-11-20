@@ -2,6 +2,8 @@
 
 import { useState, useSyncExternalStore } from "react";
 import { trackMarketing } from "@/lib/analytics";
+import { markReadiness } from "@/lib/seasons/checklist";
+import { browserStorage } from "@/lib/seasons/draft";
 import { inviteUrl } from "@/lib/seasons/invite";
 import { SITE_URL } from "@/lib/site";
 import styles from "./invite.module.css";
@@ -75,7 +77,7 @@ export default function InviteCard({ handle, invited, seasonTitle }: { handle: s
             {invited === 0 ? "No one has joined through your link yet." : `${invited} ${invited === 1 ? "friend has" : "friends have"} joined through your link.`}
           </p>
         )}
-        <a className={styles.calendar} href="/seasons/calendar.ics" download>Add challenge dates to your calendar</a>
+        <a className={styles.calendar} href="/seasons/calendar.ics" download onClick={() => markReadiness(browserStorage(), "calendar")}>Add challenge dates to your calendar</a>
       </div>
     </section>
   );

@@ -1,7 +1,9 @@
 import Link from "next/link";
 import { connection } from "next/server";
 import DashboardClient from "./DashboardClient";
+import SeasonChecklist from "./SeasonChecklist";
 import StudentHomeClient from "./StudentHomeClient";
+import { PLANNED_SEASON } from "@/lib/seasons/planned";
 import { dashboardSeasonAction, type DashboardAttempt, type DashboardChallenge } from "@/lib/seasons/dashboard";
 import { getTemplate } from "@/lib/seasons/templates";
 import { privatePageMetadata } from "@/lib/seo";
@@ -12,6 +14,11 @@ export const metadata = privatePageMetadata({
   title: "Dashboard",
   description: "Your season challenge, next lesson, training progress, and record in one place.",
 });
+
+async function inviteCount(supabase: NonNullable<Awaited<ReturnType<typeof getSupabaseServer>>>): Promise<number | null> {
+  const { data, error } = await supabase.rpc("my_invite_count");
+  return error || typeof data !== "number" ? null : data;
+}
 
 export default async function DashboardPage() {
   await connection();
@@ -36,6 +43,10 @@ export default async function DashboardPage() {
       .in("challenge_id", challenges.map((challenge) => challenge.id))
     : { data: [] };
   const action = dashboardSeasonAction(new Date(), challenges, (attemptRows ?? []) as DashboardAttempt[]);
+  const { data: profile } = await supabase.from("profiles").select("handle").eq("id", auth.user.id).maybeSingle();
+  const handle = (profile?.handle as string | null | undefined) ?? null;
+  // Null (count unknown) until migration 0026 is applied; the checklist copes.
+  const invited = handle ? await inviteCount(supabase) : null;
   const template = action.challenge ? getTemplate(action.challenge.template_slug) : null;
 
   return (
@@ -52,6 +63,7 @@ export default async function DashboardPage() {
         </div>
         <Link className={styles.seasonAction} href={action.href}>{action.actionLabel} <span aria-hidden="true">→</span></Link>
       </section>
+      <SeasonChecklist handle={handle} invited={invited} seasonTitle={season?.title ?? PLANNED_SEASON.title} />
       <StudentHomeClient />
     </div>
   );
