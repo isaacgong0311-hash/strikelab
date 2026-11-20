@@ -57,7 +57,7 @@
   border-radius: var(--sl-radius-lg);
   background: var(--sl-surface);
 }
-.cardAccent { border-color: var(--sl-brand); box-shadow: 0 0 0 1px var(--sl-brand), var(--sl-shadow-1); }
+.cardAccent { border-color: var(--sl-brand); box-shadow: 0 0 0 1px var(--sl-brand); }
 .step {
   display: block;
   width: 2.25rem;

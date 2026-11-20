@@ -1,6 +1,13 @@
 # Design polish work plan (Nov 19, 2026)
 
-**Status:** [PR #85](https://github.com/isaacgong0311-hash/strikelab/pull/85) open (mono kickers, flatter step numeral) — not yet merged. Pre-launch rehearsal walkthrough done; migrations `0025`/`0026` applied to production; rehearsal data cleaned up.
+**Status (Nov 20):** #85 and #86 merged. Rows 1, 2, 3 and 7 done on `feat/remodel-polish` (see "Done" below). Rows 8 and 9 were already shipped by R2 ([#83](https://github.com/isaacgong0311-hash/strikelab/pull/83)). Rows 4, 5 and 6 still open.
+
+**Done (Nov 20)**
+- **Mono was broken site-wide.** `globals.css` redefined `--font-mono` as `var(--font-mono, ...)` on `:root`. That cycle blanked the variable, so every `var(--sl-font-code)` label (including #85's kickers) fell back to Inter in the browser. The line is gone and `src/lib/ui/fontVariables.test.ts` keeps it out.
+- Row 1: the student-home season card is a flat dark block, with no radial glow, decorative rings or large shadow, and uses `--sl-radius-lg`.
+- Row 2: the student-home milestones were already plain glyphs. On the signed-out dashboard, unlocked achievements lose the amber glow for a brand outline, the three tinted quick-action tiles become one neutral outlined tile, and the "Up next" card loses its gradient and corner glow.
+- Row 3: no change needed. Track symbols are plain mono glyphs.
+- Row 7: the pricing accent card keeps its crisp 2px outline and drops the extra drop shadow only it had.
 
 **Why this plan exists:** Isaac said the site "still looks AI-generated." An audit against `refined-ui` (mono-only type, one accent color, flat hairline surfaces, no glow/gradient/glassmorphism, consistent radii) found the design system in `docs/ui-system.md` / `src/styles/tokens.css` is already fairly disciplined — single brand green, self-hosted fonts, no gradient text, no glow. The two real misses so far (kicker font, filled-circle step badges) are in #85. This plan is the backlog for finding the rest, one screen at a time, instead of guessing at a full redesign.
 

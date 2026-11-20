@@ -12,7 +12,7 @@
 
 **Not done / not verified**
 - The three challenge cards and the "Train first" links are only visible with a season in the database, so they were not seen in a browser locally. The seeded-database browser tests that cover the signed-in `/seasons` states run in CI, not locally (Google Fonts are blocked on this network in dev mode).
-- No FAQ section on `/seasons` yet. No change to the explanation-points question: the scorer writes correctness (70) and speed (10) only, so no 100-point breakdown is shown anywhere.
+- ~~No FAQ section on `/seasons` yet.~~ Done Nov 20: 11 questions from `src/lib/seasons/faq.ts`, each tied to the rule in code it describes, with FAQPage structured data. No change to the explanation-points question: the scorer writes correctness (70) and speed (10) only, so no 100-point breakdown is shown anywhere.
 
 **Finding for Isaac: builds intermittently stop on a security advisory.** `next build` on Next 16.4.1 sometimes exits 1 with `SecurityFatalError` and passes when rerun (about every other build locally). The advisory is real: GHSA-mfr8-8qww-v76h (moderate, vulnerable `>=16.3.0 <=16.4.4`), about information disclosure when a `"use cache"` function is called through `unstable_cache()`. This repo uses neither. If the same stop happens in Vercel's build, a deploy would fail until retried. Decision needed: upgrade Next (a separate PR with its own testing), or leave it and retry builds. Nothing was upgraded here.
 

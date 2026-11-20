@@ -24,22 +24,10 @@
   gap: 2rem;
   overflow: hidden;
   padding: clamp(1.5rem, 4vw, 2.75rem);
-  background: radial-gradient(circle at 85% 0%, color-mix(in srgb, var(--sl-brand) 55%, transparent), transparent 45%), var(--sl-surface-inverse);
-  border-radius: var(--sl-radius-xl);
-  box-shadow: var(--sl-shadow-2);
+  /* Flat block, no glow or decorative rings (design polish plan, row 1). */
+  background: var(--sl-surface-inverse);
+  border-radius: var(--sl-radius-lg);
   color: var(--sl-surface);
-}
-.season::after {
-  content: "";
-  position: absolute;
-  right: -3rem;
-  bottom: -5rem;
-  width: 16rem;
-  aspect-ratio: 1;
-  border: 1px solid color-mix(in srgb, var(--sl-surface) 20%, transparent);
-  border-radius: 50%;
-  box-shadow: 0 0 0 2.5rem color-mix(in srgb, var(--sl-surface) 4%, transparent), 0 0 0 5rem color-mix(in srgb, var(--sl-surface) 3%, transparent);
-  pointer-events: none;
 }
 .seasonCopy, .seasonAction { position: relative; z-index: 1; }
 .seasonEyebrow { color: color-mix(in srgb, var(--sl-surface) 76%, transparent); }
