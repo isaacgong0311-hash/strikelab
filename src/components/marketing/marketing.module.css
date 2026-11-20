@@ -9,7 +9,7 @@
 .section { padding: clamp(3rem, 8vw, 5.5rem) 0; }
 .sectionAlt { background: var(--sl-surface); border-block: 1px solid var(--sl-border); }
 
-.kicker { margin: 0 0 0.625rem; color: var(--sl-brand); font-weight: 800; font-size: 0.8125rem; letter-spacing: 0.08em; text-transform: uppercase; }
+.kicker { margin: 0 0 0.625rem; color: var(--sl-brand); font: 700 0.75rem var(--sl-font-code); letter-spacing: 0.1em; text-transform: uppercase; }
 .h1 { margin: 0; font: 800 clamp(2.25rem, 6.2vw, 4rem) / 1.02 var(--sl-font-display); letter-spacing: -0.03em; text-wrap: balance; }
 .h2 { margin: 0; font: 800 clamp(1.75rem, 4.2vw, 2.625rem) / 1.08 var(--sl-font-display); letter-spacing: -0.02em; text-wrap: balance; }
 .h3 { margin: 0; font: 800 1.1875rem/1.3 var(--sl-font-display); }
@@ -59,15 +59,13 @@
 }
 .cardAccent { border-color: var(--sl-brand); box-shadow: 0 0 0 1px var(--sl-brand), var(--sl-shadow-1); }
 .step {
-  width: 2rem;
-  height: 2rem;
-  display: grid;
-  place-items: center;
-  margin-bottom: 0.5rem;
-  border-radius: 50%;
-  background: var(--sl-brand-soft);
+  display: block;
+  width: 2.25rem;
+  margin-bottom: 0.75rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--sl-border);
   color: var(--sl-brand-strong);
-  font-weight: 900;
+  font: 700 1.0625rem/1 var(--sl-font-code);
 }
 .list { margin: 0.75rem 0 0; padding-left: 1.25rem; list-style: disc; color: var(--sl-text-muted); line-height: 1.6; }
 .list li + li { margin-top: 0.25rem; }
