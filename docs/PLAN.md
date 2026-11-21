@@ -29,5 +29,31 @@
 ## Stop-doing list
 No new strategy documents. No new tracks. No new integrations. No features before the scorecard names them. No claim on a public page without a source.
 
+## Working agreement with the agent (decided 2026-11-20; wins over the older "ask before merging" rule)
+
+**Standing permission.** The agent ships the whole loop without stopping to ask: implement, test, commit, push, open a PR, wait for green CI (GitHub `test` plus the Vercel preview), merge to master, then smoke-test production. Never merge on red. The `ship` skill (`.claude/skills/ship/SKILL.md`) is that loop.
+
+**Still ask first, every time:**
+- Applying a database migration. Isaac does it by hand in Supabase. Code must tolerate it being unapplied, and the final message lists which to apply and in what order.
+- Sending any message to a real person (email, Discord, DM, outreach, YC form).
+- Money: Stripe live keys, prices, refunds, any paid service. Default to free tools.
+- Production data writes or deletes, and running the rehearsal seed against anything but staging or local.
+- Force-push, history rewrites, deleting branches that hold unmerged work.
+- Minor or major dependency upgrades (patch bumps for a security advisory are fine).
+- Anything in Isaac's own voice: YC personal answers, videos, outreach text sent under his name.
+- Any public claim without a dated source (`docs/investor/claim-ledger.md`).
+
+**Freeze Nov 27 to Dec 1.** Only fixes for something a real student or leader hit. No refactors, no polish, no dependency changes.
+
+**Backlog the agent pulls from, in order.** When told "keep going" with no other direction, take the first unchecked item, ship it, then take the next.
+1. [ ] Season 1 pre-flight on a staging build (`season-preflight` skill): invite, join, handle, timed attempt, official score, record page, defense sign-off. Fix what breaks.
+2. [ ] R4: reach the first Run sooner on lessons, and check coding on a phone (`docs/superpowers/plans/2026-11-16-remodel-work-plan.md`).
+3. [ ] Design polish rows 4, 5, 6 (`polish-ui` skill, `docs/superpowers/plans/2026-11-19-design-polish-plan.md`).
+4. [ ] Draft PR #79: rebase or close with a one-line reason.
+5. [ ] Triage the `npm audit` findings beyond Next: which are production dependencies, which are dev-only.
+6. [ ] Delete legacy `globals.css` selectors as pages move to tokens (R5).
+
+**Tools in the repo.** Skills: `ship`, `season-preflight`, `polish-ui`, `season-watch`, `fan-out`. Subagents (`.claude/agents/`): `qa-walkthrough`, `pr-reviewer`, `season-doctor`, `claims-auditor`.
+
 ## Weekly (30 minutes, same slot)
 Contacts, replies, calls, yeses, payer split (`npm run pipeline`); the single biggest bottleneck; one decision, logged in `docs/gtm/decision-log.md`.

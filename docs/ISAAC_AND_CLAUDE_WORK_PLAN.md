@@ -17,7 +17,7 @@ This plan sets out who does what. The detail is in other documents: [YC submissi
 | Isaac only | Claude only | Together |
 |---|---|---|
 | Anything in your voice: YC personal answers, both videos, outreach to leaders, parent conversations | Code, PRs, CI, verifying what production actually shows, checking claims against sources, draft text that isn't about you | Decisions that change the plan, and the Sunday review |
-| Logins and dashboards Claude can't or shouldn't use: YC form, production Supabase SQL editor, Stripe, creating accounts on production | Asks before merging, deploying, or applying a migration (ship when green: build → PR → green CI → merge → smoke test) | |
+| Logins and dashboards Claude can't or shouldn't use: YC form, production Supabase SQL editor, Stripe, creating accounts on production | Ships when green (build → PR → green CI → merge → smoke test) without asking. Asks first only for the list in `docs/PLAN.md` "Working agreement" (migrations, messages to real people, money, production data, force-push, minor dependency upgrades) | |
 | Sending any message to a real person | Never sends messages, never writes a number without a dated source, never writes your personal answers | |
 
 **Handoff format:** when one of us finishes an item, it goes in the PR, the doc, or a commit, not just in chat. Claude doesn't remember chats between sessions, so the repo has to.
