@@ -80,6 +80,11 @@ export function trackStepAnswered(sessionId: string, stepId: string, kind: strin
   track("step_answered", { sessionId, stepId, kind, correct });
 }
 
+/** Request for help after an incorrect answer; never records the student's answer. */
+export function trackMistakeExplanationRequested(sessionId: string, stepId: string) {
+  track("mistake_explanation_requested", { sessionId, stepId });
+}
+
 /** Learner reaches the session-complete screen */
 export function trackSessionComplete(sessionId: string, accuracy: number, durationMs: number) {
   track("session_complete", { sessionId, accuracy, durationSec: Math.round(durationMs / 1000) });

@@ -9,9 +9,11 @@ import { pushSessionResults } from "@/lib/sessions/sync";
 import {
   advance,
   firstTryAccuracy,
+  formatNumericAnswer,
   gradeMcq,
   gradeNumeric,
   isFinished,
+  parseNumberInput,
   progressFraction,
   startRun,
 } from "@/lib/sessions/engine";
@@ -22,8 +24,9 @@ import {
   type SessionResults,
 } from "@/lib/sessions";
 import type { Session, Step } from "@/lib/sessions/types";
-import { trackSessionComplete, trackSessionStart, trackStepAnswered } from "@/lib/analytics";
+import { trackMistakeExplanationRequested, trackSessionComplete, trackSessionStart, trackStepAnswered } from "@/lib/analytics";
 import { completeLearningNextStep } from "@/lib/learningNextStep";
+import { streamInto } from "@/components/AiMarkdown";
 import styles from "./session.module.css";
 
 /** Renders **bold** spans; session copy is plain data, never HTML. */
@@ -59,6 +62,9 @@ export default function SessionPlayer({ session, lessonTitle, sessionIds, nextSe
   const [choice, setChoice] = useState<number | null>(null);
   const [typed, setTyped] = useState("");
   const [lastCorrect, setLastCorrect] = useState(false);
+  const [mistakeReply, setMistakeReply] = useState("");
+  const [mistakeLoading, setMistakeLoading] = useState(false);
+  const [mistakeAsked, setMistakeAsked] = useState(false);
   const [summary, setSummary] = useState<{ accuracy: number; durationMs: number; lessonJustFinished: boolean; results: SessionResults } | null>(null);
 
   const { completed, markComplete } = useProgress();
@@ -68,6 +74,7 @@ export default function SessionPlayer({ session, lessonTitle, sessionIds, nextSe
   const continueRef = useRef<HTMLButtonElement>(null);
   const firstRender = useRef(true);
   const formRef = useRef<HTMLFormElement>(null);
+  const mistakeRequest = useRef<AbortController | null>(null);
 
   const finished = isFinished(run);
   const step: Step | undefined = steps[run.queue[run.position]];
@@ -92,6 +99,8 @@ export default function SessionPlayer({ session, lessonTitle, sessionIds, nextSe
   useEffect(() => {
     if (phase === "feedback") continueRef.current?.focus();
   }, [phase]);
+
+  useEffect(() => () => mistakeRequest.current?.abort(), []);
 
   // Record the result once, when the run ends.
   useEffect(() => {
@@ -149,10 +158,42 @@ export default function SessionPlayer({ session, lessonTitle, sessionIds, nextSe
   }, [finished]);
 
   function goNext(correct: boolean) {
+    mistakeRequest.current?.abort();
+    mistakeRequest.current = null;
     setRun((r) => advance(r, steps, correct));
     setPhase("answer");
     setChoice(null);
     setTyped("");
+    setMistakeReply("");
+    setMistakeLoading(false);
+    setMistakeAsked(false);
+  }
+
+  async function explainMistake() {
+    if (!step || step.kind === "explain" || lastCorrect || !user) return;
+    const answer = step.kind === "mcq" ? choice : typed;
+    if (answer === null) return;
+    mistakeRequest.current?.abort();
+    const controller = new AbortController();
+    mistakeRequest.current = controller;
+    setMistakeAsked(true);
+    setMistakeLoading(true);
+    setMistakeReply("");
+    trackMistakeExplanationRequested(session.id, step.id);
+    try {
+      await streamInto(
+        "/api/ai/mistake",
+        { sessionId: session.id, stepId: step.id, answer },
+        (chunk) => { if (!controller.signal.aborted) setMistakeReply((reply) => reply + chunk); },
+        controller.signal,
+      );
+    } catch {
+      if (!controller.signal.aborted) {
+        setMistakeReply("Could not load another explanation. Use the worked answer above and try the question again.");
+      }
+    } finally {
+      if (!controller.signal.aborted) setMistakeLoading(false);
+    }
   }
 
   function onSubmit(e: FormEvent) {
@@ -171,6 +212,8 @@ export default function SessionPlayer({ session, lessonTitle, sessionIds, nextSe
     }
     trackStepAnswered(session.id, step.id, step.kind, correct);
     setLastCorrect(correct);
+    setMistakeReply("");
+    setMistakeAsked(false);
     setPhase("feedback");
   }
 
@@ -239,6 +282,8 @@ export default function SessionPlayer({ session, lessonTitle, sessionIds, nextSe
 
   const answered = phase === "feedback";
   const canCheck = step.kind === "mcq" ? choice !== null : step.kind === "numeric" ? typed.trim() !== "" : true;
+  const canExplainMistake = Boolean(user) && answered && !lastCorrect &&
+    (step.kind === "mcq" || (step.kind === "numeric" && parseNumberInput(typed) !== null));
   const headingId = `step-${run.position}`;
 
   return (
@@ -361,7 +406,7 @@ export default function SessionPlayer({ session, lessonTitle, sessionIds, nextSe
                     ? "Nice!"
                     : step.kind === "mcq"
                       ? `Correct answer: ${step.options[step.correct]}`
-                      : `Correct answer: ${step.answer}${step.unit ? ` ${step.unit}` : ""}`}
+                      : `Correct answer: ${formatNumericAnswer(step)}`}
                 </p>
                 <p className={styles.feedbackBody}>
                   {step.explanation}
@@ -370,6 +415,14 @@ export default function SessionPlayer({ session, lessonTitle, sessionIds, nextSe
               </>
             ) : null}
           </div>
+          {canExplainMistake ? (
+            <div className={styles.coach}>
+              <button type="button" className={styles.coachButton} onClick={explainMistake} disabled={mistakeLoading || mistakeAsked}>
+                {mistakeLoading ? "Explaining…" : mistakeAsked ? "AI explanation requested" : "Explain my mistake with AI"}
+              </button>
+              {mistakeReply ? <p className={styles.coachReply} aria-live="off">{mistakeReply}</p> : null}
+            </div>
+          ) : null}
           <button
             ref={continueRef}
             type="submit"
