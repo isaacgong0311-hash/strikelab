@@ -5,6 +5,8 @@ import { getSupabaseAdmin } from "@/lib/supabase/admin";
 import { getSupabaseServer } from "@/lib/supabase/server";
 import { privatePageMetadata } from "@/lib/seo";
 import { buildRecordView, type RecordAttemptRow, type RecordCapstoneRow, type RecordCertificateRow, type RecordChallengeRow, type RecordSeasonRow, type RecordVerificationRow } from "@/lib/record/viewModel";
+import { OFFICIAL_SCORE_MAX } from "@/lib/seasons/limits";
+import { seasonDate } from "@/lib/seasons/seasonDate";
 import ShareControls from "./ShareControls";
 import styles from "./record.module.css";
 
@@ -49,7 +51,7 @@ export default async function RecordPage() {
     ranks[season.id] = board?.find((row: { is_you: boolean }) => row.is_you)?.rank ?? null;
   }));
   const view = buildRecordView(
-    new Date().toISOString().slice(0, 10), seasons, challenges,
+    seasonDate(new Date()), seasons, challenges,
     (attemptResult.data ?? []) as RecordAttemptRow[], ranks,
     (verificationResult.data ?? []) as RecordVerificationRow[],
     (capstoneResult.data ?? []) as RecordCapstoneRow[],
@@ -80,7 +82,7 @@ export default async function RecordPage() {
             <p>{season.scoredCount} {season.scoredCount === 1 ? "challenge" : "challenges"} scored · {season.finished ? "Final" : "Current"} rank: {season.rank ?? "Unavailable"}</p>
             {season.finished && season.rank !== null && season.rank <= 10 && !season.placingVerified && verificationReady && <p className={styles.pending}>Placing not yet verified.</p>}
             {season.scores.length > 0 ? (
-              <ul className={styles.scoreList}>{season.scores.map((score) => <li key={score.week}><span>Week {score.week}</span><strong>{score.score}/100</strong></li>)}</ul>
+              <ul className={styles.scoreList}>{season.scores.map((score) => <li key={score.week}><span>Week {score.week}</span><strong>{score.score} / {OFFICIAL_SCORE_MAX}</strong></li>)}</ul>
             ) : <p>No official scores posted yet. <Link href="/seasons">See your season status</Link>.</p>}
           </article>
         ))}</div>}

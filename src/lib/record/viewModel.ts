@@ -16,7 +16,11 @@ export interface RecordView {
   certificates: { id: string; title: string; issuedAt: string; href: string }[];
 }
 
-/** A placing is verified only for the final top-10 rank that was reviewed. */
+/**
+ * A placing is verified only for the final top-10 rank that was reviewed.
+ * `today` is the New York calendar day (seasonDate in lib/seasons/seasonDate),
+ * so a season reads "Final" only after its last day ends in Eastern time.
+ */
 export function buildRecordView(
   today: string,
   seasons: RecordSeasonRow[],
@@ -41,7 +45,7 @@ export function buildRecordView(
             : [];
         }).sort((a, b) => a.week - b.week);
       const rank = ranks[season.id] ?? null;
-      const finished = season.ends_on < today;
+      const finished = season.ends_on < today; // = seasonIsOver(now, ends_on) without closes_at
       return {
         id: season.id, title: season.title, finished, scoredCount: scores.length, scores, rank,
         placingVerified: finished && rank !== null && rank >= 1 && rank <= 10

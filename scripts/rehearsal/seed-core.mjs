@@ -67,7 +67,7 @@ export function buildRehearsalSeasonPlan({ today, studentIds, now = new Date() }
   const deadline = new Date(now.getTime() + 40 * 60_000).toISOString();
   const submitted = new Date(now.getTime() - 10 * 60_000).toISOString();
   const statuses = ["scored", "scored", "scored", "submitted", "submitted", "submitted", "pending_review", "pending_review", "started", "started"];
-  const scores = [82.5, 69, 55];
+  const scores = [78.5, 69, 55]; // official_score tops out at 80 (score-core.mjs AUTO_MAX)
   const code = "from math import exp\ndef put_from_parity(call, S, K, T, r):\n    return call - S + K * exp(-r * T)\n";
   return [
     {

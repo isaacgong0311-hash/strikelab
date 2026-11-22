@@ -89,9 +89,24 @@ describe("practice problem", () => {
   });
 });
 
+// templates.ts (official tests) and params.ts (the HMAC that derives each
+// student's numbers) can't carry `import "server-only"`: the Node scorer
+// (scripts/seasons/score.mjs, benchmark.mjs) imports both, and server-only
+// throws outside the Next server. This test is their guard instead.
 describe("client code never imports the hidden official tests", () => {
-  const roots = ["src/app/seasons", "src/components/seasons", "src/lib/seasons/practice.ts", "src/lib/seasons/clock.ts", "src/lib/seasons/draft.ts", "src/lib/seasons/train.ts"];
+  // Every "use client" file anywhere in src, plus the seasons helpers that ship to the browser.
+  const roots = ["src", "src/lib/seasons/practice.ts", "src/lib/seasons/clock.ts", "src/lib/seasons/draft.ts", "src/lib/seasons/train.ts"];
   const FORBIDDEN = /seasons\/templates|from "\.\/templates"|seasons\/params|from "\.\/params"|node:crypto/;
+
+  it("covers both server-only modules", () => {
+    for (const line of [
+      'import { getTemplate } from "@/lib/seasons/templates";',
+      'import { TEMPLATES } from "./templates";',
+      'import { deriveParams } from "@/lib/seasons/params";',
+      'import type { Params } from "./params";',
+      'import { getTemplate } from "../../src/lib/seasons/templates.ts";',
+    ]) expect(FORBIDDEN.test(line), line).toBe(true);
+  });
 
   function files(path: string): string[] {
     const full = join(process.cwd(), path);
@@ -99,8 +114,8 @@ describe("client code never imports the hidden official tests", () => {
     return readdirSync(full).flatMap((name) => files(join(path, name)));
   }
 
-  it("for any browser-side seasons file", () => {
-    const clientFiles = roots.flatMap(files)
+  it("for any browser-side file", () => {
+    const clientFiles = [...new Set(roots.flatMap(files))]
       .filter((file) => /\.(ts|tsx)$/.test(file) && !/\.test\./.test(file))
       .filter((file) => /^\s*["']use client["']/.test(readFileSync(file, "utf8")) || /lib\/seasons\/(practice|clock|draft|train)\.ts$/.test(file));
     expect(clientFiles.length).toBeGreaterThan(3);

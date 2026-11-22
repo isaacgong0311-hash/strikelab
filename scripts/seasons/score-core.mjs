@@ -1,9 +1,10 @@
 // Official scoring for season attempts (proving-ground spec §3).
 //
 // Points: correctness 70 (the official test's fraction of cases passed),
-// speed 10 (only if something is correct: the unused share of the time
-// limit), explanation 20 (scored later by a person, so not added here).
-// The automatic part is what this writes to official_score.
+// speed 10 (the unused share of the time limit, scaled by that same fraction,
+// so a fast submission that gets little right earns little speed), and
+// explanation 20 (read later by a person, so not added here). The automatic
+// part, at most 80 (AUTO_MAX), is what this writes to official_score.
 //
 // Student code never runs in the same Python as the grader. Each submission
 // runs alone in a fresh, locked-down child process (score-student.mjs), which
@@ -19,6 +20,8 @@ import { fileURLToPath, pathToFileURL } from "node:url";
 import { loadPyodide } from "pyodide";
 
 export const POINTS = { correctness: 70, speed: 10, explanation: 20 };
+/** The most official_score can be: correctness plus speed. */
+export const AUTO_MAX = POINTS.correctness + POINTS.speed;
 export const RUN_TIMEOUT_MS = 10_000;
 const LOAD_TIMEOUT_MS = 60_000;
 
@@ -35,8 +38,9 @@ const PERMISSION_FLAG =
 
 export function autoScore({ fraction, usedSeconds, limitSeconds }) {
   const f = Math.min(1, Math.max(0, Number(fraction) || 0));
-  const speedShare = f > 0 && limitSeconds > 0 ? Math.min(1, Math.max(0, 1 - usedSeconds / limitSeconds)) : 0;
-  return Math.round((POINTS.correctness * f + POINTS.speed * speedShare) * 10) / 10;
+  const unusedShare = limitSeconds > 0 ? Math.min(1, Math.max(0, 1 - usedSeconds / limitSeconds)) : 0;
+  // Speed is scaled by correctness: a fast, mostly-wrong submission can't farm it.
+  return Math.round((POINTS.correctness * f + POINTS.speed * f * unusedShare) * 10) / 10;
 }
 
 /**

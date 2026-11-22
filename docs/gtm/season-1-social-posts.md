@@ -64,7 +64,8 @@ Pick one to start. Posts below are written to work on any of them; shorten for X
 
 ### 4. Fair play (Thu Nov 26)
 > How we try to keep it fair:
-> - every student gets different numbers, so copying an answer doesn't work
+> - every student gets different numbers, so a copied answer won't match
+> - sharing code breaks the rules, and top placings are confirmed in a short live conversation
 > - the server decides when time is up, not your laptop's clock
 > - leaderboards show a handle you choose, never your name
 >

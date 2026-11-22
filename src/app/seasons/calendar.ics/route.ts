@@ -6,6 +6,7 @@
 import { getSupabaseServer } from "@/lib/supabase/server";
 import { buildSeasonCalendar, type CalendarChallenge } from "@/lib/seasons/calendar";
 import { PLANNED_SEASON } from "@/lib/seasons/planned";
+import { seasonDate } from "@/lib/seasons/seasonDate";
 import { getTemplate } from "@/lib/seasons/templates";
 
 export const dynamic = "force-dynamic";
@@ -16,7 +17,7 @@ export async function GET() {
 
   const supabase = await getSupabaseServer();
   if (supabase) {
-    const today = new Date().toISOString().slice(0, 10);
+    const today = seasonDate(new Date());
     const { data: seasons } = await supabase.from("seasons").select("id, title, starts_on").gte("ends_on", today).order("starts_on").limit(1);
     const row = seasons?.[0] as { id: string; title: string; starts_on: string } | undefined;
     if (row) {

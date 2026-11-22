@@ -31,7 +31,7 @@ type Phase = "ready" | "working" | "submitted";
 const RULES = [
   "The clock doesn't pause, even if you leave this page.",
   "The AI tutor is off until you submit. Your notes and the lessons are fine.",
-  "Your numbers are yours alone, so nobody can hand you an answer.",
+  "Your numbers are different from everyone else's, so a copied answer won't match. Sharing code breaks the rules.",
   "Your code saves on this device as you type, so a reload won't lose it.",
   "You can submit once.",
 ];
@@ -47,18 +47,24 @@ export default function AttemptClient({ challengeId }: { challengeId: string }) 
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [needsSignIn, setNeedsSignIn] = useState(false);
+  const [needsHandle, setNeedsHandle] = useState(false);
 
   async function start() {
     setBusy(true);
     setError(null);
     setNeedsSignIn(false);
+    setNeedsHandle(false);
     try {
       const res = await fetch(`/api/seasons/challenges/${encodeURIComponent(challengeId)}/start`, { method: "POST" });
       const received = Date.now();
-      const data = (await res.json().catch(() => ({}))) as Started & { error?: string };
+      const data = (await res.json().catch(() => ({}))) as Started & { error?: string; code?: string };
       if (res.status === 401) {
         setNeedsSignIn(true);
         throw new Error("Sign in to start the challenge.");
+      }
+      if (data.code === "needs_handle") {
+        setNeedsHandle(true);
+        throw new Error(data.error ?? "Choose your leaderboard handle before you start. The clock hasn't started.");
       }
       if (!res.ok) throw new Error(data.error ?? "Couldn't start the challenge");
       setOffset(serverOffsetMs(res.headers.get("date"), received));
@@ -176,6 +182,9 @@ export default function AttemptClient({ challengeId }: { challengeId: string }) 
               {error}{" "}
               {needsSignIn && (
                 <Link href={`/sign-in?next=${encodeURIComponent(`/seasons/${challengeId}`)}`} className={styles.textLink}>Sign in</Link>
+              )}
+              {needsHandle && (
+                <Link href="/seasons#handle" className={styles.textLink}>Choose your handle</Link>
               )}
             </p>
           )}

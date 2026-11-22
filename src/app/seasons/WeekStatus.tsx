@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { OFFICIAL_SCORE_MAX } from "@/lib/seasons/limits";
 import { formatClock, secondsLeft } from "@/lib/seasons/window";
 import { remainingLabel, type WeekView } from "@/lib/seasons/status";
 import styles from "./status.module.css";
@@ -64,7 +65,7 @@ export default function WeekStatus({
     case "open": return <p className={styles.state}>Open now · <Link href={`/seasons/${challengeId}`}>Start</Link></p>;
     case "started": return <LiveCountdown target={view.deadline} serverNow={serverNow} initialText={formatClock(secondsLeft(new Date(serverNow), view.deadline))} mode="started" challengeId={challengeId} />;
     case "submitted": return <p className={styles.state}>Submitted · Scoring</p>;
-    case "scored": return <p className={styles.state}>Scored · {view.score === null ? "Score unavailable" : `Score ${view.score.toFixed(0)}`}{view.seasonRank === null ? " · Season rank unavailable" : ` · Season rank #${view.seasonRank}`}</p>;
+    case "scored": return <p className={styles.state}>Scored · {view.score === null ? "Score unavailable" : `Score ${view.score} of ${OFFICIAL_SCORE_MAX}`}{view.seasonRank === null ? " · Season rank unavailable" : ` · Season rank #${view.seasonRank}`}</p>;
     case "pending_review": return <p className={styles.state}>Pending review · We&apos;ll check your submission.</p>;
     case "expired": return <p className={styles.state}>Time ended</p>;
     case "closed": return <p className={styles.state}>Closed</p>;

@@ -1,5 +1,6 @@
 import ClassRosterClient from "./ClassRosterClient";
 import { parseWorkspaceTab } from "./workspaceTabs";
+import { seasonDate } from "@/lib/seasons/seasonDate";
 import { privatePageMetadata } from "@/lib/seo";
 import { getSupabaseServer } from "@/lib/supabase/server";
 
@@ -10,7 +11,7 @@ export const metadata = privatePageMetadata({
 
 export default async function ClassRosterPage({ searchParams }: { searchParams: Promise<{ tab?: string | string[] }> }) {
   const [{ tab }, supabase] = await Promise.all([searchParams, getSupabaseServer()]);
-  const today = new Date().toISOString().slice(0, 10);
+  const today = seasonDate(new Date());
   const { data: seasons } = supabase
     ? await supabase.from("seasons").select("id, title").gte("ends_on", today).order("starts_on").limit(1)
     : { data: null };
