@@ -11,6 +11,8 @@ export interface RecordView {
   seasons: {
     id: string; title: string; finished: boolean; scoredCount: number;
     scores: { week: number; score: number }[]; rank: number | null; placingVerified: boolean;
+    /** When the placing was confirmed in a live defense; null while it is provisional. */
+    placingVerifiedAt: string | null;
   }[];
   capstones: { id: string; title: string; submittedAt: string | null; verifiedAt: string | null }[];
   certificates: { id: string; title: string; issuedAt: string; href: string }[];
@@ -46,10 +48,12 @@ export function buildRecordView(
         }).sort((a, b) => a.week - b.week);
       const rank = ranks[season.id] ?? null;
       const finished = season.ends_on < today; // = seasonIsOver(now, ends_on) without closes_at
+      const placingVerified = finished && rank !== null && rank >= 1 && rank <= 10
+        && verified.has(`placing:${season.id}:${rank}`);
       return {
         id: season.id, title: season.title, finished, scoredCount: scores.length, scores, rank,
-        placingVerified: finished && rank !== null && rank >= 1 && rank <= 10
-          && verified.has(`placing:${season.id}:${rank}`),
+        placingVerified,
+        placingVerifiedAt: placingVerified ? verified.get(`placing:${season.id}:${rank}`) ?? null : null,
       };
     }),
     capstones: capstones.filter((row) => row.status === "submitted").map((row) => ({
