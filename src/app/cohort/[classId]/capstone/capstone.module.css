@@ -76,10 +76,10 @@
   font: 800 0.9375rem/1 var(--sl-font-body);
   cursor: pointer;
 }
-.primary { border: 0; background: var(--sl-brand); box-shadow: 0 4px 0 var(--sl-brand-strong); color: #fff; }
-.primary:active:not(:disabled) { transform: translateY(3px); box-shadow: 0 1px 0 var(--sl-brand-strong); }
+.primary { border: 0; background: var(--sl-brand); color: #fff; }
+.primary:hover:not(:disabled) { background: var(--sl-brand-strong); }
 .secondary { border: 1px solid var(--sl-border-strong); background: var(--sl-surface); color: var(--sl-text); }
-.secondary:hover:not(:disabled) { border-color: var(--sl-brand); background: var(--sl-brand-soft); }
+.secondary:hover:not(:disabled) { border-color: var(--sl-border-strong); background: var(--sl-surface-raised); }
 .danger { border: 1px solid var(--sl-danger); background: var(--sl-surface); color: var(--sl-danger); align-self: flex-start; }
 .primary:disabled,
 .secondary:disabled,

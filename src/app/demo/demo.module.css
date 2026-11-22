@@ -82,7 +82,8 @@
   font-weight: 800;
   text-decoration: none;
 }
-.primary { background: var(--sl-brand); box-shadow: 0 4px 0 var(--sl-brand-strong); color: #fff; }
+.primary { background: var(--sl-brand); color: #fff; }
+.primary:hover { background: var(--sl-brand-strong); }
 .secondary { border: 1px solid var(--sl-border-strong); background: var(--sl-surface); color: var(--sl-text); }
 .primary:focus-visible,
 .secondary:focus-visible { outline: 3px solid var(--sl-focus); outline-offset: 3px; }

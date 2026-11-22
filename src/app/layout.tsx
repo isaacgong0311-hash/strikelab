@@ -173,10 +173,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(STRUCTURED_DATA) }}
         />
-        {/* Global v2 background — same on every page */}
-        <div id="v2-bg-grid" className="v2-bg-grid" />
-        <div className="v2-bg-vignette" />
-
         <AccessibilityProvider>
           <AuthProvider>
             <V2Animator />
