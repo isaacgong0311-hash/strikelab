@@ -31,7 +31,8 @@ export default function LeaderboardTable({
             <tr key={`${row.rank}-${row.handle}`} className={row.is_you ? styles.you : undefined}>
               <td>{row.rank}</td>
               <td>{row.handle}{row.is_you ? " (you)" : ""}</td>
-              <td>{Number(row.total_score).toFixed(0)}</td>
+              {/* One decimal, like the scores themselves, so a tie on screen is a tie in rank. */}
+              <td>{Number(row.total_score).toFixed(1)}</td>
               <td>{row.solved}</td>
             </tr>
           ))}

@@ -34,7 +34,7 @@ test.describe("student season status with seeded attempts", () => {
     await expect(panel.getByText("Time left:", { exact: false })).toBeVisible();
     await expect(panel.getByRole("link", { name: "Resume" })).toBeVisible();
     await expect(panel.getByText("Submitted · Scoring")).toBeVisible();
-    await expect(panel.getByText("Scored · Score 88 · Season rank #1")).toBeVisible();
+    await expect(panel.getByText("Scored · Score 72.5 of 80 · Season rank #1")).toBeVisible();
     await expect(panel.getByText("Pending review", { exact: false })).toBeVisible();
     await expect(panel.getByText("Closed", { exact: true })).toBeVisible();
     await expect(panel.getByText("Time ended", { exact: true })).toBeVisible();

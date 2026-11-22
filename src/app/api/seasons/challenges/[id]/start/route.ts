@@ -2,7 +2,8 @@
  * POST /api/seasons/challenges/[id]/start — start (or resume) a timed attempt.
  * The clock starts on the server (start_attempt, 0024). Returns this student's
  * own numbers, the prompt written with them, the starter code and the public
- * preview test. The official test never leaves the server.
+ * preview test. The official test never leaves the server. Refuses with 409
+ * and code "needs_handle" until the student has chosen a leaderboard handle.
  */
 import { NextRequest, NextResponse } from "next/server";
 import { requireUser } from "@/lib/supabase/requireUser";
@@ -14,6 +15,8 @@ const MESSAGES: Record<string, [number, string]> = {
   not_open: [409, "This challenge isn't open right now."],
   not_found: [404, "That challenge doesn't exist."],
 };
+
+const NEEDS_HANDLE_MESSAGE = "Choose your leaderboard handle before you start, so your score shows on the board. The clock hasn't started.";
 
 export async function POST(_req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const auth = await requireUser();
@@ -38,6 +41,19 @@ export async function POST(_req: NextRequest, { params }: { params: Promise<{ id
   if (!template) {
     console.error("[seasons/start] unknown template", challenge.template_slug);
     return NextResponse.json({ error: "This challenge isn't ready yet." }, { status: 500 });
+  }
+
+  // Leaderboards and the verification queue skip anyone without a handle
+  // (season_leaderboard, 0024), so an attempt without one would be scored but
+  // never shown. Ask for the handle before the clock starts.
+  const { data: profile, error: profileError } = await auth.supabase
+    .from("profiles")
+    .select("handle")
+    .eq("id", auth.userId)
+    .maybeSingle();
+  if (profileError) return NextResponse.json({ error: "We can't reach the season database right now." }, { status: 503 });
+  if (!profile?.handle) {
+    return NextResponse.json({ error: NEEDS_HANDLE_MESSAGE, code: "needs_handle" }, { status: 409 });
   }
 
   const { data, error } = await auth.supabase.rpc("start_attempt", { p_challenge_id: id });

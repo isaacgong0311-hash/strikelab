@@ -7,7 +7,8 @@ import { pageMetadata } from "@/lib/seo";
 import { getSupabaseServer } from "@/lib/supabase/server";
 import { getTemplate } from "@/lib/seasons/templates";
 import { challengeStatus } from "@/lib/seasons/window";
-import { PLANNED_SEASON, seasonPhase } from "@/lib/seasons/planned";
+import { PLANNED_SEASON, seasonPhase, type SeasonPhase } from "@/lib/seasons/planned";
+import { seasonDate, seasonIsOver } from "@/lib/seasons/seasonDate";
 import { trainLinkFor } from "@/lib/seasons/train";
 import seasonStyles from "./seasons.module.css";
 import { remainingLabel, statusForWeek, type OwnAttempt } from "@/lib/seasons/status";
@@ -51,9 +52,15 @@ function readable(date: string): string {
 async function load(requestedClubId: string | undefined) {
   const supabase = await getSupabaseServer();
   if (!supabase) return { season: null, challenges: [], attempts: [], board: [], clubBoard: null, clubs: [], selectedClub: null, needsHandle: false, signedIn: false, handle: null, invited: null };
-  const today = new Date().toISOString().slice(0, 10);
+  // Eastern calendar day, so the season stays up until its last week closes at 11:59pm New York time.
+  const today = seasonDate(new Date());
   const { data: seasons } = await supabase.from("seasons").select("id, title, starts_on, ends_on").gte("ends_on", today).order("starts_on").limit(1);
-  const season = (seasons?.[0] as SeasonRow | undefined) ?? null;
+  let season = (seasons?.[0] as SeasonRow | undefined) ?? null;
+  if (!season) {
+    // Between seasons, show the one that just ended and its final board, not an empty page.
+    const { data: ended } = await supabase.from("seasons").select("id, title, starts_on, ends_on").lt("ends_on", today).order("ends_on", { ascending: false }).limit(1);
+    season = (ended?.[0] as SeasonRow | undefined) ?? null;
+  }
   const { data: auth } = await supabase.auth.getUser();
   let needsHandle = false;
   let handle: string | null = null;
@@ -114,7 +121,11 @@ export default async function SeasonsPage({ searchParams }: { searchParams: Prom
   const title = season?.title ?? PLANNED_SEASON.title;
   const starts = season?.starts_on ?? PLANNED_SEASON.startsOn;
   const ends = season?.ends_on ?? PLANNED_SEASON.endsOn;
-  const phase = seasonPhase(now, starts, ends);
+  const datePhase = seasonPhase(now, starts, ends);
+  // Once it has started, the season is over when its last challenge closes.
+  const phase: SeasonPhase = season && challenges.length > 0 && datePhase.kind !== "upcoming"
+    ? (seasonIsOver(now, ends, challenges.map((c) => c.closes_at)) ? { kind: "ended" } : { kind: "live" })
+    : datePhase;
 
   return (
     <div className={styles.page}>
@@ -155,7 +166,7 @@ export default async function SeasonsPage({ searchParams }: { searchParams: Prom
           <h2 id="season-how" className={styles.h2}>How a season works</h2>
           <ul className={styles.checks} style={{ maxWidth: "44rem" }}>
             <li>Each week a challenge opens. When you start it, a timer starts too, and the AI tutor switches off until you submit.</li>
-            <li>Your numbers are yours alone, so nobody can hand you an answer.</li>
+            <li>Everyone gets different numbers, so a copied answer won&apos;t match. Sharing code breaks the rules, and top placings are confirmed in a short live conversation.</li>
             <li>You submit your code and a short explanation of why it works. StrikeLab computes your official score after you submit, not in your browser, and usually posts it within a day.</li>
             <li>Leaderboards show handles, never real names. Clubs can play together and get their own board.</li>
             <li>Top finishers and capstones are verified in a short live conversation before they appear on a record.</li>
@@ -244,7 +255,7 @@ export default async function SeasonsPage({ searchParams }: { searchParams: Prom
 
       <section className={`${styles.section} ${styles.sectionAlt}`} aria-labelledby="season-board">
         <div className={styles.wrap}>
-          <h2 id="season-board" className={styles.h2}>Leaderboard</h2>
+          <h2 id="season-board" className={styles.h2}>{season && phase.kind === "ended" ? `${title} final leaderboard` : "Leaderboard"}</h2>
           <LeaderboardTable rows={board} caption="Season leaderboard by handle" />
         </div>
       </section>

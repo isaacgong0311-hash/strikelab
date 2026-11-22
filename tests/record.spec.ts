@@ -37,7 +37,7 @@ test.describe("private record with seeded HTTP data", () => {
     await page.goto("/record");
     await expect(page.getByRole("heading", { level: 1, name: "Your record" })).toBeVisible();
     await expect(page.getByText("Verified placing")).toBeVisible();
-    await expect(page.getByText("88/100")).toBeVisible();
+    await expect(page.getByText("72.5 / 80")).toBeVisible();
     await expect(page.getByText("Verified in a live conversation on", { exact: false })).toBeVisible();
     await expect(page.getByRole("link", { name: "Investing Fundamentals certificate" })).toHaveAttribute("href", "/certificate/66666666-6666-4666-8666-666666666666");
     await page.setViewportSize({ width: 375, height: 900 });

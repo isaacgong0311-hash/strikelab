@@ -14,7 +14,9 @@ const recordFixture = Boolean(process.env.RECORD_E2E || verifyFixture);
 const statusFixture = Boolean(process.env.SEASON_STATUS_E2E || adminFixture || recordFixture);
 const firstClub = { id: "33333333-3333-4333-8333-333333333333", name: "Options Club" };
 const secondClub = { id: "44444444-4444-4444-8444-444444444444", name: "Quant Club" };
-const isoDay = (offset) => new Date(Date.now() + offset * 86_400_000).toISOString().slice(0, 10);
+// Season dates are New York calendar days (src/lib/seasons/seasonDate.ts), so read them there, not in UTC.
+const EASTERN_DAY = new Intl.DateTimeFormat("en-CA", { timeZone: "America/New_York", year: "numeric", month: "2-digit", day: "2-digit" });
+const isoDay = (offset) => EASTERN_DAY.format(new Date(Date.now() + offset * 86_400_000));
 const isoTime = (minutes) => new Date(Date.now() + minutes * 60_000).toISOString();
 const season = { id: "s1", title: "Season 1", starts_on: isoDay(recordFixture ? -30 : -7), ends_on: isoDay(recordFixture ? -1 : 30) };
 let recordShareToken = null;
@@ -36,7 +38,7 @@ const statusChallenges = [
 const statusAttempts = [
   { challenge_id: "s1-w3", status: "started", deadline: isoTime(20), official_score: null },
   { challenge_id: "s1-w4", status: "submitted", deadline: isoTime(-20), official_score: null },
-  { challenge_id: "s1-w5", status: "scored", deadline: isoTime(-20), official_score: 88 },
+  { challenge_id: "s1-w5", status: "scored", deadline: isoTime(-20), official_score: 72.5 },
   { challenge_id: "s1-w6", status: "pending_review", deadline: isoTime(-20), official_score: null },
   { challenge_id: "s1-w8", status: "started", deadline: isoTime(-1), official_score: null },
 ];
@@ -112,10 +114,10 @@ const service = createServer(async (request, response) => {
       for await (const chunk of request) body += chunk;
       const clubId = JSON.parse(body).p_class_id;
       value = clubId === firstClub.id
-        ? [{ rank: 1, handle: "student_one", total_score: 90, solved: 1, is_you: userId === studentId }]
+        ? [{ rank: 1, handle: "student_one", total_score: 72.5, solved: 1, is_you: userId === studentId }]
         : clubId === secondClub.id
-          ? [{ rank: 1, handle: "quant_friend", total_score: 75, solved: 1, is_you: false }]
-          : [{ rank: 1, handle: "student_one", total_score: 90, solved: 1, is_you: userId === studentId }, { rank: 2, handle: "quant_friend", total_score: 75, solved: 1, is_you: false }];
+          ? [{ rank: 1, handle: "quant_friend", total_score: 64, solved: 1, is_you: false }]
+          : [{ rank: 1, handle: "student_one", total_score: 72.5, solved: 1, is_you: userId === studentId }, { rank: 2, handle: "quant_friend", total_score: 64, solved: 1, is_you: false }];
       break;
     }
     // Scalar function: PostgREST returns the bare number, not a row set.

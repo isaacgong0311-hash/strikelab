@@ -34,8 +34,8 @@ describe("dashboard season action", () => {
     const base = { challenge_id: "open", deadline: "2026-12-02T12:30:00Z", official_score: null };
     expect(dashboardSeasonAction(now, [open], [{ ...base, status: "submitted" }]).kind).toBe("submitted");
     expect(dashboardSeasonAction(now, [open], [{ ...base, status: "pending_review" }]).kind).toBe("pending_review");
-    expect(dashboardSeasonAction(now, [open], [{ ...base, status: "scored", official_score: 88 }])).toMatchObject({
-      kind: "scored", actionLabel: "See your result", summary: "Official score: 88/100.",
+    expect(dashboardSeasonAction(now, [open], [{ ...base, status: "scored", official_score: 72.5 }])).toMatchObject({
+      kind: "scored", actionLabel: "See your result", summary: "Official score: 72.5 of 80.",
     });
     expect(dashboardSeasonAction(now, [open], [{ ...base, status: "started", deadline: "2026-12-02T11:00:00Z" }]).kind).toBe("expired");
   });

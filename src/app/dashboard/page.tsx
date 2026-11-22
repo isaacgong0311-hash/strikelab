@@ -5,6 +5,7 @@ import SeasonChecklist from "./SeasonChecklist";
 import StudentHomeClient from "./StudentHomeClient";
 import { PLANNED_SEASON } from "@/lib/seasons/planned";
 import { dashboardSeasonAction, type DashboardAttempt, type DashboardChallenge } from "@/lib/seasons/dashboard";
+import { seasonDate } from "@/lib/seasons/seasonDate";
 import { getTemplate } from "@/lib/seasons/templates";
 import { privatePageMetadata } from "@/lib/seo";
 import { getSupabaseServer } from "@/lib/supabase/server";
@@ -26,7 +27,7 @@ export default async function DashboardPage() {
   const { data: auth } = supabase ? await supabase.auth.getUser() : { data: { user: null } };
   if (!supabase || !auth.user) return <DashboardClient />;
 
-  const today = new Date().toISOString().slice(0, 10);
+  const today = seasonDate(new Date());
   const { data: seasons } = await supabase.from("seasons")
     .select("id, title").gte("ends_on", today).order("starts_on").limit(1);
   const season = seasons?.[0] ?? null;

@@ -36,7 +36,7 @@ export const SEASON_FAQ: { q: string; a: string }[] = [
   },
   {
     q: "How is it scored?",
-    a: "After you submit, StrikeLab runs your code against hidden tests on your numbers. Correct answers count most, and finishing with time left adds a little. A person reads your explanation. Scores usually post within a day.",
+    a: "After you submit, StrikeLab runs your code against hidden tests on your numbers. Correct answers count most, and finishing with time left adds a little more, in proportion to how much you got right. A person reads your explanation. Scores usually post within a day.",
   },
   {
     q: "What if I miss a week?",
@@ -52,6 +52,6 @@ export const SEASON_FAQ: { q: string; a: string }[] = [
   },
   {
     q: "Can people cheat?",
-    a: "Not easily. Everyone gets their own numbers, the server keeps the time, the AI tutor is off, and top placings are confirmed in a short live conversation before they appear on a record. That makes cheating hard, not impossible.",
+    a: "Not easily. Everyone gets different numbers, so a copied answer won't match. Sharing code breaks the rules. The server keeps the time, the AI tutor is off, and top placings are confirmed in a short live conversation before they appear on a record. That makes cheating hard, not impossible.",
   },
 ];

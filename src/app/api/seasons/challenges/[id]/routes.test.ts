@@ -10,16 +10,20 @@ import { POST as submit } from "./submit/route";
 
 type RpcResult = { data: unknown; error: { message: string } | null };
 
-function signedIn(opts: { challenge?: unknown; readError?: boolean; rpc?: RpcResult }) {
+function signedIn(opts: { challenge?: unknown; readError?: boolean; rpc?: RpcResult; profile?: { handle: string | null } | null; profileError?: boolean }) {
   const rpc = vi.fn(async () => opts.rpc ?? { data: [{ started_at: "2026-11-30T15:00:00Z", deadline: "2026-11-30T16:00:00Z", status: "started" }], error: null });
+  const profile = opts.profile === undefined ? { handle: "student_one" } : opts.profile;
   requireUserMock.mockResolvedValue({
     userId: "user-1",
     supabase: {
       rpc,
-      from: () => ({
+      from: (table: string) => ({
         select: () => ({
           eq: () => ({
-            maybeSingle: async () => (opts.readError ? { data: null, error: { message: "down" } } : { data: opts.challenge ?? null, error: null }),
+            maybeSingle: async () => {
+              if (table === "profiles") return opts.profileError ? { data: null, error: { message: "down" } } : { data: profile, error: null };
+              return opts.readError ? { data: null, error: { message: "down" } } : { data: opts.challenge ?? null, error: null };
+            },
           }),
         }),
       }),
@@ -58,6 +62,31 @@ describe("season attempt routes", () => {
     const closed = await start(req(), ctx);
     expect(closed.status).toBe(409);
     expect((await closed.json()).error).toMatch(/isn't open/);
+  });
+
+  it("start: asks for a handle before the clock starts, since the board hides students without one", async () => {
+    for (const profile of [null, { handle: null }, { handle: "" }]) {
+      const rpc = signedIn({ challenge: { id: "s1-w1", template_slug: "put-call-parity" }, profile });
+      const res = await start(req(), ctx);
+      expect(res.status).toBe(409);
+      const body = await res.json();
+      expect(body.code).toBe("needs_handle");
+      expect(body.error).toMatch(/handle/);
+      expect(body.params).toBeUndefined();
+      expect(rpc).not.toHaveBeenCalled();
+    }
+  });
+
+  it("start: says the database is unreachable when the profile can't be read", async () => {
+    const rpc = signedIn({ challenge: { id: "s1-w1", template_slug: "put-call-parity" }, profileError: true });
+    expect((await start(req(), ctx)).status).toBe(503);
+    expect(rpc).not.toHaveBeenCalled();
+  });
+
+  it("start: starts the clock once the student has a handle", async () => {
+    const rpc = signedIn({ challenge: { id: "s1-w1", template_slug: "put-call-parity" }, profile: { handle: "student_one" } });
+    expect((await start(req(), ctx)).status).toBe(200);
+    expect(rpc).toHaveBeenCalledWith("start_attempt", { p_challenge_id: "s1-w1" });
   });
 
   it("start: refuses without the server secret", async () => {

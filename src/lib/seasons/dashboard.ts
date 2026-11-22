@@ -1,3 +1,4 @@
+import { OFFICIAL_SCORE_MAX } from "./limits";
 import { remainingLabel, statusForWeek, type OwnAttempt, type WeekView } from "./status";
 
 export interface DashboardChallenge {
@@ -57,7 +58,7 @@ export function dashboardSeasonAction(
     case "submitted": return { kind: view.kind, challenge, summary: "Submitted. StrikeLab is computing your official score.", href: "/seasons", actionLabel: "View season status" };
     case "pending_review": return { kind: view.kind, challenge, summary: "Your submission is awaiting review.", href: "/seasons", actionLabel: "View season status" };
     case "upcoming": return { kind: view.kind, challenge, summary: `Opens in ${remainingLabel(now, view.opensAt)}.`, href: "/seasons", actionLabel: "See the schedule" };
-    case "scored": return { kind: view.kind, challenge, summary: view.score === null ? "Your official score is posted." : `Official score: ${view.score}/100.`, href: "/seasons", actionLabel: "See your result" };
+    case "scored": return { kind: view.kind, challenge, summary: view.score === null ? "Your official score is posted." : `Official score: ${view.score} of ${OFFICIAL_SCORE_MAX}.`, href: "/seasons", actionLabel: "See your result" };
     case "expired": return { kind: view.kind, challenge, summary: "Your attempt window has ended.", href: "/seasons", actionLabel: "View season status" };
     case "closed": return { kind: view.kind, challenge, summary: "This challenge has closed. See the season board and schedule.", href: "/seasons", actionLabel: "See the season" };
   }

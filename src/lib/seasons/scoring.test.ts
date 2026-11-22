@@ -1,5 +1,6 @@
 import { afterAll, describe, expect, it } from "vitest";
-import { autoScore, createScorer, outcome, POINTS, runStudent } from "../../../scripts/seasons/score-core.mjs";
+import { AUTO_MAX, autoScore, createScorer, outcome, POINTS, runStudent } from "../../../scripts/seasons/score-core.mjs";
+import { OFFICIAL_SCORE_MAX } from "./limits";
 import { deriveParams } from "./params";
 import { TEMPLATES, getTemplate } from "./templates";
 
@@ -21,6 +22,21 @@ describe("official scoring", () => {
     expect(autoScore({ fraction: 1, usedSeconds: 9999, limitSeconds: 3600 })).toBe(70);
     expect(autoScore({ fraction: 2 / 3, usedSeconds: 3600, limitSeconds: 3600 })).toBe(46.7);
     expect(autoScore({ fraction: 0, usedSeconds: 0, limitSeconds: 3600 })).toBe(0);
+  });
+
+  it("tops out at 80, the automatic maximum", () => {
+    expect(AUTO_MAX).toBe(80);
+    expect(OFFICIAL_SCORE_MAX).toBe(AUTO_MAX);
+    expect(autoScore({ fraction: 5, usedSeconds: -100, limitSeconds: 3600 })).toBe(AUTO_MAX);
+  });
+
+  it("scales speed by correctness, so a fast, mostly wrong submission can't farm speed points", () => {
+    // One case right out of three, submitted instantly: 70/3 + 10/3, not 70/3 + 10.
+    expect(autoScore({ fraction: 1 / 3, usedSeconds: 0, limitSeconds: 3600 })).toBe(26.7);
+    expect(autoScore({ fraction: 2 / 3, usedSeconds: 1800, limitSeconds: 3600 })).toBe(50);
+    // Fast and a little right never beats slow and fully right.
+    expect(autoScore({ fraction: 0.5, usedSeconds: 0, limitSeconds: 3600 }))
+      .toBeLessThan(autoScore({ fraction: 1, usedSeconds: 3600, limitSeconds: 3600 }));
   });
 
   it("scores a correct submission 1 and a wrong one 0, in a real Python", async () => {

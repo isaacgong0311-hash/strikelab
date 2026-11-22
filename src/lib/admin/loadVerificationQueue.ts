@@ -1,4 +1,5 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
+import { seasonDate } from "@/lib/seasons/seasonDate";
 import { buildVerificationQueue, type BoardCandidateRow, type CapstoneCandidateRow, type ProfileCandidateRow, type SeasonCandidateRow, type VerificationCandidateRow } from "./verificationQueue";
 
 /** Call only after isFounder has passed; this client bypasses RLS. */
@@ -13,7 +14,8 @@ export async function loadVerificationQueue(admin: SupabaseClient, boardClient: 
   if (seasonResult.error) throw seasonResult.error;
   const capstones = (capstoneResult.data ?? []) as CapstoneCandidateRow[];
   const seasons = (seasonResult.data ?? []) as SeasonCandidateRow[];
-  const today = new Date().toISOString().slice(0, 10);
+  // Eastern calendar day: a season's last challenge closes at 11:59pm New York time.
+  const today = seasonDate(new Date());
   const finished = seasons.filter((season) => season.ends_on < today);
   const boardResults = await Promise.all(finished.map((season) =>
     boardClient.rpc("season_leaderboard", { p_season_id: season.id, p_class_id: null })

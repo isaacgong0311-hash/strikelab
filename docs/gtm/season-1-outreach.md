@@ -38,7 +38,7 @@ Who: advisors of math team, investing club, CS club, DECA/FBLA, AP Stats/Econ te
 >
 > I'm building StrikeLab, a site where high schoolers learn quant finance by writing real Python (option pricing, the Greeks) in the browser.
 >
-> From Nov 30 to Dec 20 we're running Season 1: one timed challenge a week, three weeks, free. Each student gets their own randomized numbers, so answers can't be copied, and the AI helper is off during a challenge. There's a ranked board for the whole season and a private board just for your club.
+> From Nov 30 to Dec 20 we're running Season 1: one timed challenge a week, three weeks, free. Each student gets their own randomized numbers, so a copied answer won't match; sharing code breaks the rules, top placings are confirmed in a short live conversation, and the AI helper is off during a challenge. There's a ranked board for the whole season and a private board just for your club.
 >
 > Would [club name] want to play as a chapter? It's about one hour a week for students. Setup for you is a few minutes: make a free class on StrikeLab and share its join link, and your club's board appears for members and you. I can do it with you.
 >

@@ -33,9 +33,9 @@ describe("season week status", () => {
   });
 
   it("shows an official score and season rank only when available", () => {
-    const attempt = { status: "scored", deadline: "2026-12-01T12:05:00Z", official_score: 88 } as const;
-    expect(statusForWeek(now, challenge, attempt, 4)).toEqual({ kind: "scored", score: 88, seasonRank: 4 });
-    expect(statusForWeek(now, challenge, attempt, null)).toEqual({ kind: "scored", score: 88, seasonRank: null });
+    const attempt = { status: "scored", deadline: "2026-12-01T12:05:00Z", official_score: 72.5 } as const;
+    expect(statusForWeek(now, challenge, attempt, 4)).toEqual({ kind: "scored", score: 72.5, seasonRank: 4 });
+    expect(statusForWeek(now, challenge, attempt, null)).toEqual({ kind: "scored", score: 72.5, seasonRank: null });
   });
 
   it("marks unresolved scoring as pending review", () => {

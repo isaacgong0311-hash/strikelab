@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import { seasonDate } from "@/lib/seasons/seasonDate";
 import { buildRecordView } from "./viewModel";
 
 const season = { id: "s1", title: "Season 1", ends_on: "2026-12-20" };
@@ -7,7 +8,7 @@ const challenges = [
   { id: "s1-w2", season_id: "s1", week: 2 },
 ];
 const attempts = [
-  { challenge_id: "s1-w1", status: "scored", official_score: 90 },
+  { challenge_id: "s1-w1", status: "scored", official_score: 72.5 },
   { challenge_id: "s1-w2", status: "submitted", official_score: null },
 ];
 
@@ -18,7 +19,7 @@ describe("private record view model", () => {
   it("shows scores but never labels a top-10 placing verified without a matching verification", () => {
     const view = buildRecordView("2026-12-21", [season], challenges, attempts, { s1: 4 }, [], [], []);
     expect(view.seasons[0]).toMatchObject({ scoredCount: 1, rank: 4, placingVerified: false });
-    expect(view.seasons[0].scores).toEqual([{ week: 1, score: 90 }]);
+    expect(view.seasons[0].scores).toEqual([{ week: 1, score: 72.5 }]);
   });
 
   it("requires a matching season and rank, top 10, and a finished season", () => {
@@ -27,6 +28,12 @@ describe("private record view model", () => {
     expect(buildRecordView("2026-12-21", [season], challenges, attempts, { s1: 5 }, verification, [], []).seasons[0].placingVerified).toBe(false);
     expect(buildRecordView("2026-12-21", [season], challenges, attempts, { s1: 11 }, [{ ...verification[0], subject_id: "s1:11" }], [], []).seasons[0].placingVerified).toBe(false);
     expect(buildRecordView("2026-12-19", [season], challenges, attempts, { s1: 4 }, verification, [], []).seasons[0].placingVerified).toBe(false);
+  });
+
+  it("calls the rank final only after the last day ends in New York", () => {
+    const at = (iso: string) => buildRecordView(seasonDate(new Date(iso)), [season], challenges, attempts, { s1: 4 }, [], [], []).seasons[0].finished;
+    expect(at("2026-12-20T19:00:00-05:00")).toBe(false); // already Dec 21 in UTC
+    expect(at("2026-12-21T00:01:00-05:00")).toBe(true);
   });
 
   it("marks only reviewed capstones and retains certificate links", () => {
