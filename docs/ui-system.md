@@ -9,6 +9,85 @@ StrikeLab uses a student-first “premium learning lab” visual language: calm 
 - `src/components/ui/` contains accessible controls and display primitives. Import the individual component file directly rather than using a barrel.
 - Route-specific layout belongs in a co-located CSS module. Existing selectors in `src/app/globals.css`, `sandbox.css`, and `pg-ch.css` are a compatibility layer and should be deleted as their routes migrate.
 
+## Visual rules
+
+The target is Linear/Vercel restraint. These are the tells that made earlier
+screens read as generated, and they stay out:
+
+- **No decorative backgrounds.** Pages sit on plain `--sl-canvas`. No grid
+  overlay, no radial vignette or wash, no gradient behind a section for its own
+  sake.
+- **No offset shadows.** Nothing uses a hard `0 4px 0` "pressable" shadow, and
+  nothing translates on hover or press. Buttons are flat.
+- **No glow.** No coloured or blurred halo around buttons, badges or cards.
+- **Mono only for code, numbers, timers and scores.** `--sl-font-code` is for
+  code, figures, countdowns, ranks and scores. Headings and body copy never use
+  it.
+
+### Radius
+
+| Token | Value | Use |
+| --- | --- | --- |
+| `--sl-radius-sm` | 6px | small buttons, inputs, chips, inline code |
+| `--sl-radius-md` | 8px | buttons, list rows, small panels |
+| `--sl-radius-lg` | 12px | cards, panels |
+| `--sl-radius-xl` | 16px | dialogs, large surfaces |
+| `--sl-radius-pill` | 999px | pills and status dots only |
+
+The legacy `--r-xs`…`--r-full` variables in `globals.css` are aliases of this
+scale, not a second one. Don't add raw pixel radii.
+
+### Shadow
+
+| Token | Value | Use |
+| --- | --- | --- |
+| `--sl-shadow-1` | `0 1px 2px rgb(15 23 18 / 0.06)` | a hairline lift for cards on the canvas |
+| `--sl-shadow-2` | `0 12px 32px rgb(15 23 18 / 0.10)` | things that float: menus, popovers, dialogs |
+
+Most surfaces need only a 1px `--sl-border`. Reach for `--sl-shadow-1` when a
+card must separate from a same-coloured background.
+
+### Numbers
+
+Code contexts (`code`, `pre`, `kbd`, `.mono`) set `tabular-nums`. For a timer,
+score, rank or leaderboard column outside code, add the `.sl-num` utility from
+`foundation.css` so digits don't shift as values change.
+
+## Buttons
+
+`src/components/ui/Action.tsx` is the one button. Use it for every new
+call-to-action instead of adding another `.xyz-btn` rule.
+
+```tsx
+import { Button, ActionLink } from "@/components/ui/Action";
+
+<Button onClick={save}>Save</Button>                       // primary, md
+<Button variant="secondary" size="sm">Cancel</Button>
+<ActionLink href="/seasons">See the season</ActionLink>     // next/link
+<ActionLink href="https://github.com/…" variant="ghost" target="_blank">GitHub</ActionLink>
+```
+
+| Prop | Values | Default |
+| --- | --- | --- |
+| `variant` | `primary` (solid `--sl-brand`, hover `--sl-brand-strong`), `secondary` (surface with a 1px `--sl-border`), `ghost` (transparent, low emphasis) | `primary` |
+| `size` | `md` (44px tall), `sm` (32px tall with an invisible 44px hit area) | `md` |
+
+- `Button` defaults to `type="button"`; pass `type="submit"` in forms.
+- `ActionLink` renders `next/link` for internal hrefs and a plain `<a>` for
+  absolute URLs (`https:`, `mailto:`, `//…`), adding
+  `rel="noopener noreferrer"` when `target="_blank"`.
+- `buttonClassName({ variant, size })` gives the same classes to an element
+  that can't be either component (a `<summary>`, a file-input label).
+- Focus uses the global `:focus-visible` ring. Disabled buttons drop to 50%
+  opacity; for links use `aria-disabled="true"`.
+- One `primary` per view. Width is the caller's layout decision; the component
+  doesn't stretch itself on mobile.
+
+The older button classes (`.v2-btn`, `.sl-btn-primary`, `.nav-cta`,
+`.pr-btn`, the `.primary`/`.secondary` rules in route CSS modules) have been
+flattened to match, and should be replaced by `Button`/`ActionLink` as each
+route is restyled.
+
 ## Interaction rules
 
 - Essential content is visible in the server-rendered document. Motion may enhance visible content after hydration but must never be required to reveal it.
@@ -67,10 +146,3 @@ Two things to know if you re-run the CLI over this file:
   all five SVGs. Check the arrows still render after any re-pull.
 - Upstream's external-link variant ships `target="_blank"` with no `rel`. We add
   `rel="noopener noreferrer"`; re-pulling drops that fix.
-
-`@splinetool/react-spline` backs `src/components/SplineScene.tsx`. The runtime
-is roughly a megabyte of WebGL, so it is `next/dynamic` with `ssr: false` and
-mounts only when a scene URL is configured, motion is not reduced, the device is
-not on Save-Data or low memory, WebGL is present, and the host has scrolled near
-the viewport. With `NEXT_PUBLIC_SPLINE_HERO_SCENE` unset it renders no DOM at
-all and the chunk is never fetched.
