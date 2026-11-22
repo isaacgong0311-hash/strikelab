@@ -271,7 +271,7 @@
 }
 .primary { background: var(--sl-brand); color: white; }
 .danger { background: var(--sl-danger); color: white; }
-.secondary { background: var(--sl-surface); color: var(--sl-text); border: 1px solid var(--sl-border); }
+.secondary { background: var(--sl-surface); color: var(--sl-text); border: 1px solid var(--sl-border-strong); }
 .primary:hover:not(:disabled) { background: var(--sl-brand-strong); }
 .danger:hover { background: color-mix(in srgb, var(--sl-danger) 85%, black); }
 .secondary:hover { border-color: var(--sl-border-strong); background: var(--sl-surface-raised); }

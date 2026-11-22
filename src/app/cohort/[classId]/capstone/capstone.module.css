@@ -78,7 +78,7 @@
 }
 .primary { border: 0; background: var(--sl-brand); color: #fff; }
 .primary:hover:not(:disabled) { background: var(--sl-brand-strong); }
-.secondary { border: 1px solid var(--sl-border); background: var(--sl-surface); color: var(--sl-text); }
+.secondary { border: 1px solid var(--sl-border-strong); background: var(--sl-surface); color: var(--sl-text); }
 .secondary:hover:not(:disabled) { border-color: var(--sl-border-strong); background: var(--sl-surface-raised); }
 .danger { border: 1px solid var(--sl-danger); background: var(--sl-surface); color: var(--sl-danger); align-self: flex-start; }
 .primary:disabled,

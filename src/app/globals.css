@@ -444,7 +444,7 @@ input[type="range"]::-moz-range-track {
 .v2-btn .v2-arr { position: relative; z-index: 2; transition: transform 180ms cubic-bezier(.2,.7,.3,1); }
 .v2-btn:hover { background: var(--sl-brand-strong); }
 .v2-btn:hover .v2-arr { transform: translateX(3px); }
-.v2-btn.ghost { background: var(--sl-surface); color: var(--sl-text); border: 1px solid var(--sl-border); }
+.v2-btn.ghost { background: var(--sl-surface); color: var(--sl-text); border: 1px solid var(--sl-border-strong); }
 .v2-btn.ghost:hover { background: var(--sl-surface-raised); border-color: var(--sl-border-strong); }
 .v2-btn.text { background: transparent; color: var(--fg-mute); padding-left: 8px; padding-right: 8px; font-weight: 600; }
 .v2-btn.text:hover { color: var(--fg); background: transparent; }

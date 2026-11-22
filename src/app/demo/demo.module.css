@@ -84,7 +84,7 @@
 }
 .primary { background: var(--sl-brand); color: #fff; }
 .primary:hover { background: var(--sl-brand-strong); }
-.secondary { border: 1px solid var(--sl-border); background: var(--sl-surface); color: var(--sl-text); }
+.secondary { border: 1px solid var(--sl-border-strong); background: var(--sl-surface); color: var(--sl-text); }
 .primary:focus-visible,
 .secondary:focus-visible { outline: 3px solid var(--sl-focus); outline-offset: 3px; }
 

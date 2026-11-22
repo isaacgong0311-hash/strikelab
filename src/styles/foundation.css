@@ -323,7 +323,7 @@
 .settings-gate-primary, .settings-gate-secondary { min-height: var(--sl-tap); display: inline-flex; align-items: center; padding: 0 18px; border-radius: var(--sl-radius-md); font-weight: 800; font-size: 14px; text-decoration: none; }
 .settings-gate-primary { background: var(--sl-brand); color: #fff; }
 .settings-gate-primary:hover { background: var(--sl-brand-strong); }
-.settings-gate-secondary { border: 1px solid var(--sl-border); color: var(--sl-text); background: var(--sl-surface); }
+.settings-gate-secondary { border: 1px solid var(--sl-border-strong); color: var(--sl-text); background: var(--sl-surface); }
 .settings-gate-secondary:hover { border-color: var(--sl-border-strong); background: var(--sl-surface-raised); }
 
 /* Inline code chips that wrap keep their padding and border on each line. */

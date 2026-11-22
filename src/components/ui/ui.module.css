@@ -23,7 +23,7 @@
 .primary { background: var(--sl-brand); color: #fff; }
 .primary:hover { background: var(--sl-brand-strong); }
 
-.secondary { background: var(--sl-surface); color: var(--sl-text); border-color: var(--sl-border); }
+.secondary { background: var(--sl-surface); color: var(--sl-text); border-color: var(--sl-border-strong); }
 .secondary:hover { background: var(--sl-surface-raised); border-color: var(--sl-border-strong); }
 
 .ghost { background: transparent; color: var(--sl-text-muted); }
