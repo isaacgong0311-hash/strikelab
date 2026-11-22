@@ -1,7 +1,9 @@
 import Link from "next/link";
 import JsonLd from "@/components/JsonLd";
 import Faq from "@/components/marketing/Faq";
+import { ActionLink } from "@/components/ui/Action";
 import styles from "@/components/marketing/marketing.module.css";
+import pricing from "./pricing.module.css";
 import { pageMetadata, breadcrumbJsonLd } from "@/lib/seo";
 import { SITE_URL, SITE_NAME } from "@/lib/site";
 import { TRACKS } from "@/lib/tracks";
@@ -16,11 +18,12 @@ export const metadata = pageMetadata({
 });
 
 // The remodel offer is Student / Club / Intensive. Legacy subscriptions and
-// Stripe routes remain available to existing subscribers.
-const TIERS = [
+// Stripe routes remain available to existing subscribers. The two free plans
+// lead; the Intensive is an optional, waitlist-only program and is shown as a
+// quiet row beneath them, not as a third equal (or highlighted) column.
+const FREE_PLANS = [
   {
     name: "Students",
-    price: "Free",
     per: "for every student",
     desc: "For any student, anywhere, with or without a club.",
     features: [
@@ -31,11 +34,10 @@ const TIERS = [
       "A private record of verified work, shareable by choice",
     ],
     cta: { href: "/learn/inv-1.1", label: "Start a lesson" },
-    accent: false,
+    primary: true,
   },
   {
     name: "Clubs",
-    price: "Free",
     per: "for club leaders and members",
     desc: "Bring your club into the season and give members their own board.",
     features: [
@@ -46,24 +48,9 @@ const TIERS = [
       "Private capstones, shareable by student choice",
     ],
     cta: { href: "/pilot?src=pricing", label: "Set up your club" },
-    accent: false,
+    primary: false,
   },
-  {
-    name: "Intensive",
-    price: "$349",
-    per: "for six weeks",
-    desc: "An optional small-group cohort for motivated students, arranged with parents or guardians.",
-    badge: "Waitlist open",
-    features: [
-      "Weekly quant projects and mentor review",
-      "A capstone the student explains and defends",
-      "Small cohort of 8 to 12 students",
-      "No payment now; charged only once a cohort fills",
-    ],
-    cta: { href: "/intensive", label: "Join the waitlist" },
-    accent: true,
-  },
-];
+] as const;
 
 const FAQS = [
   {
@@ -88,10 +75,18 @@ const FAQS = [
   },
 ];
 
+// The Intensive is waitlist-only: no dates and no checkout yet, so its offer
+// is a PreOrder, not something buyable today.
 const PRICING_JSON_LD = [
   { name: `${SITE_NAME} Students`, description: "Lessons, playground, and seasons, free for students.", price: "0", href: "/learn/inv-1.1" },
   { name: `${SITE_NAME} Clubs`, description: "Chapter board, six-week lab, and scorecard, free for clubs.", price: "0", href: "/pilot" },
-  { name: `${SITE_NAME} Intensive`, description: "Optional six-week mentored cohort; join the waitlist.", price: "349", href: "/intensive" },
+  {
+    name: `${SITE_NAME} Intensive`,
+    description: "Optional six-week mentored cohort; waitlist only, nothing charged until a cohort fills.",
+    price: "349",
+    href: "/intensive",
+    availability: "https://schema.org/PreOrder",
+  },
 ].map((p) => ({
   "@context": "https://schema.org",
   "@type": "Product",
@@ -104,6 +99,7 @@ const PRICING_JSON_LD = [
     price: p.price,
     priceCurrency: "USD",
     url: `${SITE_URL}${p.href}`,
+    ...("availability" in p ? { availability: p.availability } : {}),
   },
 }));
 
@@ -115,42 +111,49 @@ export default function PricingPage() {
         <JsonLd key={product.name} data={product} />
       ))}
 
-      <section className={`${styles.section} ${styles.center}`}>
+      <section className={pricing.head}>
         <div className={styles.wrap}>
-          <p className={styles.kicker}>Pricing</p>
-          <h1 className={styles.h1}>Students free. Clubs free. Intensive when you&apos;re ready.</h1>
+          <h1 className={pricing.title}>Free for every student, and every club.</h1>
           <p className={styles.lede}>
-            Learn and compete at no cost. Bring your club to the season with its own board and an included six-week lab.
-            Families who want a small mentored cohort can join the Intensive waitlist.
+            Lessons, the playground and every season cost nothing. Clubs get their own board and a six-week lab, also free.
+            The one paid program is an optional Intensive for families, and it&apos;s waitlist-only for now.
           </p>
         </div>
       </section>
 
-      <section className={styles.wrap} aria-label="Plans" style={{ paddingBottom: "clamp(3rem, 8vw, 5rem)" }}>
-        <div className={styles.grid3}>
-          {TIERS.map((t) => (
-            <div key={t.name} className={`${styles.card} ${t.accent ? styles.cardAccent : ""}`}>
-              {t.badge && <span className={styles.badge}>{t.badge}</span>}
-              <h2 className={styles.h3}>{t.name}</h2>
-              <p className={styles.body}>{t.desc}</p>
-              <p className={styles.price}>
-                <strong>{t.price}</strong>
-                <span className={styles.pricePer}>{t.per}</span>
-              </p>
-              <ul className={styles.checks}>
+      <section className={`${styles.wrap} ${pricing.plans}`} aria-label="Plans">
+        <div className={pricing.grid}>
+          {FREE_PLANS.map((t) => (
+            <div key={t.name} className={`${pricing.plan} ${t.primary ? pricing.planLead : ""}`}>
+              <h2 className={pricing.planName}>{t.name}</h2>
+              <p className={pricing.price}>Free</p>
+              <p className={pricing.per}>{t.per}</p>
+              <p className={pricing.desc}>{t.desc}</p>
+              <ul className={pricing.features}>
                 {t.features.map((f) => (
                   <li key={f}>{f}</li>
                 ))}
               </ul>
-              <div className={styles.cardCta}>
-                <Link href={t.cta.href} className={t.accent ? styles.primary : styles.secondary}>
-                  {t.cta.label}
-                </Link>
-              </div>
+              <ActionLink href={t.cta.href} variant={t.primary ? "primary" : "secondary"} className={pricing.planCta}>
+                {t.cta.label}
+              </ActionLink>
             </div>
           ))}
         </div>
-        <p className={styles.fine} style={{ marginTop: "1.5rem" }}>
+
+        <div className={pricing.optional}>
+          <div className={pricing.optionalText}>
+            <h2 className={pricing.optionalName}>Intensive</h2>
+            <p className={pricing.optionalBody}>
+              Optional, for families: a small six-week cohort of 8 to 12 students with weekly projects, mentor review and a
+              capstone the student defends. <span className={pricing.optionalPrice}>$349</span> for six weeks, charged only
+              once a cohort fills.
+            </p>
+          </div>
+          <ActionLink href="/intensive" variant="secondary" className={pricing.optionalCta}>Join the waitlist</ActionLink>
+        </div>
+
+        <p className={styles.fine}>
           Schools that need an invoice or purchase order: <a href="mailto:hello@strikelab.app" className={styles.textLink}>hello@strikelab.app</a>.
         </p>
       </section>

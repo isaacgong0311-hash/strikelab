@@ -1,20 +1,24 @@
 import Link from "next/link";
 import Faq from "@/components/marketing/Faq";
 import CompareTable from "@/components/marketing/CompareTable";
+import { ActionLink, buttonClassName } from "@/components/ui/Action";
 import styles from "@/components/marketing/marketing.module.css";
+import clubs from "./clubs.module.css";
 import { pageMetadata } from "@/lib/seo";
 import { LAB_WEEKS, pilotCallHref } from "@/lib/marketing/lab";
 import { TrackedAnchor } from "@/components/marketing/TrackedLink";
+import { PLANNED_SEASON, shortSeasonDate } from "@/lib/seasons/planned";
+
+const SEASON_DATES = `${shortSeasonDate(PLANNED_SEASON.startsOn)} to ${shortSeasonDate(PLANNED_SEASON.endsOn)}`;
 
 export const metadata = pageMetadata({
   path: "/clubs",
   title: "Bring your club to Season 1",
   description:
-    "Bring your club to Season 1 for free. Share one invite link, compete together, and see your club's board on StrikeLab. A six-week meeting plan is included.",
+    `Bring your club to Season 1 (${SEASON_DATES}) for free. Share one invite link, compete together, and see your club's board on StrikeLab. A six-week meeting plan is included.`,
 });
 
 const FOR = ["Math clubs", "Coding and CS clubs", "Investing clubs", "Economics and DECA/FBLA", "Competition teams", "AP Stats, Calc and CS classes"];
-
 
 const FAQS = [
   { q: "Does the leader need finance or coding experience?", a: "No. The lessons teach the material; the weekly plan tells you how to run the meeting, what to ask, and where students usually get stuck." },
@@ -25,10 +29,17 @@ const FAQS = [
   { q: "What does it cost?", a: "Creating a club, joining Season 1, and using the six-week lab are free. Students never pay to participate. See the pricing page for other programs." },
 ];
 
+const FLOW = [
+  ["Create your club", "Set up a club in a few minutes."],
+  ["Share one link", "Send students the invite link from your club page."],
+  ["Students join", "They make a free account and join your club."],
+  ["See your club's board", `During ${PLANNED_SEASON.title} (${SEASON_DATES}), members see their club's handle-only board on /seasons.`],
+] as const;
+
 export default function ClubsPage() {
   return (
     <div className={styles.page}>
-      <section className={styles.section}>
+      <section className={clubs.hero}>
         <div className={styles.wrap}>
           <p className={styles.kicker}>For clubs and teachers</p>
           <h1 className={styles.h1}>Bring your club to Season 1: your own board, free.</h1>
@@ -36,14 +47,12 @@ export default function ClubsPage() {
             Give your students a season to compete in together. Create a club, share one invite link, and let them
             tackle timed quant challenges under handles. Your club&apos;s board appears on the Seasons page.
           </p>
-          <div className={styles.ctaRow}>
-            <Link href="/pilot?src=clubs" className={styles.primary}>Set up your club</Link>
-            <Link href="/demo" className={styles.secondary}>See the teacher view</Link>
+          <div className={clubs.ctas}>
+            <ActionLink href="/pilot?src=clubs">Set up your club</ActionLink>
+            <ActionLink href="/demo" variant="secondary">See the teacher view</ActionLink>
           </div>
-          <ul className={styles.list} aria-label="Built for" style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem 1.25rem", listStyle: "none", paddingLeft: 0, marginTop: "1.75rem" }}>
-            {FOR.map((f) => (
-              <li key={f} style={{ margin: 0 }}>✓ {f}</li>
-            ))}
+          <ul className={clubs.forList} aria-label="Built for">
+            {FOR.map((f) => <li key={f}>{f}</li>)}
           </ul>
         </div>
       </section>
@@ -51,59 +60,38 @@ export default function ClubsPage() {
       <section className={`${styles.section} ${styles.sectionAlt}`} aria-labelledby="clubs-flow">
         <div className={styles.wrap}>
           <h2 id="clubs-flow" className={styles.h2}>One link brings your club together</h2>
-          <div className={styles.stepsGrid} style={{ marginTop: "1.5rem" }}>
-            {[
-              ["Create your club", "Set up a club in a few minutes."],
-              ["Share one link", "Send students the invite link from your club page."],
-              ["Students join", "They make a free account and join your club."],
-              ["See your club's board", "Once Season 1 is live, members can see their club's handle-only board on /seasons."],
-            ].map(([title, body], index) => (
-              <div key={title} className={styles.card}>
-                <span className={styles.step} aria-hidden="true">{index + 1}</span>
+          <ol className={clubs.flow}>
+            {FLOW.map(([title, body], index) => (
+              <li key={title}>
+                <span className={clubs.flowNum} aria-hidden="true">{index + 1}</span>
                 <h3 className={styles.h3}>{title}</h3>
                 <p className={styles.body}>{body}</p>
-              </div>
+              </li>
             ))}
-          </div>
+          </ol>
         </div>
       </section>
 
       <section className={styles.section} aria-labelledby="clubs-weeks">
         <div className={styles.wrap}>
           <h2 id="clubs-weeks" className={styles.h2}>Want a plan for every meeting? It&apos;s included.</h2>
-          <p className={styles.lede}>The optional six-week lab takes your club from market basics to a capstone, with a weekly plan and no finance background required.</p>
-          <div className={styles.grid3} style={{ marginTop: "1.5rem" }}>
+          <p className={styles.lede}>
+            The optional six-week lab takes your club from market basics to a capstone, with no finance background required.
+            Each week comes with a goal, discussion prompts, common sticking points and a message ready to send. Your
+            scorecard shows who started, who&apos;s active and who needs help, with a CSV export.
+          </p>
+          <ol className={clubs.weeks}>
             {LAB_WEEKS.map((w) => (
-              <div key={w.week} className={styles.card}>
-                <p className={styles.kicker} style={{ margin: 0 }}>Week {w.week}</p>
+              <li key={w.week}>
+                <span className={clubs.weekNum}>Week {w.week}</span>
                 <h3 className={styles.h3}>{w.title}</h3>
                 <p className={styles.body}>{w.builds}</p>
-              </div>
+              </li>
             ))}
-          </div>
-        </div>
-      </section>
-
-      <section className={styles.section} aria-labelledby="clubs-leader">
-        <div className={styles.wrap}>
-          <h2 id="clubs-leader" className={styles.h2}>A ready plan for every meeting</h2>
-          <div className={styles.grid3} style={{ marginTop: "1.5rem" }}>
-            <div className={styles.card}>
-              <h3 className={styles.h3}>A plan for every meeting</h3>
-              <p className={styles.body}>This week&apos;s goal, discussion prompts and common sticking points, right on your class page.</p>
-            </div>
-            <div className={styles.card}>
-              <h3 className={styles.h3}>Messages ready to send</h3>
-              <p className={styles.body}>A weekly note with the lessons, due date and link, plus a friendly nudge for anyone behind.</p>
-            </div>
-            <div className={styles.card}>
-              <h3 className={styles.h3}>A scorecard, not a spreadsheet</h3>
-              <p className={styles.body}>Who started, who&apos;s active each week, who needs help and why, and every capstone. Export it anytime.</p>
-            </div>
-          </div>
-          <div className={styles.ctaRow}>
-            <Link href="/demo" className={styles.secondary}>Try the teacher view with sample data</Link>
-          </div>
+          </ol>
+          <p className={styles.fine}>
+            <Link href="/demo" className={styles.textLink}>Try the teacher view with sample data</Link>
+          </p>
         </div>
       </section>
 
@@ -139,8 +127,11 @@ export default function ClubsPage() {
             <li>Built for ages 13–18. No ads or data sales. Season boards show handles, never student names.</li>
             <li>Student work is private to the student and their leader unless the student shares it.</li>
             <li>Students can delete their account and everything in it at any time.</li>
-            <li>If your school has its own student-data agreement or approval form, email it to us and we&apos;ll go through it with you. <Link href="/privacy" className={styles.textLink}>Read the privacy page</Link>.</li>
+            <li>If your school has its own student-data agreement or approval form, email it to us and we&apos;ll go through it with you.</li>
           </ul>
+          <p className={styles.fine}>
+            The details for sponsors and school IT are on the <Link href="/trust" className={styles.textLink}>student data page</Link>.
+          </p>
         </div>
       </section>
 
@@ -148,13 +139,10 @@ export default function ClubsPage() {
         <div className={styles.narrow}>
           <h2 id="clubs-faq" className={styles.h2}>Questions</h2>
           <Faq items={FAQS} />
-          <div className={styles.ctaRow}>
-            <Link href="/pilot?src=clubs-cta" className={styles.primary}>Set up your club</Link>
-            <TrackedAnchor href={pilotCallHref("clubs")} event="pilot_call_click" eventProps={{ page: "clubs" }} className={styles.secondary}>Talk to the founder</TrackedAnchor>
+          <div className={clubs.ctas}>
+            <ActionLink href="/pilot?src=clubs-cta">Set up your club</ActionLink>
+            <TrackedAnchor href={pilotCallHref("clubs")} event="pilot_call_click" eventProps={{ page: "clubs" }} className={buttonClassName({ variant: "secondary" })}>Talk to the founder</TrackedAnchor>
           </div>
-          <p className={styles.fine}>
-            Teaching AP Stats or AP Calc? See <Link href="/clubs#clubs-ap" className={styles.textLink}>how the lessons line up</Link>.
-          </p>
         </div>
       </section>
     </div>

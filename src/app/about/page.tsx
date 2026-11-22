@@ -1,8 +1,10 @@
-import Eyebrow from "@/components/Eyebrow";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import JsonLd from "@/components/JsonLd";
 import ProofStrip from "@/components/marketing/ProofStrip";
+import { ActionLink } from "@/components/ui/Action";
 import { pageMetadata, breadcrumbJsonLd } from "@/lib/seo";
+import { PLANNED_SEASON, seasonPhase, shortSeasonDate } from "@/lib/seasons/planned";
+import styles from "./about.module.css";
 
 export const metadata = pageMetadata({
   path: "/about",
@@ -10,6 +12,9 @@ export const metadata = pageMetadata({
   description:
     "Why a high school freshman and AIME qualifier built a quant finance platform for high schoolers — and how StrikeLab has grown since the first commit.",
 });
+
+// The Season 1 row's state follows the calendar instead of going stale.
+export const revalidate = 3600;
 
 // sameAs is deliberately just the GitHub repo owner profile — the one
 // externally-verifiable identity link that actually exists in the codebase.
@@ -26,40 +31,45 @@ const FOUNDER_JSON_LD = {
   worksFor: { "@id": "https://strikelab.dev/#organization" },
 };
 
-const TIMELINE = [
-  { date: "Nov 2025", event: "First commit. Black-Scholes engine in Python.", state: "done" },
-  { date: "Dec 2025", event: "First lesson written. Pyodide playground prototype.", state: "done" },
-  { date: "Jan 2026", event: "Lessons 1–5 published. Soft launch on AoPS forums.", state: "done" },
-  { date: "Feb 2026", event: "Lessons 6 (Gamma) and 7 (Vega) added. Greek visualizer ships.", state: "done" },
-  { date: "Mar 2026", event: "Public launch. Shared on AoPS and math competition forums.", state: "done" },
-  { date: "May 2026", event: "Lessons 8–10: Implied Vol, Option Strategies, Binomial Trees. 10-lesson curriculum complete.", state: "done" },
-  { date: "Jun 2026", event: "Weekly coding challenges ship.", state: "done" },
-  { date: "Jul 2026", event: "Real per-student leaderboard tracking ships.", state: "done" },
-  { date: "Aug 2026", event: "Paper-trading sandbox ships — $100,000 in simulated cash, options priced live with the same Black-Scholes engine from the lessons.", state: "done" },
-  { date: "Aug 2026", event: "Rho lesson ships — the fifth Greek. Options Pricing is now an 11-lesson track, 22 lessons total across the curriculum.", state: "done" },
-  { date: "Aug 2026", event: "Curriculum rebalanced toward investing: 3 new Investing Fundamentals lessons (bonds, retirement accounts, common mistakes), Quant Investing trimmed to its 3 clearest lessons, and every lesson now opens with a \"before this lesson\" prereq box. 23 lessons total.", state: "done" },
-  { date: "Aug 2026", event: "Interactive payoff diagrams and a clickable binomial tree lattice ship in the Option Strategies and Binomial Trees lessons.", state: "done" },
-  { date: "Aug 2026", event: "Certificates of completion and Discord integration ship.", state: "done" },
-  { date: "Aug 2026", event: "Classroom rosters ship — teachers create a class in Settings, students join with a code.", state: "done" },
-  { date: "Sep 2026", event: "Six-week club lab ships: cohort launch, invite links, a student home, a leader scorecard and private capstones.", state: "done" },
-  { date: "Oct 2026", event: "The paper-trading sandbox and the old challenges are retired. Seasons replace them: timed challenges with per-student numbers, official scores computed by StrikeLab and handle-only leaderboards.", state: "done" },
-  { date: "Nov 30, 2026", event: "Season 1: three weekly challenges, through Dec 20.", state: "planned" },
-  { date: "Jan 2027", event: "First Intensive cohort: six weeks, ending in a capstone defended live.", state: "planned" },
-];
+type State = "done" | "current" | "planned";
+
+const SEASON_DATES = `${shortSeasonDate(PLANNED_SEASON.startsOn)} to ${shortSeasonDate(PLANNED_SEASON.endsOn)}`;
+
+function timeline(seasonState: State): { date: string; event: string; state: State }[] {
+  return [
+    { date: "Nov 2025", event: "First commit. Black-Scholes engine in Python.", state: "done" },
+    { date: "Dec 2025", event: "First lesson written. Pyodide playground prototype.", state: "done" },
+    { date: "Jan 2026", event: "Lessons 1–5 published. Soft launch on AoPS forums.", state: "done" },
+    { date: "Feb 2026", event: "Lessons 6 (Gamma) and 7 (Vega) added. Greek visualizer ships.", state: "done" },
+    { date: "Mar 2026", event: "Public launch. Shared on AoPS and math competition forums.", state: "done" },
+    { date: "May 2026", event: "Lessons 8–10: Implied Vol, Option Strategies, Binomial Trees. 10-lesson curriculum complete.", state: "done" },
+    { date: "Jun 2026", event: "Weekly coding challenges ship.", state: "done" },
+    { date: "Jul 2026", event: "Real per-student leaderboard tracking ships.", state: "done" },
+    { date: "Aug 2026", event: "Paper-trading sandbox ships — $100,000 in simulated cash, options priced live with the same Black-Scholes engine from the lessons.", state: "done" },
+    { date: "Aug 2026", event: "Rho lesson ships — the fifth Greek. Options Pricing is now an 11-lesson track, 22 lessons total across the curriculum.", state: "done" },
+    { date: "Aug 2026", event: "Curriculum rebalanced toward investing: 3 new Investing Fundamentals lessons (bonds, retirement accounts, common mistakes), Quant Investing trimmed to its 3 clearest lessons, and every lesson now opens with a \"before this lesson\" prereq box. 23 lessons total.", state: "done" },
+    { date: "Aug 2026", event: "Interactive payoff diagrams and a clickable binomial tree lattice ship in the Option Strategies and Binomial Trees lessons.", state: "done" },
+    { date: "Aug 2026", event: "Certificates of completion and Discord integration ship.", state: "done" },
+    { date: "Aug 2026", event: "Classroom rosters ship — teachers create a class in Settings, students join with a code.", state: "done" },
+    { date: "Sep 2026", event: "Six-week club lab ships: cohort launch, invite links, a student home, a leader scorecard and private capstones.", state: "done" },
+    { date: "Oct 2026", event: "The paper-trading sandbox and the old challenges are retired. Seasons replace them: timed challenges with per-student numbers, official scores computed by StrikeLab and handle-only leaderboards.", state: "done" },
+    { date: "Nov 30, 2026", event: `${PLANNED_SEASON.title}: three weekly challenges, ${SEASON_DATES}.`, state: seasonState },
+    { date: "Jan 2027", event: "First Intensive cohort: six weeks, ending in a capstone defended live.", state: "planned" },
+  ];
+}
+
+const STATE_LABEL: Record<State, string> = { done: "Shipped", current: "Happening now", planned: "Planned" };
 
 const VALUES = [
   {
-    icon: "∂",
     title: "Build to learn",
     body: "We don't teach passively. Every concept ends with a function you implement, a test you pass, a curve you can move.",
   },
   {
-    icon: "⊕",
     title: "Open by default",
-    body: "The pricing engine is on GitHub. The curriculum is free forever. Gatekeeping is what we're fighting.",
+    body: "The pricing engine is on GitHub. The curriculum is free for students. Gatekeeping is what we're fighting.",
   },
   {
-    icon: "∑",
     title: "Math is the floor",
     body: "Built for students who already love AMC / AIME math. We trust you to handle the rigor — and we reward you for it.",
   },
@@ -75,234 +85,104 @@ const MILESTONES = [
 ];
 
 export default function AboutPage() {
+  const phase = seasonPhase(new Date(), PLANNED_SEASON.startsOn, PLANNED_SEASON.endsOn);
+  const seasonState: State = phase.kind === "upcoming" ? "planned" : phase.kind === "live" ? "current" : "done";
+  const entries = timeline(seasonState);
+
   return (
-    <div className="max-w-4xl mx-auto px-6 py-14">
+    <div className={styles.page}>
       <JsonLd data={breadcrumbJsonLd([{ name: "About", path: "/about" }])} />
       <JsonLd data={FOUNDER_JSON_LD} />
       <Breadcrumbs trail={[{ name: "About", path: "/about" }]} />
 
-      {/* Hero */}
-      <div className="v2-page-head mb-14" data-v2-head style={{ padding: 0, border: 0 }}>
-        <Eyebrow>About</Eyebrow>
-        <h1
-          className="text-4xl font-semibold mb-5 leading-tight"
-          style={{ fontFamily: "var(--font-display)", color: "var(--ink)" }}
-        >
-          Built by a high schooler<br />
-          for{" "}
-          <span className="not-italic font-bold text-[#16201c]">
-            high schoolers.
-          </span>
-        </h1>
-        <p className="text-base leading-relaxed max-w-2xl" style={{ color: "var(--muted2)" }}>
+      <header className={styles.header}>
+        <h1 className={styles.title}>Built by a high schooler<br />for high schoolers.</h1>
+        <p className={styles.lede}>
           StrikeLab started as a personal pricing engine — a way to actually understand
           what Black-Scholes does, not just stare at it on a textbook page. The platform
           you&rsquo;re looking at is the version I wish I&rsquo;d had a year ago.
         </p>
-      </div>
+      </header>
 
       {/* Sourced pilot outcomes; renders nothing until real, consented numbers exist (src/lib/proof/data.ts). */}
       <ProofStrip />
 
-      {/* Founder card */}
-      <div
-        className="v2-rise mb-14 rounded-2xl border p-6 grid grid-cols-1 md:grid-cols-[1fr_2fr] gap-6"
-        style={{ borderColor: "var(--border2)", background: "var(--card)" }}
-      >
-        {/* Photo placeholder */}
-        <div
-          className="aspect-square w-full max-w-[200px] rounded-xl flex items-center justify-center text-6xl border"
-          style={{
-            background: "linear-gradient(135deg, #0b1828, #1a2f5e)",
-            borderColor: "var(--border2)",
-            fontFamily: "var(--font-serif)",
-            fontStyle: "italic",
-            color: "var(--grass)",
-          }}
-        >
-          IG
+      <section className={styles.founder} aria-labelledby="about-founder">
+        <div className={styles.nameplate}>
+          <p className={styles.role}>Founder</p>
+          <h2 id="about-founder" className={styles.name}>Isaac<br />Gong</h2>
+          <dl className={styles.facts}>
+            <div><dt>School</dt><dd>High-school freshman</dd></div>
+            <div><dt>Math</dt><dd>AIME qualifier</dd></div>
+            <div><dt>Writes</dt><dd>C++, Python, R, SQL</dd></div>
+          </dl>
         </div>
-        <div>
-          <Eyebrow className="mb-1.5">Founder</Eyebrow>
-          <h2
-            className="text-2xl font-semibold mb-1"
-            style={{ fontFamily: "var(--font-display)", color: "var(--ink)" }}
-          >
-            Isaac Gong
-          </h2>
-          <div className="text-xs mb-3" style={{ color: "var(--muted)", fontFamily: "var(--font-mono)" }}>
-            HS Freshman · AIME Qualifier · C++/Python/R/SQL
-          </div>
-          <p className="text-sm leading-relaxed mb-3" style={{ color: "var(--muted2)" }}>
+        <div className={styles.story}>
+          <p>
             I qualified for AIME in 8th grade and immediately started looking for what came after.
             The honest answer was: a wall. Adult MOOCs assumed grad-level math.
             High school finance comps stopped at &ldquo;pick a stock.&rdquo; The good stuff
             was on Bloomberg terminals at hedge funds I couldn&rsquo;t walk into.
           </p>
-          <p className="text-sm leading-relaxed" style={{ color: "var(--muted2)" }}>
+          <p>
             So I built the resource I needed. StrikeLab is a multi-year project — the pricing
             engine, the curriculum, and a six-week lab that clubs can run. If you&rsquo;re a student staring at the same wall, this is for you.
           </p>
         </div>
-      </div>
+      </section>
 
-      {/* Mission */}
-      <div className="v2-rise mb-14">
-        <Eyebrow>Mission</Eyebrow>
-        <h2
-          className="text-2xl font-semibold mb-3"
-          style={{ fontFamily: "var(--font-display)", color: "var(--ink)" }}
-        >
-          Quant finance shouldn&rsquo;t require the right zip code.
-        </h2>
-        <p className="text-sm leading-relaxed max-w-2xl" style={{ color: "var(--muted2)" }}>
-          Every year, thousands of motivated students at non-elite high schools never hear the
-          word &ldquo;Black-Scholes&rdquo; until junior year of college — four years
-          after the prep-school kids who learned it from family friends. That gap isn&rsquo;t about talent.
-          It&rsquo;s about access. StrikeLab closes it.
+      <section className={styles.section} aria-labelledby="about-mission">
+        <h2 id="about-mission" className={styles.h2}>Quant finance shouldn&rsquo;t require the right zip code.</h2>
+        <p className={styles.body}>
+          Whether a high-school student meets Black-Scholes before college shouldn&rsquo;t depend on which school they
+          go to or who they know. That gap isn&rsquo;t about talent. It&rsquo;s about access, and StrikeLab is free
+          for students so that access doesn&rsquo;t decide it.
         </p>
-      </div>
+      </section>
 
-      {/* Values */}
-      <div className="mb-14">
-        <Eyebrow>Principles</Eyebrow>
-        <h2
-          className="text-xl font-semibold mb-5"
-          style={{ fontFamily: "var(--font-display)", color: "var(--ink)" }}
-        >
-          How we build
-        </h2>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4" data-v2-stagger>
+      <section className={styles.section} aria-labelledby="about-values">
+        <h2 id="about-values" className={styles.h2}>How we build</h2>
+        <ul className={styles.values}>
           {VALUES.map((v) => (
-            <div
-              key={v.title}
-              className="v2-rise p-5 rounded-xl border transition-colors hover:border-white/20"
-              style={{ borderColor: "var(--border2)", background: "var(--card)" }}
-            >
-              <div
-                className="text-2xl mb-3 leading-none"
-                style={{ fontFamily: "var(--font-mono)", color: "var(--grass)" }}
-              >
-                {v.icon}
-              </div>
-              <h3
-                className="font-semibold mb-2"
-                style={{ fontFamily: "var(--font-serif)" }}
-              >
-                {v.title}
-              </h3>
-              <p className="text-xs leading-relaxed" style={{ color: "var(--muted2)" }}>
-                {v.body}
-              </p>
-            </div>
+            <li key={v.title}>
+              <h3 className={styles.h3}>{v.title}</h3>
+              <p>{v.body}</p>
+            </li>
           ))}
-        </div>
-      </div>
+        </ul>
+      </section>
 
-      {/* Timeline */}
-      <div className="mb-14">
-        <Eyebrow>Timeline</Eyebrow>
-        <h2
-          className="text-xl font-semibold mb-5"
-          style={{ fontFamily: "var(--font-display)", color: "var(--ink)" }}
-        >
-          What we&rsquo;ve shipped (and what&rsquo;s next)
-        </h2>
-        <div className="flex flex-col gap-0 relative" data-v2-stagger>
-          <div
-            className="absolute left-[14px] top-2 bottom-2 w-px"
-            style={{ background: "var(--border2)" }}
-          />
-          {TIMELINE.map((t) => {
-            const color =
-              t.state === "done"     ? "#22c55e" :
-              t.state === "current"  ? "#a3a3a3" :
-              t.state === "next"     ? "#2f6df0" :
-                                       "#475569";
-            return (
-              <div key={`${t.date}-${t.event}`} className="v2-rise flex items-start gap-4 py-2.5">
-                <div
-                  className="flex-shrink-0 w-7 h-7 rounded-full flex items-center justify-center text-xs relative z-10"
-                  style={{
-                    background: `${color}22`,
-                    border: `1px solid ${color}`,
-                    color,
-                    fontFamily: "var(--font-mono)",
-                  }}
-                >
-                  {t.state === "done" ? "✓" : t.state === "current" ? "●" : "○"}
-                </div>
-                <div className="flex-1 min-w-0">
-                  <div
-                    className="text-[11px] mb-0.5"
-                    style={{ color: "var(--muted)", fontFamily: "var(--font-mono)" }}
-                  >
-                    {t.date}
-                  </div>
-                  <div className="text-sm" style={{ color: "var(--ink-2)" }}>
-                    {t.event}
-                  </div>
-                </div>
-              </div>
-            );
-          })}
-        </div>
-      </div>
-
-      {/* Milestones */}
-      <div className="v2-rise mb-14">
-        <Eyebrow className="mb-3">Milestones</Eyebrow>
-        <div className="flex flex-wrap gap-2">
-          {MILESTONES.map((p) => (
-            <span
-              key={p}
-              className="text-xs px-3 py-1.5 rounded-lg border"
-              style={{
-                borderColor: "var(--border2)",
-                color: "var(--muted2)",
-                background: "var(--card)",
-                fontFamily: "var(--font-mono)",
-              }}
-            >
-              {p}
-            </span>
+      <section className={styles.section} aria-labelledby="about-timeline">
+        <h2 id="about-timeline" className={styles.h2}>What we&rsquo;ve shipped (and what&rsquo;s next)</h2>
+        <ol className={styles.timeline}>
+          {entries.map((t) => (
+            <li key={`${t.date}-${t.event}`} className={styles[t.state]}>
+              <span className={styles.marker} aria-hidden="true" />
+              <span className={styles.date}>{t.date}</span>
+              <span className={styles.event}>
+                {t.event}
+                {t.state !== "done" && <span className={styles.stateLabel}> · {STATE_LABEL[t.state]}</span>}
+              </span>
+            </li>
           ))}
-        </div>
-      </div>
+        </ol>
+      </section>
 
-      {/* Contact */}
-      <div
-        className="v2-rise rounded-2xl border p-6 text-center"
-        style={{ borderColor: "var(--border2)", background: "var(--bg2)" }}
-      >
-        <h2
-          className="text-xl font-semibold mb-2"
-          style={{ fontFamily: "var(--font-display)", color: "var(--ink)" }}
-        >
-          Want to talk?
-        </h2>
-        <p className="text-sm mb-4" style={{ color: "var(--muted2)" }}>
-          Press inquiries, school partnerships, or just want to say hi about the project.
-        </p>
-        <div className="flex gap-3 justify-center flex-wrap">
-          <a
-            href="mailto:hello@strikelab.app"
-            className="px-5 py-2 rounded-lg text-sm font-medium border transition-colors hover:border-white/40"
-            style={{ borderColor: "var(--border2)", color: "var(--fg)", background: "var(--card)" }}
-          >
-            hello@strikelab.app
-          </a>
-          <a
-            href="https://github.com/isaacgong0311-hash/strikelab"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="px-5 py-2 rounded-lg text-sm border transition-all hover:border-white/40"
-            style={{ borderColor: "var(--border2)", color: "var(--muted2)" }}
-          >
-            GitHub →
-          </a>
+      <section className={styles.section} aria-labelledby="about-milestones">
+        <h2 id="about-milestones" className={styles.h2}>Milestones</h2>
+        <ul className={styles.milestones}>
+          {MILESTONES.map((p) => <li key={p}>{p}</li>)}
+        </ul>
+      </section>
+
+      <section className={styles.contact} aria-labelledby="about-contact">
+        <h2 id="about-contact" className={styles.h2}>Want to talk?</h2>
+        <p className={styles.body}>Press inquiries, school partnerships, or just want to say hi about the project.</p>
+        <div className={styles.actions}>
+          <ActionLink href="mailto:hello@strikelab.app" variant="secondary">hello@strikelab.app</ActionLink>
+          <ActionLink href="https://github.com/isaacgong0311-hash/strikelab" variant="ghost" target="_blank">GitHub →</ActionLink>
         </div>
-      </div>
+      </section>
     </div>
   );
 }

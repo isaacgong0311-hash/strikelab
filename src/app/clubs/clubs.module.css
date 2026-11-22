@@ -1,0 +1,24 @@
+.hero { padding: clamp(2.5rem, 6vw, 4.5rem) 0 clamp(3rem, 7vw, 4.5rem); }
+
+/* Two CTAs: side by side on wide screens, equal full-width stack on phones. */
+.ctas { display: flex; flex-wrap: wrap; gap: 0.75rem; margin-top: 1.75rem; }
+@media (max-width: 30rem) {
+  .ctas > * { flex: 1 1 100%; }
+}
+
+/* Who it's for: a wrapping list that breaks between items, never inside one. */
+.forList { display: flex; flex-wrap: wrap; gap: 0.5rem; margin: 1.75rem 0 0; padding: 0; list-style: none; }
+.forList li { padding: 0.375rem 0.75rem; border: 1px solid var(--sl-border); border-radius: var(--sl-radius-sm); background: var(--sl-surface); color: var(--sl-text-muted); font-size: 0.875rem; white-space: nowrap; }
+
+/* The four setup steps: hairline columns, not cards. */
+.flow { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1.5rem; margin: 1.75rem 0 0; padding: 0; list-style: none; }
+.flow li { padding-top: 1rem; border-top: 1px solid var(--sl-border-strong); }
+.flowNum { display: block; margin-bottom: 0.5rem; color: var(--sl-brand-strong); font: 600 0.875rem/1 var(--sl-font-code); }
+@media (max-width: 52rem) { .flow { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 30rem) { .flow { grid-template-columns: minmax(0, 1fr); gap: 1rem; } }
+
+.weeks { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1.5rem 2rem; margin: 1.75rem 0 0; padding: 0; list-style: none; }
+.weeks li { padding-top: 1rem; border-top: 1px solid var(--sl-border); }
+.weekNum { display: block; margin-bottom: 0.375rem; color: var(--sl-text-subtle); font-size: 0.8125rem; font-weight: 700; font-variant-numeric: tabular-nums; }
+@media (max-width: 52rem) { .weeks { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 30rem) { .weeks { grid-template-columns: minmax(0, 1fr); gap: 1rem; } }
