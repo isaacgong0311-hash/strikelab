@@ -22,7 +22,6 @@
      so scrolled content ghosted straight through it — the white
      "Start tonight." headline on the dark CTA panel collided with the nav
      links. With no working blur, translucency buys nothing here. */
-  --nav-bg:  #f2f2f0;
   --text:    #1c1917;
   /* #8a938e was ~2.9:1 on the paper background — too light for the footer,
      kickers and other small mono labels that use it. Set dark enough to clear

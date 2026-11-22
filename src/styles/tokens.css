@@ -51,6 +51,8 @@
      canvas; shadow-2 is for things that float (menus, popovers, dialogs).
      No offset "pressable" shadows, no coloured glows. */
   --sl-shadow-1: 0 1px 2px rgb(15 23 18 / 0.06);
+  --sl-scrim: rgb(9 15 11 / 0.66);
+  --sl-scrim-soft: rgb(9 15 11 / 0.32);
   --sl-shadow-2: 0 12px 32px rgb(15 23 18 / 0.10);
   --sl-focus: #075ee8;
   --sl-motion-fast: 140ms;

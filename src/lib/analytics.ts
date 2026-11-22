@@ -55,10 +55,6 @@ export function trackSchoolClick(source: string) {
   track("school_click", { source, ...getAttribution() });
 }
 
-/** User submits the newsletter signup form */
-export function trackNewsletterSignup() {
-  track("newsletter_signup", getAttribution());
-}
 
 // ─── Engagement ───────────────────────────────────────────────────────────────
 
