@@ -66,7 +66,7 @@ export default function HomeView() {
               </TrackedLink>
             </div>
             <p className={home.heroFine}>
-              No installs, no signup to start. New to finance? <Link href="/learn/inv-1.1?src=home-hero" className={styles.textLink}>Start with lesson 1</Link>.
+              No installs, no signup to start. New to finance? <Link href="/learn/inv-1.1?src=home-hero" className={styles.textLink}>Start with the first lesson</Link>.
             </p>
             <LearningNextStep />
           </div>
@@ -164,7 +164,7 @@ export default function HomeView() {
         <div className={`${styles.wrap} ${home.closeRow}`}>
           <h2 id="home-cta" className={home.h2}>Start tonight. It&apos;s free.</h2>
           <div className={home.closeActions}>
-            <ActionLink href="/learn/inv-1.1?src=home-cta" className={home.cta}>Start lesson 1</ActionLink>
+            <ActionLink href="/learn/inv-1.1?src=home-cta" className={home.cta}>Start the first lesson</ActionLink>
             <ActionLink href="/seasons?src=home-cta" variant="secondary" className={home.cta}>Join {PLANNED_SEASON.title}</ActionLink>
           </div>
         </div>
