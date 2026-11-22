@@ -3,7 +3,11 @@
  * when a challenge opens. Challenge windows run a whole week (midnight to
  * 23:59 Eastern), so a week-long event would just be clutter: instead each
  * week gets an all-day "opens" event and an all-day "last day" event, each
- * with a reminder at 4pm (after school) on that day.
+ * with a reminder at 4pm (after school) on that day. An "opens" event also
+ * reminds at 4pm the day before, so a student can plan the hour.
+ *
+ * All-day events start at local midnight, so triggers are offsets from it:
+ * PT16H is 4pm that day, -PT8H is 4pm the day before.
  */
 import { SITE_URL } from "@/lib/site";
 
@@ -37,7 +41,14 @@ function stamp(now: Date): string {
   return now.toISOString().replace(/[-:]/g, "").replace(/\.\d{3}/, "");
 }
 
-function allDayEvent(uid: string, day: string, summary: string, description: string, url: string, now: Date): string[] {
+function alarm(description: string, trigger: string): string[] {
+  return ["BEGIN:VALARM", "ACTION:DISPLAY", `DESCRIPTION:${escapeText(description)}`, `TRIGGER:${trigger}`, "END:VALARM"];
+}
+
+function allDayEvent(
+  uid: string, day: string, summary: string, description: string, url: string, now: Date,
+  dayBefore?: string,
+): string[] {
   return [
     "BEGIN:VEVENT",
     `UID:${uid}@strikelab.dev`,
@@ -48,11 +59,8 @@ function allDayEvent(uid: string, day: string, summary: string, description: str
     `DESCRIPTION:${escapeText(description)}`,
     `URL:${url}`,
     "TRANSP:TRANSPARENT",
-    "BEGIN:VALARM",
-    "ACTION:DISPLAY",
-    `DESCRIPTION:${escapeText(summary)}`,
-    "TRIGGER:PT16H",
-    "END:VALARM",
+    ...(dayBefore ? alarm(dayBefore, "-PT8H") : []),
+    ...alarm(summary, "PT16H"),
     "END:VEVENT",
   ];
 }
@@ -72,6 +80,7 @@ export function buildSeasonCalendar(
       `The first timed challenge opens today. ${seasonUrl}`,
       seasonUrl,
       now,
+      `StrikeLab ${season.title} starts tomorrow`,
     ));
   }
   for (const c of [...challenges].sort((a, b) => a.week - b.week)) {
@@ -83,6 +92,7 @@ export function buildSeasonCalendar(
       `${season.title}, week ${c.week}. ${c.minutes}-minute timed challenge, open all week. ${url}`,
       url,
       now,
+      `StrikeLab week ${c.week} opens tomorrow`,
     ));
     events.push(...allDayEvent(
       `${c.id}-last-day`,

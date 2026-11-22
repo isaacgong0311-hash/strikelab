@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { Button } from "@/components/ui/Action";
+import styles from "./handle.module.css";
 
 /** Pick the public name shown on leaderboards. Shown only to signed-in students without one. */
 export default function HandleForm() {
@@ -36,25 +38,25 @@ export default function HandleForm() {
   if (saved) return <p role="status">You&apos;ll appear on leaderboards as <strong>{saved}</strong>.</p>;
 
   return (
-    <form onSubmit={save} style={{ display: "grid", gap: "0.5rem", maxWidth: "26rem" }}>
-      <label htmlFor="handle" style={{ fontWeight: 700 }}>Choose your leaderboard handle</label>
-      <p id="handle-help" style={{ margin: 0, fontSize: "0.875rem" }}>
+    <form onSubmit={save} className={styles.form}>
+      <label htmlFor="handle" className={styles.label}>Choose your leaderboard handle</label>
+      <p id="handle-help" className={styles.help}>
         3 to 20 lowercase letters, numbers or underscores. Not your real name: this is what everyone sees.
       </p>
-      <div style={{ display: "flex", gap: "0.5rem" }}>
+      <div className={styles.row}>
         <input
           id="handle"
+          className={styles.input}
           value={value}
           onChange={(e) => setValue(e.target.value)}
           aria-describedby="handle-help"
           autoComplete="off"
           maxLength={20}
           required
-          style={{ flex: 1, minHeight: 44, padding: "0 0.75rem", borderRadius: 10, border: "1px solid var(--sl-border-strong)" }}
         />
-        <button type="submit" className="v2-btn" disabled={busy}>{busy ? "Saving…" : "Save"}</button>
+        <Button type="submit" disabled={busy}>{busy ? "Saving…" : "Save"}</Button>
       </div>
-      {error && <p role="alert" style={{ margin: 0, color: "var(--sl-danger)" }}>{error}</p>}
+      {error && <p role="alert" className={styles.error}>{error}</p>}
     </form>
   );
 }

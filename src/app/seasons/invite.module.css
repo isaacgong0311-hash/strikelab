@@ -7,9 +7,7 @@
   padding: clamp(1.125rem, 3vw, 1.5rem);
   border: 1px solid var(--sl-border);
   border-radius: var(--sl-radius-lg);
-  background:
-    radial-gradient(circle at 100% 0%, var(--sl-brand-soft) 0%, transparent 55%),
-    var(--sl-surface);
+  background: var(--sl-surface);
 }
 
 .title {
@@ -37,40 +35,16 @@
   min-height: var(--sl-tap, 44px);
   padding: 0 0.75rem;
   border: 1px solid var(--sl-border-strong);
-  border-radius: 10px;
-  background: var(--sl-bg, var(--sl-surface));
+  border-radius: var(--sl-radius-md);
+  background: var(--sl-surface);
   color: var(--sl-text);
-  font: 600 0.875rem var(--sl-font-mono, monospace);
+  font: 500 0.875rem var(--sl-font-code);
   text-overflow: ellipsis;
 }
 
-.link:focus-visible,
-.button:focus-visible,
-.calendar:focus-visible {
+.link:focus-visible {
   outline: 3px solid var(--sl-focus);
   outline-offset: 2px;
-}
-
-.button {
-  min-height: var(--sl-tap, 44px);
-  padding: 0 1rem;
-  border: 1px solid var(--sl-border-strong);
-  border-radius: 10px;
-  background: var(--sl-surface);
-  color: var(--sl-text);
-  font-weight: 700;
-  cursor: pointer;
-}
-
-.button:hover {
-  border-color: var(--sl-brand);
-  background: var(--sl-brand-soft);
-}
-
-.button[data-primary="true"] {
-  border-color: var(--sl-brand);
-  background: var(--sl-brand);
-  color: #fff;
 }
 
 .meta {
@@ -88,15 +62,6 @@
   font-weight: 700;
 }
 
-.calendar {
-  min-height: var(--sl-tap, 44px);
-  display: inline-flex;
-  align-items: center;
-  color: var(--sl-brand-strong);
-  font-weight: 700;
-  text-underline-offset: 3px;
-}
-
 .banner {
   display: inline-flex;
   align-items: center;
@@ -104,7 +69,7 @@
   margin: 0 0 1rem;
   padding: 0.375rem 0.875rem;
   border: 1px solid var(--sl-border);
-  border-radius: 999px;
+  border-radius: var(--sl-radius-pill);
   background: var(--sl-brand-soft);
   color: var(--sl-brand-strong);
   font-size: 0.875rem;

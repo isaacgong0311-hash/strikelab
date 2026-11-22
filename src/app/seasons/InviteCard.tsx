@@ -1,9 +1,8 @@
 "use client";
 
 import { useState, useSyncExternalStore } from "react";
+import { Button } from "@/components/ui/Action";
 import { trackMarketing } from "@/lib/analytics";
-import { markReadiness } from "@/lib/seasons/checklist";
-import { browserStorage } from "@/lib/seasons/draft";
 import { inviteUrl } from "@/lib/seasons/invite";
 import { SITE_URL } from "@/lib/site";
 import styles from "./invite.module.css";
@@ -62,12 +61,10 @@ export default function InviteCard({ handle, invited, seasonTitle }: { handle: s
           aria-label="Your invite link"
           onFocus={(e) => e.currentTarget.select()}
         />
-        {canShare && (
-          <button type="button" className={styles.button} data-primary="true" onClick={share}>Share</button>
-        )}
-        <button type="button" className={styles.button} data-primary={!canShare} onClick={copy}>
+        {canShare && <Button onClick={share}>Share</Button>}
+        <Button variant={canShare ? "secondary" : "primary"} onClick={copy}>
           {copied ? "Copied" : "Copy link"}
-        </button>
+        </Button>
       </div>
       <span role="status" className="sr-only">{copied ? "Invite link copied" : ""}</span>
       <div className={styles.meta}>
@@ -77,7 +74,6 @@ export default function InviteCard({ handle, invited, seasonTitle }: { handle: s
             {invited === 0 ? "No one has joined through your link yet." : `${invited} ${invited === 1 ? "friend has" : "friends have"} joined through your link.`}
           </p>
         )}
-        <a className={styles.calendar} href="/seasons/calendar.ics" download onClick={() => markReadiness(browserStorage(), "calendar")}>Add challenge dates to your calendar</a>
       </div>
     </section>
   );
