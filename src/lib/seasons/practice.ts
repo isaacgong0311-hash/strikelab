@@ -80,7 +80,11 @@ for _c in _cases:
         else:
             _notes.append("forward_price%s returned %r, expected about %.4f" % (_c, _got, _want))
     except Exception as _e:
-        _notes.append("forward_price%s raised %s: %s" % (_c, type(_e).__name__, str(_e) or "no message"))
+        if isinstance(_e, NotImplementedError):
+            _notes.append("forward_price isn't written yet: replace the raise NotImplementedError line with your code.")
+            break
+        _msg = str(_e)
+        _notes.append("forward_price%s raised %s%s" % (_c, type(_e).__name__, (": " + _msg) if _msg else ""))
 _json.dumps({"passed": _ok, "total": len(_cases), "notes": _notes[:2]})
 `;
 }

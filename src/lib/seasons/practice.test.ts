@@ -55,6 +55,9 @@ describe("practice problem", () => {
     const starter = check(PRACTICE_STARTER);
     expect(starter.passed).toBe(0);
     expect(starter.notes[0]).toContain("NotImplementedError");
+    expect(starter.notes[0]).toContain("isn't written yet");
+    expect(starter.notes.join(" ")).not.toContain("no message");
+    expect(starter.notes).toHaveLength(1);
     expect(describeResult(starter)).toMatch(/^0 of 4 checks passed\./);
   }, 60_000);
 

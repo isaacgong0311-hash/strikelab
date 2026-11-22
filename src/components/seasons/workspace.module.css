@@ -248,8 +248,29 @@
   line-height: 1.5;
 }
 
-.plain + .output {
+/* With a plain line, the raw traceback folds away behind a toggle. */
+.trace {
   margin-top: 0.5rem;
+}
+.trace > summary {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2rem;
+  color: var(--sl-text-muted);
+  font-size: 0.875rem;
+  cursor: pointer;
+}
+.trace > summary:hover {
+  color: var(--sl-text);
+}
+.trace[open] > .output {
+  margin-top: 0.5rem;
+}
+
+.stale {
+  margin: 0.5rem 0 0;
+  color: var(--sl-text-muted);
+  font-size: 0.875rem;
 }
 
 .result {
