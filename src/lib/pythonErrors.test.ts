@@ -69,8 +69,9 @@ describe("plainParseError", () => {
   });
 
   it("explains indentation errors in words", () => {
+    // Python names the def ("on line 2"); the line to indent is the frame's, line 3.
     expect(plainParseError(parseError(3, "return S", "IndentationError: expected an indented block after function definition on line 2")))
-      .toBe("Line 2 needs to be indented: the lines inside a def, if or for go 4 spaces in.");
+      .toBe("Line 3 needs to be indented: the lines inside a def, if or for go 4 spaces in.");
     expect(plainParseError(parseError(4, "  x = 1", "IndentationError: unexpected indent")))
       .toBe("Line 4 is indented when Python didn't expect it. Line it up with the line above.");
     expect(plainParseError(parseError(5, "x", "IndentationError: unindent does not match any outer indentation level")))
@@ -84,6 +85,12 @@ describe("plainParseError", () => {
       .toBe("Line 2 is missing a colon. Lines starting with def, if, for or else end with :.");
     expect(plainParseError(parseError(6, "print('hi)", "SyntaxError: unterminated string literal (detected at line 6)")))
       .toBe("A quote on line 6 is never closed. Strings need a matching ' or \".");
+    // A triple-quoted string is reported where it opens, "detected" at the end of the file.
+    expect(plainParseError(parseError(5, '"""notes', "SyntaxError: unterminated triple-quoted string literal (detected at line 12)")))
+      .toBe("A quote on line 5 is never closed. Strings need a matching ' or \".");
+    // With no frame, the message's own line is used.
+    expect(plainParseError("SyntaxError: unterminated string literal (detected at line 4)"))
+      .toBe("A quote on line 4 is never closed. Strings need a matching ' or \".");
     expect(plainParseError(parseError(7, "x = = 1", "SyntaxError: invalid syntax")))
       .toBe("Python couldn't read your code at line 7. Look for a typo, a missing bracket or a missing colon there.");
   });

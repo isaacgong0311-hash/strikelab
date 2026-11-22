@@ -43,6 +43,7 @@ export function CredentialHeader({
 export type PlacingState =
   | { kind: "verified"; at: string }
   | { kind: "provisional" }
+  | { kind: "pending" }
   | { kind: "final" };
 
 /** Text first, colour second: the word says the status on its own. */
@@ -57,7 +58,7 @@ export function PlacingBadge({ state, date }: { state: PlacingState; date: (iso:
       </span>
     );
   }
-  return <span className={styles.badge} data-kind={state.kind}>{state.kind === "provisional" ? "Provisional" : "Final"}</span>;
+  return <span className={styles.badge} data-kind={state.kind}>{state.kind === "provisional" ? "Provisional" : state.kind === "pending" ? "Not yet verified" : "Final"}</span>;
 }
 
 export function CredentialSection({ id, title, meta, children }: { id: string; title: string; meta?: ReactNode; children: ReactNode }) {

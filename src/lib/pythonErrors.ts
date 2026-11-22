@@ -43,10 +43,13 @@ export function plainParseError(text: string): string | null {
   const match = PARSE_ERROR.exec(text);
   if (!match) return null;
   const [, kind, detail] = match;
-  // The last "line N" before the error names the line Python stopped on.
-  const lines = [...text.slice(0, match.index).matchAll(/line (\d+)/g)];
+  // The student's frame (`File "<exec>", line N`) names the line to fix: the
+  // unindented body, or where an open string starts. The "on line" / "detected
+  // at line" in the message points elsewhere (the def, the end of the file), so
+  // it is only a fallback.
+  const frames = [...text.slice(0, match.index).matchAll(/File "<exec>", line (\d+)/g)];
   const lineNo = /\(detected at line (\d+)\)|on line (\d+)/.exec(detail);
-  const n = lineNo?.[1] ?? lineNo?.[2] ?? lines.at(-1)?.[1];
+  const n = frames.at(-1)?.[1] ?? lineNo?.[1] ?? lineNo?.[2];
   const at = n ? `line ${n}` : "one line";
   const At = n ? `Line ${n}` : "One line";
 

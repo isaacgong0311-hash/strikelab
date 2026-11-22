@@ -27,7 +27,7 @@ export function nextChallenge(now: Date, weeks: readonly ScheduledWeek[], planne
   const t = now.getTime();
   if (weeks.length === 0) {
     if (!plannedStart) return null;
-    const opensAt = new Date(`${plannedStart}T00:00:00-05:00`).toISOString();
+    const opensAt = easternMidnight(plannedStart);
     return Date.parse(opensAt) > t ? { kind: "opens", id: null, week: 1, opensAt } : null;
   }
   const sorted = [...weeks].sort((a, b) => Date.parse(a.opens_at) - Date.parse(b.opens_at));
@@ -37,6 +37,16 @@ export function nextChallenge(now: Date, weeks: readonly ScheduledWeek[], planne
   if (open) return { kind: "open", id: open.id, week: open.week, closesAt: open.closes_at };
   if (upcoming) return { kind: "opens", id: upcoming.id, week: upcoming.week, opensAt: upcoming.opens_at };
   return null;
+}
+
+const OFFSET = new Intl.DateTimeFormat("en-US", { timeZone: SEASON_TIME_ZONE, timeZoneName: "longOffset" });
+
+/** Midnight in New York on `day` (YYYY-MM-DD) as an ISO instant, in either EST or EDT. */
+export function easternMidnight(day: string): string {
+  // Midday UTC is the same calendar day in New York and safely clear of a DST switch (2am local).
+  const name = OFFSET.formatToParts(new Date(`${day}T12:00:00Z`)).find((part) => part.type === "timeZoneName")?.value ?? "GMT-05:00";
+  const offset = name === "GMT" ? "+00:00" : name.replace("GMT", "");
+  return new Date(`${day}T00:00:00${offset}`).toISOString();
 }
 
 const plural = (n: number, unit: string) => `${n} ${unit}${n === 1 ? "" : "s"}`;

@@ -216,8 +216,10 @@ test("the next opening is in the server HTML, with one calendar action that has 
   const page = await context.newPage();
   await page.goto("/seasons");
   const timer = page.getByRole("timer");
-  if (await page.getByText("Season ended", { exact: true }).count()) return; // nothing left to count down to
-  await expect(page.getByText(/^(Next challenge opens in|Week \d is open now · closes in)$/)).toBeVisible();
+  // Without a database the page counts down to the planned start; once that has
+  // passed there is nothing to count down to, so only check before it.
+  if (!(await page.getByText(/^Starts [A-Z][a-z]+ \d+$/).count())) return;
+  await expect(page.getByText("Next challenge opens in", { exact: true })).toBeVisible();
   await expect(timer).toHaveText(/\d+(d|h|m)/);
   const calendar = page.getByRole("link", { name: /to your calendar/ });
   await expect(calendar).toHaveCount(1);

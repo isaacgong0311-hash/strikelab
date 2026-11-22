@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { countdown, easternWhen, nextChallenge } from "./countdown";
+import { countdown, easternMidnight, easternWhen, nextChallenge } from "./countdown";
 
 // Midnight to 23:59 Eastern, as in supabase/seed/season-1.sql.
 const weeks = [
@@ -37,6 +37,14 @@ describe("countdown", () => {
     expect(countdown(at, "2026-11-22T17:09:00Z")).toEqual({ compact: "5h 09m", words: "5 hours and 9 minutes" });
     expect(countdown(at, "2026-11-22T12:01:01Z")).toEqual({ compact: "1m 01s", words: "1 minute and 1 second" });
     expect(countdown(at, "2026-11-22T11:00:00Z").compact).toBe("0m 00s");
+  });
+});
+
+describe("easternMidnight", () => {
+  it("uses EST in winter and EDT in summer", () => {
+    expect(easternMidnight("2026-11-30")).toBe("2026-11-30T05:00:00.000Z");
+    expect(easternMidnight("2027-06-07")).toBe("2027-06-07T04:00:00.000Z");
+    expect(easternWhen(easternMidnight("2027-06-07"))).toBe("Mon, Jun 7, 12:00 AM ET");
   });
 });
 

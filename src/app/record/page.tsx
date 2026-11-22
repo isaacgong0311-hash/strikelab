@@ -23,10 +23,13 @@ function date(iso: string | null): string {
   return new Intl.DateTimeFormat("en-US", { dateStyle: "medium", timeZone: SEASON_TIME_ZONE }).format(new Date(iso));
 }
 
-/** Concepts assessed in a season, in week order, from its public challenge slots. */
-function topicsFor(challenges: (RecordChallengeRow & { template_slug?: string })[], seasonId: string): string[] {
+type ChallengeWithTopic = RecordChallengeRow & { template_slug?: string; opens_at?: string };
+
+/** Concepts assessed so far in a season, in week order: weeks that haven't opened yet aren't "tested". */
+function topicsFor(challenges: ChallengeWithTopic[], seasonId: string, now: Date): string[] {
   const concepts = challenges
     .filter((challenge) => challenge.season_id === seasonId)
+    .filter((challenge) => Boolean(challenge.opens_at) && Date.parse(challenge.opens_at!) <= now.getTime())
     .sort((a, b) => a.week - b.week)
     .map((challenge) => (challenge.template_slug ? getTemplate(challenge.template_slug)?.concept : undefined))
     .filter((concept): concept is string => Boolean(concept));
@@ -51,9 +54,10 @@ export default async function RecordPage() {
   ]);
   const seasons = (seasonResult.data ?? []) as RecordSeasonRow[];
   const challengeResult = seasons.length > 0
-    ? await supabase.from("season_challenges").select("id, season_id, week, template_slug").in("season_id", seasons.map((season) => season.id))
+    ? await supabase.from("season_challenges").select("id, season_id, week, template_slug, opens_at").in("season_id", seasons.map((season) => season.id))
     : { data: [], error: null };
-  const challenges = (challengeResult.data ?? []) as (RecordChallengeRow & { template_slug?: string })[];
+  const challenges = (challengeResult.data ?? []) as ChallengeWithTopic[];
+  const now = new Date();
   const attemptResult = challenges.length > 0
     ? await supabase.from("season_attempts").select("challenge_id, status, official_score")
       .eq("user_id", auth.user.id).in("challenge_id", challenges.map((challenge) => challenge.id))
@@ -83,19 +87,19 @@ export default async function RecordPage() {
     ? linkedInCredential(shared, Object.fromEntries(seasons.map((season) => [season.id, season.title])))
     : null;
   const seasonTitles = view.seasons.map((season) => season.title);
-  const assessed = [...new Set(view.seasons.flatMap((season) => topicsFor(challenges, season.id)))];
+  const assessed = [...new Set(view.seasons.flatMap((season) => topicsFor(challenges, season.id, now)))];
 
   return (
     <div className={styles.page}>
       <CredentialHeader
         visibility="Private · only you can see this page"
         title="Your record"
-        lede="Your season scores and the work behind them. Placings stay provisional until they're confirmed in a short live defense."
+        lede="Your season scores and the work behind them. A top-10 placing stays provisional until it's confirmed in a short live defense."
         facts={[
           { label: "Issued by", value: "StrikeLab" },
           { label: "Holder", value: handle ? `@${handle}` : "No handle yet" },
           { label: "Seasons", value: seasonTitles.length ? seasonTitles.join(", ") : "None yet" },
-          { label: "As of", value: date(new Date().toISOString()) },
+          { label: "As of", value: date(now.toISOString()) },
           { label: "Assessed", value: assessed.length ? assessed.join(", ") : "Shown once you compete" },
           { label: "Rules", value: <RulesLink /> },
         ]}
@@ -109,7 +113,7 @@ export default async function RecordPage() {
           const state: PlacingState = season.placingVerifiedAt
             ? { kind: "verified", at: season.placingVerifiedAt }
             : season.finished && (season.rank === null || season.rank > 10) ? { kind: "final" } : { kind: "provisional" };
-          const topics = topicsFor(challenges, season.id);
+          const topics = topicsFor(challenges, season.id, now);
           const weeks = challenges.filter((challenge) => challenge.season_id === season.id).length;
           return (
             <li className={styles.row} key={season.id}>
@@ -150,7 +154,7 @@ export default async function RecordPage() {
           <li className={styles.row} key={capstone.id}>
             <div className={styles.rowHead}>
               <h3>{capstone.title}</h3>
-              <PlacingBadge state={capstone.verifiedAt ? { kind: "verified", at: capstone.verifiedAt } : { kind: "provisional" }} date={date} />
+              <PlacingBadge state={capstone.verifiedAt ? { kind: "verified", at: capstone.verifiedAt } : { kind: "pending" }} date={date} />
             </div>
             <p className={styles.rowText}>
               Submitted {date(capstone.submittedAt)}.{" "}

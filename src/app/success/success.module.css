@@ -17,24 +17,19 @@
   text-align: center;
 }
 
+/* A plain glyph above the heading; no filled circle behind it. */
 .mark {
-  width: 3.5rem;
-  height: 3.5rem;
-  display: grid;
-  place-items: center;
-  margin: 0 auto 1.25rem;
-  border-radius: var(--sl-radius-pill);
-  background: var(--sl-brand-soft);
+  display: flex;
+  justify-content: center;
+  margin: 0 auto 1rem;
   color: var(--sl-brand-strong);
 }
 
 .mark[data-tone="error"] {
-  background: var(--sl-danger-soft);
   color: var(--sl-danger);
 }
 
 .mark[data-tone="pending"] {
-  background: var(--sl-canvas-subtle);
   color: var(--sl-text-muted);
 }
 
