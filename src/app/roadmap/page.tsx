@@ -1,5 +1,5 @@
-import Link from "next/link";
-import Eyebrow from "@/components/Eyebrow";
+import { ActionLink } from "@/components/ui/Action";
+import { PLANNED_SEASON, seasonPhase } from "@/lib/seasons/planned";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import JsonLd from "@/components/JsonLd";
 import { pageMetadata, breadcrumbJsonLd } from "@/lib/seo";
@@ -70,15 +70,27 @@ const STATE_STYLES = {
   "exploring":   { label: "Exploring",   color: "#6b6b6b" },
 };
 
+// The Season 1 row's status follows the calendar instead of going stale.
+export const revalidate = 3600;
+
+function seasonState(): keyof typeof STATE_STYLES {
+  const phase = seasonPhase(new Date(), PLANNED_SEASON.startsOn, PLANNED_SEASON.endsOn);
+  return phase.kind === "upcoming" ? "planned" : phase.kind === "live" ? "in-progress" : "done";
+}
+
 export default function RoadmapPage() {
+  const season = seasonState();
+  const roadmap = ROADMAP.map((q) => ({
+    ...q,
+    items: q.items.map((item) => (item.title.startsWith(PLANNED_SEASON.title) ? { ...item, state: season } : item)),
+  }));
   return (
     <div className="max-w-4xl mx-auto px-6 py-14">
       <JsonLd data={breadcrumbJsonLd([{ name: "Roadmap", path: "/roadmap" }])} />
       <Breadcrumbs trail={[{ name: "Roadmap", path: "/roadmap" }]} />
 
       {/* Header */}
-      <div className="mb-10 v2-page-head" data-v2-head>
-        <Eyebrow>Roadmap</Eyebrow>
+      <div className="mb-10">
         <h1
           className="text-4xl font-semibold mb-3 leading-tight"
           style={{ fontFamily: "var(--font-display)", color: "var(--ink)" }}
@@ -122,7 +134,7 @@ export default function RoadmapPage() {
 
       {/* Roadmap quarters */}
       <div className="flex flex-col gap-10">
-        {ROADMAP.map((q) => (
+        {roadmap.map((q) => (
           <div key={q.quarter}>
             <h2 className="flex items-baseline gap-4 mb-4 font-normal m-0">
               <span
@@ -143,13 +155,13 @@ export default function RoadmapPage() {
               />
             </h2>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-3" data-v2-stagger>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
               {q.items.map((item) => {
                 const ss = STATE_STYLES[item.state as keyof typeof STATE_STYLES];
                 return (
                   <div
                     key={item.title}
-                    className="v2-rise p-4 rounded-xl border"
+                    className="p-4 rounded-xl border"
                     style={{ borderColor: "var(--border2)", background: "var(--card)" }}
                   >
                     <div className="flex items-start justify-between gap-3 mb-1.5">
@@ -196,22 +208,12 @@ export default function RoadmapPage() {
           Open an issue on GitHub or join the discussion. We read everything.
         </p>
         <div className="flex gap-3 justify-center flex-wrap">
-          <a
-            href="https://github.com/isaacgong0311-hash/strikelab/issues/new"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="px-5 py-2 text-sm font-medium transition-opacity hover:opacity-80"
-            style={{ background: "var(--grass)", color: "#ffffff", borderRadius: "12px", boxShadow: "0 3px 0 var(--grass-d)", fontFamily: "var(--font-mono)" }}
-          >
+          <ActionLink href="https://github.com/isaacgong0311-hash/strikelab/issues/new" target="_blank">
             Request feature →
-          </a>
-          <Link
-            href="/about"
-            className="px-5 py-2 rounded-lg text-sm border transition-all hover:border-white/40"
-            style={{ borderColor: "var(--border2)", color: "var(--muted2)" }}
-          >
+          </ActionLink>
+          <ActionLink href="/about" variant="secondary">
             About the founder
-          </Link>
+          </ActionLink>
         </div>
       </div>
     </div>

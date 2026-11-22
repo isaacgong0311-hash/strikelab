@@ -6,6 +6,9 @@ import { LAB_WEEKS, pilotCallHref } from "@/lib/marketing/lab";
 import { TrackedAnchor } from "@/components/marketing/TrackedLink";
 import TrackPageView from "@/components/marketing/TrackPageView";
 import PilotPreview from "./PilotPreview";
+import { PLANNED_SEASON, shortSeasonDate } from "@/lib/seasons/planned";
+
+const SEASON_DATES = `${shortSeasonDate(PLANNED_SEASON.startsOn)} to ${shortSeasonDate(PLANNED_SEASON.endsOn)}`;
 
 export const metadata = pageMetadata({
   path: "/pilot",
@@ -75,7 +78,7 @@ export default function PilotPage() {
             <div className={styles.card}>
               <span className={styles.step} aria-hidden="true">4</span>
               <h3 className={styles.h3}>Your board appears</h3>
-              <p className={styles.body}>Once Season 1 is live, club members can see their handle-only board on <Link href="/seasons" className={styles.textLink}>Seasons</Link>.</p>
+              <p className={styles.body}>During {PLANNED_SEASON.title} ({SEASON_DATES}), club members see their handle-only board on <Link href="/seasons" className={styles.textLink}>Seasons</Link>.</p>
             </div>
           </div>
         </div>
@@ -90,7 +93,7 @@ export default function PilotPage() {
           <div className={styles.grid3} style={{ marginTop: "1.5rem" }}>
             {LAB_WEEKS.map((w) => (
               <div key={w.week} className={styles.card}>
-                <p className={styles.kicker} style={{ margin: 0 }}>Week {w.week}</p>
+                <p className={styles.weekLabel}>Week {w.week}</p>
                 <h3 className={styles.h3}>{w.title}</h3>
                 <p className={styles.body}>{w.builds}</p>
               </div>

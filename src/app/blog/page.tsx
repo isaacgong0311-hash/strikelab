@@ -1,5 +1,4 @@
 import Link from "next/link";
-import Eyebrow from "@/components/Eyebrow";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import JsonLd from "@/components/JsonLd";
 import { pageMetadata, breadcrumbJsonLd } from "@/lib/seo";
@@ -20,8 +19,7 @@ export default function BlogIndexPage() {
       <JsonLd data={breadcrumbJsonLd([{ name: "Blog", path: "/blog" }])} />
       <Breadcrumbs trail={[{ name: "Blog", path: "/blog" }]} />
 
-      <div className="mb-10 v2-page-head" data-v2-head>
-        <Eyebrow>Blog</Eyebrow>
+      <div className="mb-10">
         <h1
           className="text-4xl font-semibold mb-3 leading-tight"
           style={{ fontFamily: "var(--font-display)", color: "var(--ink)" }}
@@ -35,12 +33,12 @@ export default function BlogIndexPage() {
         </p>
       </div>
 
-      <div className="flex flex-col" data-v2-stagger>
+      <div className="flex flex-col">
         {posts.map((post) => (
           <Link
             key={post.slug}
             href={`/blog/${post.slug}`}
-            className="v2-rise py-5 border-b transition-opacity hover:opacity-70"
+            className="py-5 border-b transition-opacity hover:opacity-70"
             style={{ borderColor: "var(--border)", display: "block" }}
           >
             <div

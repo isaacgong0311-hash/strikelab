@@ -1,6 +1,8 @@
 import { TRACKS } from "./tracks";
+import { PLANNED_SEASON, shortSeasonDate } from "./seasons/planned";
 
 const LESSON_COUNT = TRACKS.reduce((n, t) => n + t.lessons.length, 0);
+const SEASON_DATES = `${shortSeasonDate(PLANNED_SEASON.startsOn)} to ${shortSeasonDate(PLANNED_SEASON.endsOn)}`;
 
 export interface FAQItem {
   q: string;
@@ -39,7 +41,7 @@ export const FAQ_GROUPS: FAQGroup[] = [
     items: [
       {
         q: "How long does it take?",
-        a: `Each lesson is 10–20 minutes of reading + a 5–15 minute coding exercise. Most students finish all ${LESSON_COUNT} in a few weeks, spread over evenings — the tracks are independent, so there's no requirement to binge one before starting another.`,
+        a: `Each lesson is a short reading followed by a coding exercise, and you can stop between them. How long all ${LESSON_COUNT} take depends on your background and pace. The tracks are independent, so you don't have to finish one before starting another.`,
       },
       {
         q: "Do I have to start with options?",
@@ -47,11 +49,11 @@ export const FAQ_GROUPS: FAQGroup[] = [
       },
       {
         q: "Will there be more advanced content?",
-        a: "Yes — all five Greeks (Delta through Rho), Implied Volatility, Option Strategies, and Binomial Trees are all live already. Next up is seasons rather than new lessons: timed challenges that test what you've learned, starting with Season 1 on Nov 30. See /roadmap for what's shipping and when.",
+        a: `Yes — all five Greeks (Delta through Rho), Implied Volatility, Option Strategies, and Binomial Trees are all live already. The focus now is seasons rather than new lessons: timed challenges that test what you've learned. ${PLANNED_SEASON.title} runs ${SEASON_DATES}. See /roadmap for what's shipping and when.`,
       },
       {
         q: "Can I use this for AP Stats / AP Calc?",
-        a: "Yes. The Black-Scholes derivation uses derivatives (AP Calc AB territory) and log-normal distributions (AP Stats). Teachers, we're happy to help align lessons.",
+        a: "It has connections to AP Calculus and Statistics: the Greeks are rates of change of an option's price, and the pricing lessons use the normal distribution. Some of the math, such as partial derivatives, goes beyond AP Calculus AB. These are curriculum connections, not an official AP endorsement. Teachers, we're happy to help align lessons.",
       },
     ],
   },
@@ -60,7 +62,7 @@ export const FAQ_GROUPS: FAQGroup[] = [
     items: [
       {
         q: "Where does the Python run?",
-        a: "Entirely in your browser, via Pyodide (CPython compiled to WebAssembly). No server round-trip. No installs. Tests typically complete in under 200ms.",
+        a: "Entirely in your browser, via Pyodide (CPython compiled to WebAssembly). No server round-trip and nothing to install. Python loads the first time you run code; after that, tests run on your own device.",
       },
       {
         q: "Is my code saved?",
@@ -72,7 +74,7 @@ export const FAQ_GROUPS: FAQGroup[] = [
       },
       {
         q: "What if Pyodide doesn't load on my browser?",
-        a: "Pyodide works on all modern browsers (Chrome 90+, Firefox 90+, Safari 15+, Edge 90+). If you hit an issue, file a GitHub issue with your browser version and we'll investigate.",
+        a: "Pyodide runs in current versions of Chrome, Firefox, Safari and Edge, including on Chromebooks. If it doesn't load for you, file a GitHub issue with your browser and version and we'll investigate.",
       },
     ],
   },
@@ -85,7 +87,7 @@ export const FAQ_GROUPS: FAQGroup[] = [
       },
       {
         q: "Is this safe to use as a minor?",
-        a: "Yes. No real money is ever involved anywhere on the platform, and there is no connection to a brokerage. See /privacy for what account data we actually collect.",
+        a: "It's built with student privacy in mind. No real money is involved anywhere on the platform, there is no connection to a brokerage, and leaderboards show a handle, never a real name. See /trust for what we store and who can see it, and /privacy for the policy.",
       },
       {
         q: "Will you ever sell my data?",

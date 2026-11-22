@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { ActionLink } from "@/components/ui/Action";
 
 /**
  * The one recurring conversion point inside a blog post — every article maps
@@ -17,12 +17,11 @@ export default function TryItCTA({
   return (
     <div
       style={{
-        marginTop: 32,
-        marginBottom: 32,
-        padding: "18px 20px",
-        borderRadius: 10,
-        border: "1px solid var(--border)",
-        background: "var(--paper-2, rgba(22,32,28,0.03))",
+        marginBlock: 32,
+        padding: "16px 20px",
+        borderRadius: "var(--sl-radius-lg)",
+        border: "1px solid var(--sl-border)",
+        background: "var(--sl-surface)",
         display: "flex",
         alignItems: "center",
         justifyContent: "space-between",
@@ -31,29 +30,16 @@ export default function TryItCTA({
       }}
     >
       <div>
-        <div
-          style={{ fontSize: 11, textTransform: "uppercase", letterSpacing: "0.1em", color: "var(--muted)", fontFamily: "var(--font-mono)", marginBottom: 4 }}
-        >
+        <div style={{ fontSize: 13, fontWeight: 700, color: "var(--sl-brand-strong)", marginBottom: 2 }}>
           Try it yourself
         </div>
-        <div style={{ fontSize: 14, color: "var(--ink)", fontWeight: 600 }}>
+        <div style={{ fontSize: 15, color: "var(--sl-text)", fontWeight: 600 }}>
           {lessonTitle} — free, in your browser
         </div>
       </div>
-      <Link
-        href={href}
-        className="text-sm px-4 py-2 font-medium transition-colors hover:opacity-80"
-        style={{
-          background: "var(--grass)",
-          color: "#ffffff",
-          fontFamily: "var(--font-mono)",
-          borderRadius: 10,
-          boxShadow: "0 3px 0 var(--grass-d)",
-          whiteSpace: "nowrap",
-        }}
-      >
+      <ActionLink href={href} style={{ whiteSpace: "nowrap" }}>
         Open lesson →
-      </Link>
+      </ActionLink>
     </div>
   );
 }
