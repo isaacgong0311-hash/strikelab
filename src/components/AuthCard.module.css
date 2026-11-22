@@ -1,0 +1,103 @@
+/* Sign-in, sign-up and password pages. One card on the plain canvas; no
+   tinted logo tile, no card inside the card. */
+.page {
+  display: flex;
+  justify-content: center;
+  padding: clamp(1.5rem, 7vh, 4.5rem) 1rem clamp(2.5rem, 8vh, 5rem);
+  font-family: var(--sl-font-body);
+}
+
+.column { width: min(100%, 25rem); }
+
+.card {
+  display: grid;
+  gap: var(--sl-space-4);
+  padding: var(--sl-space-6);
+  border: 1px solid var(--sl-border);
+  border-radius: var(--sl-radius-lg);
+  background: var(--sl-surface);
+  box-shadow: var(--sl-shadow-1);
+}
+
+.mark { display: inline-flex; color: var(--sl-text); }
+
+.title {
+  margin: 0;
+  color: var(--sl-text);
+  font-family: var(--sl-font-display);
+  font-size: 1.5rem;
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -0.025em;
+}
+
+/* Pull the subtitle up under the heading; the card's gap spaces the rest. */
+.subtitle {
+  margin: calc(-1 * var(--sl-space-2)) 0 0;
+  color: var(--sl-text-muted);
+  font-size: 0.9375rem;
+  line-height: 1.55;
+}
+
+.form { display: grid; gap: var(--sl-space-4); }
+
+/* A field with a link beside its label ("Forgot password?"). */
+.fieldWithLink { position: relative; }
+.labelLink {
+  position: absolute;
+  top: -0.2rem;
+  right: 0;
+  display: inline-flex;
+  align-items: center;
+  min-height: 24px;
+  color: var(--sl-text-muted);
+  font-size: 0.8125rem;
+  text-decoration: underline;
+  text-decoration-color: var(--sl-border-strong);
+  text-underline-offset: 3px;
+}
+.labelLink:hover { color: var(--sl-text); }
+
+.full { width: 100%; }
+
+.legal, .note {
+  margin: 0;
+  color: var(--sl-text-muted);
+  font-size: 0.8125rem;
+  line-height: 1.5;
+}
+.legal a, .note a, .alt a {
+  color: var(--sl-text);
+  font-weight: 600;
+  text-decoration: underline;
+  text-decoration-color: var(--sl-border-strong);
+  text-underline-offset: 3px;
+}
+.legal a:hover, .note a:hover, .alt a:hover { text-decoration-color: currentColor; }
+
+.list {
+  display: grid;
+  gap: var(--sl-space-1);
+  margin: 0;
+  padding-left: 1.1rem;
+  color: var(--sl-text-muted);
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+
+.status { min-height: 1.5em; margin: calc(-1 * var(--sl-space-2)) 0 0; color: var(--sl-text-muted); font-size: 0.8125rem; }
+
+.alt {
+  margin: var(--sl-space-5) 0 0;
+  color: var(--sl-text-muted);
+  font-size: 0.875rem;
+  text-align: center;
+}
+/* Inline links in the line under the card still get a 24px target. */
+.alt a { display: inline-flex; align-items: center; min-height: 24px; }
+
+/* Phones: the card's chrome costs vertical space the form needs. */
+@media (max-width: 479px) {
+  .page { padding-top: var(--sl-space-5); }
+  .card { padding: 0; border: 0; background: transparent; box-shadow: none; }
+}

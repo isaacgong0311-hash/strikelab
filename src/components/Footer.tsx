@@ -1,15 +1,20 @@
+import Link from "next/link";
 import BrandMark from "@/components/BrandMark";
-import AnimatedLink from "@/components/AnimatedLink";
+import styles from "./Footer.module.css";
 
-const NAV_GROUPS = [
+const REPO = "https://github.com/isaacgong0311-hash/strikelab";
+
+type FooterLink = { href: string; label: string };
+
+const NAV_GROUPS: { title: string; links: FooterLink[] }[] = [
   {
     title: "For clubs",
     links: [
-      { href: "/clubs",        label: "For clubs & teachers" },
+      { href: "/clubs",            label: "For clubs & teachers" },
       { href: "/pilot?src=footer", label: "Free pilot" },
-      { href: "/demo",         label: "Demo" },
-      { href: "/clubs#clubs-ap", label: "AP alignment" },
-      { href: "/intensive",    label: "Intensive (parents)" },
+      { href: "/demo",             label: "Demo" },
+      { href: "/clubs#clubs-ap",   label: "AP alignment" },
+      { href: "/intensive",        label: "Intensive (parents)" },
     ],
   },
   {
@@ -36,94 +41,69 @@ const NAV_GROUPS = [
     ],
   },
   {
-    title: "Open Source",
+    title: "Open source",
     links: [
-      // No `external` flag any more — AnimatedLink derives that from the
-      // protocol, so the data can't drift out of sync with the markup.
-      { href: "https://github.com/isaacgong0311-hash/strikelab",                   label: "GitHub" },
-      { href: "https://github.com/isaacgong0311-hash/strikelab/discussions",       label: "Discussions" },
-      { href: "https://github.com/isaacgong0311-hash/strikelab/blob/main/LICENSE", label: "MIT License" },
-      { href: "mailto:hello@strikelab.app",                                       label: "Email" },
+      { href: REPO,                             label: "GitHub" },
+      { href: `${REPO}/discussions`,            label: "Discussions" },
+      { href: `${REPO}/blob/master/LICENSE`,    label: "MIT License" },
+      { href: "mailto:hello@strikelab.app",     label: "Email" },
     ],
   },
 ];
 
+/** http(s) links open GitHub in a new tab; mailto: and internal paths don't. */
+function FooterAnchor({ href, label }: FooterLink) {
+  if (/^https?:\/\//.test(href)) {
+    return (
+      <a href={href} className={styles.link} target="_blank" rel="noopener noreferrer">
+        {label}
+        <span className="sl-visually-hidden"> (opens in a new tab)</span>
+      </a>
+    );
+  }
+  if (href.startsWith("mailto:")) {
+    return <a href={href} className={styles.link}>{label}</a>;
+  }
+  return <Link href={href} className={styles.link}>{label}</Link>;
+}
+
 export default function Footer() {
   return (
-    <footer className="border-t" style={{ borderColor: "var(--border)", background: "var(--bg)" }}>
-      <div className="max-w-6xl mx-auto px-6 py-14 grid grid-cols-2 md:grid-cols-5 gap-8">
-
-        {/* Brand */}
-        <div className="col-span-2">
-          <div className="flex items-center gap-2.5 mb-4">
-            <span style={{ color: "var(--fg)", display: "grid" }}><BrandMark size={26} /></span>
-            <span style={{ fontFamily: "var(--font-display)", fontStyle: "italic", color: "var(--fg)", fontSize: "1.15rem", fontWeight: 600 }}>
-              Strike<span style={{ fontStyle: "normal", fontWeight: 600 }}>Lab</span>
-            </span>
-          </div>
-          <p className="text-xs leading-relaxed mb-5 max-w-xs" style={{ color: "var(--fg-mute)" }}>
-            Learn quant finance, then prove it: lessons, real Python and
-            free seasons of timed challenges. Free for students.
-          </p>
-          <div className="flex gap-2 flex-wrap mb-5">
-            {["Free for students", "Runs in your browser", "Private by default"].map((tag) => (
-              <span
-                key={tag}
-                className="text-[10px] px-2 py-0.5 rounded-full"
-                style={{
-                  border: "1px solid var(--border-hi)",
-                  color: "var(--fg-mute)",
-                  fontFamily: "var(--font-mono)",
-                  letterSpacing: "0.04em",
-                  textTransform: "uppercase",
-                }}
-              >
-                {tag}
+    <footer className={styles.footer}>
+      <div className={styles.inner}>
+        <div className={styles.top}>
+          <div className={styles.brand}>
+            <Link href="/" className={styles.logo} aria-label="StrikeLab home">
+              <BrandMark size={24} />
+              <span className={styles.wordmark}>
+                Strike<span className={styles.wordmarkLab}>Lab</span>
               </span>
-            ))}
+            </Link>
+            <p className={styles.blurb}>
+              Learn quant finance, then prove it: lessons, real Python and free
+              seasons of timed challenges. Free for students.
+            </p>
           </div>
 
+          {NAV_GROUPS.map((group) => {
+            const headingId = `footer-${group.title.toLowerCase().replace(/\W+/g, "-")}`;
+            return (
+              <nav key={group.title} className={styles.group} aria-labelledby={headingId}>
+                <h2 id={headingId} className={styles.groupTitle}>{group.title}</h2>
+                <ul className={styles.list}>
+                  {group.links.map((l) => (
+                    <li key={l.href}><FooterAnchor {...l} /></li>
+                  ))}
+                </ul>
+              </nav>
+            );
+          })}
         </div>
 
-        {/* Nav groups */}
-        {NAV_GROUPS.map((group) => (
-          <div key={group.title}>
-            <div
-              className="text-[10px] uppercase tracking-widest mb-4"
-              style={{ fontFamily: "var(--font-mono)", color: "var(--fg-mute)", letterSpacing: "0.18em" }}
-            >
-              {group.title}
-            </div>
-            {/* Wider gap on mobile than the old 10px. The tap target used to
-                come from 9px of padding on each link, but that padding also
-                pushed the new hover rule 9px clear of the text. Spacing gives
-                the same ~34px of vertical pitch per row (WCAG 2.5.8 is
-                satisfied by spacing, not just by box size) while letting the
-                underline sit on the baseline where it belongs. */}
-            <div className="flex flex-col gap-4 md:gap-2.5">
-              {group.links.map((l) => (
-                <AnimatedLink key={l.href} href={l.href} className="v2-foot-link text-xs">
-                  {l.label}
-                </AnimatedLink>
-              ))}
-            </div>
-          </div>
-        ))}
-      </div>
-
-      <div
-        className="border-t px-6 py-5 max-w-6xl mx-auto flex flex-wrap items-center justify-between gap-3"
-        style={{ borderColor: "var(--border)" }}
-      >
-        <span
-          className="text-[11px]"
-          style={{ color: "var(--fg-faint)", fontFamily: "var(--font-mono)", letterSpacing: "0.06em", textTransform: "uppercase" }}
-        >
-          © 2026 StrikeLab · Free & Open Source · MIT License
-        </span>
-        <span className="text-[11px]" style={{ color: "var(--fg-mute)", fontFamily: "var(--font-serif)", fontStyle: "italic" }}>
-          &ldquo;Quant finance shouldn&rsquo;t require the right zip code.&rdquo;
-        </span>
+        <div className={styles.bottom}>
+          <p className={styles.legal}>© 2026 StrikeLab. Open source under the MIT License.</p>
+          <p className={styles.quote}>&ldquo;Quant finance shouldn&rsquo;t require the right zip code.&rdquo;</p>
+        </div>
       </div>
     </footer>
   );

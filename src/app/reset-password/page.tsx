@@ -1,11 +1,12 @@
 "use client";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import Link from "next/link";
 import { getSupabaseBrowser } from "@/lib/supabase/client";
 import { useAuth } from "@/lib/auth/AuthProvider";
-import BrandMark from "@/components/BrandMark";
+import AuthCard, { authStyles as styles } from "@/components/AuthCard";
 import AuthError from "@/components/AuthError";
+import { ActionLink, Button } from "@/components/ui/Action";
+import { TextField } from "@/components/ui/Field";
 
 export default function ResetPasswordPage() {
   const router = useRouter();
@@ -51,15 +52,7 @@ export default function ResetPasswordPage() {
   }
 
   if (done) {
-    return (
-      <div className="auth">
-        <div className="auth-card">
-          <div className="auth-brand"><span className="auth-logo"><BrandMark size={34} /></span></div>
-          <h1 className="auth-title">Password updated</h1>
-          <p className="auth-sub">Taking you to your dashboard…</p>
-        </div>
-      </div>
-    );
+    return <AuthCard title="Password updated" subtitle="Taking you to your dashboard…" />;
   }
 
   // The link from the reset email exchanges a code for a session via
@@ -67,67 +60,46 @@ export default function ResetPasswordPage() {
   // missing, expired, or already used.
   if (!authLoading && !user) {
     return (
-      <div className="auth">
-        <div className="auth-card">
-          <div className="auth-brand"><span className="auth-logo"><BrandMark size={34} /></span></div>
-          <h1 className="auth-title">Link expired</h1>
-          <p className="auth-sub">
-            This password reset link is invalid or has expired. Request a new one.
-          </p>
-          <Link href="/forgot-password" className="v2-btn" style={{ width: "100%", marginTop: 10, display: "flex", justifyContent: "center" }}>
-            Request new link →
-          </Link>
-        </div>
-      </div>
+      <AuthCard
+        title="Link expired"
+        subtitle="This password reset link is invalid or has expired. Request a new one."
+      >
+        <ActionLink href="/forgot-password" className={styles.full}>Request a new link</ActionLink>
+      </AuthCard>
     );
   }
 
   return (
-    <div className="auth">
-      <div className="auth-card">
-        <div className="auth-brand"><span className="auth-logo"><BrandMark size={34} /></span></div>
-        <h1 className="auth-title">Set a new password</h1>
-        <p className="auth-sub">Choose a new password for your account.</p>
+    <AuthCard title="Set a new password" subtitle="Choose a new password for your account.">
+      <AuthError message={error} />
 
-        <AuthError message={error} />
-
-        <form onSubmit={handleSubmit} className="auth-form">
-          <label className="auth-label">
-            New password
-            <input
-              className="auth-input"
-              type="password"
-              required
-              minLength={8}
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="Min. 8 characters"
-              autoComplete="new-password"
-              aria-describedby="reset-password-help"
-              autoFocus
-              disabled={authLoading}
-            />
-            <span id="reset-password-help" className="auth-help">Use at least 8 characters.</span>
-          </label>
-          <label className="auth-label">
-            Confirm password
-            <input
-              className="auth-input"
-              type="password"
-              required
-              minLength={8}
-              value={confirm}
-              onChange={(e) => setConfirm(e.target.value)}
-              placeholder="Re-enter password"
-              autoComplete="new-password"
-              disabled={authLoading}
-            />
-          </label>
-          <button type="submit" disabled={loading || authLoading} className="v2-btn" style={{ width: "100%", marginTop: 4 }}>
-            {authLoading ? "Verifying link…" : loading ? "Updating…" : <>Update password <span className="v2-arr">→</span></>}
-          </button>
-        </form>
-      </div>
-    </div>
+      <form onSubmit={handleSubmit} className={styles.form}>
+        <TextField
+          label="New password"
+          type="password"
+          required
+          minLength={8}
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          autoComplete="new-password"
+          help="Use at least 8 characters."
+          autoFocus
+          disabled={authLoading}
+        />
+        <TextField
+          label="Confirm password"
+          type="password"
+          required
+          minLength={8}
+          value={confirm}
+          onChange={(e) => setConfirm(e.target.value)}
+          autoComplete="new-password"
+          disabled={authLoading}
+        />
+        <Button type="submit" disabled={loading || authLoading} className={styles.full}>
+          {authLoading ? "Verifying link…" : loading ? "Updating…" : "Update password"}
+        </Button>
+      </form>
+    </AuthCard>
   );
 }

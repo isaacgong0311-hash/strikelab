@@ -1,67 +1,46 @@
+/* Shared by the 404 page (app/not-found.tsx) and the error boundary
+   (app/error.tsx). Plain canvas, left-aligned copy, flat buttons. */
 .wrap {
-  max-width: 36rem;
+  width: min(100% - 2rem, 34rem);
   margin: 0 auto;
-  padding: 6rem 1.5rem;
-  text-align: center;
+  padding-block: clamp(3rem, 12vh, 7rem);
+  font-family: var(--sl-font-body);
 }
-.eyebrow {
-  font-family: var(--font-mono), monospace;
-  font-size: 0.75rem;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--ink-3);
-  margin: 0 0 0.75rem;
-}
-.title {
-  font-family: var(--font-display), Georgia, serif;
-  font-size: 1.875rem;
-  font-weight: 600;
-  color: var(--ink);
-  margin: 0 0 0.75rem;
-}
-.body {
+
+.code {
+  margin: 0 0 var(--sl-space-3);
+  color: var(--sl-text-muted);
   font-size: 0.875rem;
-  line-height: 1.6;
-  color: var(--ink-2);
-  margin: 0 auto 2rem;
-  max-width: 28rem;
+  font-weight: 600;
 }
+
+.title {
+  margin: 0 0 var(--sl-space-3);
+  color: var(--sl-text);
+  font-family: var(--sl-font-display);
+  font-size: clamp(1.75rem, 5vw, 2.25rem);
+  font-weight: 700;
+  line-height: 1.15;
+  letter-spacing: -0.025em;
+}
+
+.body {
+  margin: 0 0 var(--sl-space-6);
+  color: var(--sl-text-muted);
+  font-size: 1rem;
+  line-height: var(--sl-leading-body);
+}
+
+/* The digest is an identifier the user may read out to us: code font. */
 .ref {
-  font-family: var(--font-mono), monospace;
-  font-size: 0.75rem;
-  color: var(--ink-3);
-  margin: -1rem 0 2rem;
+  margin: calc(-1 * var(--sl-space-4)) 0 var(--sl-space-6);
+  color: var(--sl-text-muted);
+  font-family: var(--sl-font-code);
+  font-size: 0.8125rem;
 }
+
 .actions {
   display: flex;
   flex-wrap: wrap;
-  justify-content: center;
-  gap: 0.75rem;
-}
-.primary,
-.secondary {
-  font: inherit;
-  font-size: 0.875rem;
-  padding: 0.625rem 1.25rem;
-  border-radius: var(--sl-radius-md);
-  cursor: pointer;
-  text-decoration: none;
-}
-.primary {
-  background: var(--grass);
-  color: #fff;
-  border: 0;
-  font-weight: 700;
-}
-.primary:hover { background: var(--grass-d); }
-.secondary {
-  background: transparent;
-  color: var(--ink-2);
-  border: 1px solid var(--line);
-  font-weight: 600;
-}
-.primary:focus-visible,
-.secondary:focus-visible {
-  outline: 3px solid var(--sl-focus, var(--sky));
-  outline-offset: 2px;
+  gap: var(--sl-space-3);
 }

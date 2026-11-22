@@ -2,8 +2,10 @@
 import { useState } from "react";
 import Link from "next/link";
 import { getSupabaseBrowser } from "@/lib/supabase/client";
-import BrandMark from "@/components/BrandMark";
+import AuthCard, { authStyles as styles } from "@/components/AuthCard";
 import AuthError from "@/components/AuthError";
+import { Button } from "@/components/ui/Action";
+import { TextField } from "@/components/ui/Field";
 
 export default function ForgotPasswordPage() {
   const [email, setEmail] = useState("");
@@ -37,56 +39,41 @@ export default function ForgotPasswordPage() {
     setSent(true);
   }
 
+  const backToSignIn = <Link href="/sign-in">Back to sign in</Link>;
+
   if (sent) {
     return (
-      <div className="auth">
-        <div className="auth-card">
-          <div className="auth-brand"><span className="auth-logo"><BrandMark size={34} /></span></div>
-          <h1 className="auth-title">Check your email</h1>
-          <p className="auth-sub">
-            If an account exists for <strong>{email}</strong>, we sent a link to
-            reset your password. It expires in an hour.
-          </p>
-          <p className="auth-alt">
-            <Link href="/sign-in">Back to sign in</Link>
-          </p>
-        </div>
-      </div>
+      <AuthCard
+        title="Check your email"
+        subtitle={<>If an account exists for <strong>{email}</strong>, we sent a link to reset your password. It expires in an hour.</>}
+        footer={backToSignIn}
+      />
     );
   }
 
   return (
-    <div className="auth">
-      <div className="auth-card">
-        <div className="auth-brand"><span className="auth-logo"><BrandMark size={34} /></span></div>
-        <h1 className="auth-title">Reset your password</h1>
-        <p className="auth-sub">Enter the email on your account and we&rsquo;ll send a reset link.</p>
+    <AuthCard
+      title="Reset your password"
+      subtitle="Enter the email on your account and we’ll send a reset link."
+      footer={backToSignIn}
+    >
+      <AuthError message={error} />
 
-        <AuthError message={error} />
-
-        <form onSubmit={handleSubmit} className="auth-form">
-          <label className="auth-label">
-            Email
-            <input
-              className="auth-input"
-              type="email"
-              required
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="you@school.edu"
-              autoComplete="email"
-              autoFocus
-            />
-          </label>
-          <button type="submit" disabled={loading} className="v2-btn" style={{ width: "100%", marginTop: 4 }}>
-            {loading ? "Sending…" : <>Send reset link <span className="v2-arr">→</span></>}
-          </button>
-        </form>
-
-        <p className="auth-alt">
-          <Link href="/sign-in">Back to sign in</Link>
-        </p>
-      </div>
-    </div>
+      <form onSubmit={handleSubmit} className={styles.form}>
+        <TextField
+          label="Email"
+          type="email"
+          required
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          placeholder="you@school.edu"
+          autoComplete="email"
+          autoFocus
+        />
+        <Button type="submit" disabled={loading} className={styles.full}>
+          {loading ? "Sending…" : "Send reset link"}
+        </Button>
+      </form>
+    </AuthCard>
   );
 }
