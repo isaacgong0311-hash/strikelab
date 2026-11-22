@@ -16,7 +16,7 @@ async function replaceCode(page: Page, code: string) {
 }
 
 /** The checks panel (not the editor, which can contain the same words). */
-const checksPanel = (page: Page) => page.locator("pre[role='status']");
+const checksPanel = (page: Page) => page.locator("[data-checks][role='status']");
 
 async function startPractice(page: Page) {
   await page.goto("/seasons/practice");
@@ -62,6 +62,30 @@ test.describe("practice round", () => {
     await page.getByRole("button", { name: "Run checks" }).click();
     await expect(checksPanel(page)).toContainText("0 of 4 checks passed", { timeout: 60_000 });
     await expect(checksPanel(page)).toContainText("NameError");
+  });
+
+  test("a syntax error gets one plain-language line above the traceback", async ({ page }) => {
+    await startPractice(page);
+    await replaceCode(page, "from math import exp\ndef forward_price(S, r, T):\n    return S * exp(r * T\n");
+    await page.getByRole("button", { name: "Run checks" }).click();
+    await expect(checksPanel(page)).toContainText("SyntaxError", { timeout: 60_000 });
+    await expect(checksPanel(page).locator("p")).toHaveText(/^A bracket opened on line 3 is never closed\./);
+  });
+
+  test("on a phone, Run and Finish sit in a bar at the bottom, one of each", async ({ page }) => {
+    await page.setViewportSize({ width: 375, height: 812 });
+    await startPractice(page);
+    const bar = page.getByRole("group", { name: "Run and submit" });
+    await expect(bar).toBeInViewport();
+    // The in-place copies are hidden at this width, so each name resolves once.
+    await expect(page.getByRole("button", { name: "Run checks" })).toHaveCount(1);
+    await expect(page.getByRole("button", { name: "Finish practice" })).toHaveCount(1);
+    await replaceCode(page, SOLUTION);
+    await bar.getByRole("button", { name: "Run checks" }).click();
+    await expect(checksPanel(page)).toContainText("All 4 checks passed.", { timeout: 60_000 });
+    await expect(checksPanel(page)).toBeInViewport();
+    await page.setViewportSize({ width: 1280, height: 800 });
+    await expect(bar).toBeHidden();
   });
 
   test("a reload keeps the draft and the same numbers", async ({ page }) => {
@@ -184,7 +208,35 @@ test("the seasons page leads with the practice round and the opening", async ({ 
   await page.goto("/seasons");
   // The header button and the hero button share this text, so look in the page body.
   await expect(page.getByRole("main").getByRole("link", { name: "Try a practice round" })).toHaveAttribute("href", "/seasons/practice");
-  await expect(page.getByText(/Opens in \d+ days? ·|Live now|Season ended/)).toBeVisible();
+  await expect(page.getByText(/^(Starts [A-Z][a-z]+ \d+|Live now|Season ended)$/)).toBeVisible();
+});
+
+test("the next opening is in the server HTML, with one calendar action that has reminders", async ({ browser, request }) => {
+  const context = await browser.newContext({ javaScriptEnabled: false });
+  const page = await context.newPage();
+  await page.goto("/seasons");
+  const timer = page.getByRole("timer");
+  if (await page.getByText("Season ended", { exact: true }).count()) return; // nothing left to count down to
+  await expect(page.getByText(/^(Next challenge opens in|Week \d is open now · closes in)$/)).toBeVisible();
+  await expect(timer).toHaveText(/\d+(d|h|m)/);
+  const calendar = page.getByRole("link", { name: /to your calendar/ });
+  await expect(calendar).toHaveCount(1);
+  await expect(calendar).toHaveAttribute("href", "/seasons/calendar.ics");
+  await context.close();
+  const ics = await (await request.get("/seasons/calendar.ics")).text();
+  expect(ics).toContain("BEGIN:VALARM");
+  expect(ics).toContain("TRIGGER:-PT8H");
+});
+
+test("the hero actions stack at one width on a phone", async ({ page }) => {
+  await page.setViewportSize({ width: 375, height: 812 });
+  await page.goto("/seasons");
+  const main = page.getByRole("main");
+  const create = await main.getByRole("link", { name: /^Create a free account/ }).boundingBox();
+  const practice = await main.getByRole("link", { name: "Try a practice round" }).boundingBox();
+  expect(create && practice).toBeTruthy();
+  expect(Math.abs(create!.width - practice!.width)).toBeLessThan(1);
+  expect(practice!.y).toBeGreaterThan(create!.y);
 });
 
 test("the seasons page answers the common questions, without JavaScript too", async ({ browser }) => {

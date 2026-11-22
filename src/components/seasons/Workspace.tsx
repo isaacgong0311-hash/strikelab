@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import MiniEditor from "@/components/MiniEditor";
+import { plainParseError } from "@/lib/pythonErrors";
 import { warningFor, WARNING_TEXT } from "@/lib/seasons/clock";
 import { browserStorage, clearDraft, loadDraft, saveDraft } from "@/lib/seasons/draft";
 import { MAX_EXPLANATION, MIN_EXPLANATION } from "@/lib/seasons/limits";
@@ -61,6 +62,7 @@ export default function Workspace({
   const [error, setError] = useState<string | null>(null);
   const [saved, setSaved] = useState<{ ok: boolean; at: number } | null>(restored ? { ok: true, at: restored.savedAt } : null);
   const confirmRef = useRef<HTMLButtonElement>(null);
+  const resultRef = useRef<HTMLDivElement>(null);
   const clock = useRef(getSecondsLeft);
   useEffect(() => {
     clock.current = getSecondsLeft;
@@ -92,7 +94,8 @@ export default function Workspace({
   const longEnough = explainLength >= MIN_EXPLANATION;
   const checksPassed = checks?.ok === true && checks.code === code;
 
-  async function check() {
+  /** fromBar: run from the phone action bar, so bring the result into view afterwards. */
+  async function check(fromBar = false) {
     setRunning(true);
     setError(null);
     const ran = code;
@@ -103,7 +106,13 @@ export default function Workspace({
     } finally {
       setRunning(false);
     }
+    if (fromBar) requestAnimationFrame(() => resultRef.current?.scrollIntoView({ block: "nearest" }));
   }
+
+  const runLabel = running ? "Running the checks…" : "Run checks";
+  const submitLabel = busy ? "Submitting…" : mode === "official" ? "Submit" : "Finish practice";
+  const startSubmit = () => (mode === "official" ? setConfirming(true) : void submit());
+  const plain = checks && !checks.ok ? plainParseError(checks.text) : null;
 
   async function submit() {
     setBusy(true);
@@ -161,8 +170,8 @@ export default function Workspace({
             <MiniEditor value={code} onChange={setCode} ariaLabel="Your solution" readOnly={over} />
           </div>
           <div className={styles.toolbar}>
-            <button type="button" className={styles.btn} onClick={check} disabled={running || over}>
-              {running ? "Running the checks…" : "Run checks"}
+            <button type="button" className={`${styles.btn} ${styles.inlineAction}`} onClick={() => check()} disabled={running || over}>
+              {runLabel}
             </button>
             {saved && (
               <span className={styles.saved}>
@@ -170,12 +179,15 @@ export default function Workspace({
               </span>
             )}
           </div>
-          {checks && (
-            <pre className={styles.output} data-ok={checks.ok} role="status">
-              {checks.text}
-              {checks.code !== code ? "\n(These results are for an earlier version of your code.)" : ""}
-            </pre>
-          )}
+          <div ref={resultRef} className={styles.result} role="status" data-checks="">
+            {checks && plain && <p className={styles.plain}>{plain}</p>}
+            {checks && (
+              <pre className={styles.output} data-ok={checks.ok}>
+                {checks.text}
+                {checks.code !== code ? "\n(These results are for an earlier version of your code.)" : ""}
+              </pre>
+            )}
+          </div>
 
           <label htmlFor="explanation" className={styles.label}>
             Explain why your answer is right (2 or 3 sentences)
@@ -215,12 +227,12 @@ export default function Workspace({
             <div className={styles.actions}>
               <button
                 type="button"
-                className={styles.btn}
+                className={`${styles.btn} ${styles.inlineAction}`}
                 data-primary="true"
                 disabled={busy || !longEnough}
-                onClick={() => (mode === "official" ? setConfirming(true) : void submit())}
+                onClick={startSubmit}
               >
-                {busy ? "Submitting…" : mode === "official" ? "Submit" : "Finish practice"}
+                {submitLabel}
               </button>
               {!longEnough && <span className={styles.saved}>Write your explanation to submit.</span>}
             </div>
@@ -228,6 +240,22 @@ export default function Workspace({
           {error && <p className={styles.error} role="alert">{error}</p>}
         </section>
       </div>
+
+      {/* Phones: the brief comes first, so Run and Submit ride along at the
+          bottom of the screen. Above 62rem this bar is display:none and the
+          in-place buttons show instead, so only one of each is ever exposed. */}
+      {!over && (
+        <div className={styles.actionBar} role="group" aria-label="Run and submit">
+          <button type="button" className={styles.btn} onClick={() => check(true)} disabled={running}>
+            {runLabel}
+          </button>
+          {!confirming && (
+            <button type="button" className={styles.btn} data-primary="true" disabled={busy || !longEnough} onClick={startSubmit} aria-describedby="explain-count">
+              {submitLabel}
+            </button>
+          )}
+        </div>
+      )}
     </div>
   );
 }
