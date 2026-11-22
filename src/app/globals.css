@@ -116,14 +116,14 @@ code, pre, .mono {
 
 /* ── Lesson rich text ─────────────────────────────────────────────────────── */
 .lesson-content h2 {
-  font-family: var(--font-serif);
-  font-size: 1.2rem;
-  font-weight: 600;
-  font-style: italic;
-  color: var(--fg);
+  font-family: var(--sl-font-display);
+  font-size: 1.3125rem;
+  font-weight: 700;
+  line-height: 1.3;
+  color: var(--sl-text);
   margin-top: 2.25rem;
-  margin-bottom: 0.6rem;
-  letter-spacing: -0.01em;
+  margin-bottom: 0.75rem;
+  letter-spacing: -0.015em;
 }
 /* NOT `.lesson-content h2:first-child` — each section is rendered into its
    own isolated wrapper div (see the chunk-splitting in LessonClient.tsx /
@@ -136,48 +136,46 @@ code, pre, .mono {
    section already has its own bottom spacing, so the first section doesn't
    need special-casing. */
 .lesson-content p {
-  color: #3d453f;
-  line-height: 1.85;
+  color: var(--sl-text);
+  line-height: 1.75;
   margin-bottom: 1rem;
-  font-size: 0.96rem;
+  font-size: 1rem;
 }
 .lesson-content ul {
   list-style: none;
-  color: #3d453f;
+  color: var(--sl-text);
   margin-bottom: 1rem;
   display: flex;
   flex-direction: column;
   gap: 0.4rem;
-  font-size: 0.96rem;
+  font-size: 1rem;
+  line-height: 1.7;
   padding-left: 0;
 }
 .lesson-content ul li::before {
   content: "—";
   margin-right: 0.6rem;
-  color: var(--muted);
+  color: var(--sl-text-subtle);
 }
 .lesson-content blockquote {
-  border-left: 3px solid var(--grass);
-  padding: 0.6rem 1rem;
+  border-left: 2px solid var(--sl-brand);
+  padding: 0.25rem 0 0.25rem 1rem;
   margin: 1.5rem 0;
-  color: #5a635d;
-  background: var(--grass-tint);
-  border-radius: 0 8px 8px 0;
-  font-family: var(--font-mono);
-  font-size: 0.82rem;
-  line-height: 1.85;
+  color: var(--sl-text-muted);
+  font-size: 0.9375rem;
+  line-height: 1.7;
 }
-.lesson-content strong { color: var(--fg); font-weight: 700; }
-.lesson-content em { color: #2c352f; font-style: italic; }
+.lesson-content strong { color: var(--sl-text); font-weight: 650; }
+.lesson-content em { color: var(--sl-text); font-style: italic; }
 .lesson-content sup { font-size: 0.7em; vertical-align: super; }
 .lesson-content code {
-  font-family: var(--font-mono);
+  font-family: var(--sl-font-code);
   font-size: 0.85em;
-  color: #b4461d;
-  background: var(--bg2);
+  color: var(--sl-danger);
+  background: var(--sl-canvas-subtle);
   padding: 0.12em 0.4em;
-  border-radius: var(--r-xs);
-  border: 1px solid var(--border);
+  border-radius: var(--sl-radius-sm);
+  border: 1px solid var(--sl-border);
 }
 /* Fenced code blocks (```python from MDX) — the inline `code` rule above only
    covers backtick spans. Without this, a <pre><code> block has no wrap and
@@ -185,9 +183,9 @@ code, pre, .mono {
    blows out the page width on mobile instead of scrolling within itself. */
 .lesson-content pre {
   overflow-x: auto;
-  background: var(--bg2);
-  border: 1px solid var(--border);
-  border-radius: var(--r-md, 10px);
+  background: var(--sl-canvas-subtle);
+  border: 1px solid var(--sl-border);
+  border-radius: var(--sl-radius-md);
   padding: 0.9rem 1rem;
   margin: 1.25rem 0;
 }
@@ -198,32 +196,29 @@ code, pre, .mono {
   font-size: 0.85em;
   white-space: pre;
 }
-.lesson-content h2 { color: var(--ink); }
 .lesson-content table {
   width: 100%;
   border-collapse: collapse;
   margin: 1.5rem 0;
-  font-size: 0.88rem;
-  border: 1px solid var(--line-2, var(--border2));
-  border-radius: var(--r-md, 10px);
+  font-size: 0.875rem;
+  font-variant-numeric: tabular-nums;
+  border: 1px solid var(--sl-border);
+  border-radius: var(--sl-radius-md);
   overflow: hidden;
 }
 .lesson-content th, .lesson-content td {
   padding: 0.6rem 0.9rem;
   text-align: left;
-  border-bottom: 1px solid var(--line, var(--border));
+  border-bottom: 1px solid var(--sl-border);
 }
 .lesson-content thead th {
-  font-family: var(--font-mono);
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--ink-3, var(--muted));
-  background: var(--paper-2, var(--card2));
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--sl-text-muted);
+  background: var(--sl-surface-raised);
 }
 .lesson-content tbody tr:last-child td { border-bottom: none; }
-.lesson-content tbody td:first-child { color: var(--ink); font-weight: 600; }
+.lesson-content tbody td:first-child { color: var(--sl-text); font-weight: 600; }
 
 /* Section rhythm — a hairline between h2 sections instead of relying on
    margin alone. Every section used to run straight into the next with no
@@ -233,7 +228,7 @@ code, pre, .mono {
    in this markup. */
 .lesson-content h2 {
   padding-top: 1.75rem;
-  border-top: 1px solid var(--line, var(--border));
+  border-top: 1px solid var(--sl-border);
 }
 
 /* Definition / key-idea callout — a neutral aside distinct from the colored
@@ -265,56 +260,6 @@ code, pre, .mono {
 }
 .lesson-callout p + p { margin-top: 0.6rem; }
 .lesson-callout strong { color: var(--ink); }
-
-/* "From your desk head" briefing — sits above PrereqBox, below the header.
-   Amber instead of the prereqs box's neutral border so it reads as a
-   message, not a meta note about the lesson. */
-.lesson-briefing {
-  margin: 0 0 1.25rem;
-  padding: 0.85rem 1.1rem;
-  border-left: 2px solid var(--amber);
-  background: var(--amber-tint);
-  border-radius: 0 var(--r-md, 8px) var(--r-md, 8px) 0;
-}
-.lesson-briefing-text {
-  margin: 0;
-  color: var(--ink-2, #3d453f);
-  font-size: 0.88rem;
-  line-height: 1.6;
-  font-style: italic;
-}
-
-/* "Before this lesson" prereq box — sits above the content, below the
-   header. Left border instead of the full outline .lesson-callout uses,
-   so it reads as a note about the lesson rather than part of it. */
-.lesson-prereqs {
-  margin: 0 0 1.75rem;
-  padding: 0.85rem 1.1rem;
-  border-left: 2px solid var(--line-2, var(--border2));
-  background: var(--paper-3, var(--card2));
-  border-radius: 0 var(--r-md, 8px) var(--r-md, 8px) 0;
-}
-.lesson-prereqs-summary {
-  margin: 0;
-  color: var(--ink-2, #3d453f);
-  font-size: 0.88rem;
-  line-height: 1.6;
-}
-.lesson-prereqs-links {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px 16px;
-  margin-top: 0.6rem;
-}
-.lesson-prereqs-link {
-  font-family: var(--font-mono);
-  font-size: 11.5px;
-  color: var(--ink-3);
-  text-decoration: underline;
-  text-underline-offset: 2px;
-  transition: color 0.15s ease;
-}
-.lesson-prereqs-link:hover { color: var(--ink); }
 
 /* Pull-stat — one standout number breaks paragraph rhythm and gives the eye
    somewhere to land. Uses the site's one primary accent, reserved for the
@@ -1551,12 +1496,6 @@ h1, h2, h3, h4 {
 .cohort-launch-form small { font-size: 10px; line-height: 1.45; color: var(--ink-3); }
 .cohort-launch-error { color: var(--coral) !important; font-family: var(--font-mono); font-size: 11px !important; }
 .cohort-launch-active { grid-template-columns: 1fr auto; align-items: center; }
-.code-sync-status {
-  margin: 0; padding: 6px 20px; border-top: 1px solid var(--border);
-  background: var(--card); color: var(--ink-3); font-size: 12px;
-}
-.code-sync-status[data-state="saved"] { color: var(--grass); }
-.code-sync-status[data-state="retrying"] { color: var(--sl-warning, #8a470b); font-weight: 600; }
 .class-invite { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-top: 10px; }
 .class-invite-label { font-family: var(--font-mono); font-size: 10px; font-weight: 700; letter-spacing: .05em; text-transform: uppercase; color: var(--ink-3); }
 .class-invite-url {
@@ -1930,115 +1869,6 @@ h1, h2, h3, h4 {
 }
 .ai-send:hover:not(:disabled) { background: var(--grass-d); }
 .ai-send:disabled { opacity: .45; cursor: default; background: var(--line-2); }
-
-/* ══════════════════════════════════════════════════════════════════════════
-   LESSON TABLE OF CONTENTS
-   Sticky section nav living in the column that was previously empty either
-   side of the lesson text. Below 1180px there isn't room for a sidebar, so it
-   collapses away entirely rather than stacking above the prose and pushing
-   the actual lesson below the fold.
-   ══════════════════════════════════════════════════════════════════════════ */
-
-.lesson-shell {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 0;
-}
-
-@media (min-width: 1180px) {
-  .lesson-shell {
-    grid-template-columns: 232px minmax(0, 1fr);
-    gap: 48px;
-    align-items: start;
-  }
-}
-
-.lesson-toc-col { display: none; }
-@media (min-width: 1180px) {
-  .lesson-toc-col {
-    display: block;
-    position: sticky;
-    top: 92px;
-    max-height: calc(100vh - 120px);
-    overflow-y: auto;
-    padding-right: 4px;
-  }
-}
-
-.lt-head {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  margin-bottom: 10px;
-}
-.lt-label {
-  font-family: var(--font-mono);
-  font-size: 10px;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--ink-3);
-}
-.lt-pct {
-  font-family: var(--font-mono);
-  font-size: 10px;
-  color: var(--ink-3);
-  font-variant-numeric: tabular-nums;
-}
-
-.lt-track {
-  height: 3px;
-  border-radius: 2px;
-  background: var(--line);
-  overflow: hidden;
-  margin-bottom: 16px;
-}
-.lt-fill {
-  height: 100%;
-  background: var(--grass);
-  border-radius: 2px;
-  transition: width 120ms linear;
-}
-
-.lt-list {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 1px;
-}
-
-.lt-item {
-  display: grid;
-  grid-template-columns: 22px 1fr;
-  gap: 8px;
-  align-items: baseline;
-  padding: 7px 10px 7px 8px;
-  border-radius: var(--r-sm);
-  border-left: 2px solid transparent;
-  color: var(--ink-3);
-  font-size: 13px;
-  line-height: 1.4;
-  text-decoration: none;
-  transition: color .12s, background .12s, border-color .12s;
-}
-.lt-item:hover { color: var(--ink); background: var(--bg2); }
-
-.lt-item.active {
-  color: var(--ink);
-  font-weight: 600;
-  border-left-color: var(--grass);
-  background: var(--grass-tint);
-}
-.lt-item.active .lt-num { color: var(--grass); }
-
-.lt-num {
-  font-family: var(--font-mono);
-  font-size: 10px;
-  color: var(--ink-3);
-  font-variant-numeric: tabular-nums;
-}
-.lt-text { min-width: 0; }
 
 /* Anchored headings shouldn't hide under the sticky nav when deep-linked. */
 .lesson-content h2 { scroll-margin-top: 92px; }
@@ -2566,15 +2396,10 @@ h1, h2, h3, h4 {
 }
 .lesson-content a:hover { background-size: 100% 1.5px; }
 
-/* TOC items shift slightly toward the reader on hover. */
-.lt-item { will-change: transform; }
-.lt-item:hover { transform: translateX(2px); }
-
 @media (prefers-reduced-motion: reduce) {
   .cp.correct, .cp.wrong, .cp-opt.is-correct, .cp-explain {
     animation: none !important;
   }
-  .lt-item:hover { transform: none; }
   .lesson-content a { background-size: 100% 1.5px; transition: none; }
 }
 
@@ -2585,7 +2410,7 @@ h1, h2, h3, h4 {
    jittering as values change. Applied to the display face too, since the big
    dashboard stats are set in it.
    ══════════════════════════════════════════════════════════════════════════ */
-.db-level-lbl, .db-tab-prog, .lt-pct, .cp-label, .sl-quiz-score, .db-ring-pct {
+.db-level-lbl, .db-tab-prog, .cp-label, .sl-quiz-score, .db-ring-pct {
   font-variant-numeric: tabular-nums;
   font-feature-settings: "tnum" 1, "zero" 1;
 }

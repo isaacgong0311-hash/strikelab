@@ -1,0 +1,133 @@
+/* The compact panel between a lesson's header and its first paragraph:
+   a "Before you start" disclosure (desk briefing + what the lesson assumes),
+   an optional "new to finance?" pointer, and the short-sessions row.
+   Replaces .lesson-briefing / .lesson-prereqs in globals.css and
+   .sl-sessions-callout in foundation.css. */
+
+.brief {
+  margin: 0 0 var(--sl-space-6);
+  border: 1px solid var(--sl-border);
+  border-radius: var(--sl-radius-lg);
+  background: var(--sl-surface);
+}
+.brief > * + * { border-top: 1px solid var(--sl-border); }
+
+/* ── Disclosure ─────────────────────────────────────────────────────────── */
+.details > summary {
+  display: flex;
+  align-items: center;
+  gap: var(--sl-space-3);
+  min-height: var(--sl-tap);
+  padding: var(--sl-space-2) var(--sl-space-4);
+  cursor: pointer;
+  list-style: none;
+  border-radius: var(--sl-radius-lg);
+  color: var(--sl-text);
+}
+.details > summary::-webkit-details-marker { display: none; }
+.details > summary:hover { background: var(--sl-surface-raised); }
+.details > summary:focus-visible { outline: 3px solid var(--sl-focus); outline-offset: 2px; }
+.details[open] > summary { border-radius: var(--sl-radius-lg) var(--sl-radius-lg) 0 0; }
+
+.summaryLabel {
+  flex-shrink: 0;
+  font-size: 0.8125rem;
+  font-weight: 600;
+}
+.summaryPreview {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  font-size: 0.8125rem;
+  color: var(--sl-text-muted);
+}
+.details[open] .summaryPreview { visibility: hidden; }
+.chevron {
+  flex-shrink: 0;
+  margin-left: auto;
+  color: var(--sl-text-subtle);
+  transition: transform var(--sl-motion-fast) var(--sl-ease);
+}
+.details[open] .chevron { transform: rotate(180deg); }
+
+.body {
+  display: grid;
+  gap: var(--sl-space-4);
+  padding: var(--sl-space-1) var(--sl-space-4) var(--sl-space-4);
+}
+
+/* ── Items inside the disclosure ────────────────────────────────────────── */
+.item { min-width: 0; }
+.itemLabel {
+  margin: 0 0 var(--sl-space-1);
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--sl-text-muted);
+}
+.itemText {
+  margin: 0;
+  font-size: 0.875rem;
+  line-height: 1.6;
+  color: var(--sl-text);
+}
+.links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sl-space-1) var(--sl-space-4);
+  margin: var(--sl-space-2) 0 0;
+  padding: 0;
+  list-style: none;
+}
+.link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 32px;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--sl-brand-strong);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+}
+.link:hover { color: var(--sl-text); }
+
+/* ── Rows ───────────────────────────────────────────────────────────────── */
+.row {
+  margin: 0;
+  padding: var(--sl-space-3) var(--sl-space-4);
+  font-size: 0.8125rem;
+  line-height: 1.5;
+  color: var(--sl-text-muted);
+}
+.row a {
+  font-weight: 600;
+  color: var(--sl-brand-strong);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+}
+
+.sessions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sl-space-3) var(--sl-space-4);
+  padding: var(--sl-space-3) var(--sl-space-4);
+}
+.sessionsText { min-width: 0; }
+.sessionsTitle {
+  margin: 0;
+  font: 600 0.875rem/1.4 var(--sl-font-body);
+  letter-spacing: 0;
+  color: var(--sl-text);
+}
+.sessionsMeta {
+  margin: 2px 0 0;
+  font-size: 0.8125rem;
+  line-height: 1.5;
+  color: var(--sl-text-muted);
+}
+.sessionsAction { flex-shrink: 0; }

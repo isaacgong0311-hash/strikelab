@@ -13,6 +13,13 @@
  * lesson uses plain <h2> section headings.
  */
 
+/**
+ * Anchor of the coding exercise that follows the prose on Options and Quant
+ * lessons. The header's "Jump to the exercise" link and the TOC's last entry
+ * point here, so no section heading may take this id.
+ */
+export const EXERCISE_ANCHOR = "exercise";
+
 export interface TocSection {
   id: string;
   title: string;
@@ -73,7 +80,7 @@ function slugify(text: string): string {
 
 export function buildLessonToc(content: string): LessonToc {
   const sections: TocSection[] = [];
-  const used = new Set<string>();
+  const used = new Set<string>([EXERCISE_ANCHOR]);
 
   const html = content.replace(
     /<h2([^>]*)>([\s\S]*?)<\/h2>/g,
@@ -105,9 +112,11 @@ export function buildLessonToc(content: string): LessonToc {
  * Spreads `count` checkpoints across `sectionCount` sections, returning the
  * chunk indices to place them after.
  *
- * Never places one after the final section: the coding exercise already lives
- * there, and stacking a quiz question directly above it makes the end of the
- * lesson feel like a gauntlet rather than a finish line.
+ * Never places one after the final section. On Options and Quant lessons the
+ * coding exercise follows it, and stacking a quiz question directly above that
+ * makes the end of the lesson feel like a gauntlet rather than a finish line.
+ * Investing lessons have no exercise; their leftover questions become the
+ * end-of-lesson Knowledge Check instead (see LessonClient).
  */
 export function checkpointPlacement(count: number, sectionCount: number): number[] {
   if (count <= 0 || sectionCount <= 1) return [];

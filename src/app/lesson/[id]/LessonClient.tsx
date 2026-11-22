@@ -7,11 +7,7 @@ import dynamic from "next/dynamic";
 import { useProgress } from "@/lib/useProgress";
 import { trackLessonStart, trackTestsPassed, trackLessonComplete, trackQuizAnswer } from "@/lib/analytics";
 import { completeSavedLesson } from "@/lib/learningNextStep";
-import Eyebrow from "@/components/Eyebrow";
 import Breadcrumbs from "@/components/Breadcrumbs";
-import PrereqBox from "@/components/PrereqBox";
-import DeskBriefing from "@/components/DeskBriefing";
-import SessionsCallout from "@/components/SessionsCallout";
 import AiTutor from "@/components/AiTutor";
 import LessonToc from "@/components/LessonToc";
 import AiReview from "@/components/AiReview";
@@ -21,9 +17,12 @@ import FormulaSandbox from "@/components/FormulaSandbox";
 import PayoffDiagram from "@/components/PayoffDiagram";
 import BinomialTree from "@/components/BinomialTree";
 import PracticeProblem from "@/components/PracticeProblem";
-import { checkpointPlacement, type TocSection } from "@/lib/lessonToc";
+import { checkpointPlacement, EXERCISE_ANCHOR, type TocSection } from "@/lib/lessonToc";
 import FlameIcon from "@/components/FlameIcon";
 import Dialog from "@/components/ui/Dialog";
+import { ActionLink, Button, buttonClassName } from "@/components/ui/Action";
+import LessonBrief, { type StartHere } from "./LessonBrief";
+import styles from "./lesson.module.css";
 
 import { CODE_SYNC_LABELS, useSyncedCode } from "@/lib/submissions/useSyncedCode";
 import { loadPythonRuntime, type PythonRuntime } from "@/lib/pythonRuntime";
@@ -50,6 +49,8 @@ interface Props {
   positionInTrack: number;
   trackLength: number;
   related: Pick<Lesson, "id" | "title" | "subtitle">[];
+  /** Set on the first lesson of a later track: the site-wide first lesson. */
+  startHere?: StartHere | null;
 }
 
 // ─── Tiny helpers ────────────────────────────────────────────────────────────
@@ -173,14 +174,14 @@ function CelebrationOverlay({
 
         {/* XP badge */}
         <div className="sl-xp-badge">
-          <span>+100 XP</span>
+          <span className="sl-num">+100 XP</span>
         </div>
 
         {/* Streak */}
         <div className="sl-streak-display">
           {streak > 0 ? (
             <>
-              <FlameIcon size={13} style={{ color: "var(--coral)" }} /> <span className="streak-num">{streak}-day</span> streak — keep it up!
+              <FlameIcon size={13} className={styles.flame} /> <span className="streak-num sl-num">{streak}-day</span> streak — keep it up!
             </>
           ) : (
             "Complete a lesson each day to build your streak"
@@ -190,25 +191,17 @@ function CelebrationOverlay({
         {/* Actions */}
         <div className="sl-celebration-actions">
           {nextLesson ? (
-            <Link
-              href={`/lesson/${nextLesson.id}`}
-              className="sl-btn-primary"
-              onClick={onClose}
-            >
-              Next Lesson → {nextLesson.title}
-            </Link>
+            <ActionLink href={`/lesson/${nextLesson.id}`} onClick={onClose}>
+              Next lesson: {nextLesson.title}
+            </ActionLink>
           ) : (
-            <Link
-              href="/playground"
-              className="sl-btn-primary"
-              onClick={onClose}
-            >
-              Open Playground →
-            </Link>
+            <ActionLink href="/playground" onClick={onClose}>
+              Open the Playground
+            </ActionLink>
           )}
-          <button type="button" className="sl-btn-ghost" onClick={onClose}>
+          <Button variant="ghost" onClick={onClose}>
             Stay on this lesson
-          </button>
+          </Button>
         </div>
       </div>
     </Dialog>
@@ -217,7 +210,7 @@ function CelebrationOverlay({
 
 // ─── Main lesson component ────────────────────────────────────────────────────
 
-export default function LessonClient({ lesson, sections, chunks, prev, next, trackId, trackTitle, positionInTrack, trackLength, related }: Props) {
+export default function LessonClient({ lesson, sections, chunks, prev, next, trackId, trackTitle, positionInTrack, trackLength, related, startHere }: Props) {
   // Investing Fundamentals has no coding exercise — the track's own pitch is
   // "no finance background required, just curiosity and pre-algebra," and
   // every one of its lessons already has a no-code drag-slider
@@ -367,8 +360,10 @@ export default function LessonClient({ lesson, sections, chunks, prev, next, tra
     runRef.current = runCode;
   }, [runCode]);
 
-  // Ctrl+Enter / Cmd+Enter shortcut
+  // Ctrl+Enter / Cmd+Enter shortcut. Investing lessons have no editor, so the
+  // shortcut must not download Python and run their hidden tests.
   useEffect(() => {
+    if (!hasCodingExercise) return;
     const handler = (e: KeyboardEvent) => {
       if ((e.ctrlKey || e.metaKey) && e.key === "Enter") {
         e.preventDefault();
@@ -377,12 +372,39 @@ export default function LessonClient({ lesson, sections, chunks, prev, next, tra
     };
     window.addEventListener("keydown", handler);
     return () => window.removeEventListener("keydown", handler);
-  }, []);
+  }, [hasCodingExercise]);
 
-  const borderColor =
-    status === "pass" ? "rgba(34,197,94,0.35)"
-    : status === "fail" ? "rgba(239,68,68,0.3)"
-    : "var(--border)";
+  // On a phone the run bar is stuck to the bottom of the screen while the
+  // output renders below it, off screen. Once a run settles, bring the result
+  // into view (only as far as needed, so desktop rarely moves).
+  const outputRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    if (status !== "pass" && status !== "fail") return;
+    const el = outputRef.current;
+    if (!el || el.getBoundingClientRect().top < window.innerHeight - 48) return;
+    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    el.scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "nearest" });
+  }, [status]);
+
+  // Progressive enhancement over the plain #exercise anchor: scroll smoothly
+  // (unless motion is reduced) and put focus on the exercise so the next Tab
+  // lands in its editor. Without JavaScript the browser's own jump does it.
+  const jumpToExercise = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    const target = document.getElementById(EXERCISE_ANCHOR);
+    if (!target) return;
+    e.preventDefault();
+    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    target.scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "start" });
+    target.focus({ preventScroll: true });
+    history.replaceState(null, "", `#${EXERCISE_ANCHOR}`);
+  };
+
+  // The section that opens the prose sits right under the brief panel, so its
+  // heading drops the divider every later section gets. With a preamble, the
+  // preamble is the opener and every heading keeps its divider.
+  const leadChunk = chunks[0]?.trim() === "" ? 1 : -1;
+
+  const resultLabel = status === "pass" ? "Tests passed" : status === "running" ? "Running" : "Error";
 
   return (
     <>
@@ -396,371 +418,285 @@ export default function LessonClient({ lesson, sections, chunks, prev, next, tra
         />
       )}
 
-      <div className="lesson-shell max-w-6xl mx-auto px-6 py-10">
+      <div className={styles.shell}>
         {/* Section nav — occupies the column that used to sit empty beside the
             prose. Hidden under 1180px, where there's no room for it. */}
-        <aside className="lesson-toc-col">
-          <LessonToc sections={sections} />
+        <aside className={styles.tocCol}>
+          <LessonToc
+            sections={sections}
+            exercise={hasCodingExercise ? { id: EXERCISE_ANCHOR, title: "Exercise" } : undefined}
+          />
         </aside>
 
         {/* Highlight any passage in the prose to have it re-explained. */}
         <ExplainSelection lessonId={lesson.id} />
 
-        <div className="min-w-0 max-w-3xl">
-        {/* Breadcrumb */}
-        <div className="v2-rise in">
+        <div className={styles.main}>
           <Breadcrumbs
             trail={[{ name: "Lessons", path: "/lessons" }, { name: lesson.title, path: `/lesson/${lesson.id}` }]}
           />
-        </div>
 
-        {/* Header */}
-        <div className="v2-page-head mb-6" data-v2-head style={{ padding: 0, border: 0 }}>
-          {/* Already-completed badge */}
-          {alreadyDone && (
-            <div
-              className="inline-flex items-center gap-2 mb-3 text-[10px] px-2.5 py-1 rounded-full"
-              style={{
-                background: "rgba(34,197,94,0.1)",
-                border: "1px solid rgba(34,197,94,0.2)",
-                color: "var(--grass)",
-                fontFamily: "var(--font-mono)",
-                letterSpacing: "0.08em",
-              }}
-            >
-              <span>✓</span>
-              <span>Completed · +100 XP earned</span>
-            </div>
-          )}
-
-          <Eyebrow>{trackTitle} · Lesson {positionInTrack} of {trackLength}</Eyebrow>
-          <h1
-            className="text-3xl font-semibold mb-1"
-            style={{ fontFamily: "var(--font-display)", color: "var(--ink)" }}
-          >
-            {lesson.title}
-          </h1>
-          <p className="text-sm" style={{ color: "var(--muted)", fontFamily: "var(--font-mono)" }}>
-            {lesson.subtitle} · {lesson.duration}
-          </p>
-          {/* Coding-exercise lessons show their +100 XP badge on the exercise
-              panel itself, further down. No-code lessons don't have that
-              panel, so say it here instead — otherwise there's no visible
-              reward for finishing the Knowledge Check below. */}
-          {!hasCodingExercise && !alreadyDone && quizQuestions.length > 0 && (
-            <p
-              className="text-xs mt-2"
-              style={{ color: "var(--amber)", fontFamily: "var(--font-mono)" }}
-            >
-              +100 XP for finishing the Knowledge Check below
+          <header className={styles.head}>
+            <p className={styles.kicker}>
+              {trackTitle} <span aria-hidden="true">·</span>{" "}
+              <span className="sl-num">{positionInTrack} of {trackLength}</span>
+              {alreadyDone && (
+                <span className={styles.doneBadge}>
+                  <CheckIcon /> Completed
+                </span>
+              )}
             </p>
-          )}
-        </div>
-
-        {lesson.deskBriefing && <DeskBriefing text={lesson.deskBriefing} />}
-
-        {lesson.prereqs && <PrereqBox prereqs={lesson.prereqs} />}
-
-        <SessionsCallout lessonId={lesson.id} />
-
-        {/* Lesson content, with checkpoints interleaved between sections.
-            The questions used to sit in one block at the end, so you could
-            read the whole lesson without once being asked to retrieve any of
-            it. Each one now lands while its section is still fresh. */}
-        <div
-          className="v2-rise lesson-content mb-8 pb-8"
-          style={{ borderBottom: "1px solid var(--border)", transitionDelay: "80ms" }}
-        >
-          {chunks.map((chunk, i) => (
-            <div key={i}>
-              <div dangerouslySetInnerHTML={{ __html: chunk }} />
-              {sandboxFor.has(i) && (
-                <FormulaSandbox config={sandboxFor.get(i)!} />
-              )}
-              {visualFor.get(i)?.type === "payoffDiagram" && <PayoffDiagram />}
-              {visualFor.get(i)?.type === "binomialTree" && <BinomialTree />}
-              {checkpointFor.has(i) && (
-                <Checkpoint
-                  question={quizQuestions[checkpointFor.get(i)!]}
-                  lessonId={lesson.id}
-                  index={checkpointFor.get(i)! + 1}
-                  onAnswered={() => setQuizAnsweredCount((c) => c + 1)}
-                />
-              )}
-            </div>
-          ))}
-        </div>
-
-        {/* Any questions that didn't fit between sections (short lessons)
-            still get shown, rather than silently dropped. */}
-        {leftoverQuestions.length > 0 && (
-          <div className="v2-rise" style={{ transitionDelay: "120ms" }}>
-            <QuizSection
-              questions={leftoverQuestions}
-              lessonId={lesson.id}
-              onAnswered={() => setQuizAnsweredCount((c) => c + 1)}
-            />
-          </div>
-        )}
-
-        {/* Exercise — Options/Quant only, see hasCodingExercise above */}
-        {hasCodingExercise && (
-        <section
-          aria-labelledby="coding-exercise-title"
-          className="v2-rise border overflow-hidden mb-8"
-          style={{
-            transitionDelay: "160ms",
-            borderColor,
-            transition: "border-color 0.25s, opacity 600ms cubic-bezier(.2,.7,.3,1), transform 600ms cubic-bezier(.2,.7,.3,1)",
-          }}
-        >
-          {/* Exercise header */}
-          <div
-            className="px-5 py-3 flex items-center justify-between border-b"
-            style={{ borderColor: "var(--border)", background: "var(--bg2)" }}
-          >
-            <div className="flex items-center gap-3">
-              <h2
-                id="coding-exercise-title"
-                className="text-sm font-semibold"
-                style={{ fontFamily: "var(--font-display)", color: "var(--ink)" }}
-              >
-                Coding Exercise
-              </h2>
-              <span
-                className="text-[10px] uppercase tracking-widest"
-                style={{ color: "var(--muted)", fontFamily: "var(--font-mono)" }}
-              >
-                Python · runs in browser
-              </span>
-            </div>
-            <div className="flex items-center gap-2">
-              {!alreadyDone && (
-                <span
-                  className="text-[10px] px-2 py-0.5 rounded"
-                  style={{ background: "var(--amber-tint)", color: "var(--amber)", fontFamily: "var(--font-mono)" }}
+            <h1 className={styles.title}>{lesson.title}</h1>
+            <p className={styles.subtitle}>
+              {lesson.subtitle} <span aria-hidden="true">·</span> <span className="sl-num">{lesson.duration}</span>
+            </p>
+            {hasCodingExercise && (
+              <div className={styles.headActions}>
+                <a
+                  href={`#${EXERCISE_ANCHOR}`}
+                  onClick={jumpToExercise}
+                  className={buttonClassName({ variant: "secondary", size: "sm" })}
                 >
-                  +100 XP
-                </span>
-              )}
-              {status === "pass" && (
-                <span className="text-[11px]" style={{ color: "var(--check)", fontFamily: "var(--font-mono)" }}>
-                  ✓ complete
-                </span>
-              )}
-            </div>
-          </div>
-
-          {/* Prompt */}
-          <div
-            className="px-5 py-3 border-b text-sm leading-relaxed"
-            style={{ borderColor: "var(--border)", color: "var(--fg-mute)", background: "var(--card)" }}
-          >
-            {lesson.exercise.prompt}
-          </div>
-
-          {/* Code editor */}
-          <MiniEditor value={code} onChange={setCode} ariaLabel={`${lesson.title} coding exercise`} />
-          {/* Only a failed save is announced; "Saving…/Saved" after every pause would be noise. */}
-          <p className="code-sync-status" data-state={codeSync}>
-            <span aria-hidden={codeSync === "retrying" || undefined}>{CODE_SYNC_LABELS[codeSync]}</span>
-            <span className="sl-visually-hidden" role="status">
-              {codeSync === "retrying" ? CODE_SYNC_LABELS.retrying : ""}
-            </span>
-          </p>
-
-          {/* Run bar */}
-          <div
-            className="px-5 py-3 flex items-center justify-between border-t gap-3"
-            style={{ borderColor: "var(--border)", background: "var(--bg2)" }}
-          >
-            <div className="flex items-center gap-2">
-              <button
-                type="button"
-                onClick={runCode}
-                disabled={status === "running"}
-                className="flex items-center gap-2 px-4 py-1.5 text-sm font-medium transition-all disabled:opacity-30"
-                style={{
-                  background: "var(--grass)",
-                  color: "#ffffff",
-                  fontFamily: "var(--font-mono)",
-                  border: "1px solid transparent",
-                  borderRadius: "10px",
-                  boxShadow: "0 3px 0 var(--grass-d)",
-                  letterSpacing: "0.03em",
-                }}
-              >
-                {status === "running" ? (
-                  <>
-                    <span className="animate-spin inline-block" style={{ fontSize: 12 }}>◌</span>
-                    {python === "ready" ? "Running…" : "Loading Python…"}
-                  </>
-                ) : (
-                  <>
-                    ▶ Run Tests
-                    <kbd
-                      className="text-[9px] px-1.5 py-0.5 ml-1"
-                      style={{
-                        background: "rgba(255,255,255,0.25)",
-                        color: "rgba(255,255,255,0.9)",
-                        fontFamily: "var(--font-mono)",
-                      }}
-                    >
-                      Ctrl/⌘ + Enter
-                    </kbd>
-                  </>
-                )}
-              </button>
-
-              {/* AI Hint button — shows after first attempt or always */}
-              <button
-                type="button"
-                onClick={() => setShowHint((v) => !v)}
-                aria-expanded={showHint}
-                aria-controls="lesson-ai-tutor"
-                className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium transition-all"
-                style={{
-                  background: showHint ? "rgba(34,197,94,0.12)" : "var(--card)",
-                  color: showHint ? "var(--check)" : "var(--fg-mute)",
-                  fontFamily: "var(--font-mono)",
-                  border: `1px solid ${showHint ? "rgba(34,197,94,0.3)" : "var(--border-hi)"}`,
-                  borderRadius: "10px",
-                  letterSpacing: "0.04em",
-                  cursor: "pointer",
-                }}
-              >
-                ∂ {showHint ? "Hide tutor" : "Ask the tutor"}
-              </button>
-            </div>
-
-            {status === "idle" && !showHint && python !== "failed" && (
-              <span className="text-xs" style={{ color: "var(--muted)", fontFamily: "var(--font-mono)" }}>
-                {python === "loading" ? "Loading Python in the background…" : "Write your solution, then run"}
-              </span>
-            )}
-            {status === "idle" && !showHint && python === "failed" && (
-              <span className="text-xs" role="status" style={{ color: "var(--amber)", fontFamily: "var(--font-mono)" }}>
-                Python didn&apos;t load. Press Run to try again.
-              </span>
-            )}
-            {status === "fail" && !showHint && (
-              <span className="text-xs" style={{ color: "#dc2626", fontFamily: "var(--font-mono)" }}>
-                Fix the error and try again
-              </span>
-            )}
-          </div>
-
-          {/* Output */}
-          {output && (
-            <div className="border-t" style={{ borderColor: "var(--border)" }} role={status === "fail" ? "alert" : "status"} aria-live="polite" aria-atomic="true">
-              <div
-                className="flex items-center gap-2 px-5 py-2 border-b text-[10px] uppercase tracking-widest"
-                style={{
-                  borderColor: "var(--border)",
-                  color: status === "pass" ? "var(--check)" : status === "running" ? "var(--muted)" : "#dc2626",
-                  fontFamily: "var(--font-mono)",
-                  background: "var(--bg2)",
-                }}
-              >
-                <span aria-hidden="true">{status === "pass" ? "✓" : status === "running" ? "◌" : "✗"}</span>
-                <span>{status === "pass" ? "Tests passed" : status === "running" ? "Running" : "Error"}</span>
+                  Jump to the exercise
+                  <svg width="12" height="12" viewBox="0 0 12 12" aria-hidden="true" focusable="false">
+                    <path d="M6 1.5v9M2 6.5l4 4 4-4" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                </a>
+                {!alreadyDone && <span className={styles.xpNote}><span className="sl-num">+100 XP</span> when the tests pass</span>}
               </div>
-              <pre
-                className="px-5 py-4 text-xs font-mono whitespace-pre-wrap overflow-auto"
-                style={{
-                  color: status === "pass" ? "var(--check)" : status === "running" ? "var(--fg-mute)" : "#dc2626",
-                  background: "var(--bg)",
-                  maxHeight: "12rem",
-                }}
-              >
-                {output}
-              </pre>
-            </div>
-          )}
+            )}
+            {/* No-code lessons have no exercise panel to carry the reward, so
+                say it here; otherwise finishing the Knowledge Check has no
+                visible payoff. */}
+            {!hasCodingExercise && !alreadyDone && quizQuestions.length > 0 && (
+              <p className={styles.xpNote}><span className="sl-num">+100 XP</span> for finishing the Knowledge Check</p>
+            )}
+          </header>
 
-          {/* Review is offered only once the tests pass — reviewing broken
-              code is the tutor's job, and doing it here would just be a second
-              hint button. */}
-          {status === "pass" && <AiReview lessonId={lesson.id} code={code} />}
+          <LessonBrief
+            lesson={lesson}
+            startHere={startHere && !(hydrated && completed.has(startHere.id)) ? startHere : null}
+          />
 
-          {/* Extra drilling on the same concept, for a student who passed but
-              doesn't feel like it clicked. Reuses the Pyodide runtime already
-              loaded here, so a generated exercise costs no extra download. */}
-          {status === "pass" && <PracticeProblem lessonId={lesson.id} />}
+          {/* Lesson content, with checkpoints interleaved between sections.
+              The questions used to sit in one block at the end, so you could
+              read the whole lesson without once being asked to retrieve any of
+              it. Each one now lands while its section is still fresh. */}
+          <div className={`lesson-content ${styles.content}`}>
+            {chunks.map((chunk, i) => (
+              <div key={i} data-lead={i === leadChunk || undefined}>
+                <div dangerouslySetInnerHTML={{ __html: chunk }} />
+                {sandboxFor.has(i) && (
+                  <FormulaSandbox config={sandboxFor.get(i)!} />
+                )}
+                {visualFor.get(i)?.type === "payoffDiagram" && <PayoffDiagram />}
+                {visualFor.get(i)?.type === "binomialTree" && <BinomialTree />}
+                {checkpointFor.has(i) && (
+                  <Checkpoint
+                    question={quizQuestions[checkpointFor.get(i)!]}
+                    lessonId={lesson.id}
+                    index={checkpointFor.get(i)! + 1}
+                    onAnswered={() => setQuizAnsweredCount((c) => c + 1)}
+                  />
+                )}
+              </div>
+            ))}
+          </div>
 
-          {/* AI tutor — conversational, sees the current code and error */}
-          {showHint && (
-            <div id="lesson-ai-tutor" style={{ padding: "0 14px 14px" }}>
-              <AiTutor
+          {/* Any questions that didn't fit between sections (short lessons)
+              still get shown, rather than silently dropped. */}
+          {leftoverQuestions.length > 0 && (
+            <div className={styles.block}>
+              <QuizSection
+                questions={leftoverQuestions}
                 lessonId={lesson.id}
-                code={code}
-                error={status === "fail" ? output : ""}
-                onClose={() => setShowHint(false)}
+                onAnswered={() => setQuizAnsweredCount((c) => c + 1)}
               />
             </div>
           )}
-        </section>
-        )}
 
-        {/* Related lessons — same track, nearest-position-first, excluding
-            prev/next (those already have their own nav buttons below). */}
-        {related.length > 0 && (
-          <div className="v2-rise" style={{ marginBottom: 28 }}>
-            <div
-              className="text-xs uppercase tracking-widest mb-3"
-              style={{ color: "var(--muted)", fontFamily: "var(--font-mono)" }}
-            >
-              More in {trackTitle}
+          {/* Exercise — Options/Quant only, see hasCodingExercise above.
+              tabIndex -1 lets the jump link and TOC move focus here. */}
+          {hasCodingExercise && (
+          <section
+            id={EXERCISE_ANCHOR}
+            tabIndex={-1}
+            aria-labelledby="coding-exercise-title"
+            className={styles.exercise}
+            data-status={status}
+          >
+            <div className={styles.exHead}>
+              <div className={styles.exTitleRow}>
+                <h2 id="coding-exercise-title" className={styles.exTitle}>Coding exercise</h2>
+                <span className={styles.exMeta}>Python, runs in your browser</span>
+              </div>
+              {status === "pass" ? (
+                <span className={styles.exPassed}><CheckIcon /> Complete</span>
+              ) : !alreadyDone ? (
+                <span className={`${styles.exXp} sl-num`}>+100 XP</span>
+              ) : null}
             </div>
-            <div className="grid gap-2" style={{ gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))" }}>
-              {related.map((r) => (
-                <Link
-                  key={r.id}
-                  href={`/lesson/${r.id}`}
-                  className="text-sm p-3 rounded-lg border transition-opacity hover:opacity-70"
-                  style={{ borderColor: "var(--border)", color: "var(--ink-2)" }}
+
+            <p className={styles.exPrompt}>{withInlineCode(lesson.exercise.prompt)}</p>
+
+            <div className={styles.editor}>
+              <MiniEditor value={code} onChange={setCode} ariaLabel={`${lesson.title} coding exercise`} />
+            </div>
+            {/* Only a failed save is announced; "Saving…/Saved" after every pause would be noise. */}
+            <p className={styles.sync} data-state={codeSync}>
+              <span aria-hidden={codeSync === "retrying" || undefined}>{CODE_SYNC_LABELS[codeSync]}</span>
+              <span className="sl-visually-hidden" role="status">
+                {codeSync === "retrying" ? CODE_SYNC_LABELS.retrying : ""}
+              </span>
+            </p>
+
+            {/* Run bar. Sticks to the bottom of the viewport while the editor
+                scrolls past, so on a phone Run is never a screen away from
+                the code it runs. */}
+            <div className={styles.runBar}>
+              <div className={styles.runActions}>
+                <Button
+                  onClick={runCode}
+                  disabled={status === "running"}
+                  aria-keyshortcuts="Control+Enter Meta+Enter"
                 >
-                  <div style={{ color: "var(--ink)", fontWeight: 600, marginBottom: 2 }}>{r.title}</div>
-                  <div style={{ color: "var(--muted2)", fontSize: 12 }}>{r.subtitle}</div>
-                </Link>
-              ))}
-            </div>
-          </div>
-        )}
+                  {status === "running" ? (
+                    <>
+                      <span className={styles.spinner} aria-hidden="true" />
+                      {python === "ready" ? "Running…" : "Loading Python…"}
+                    </>
+                  ) : (
+                    <>
+                      <svg width="10" height="12" viewBox="0 0 10 12" aria-hidden="true" focusable="false">
+                        <path d="M1 1.2v9.6a.6.6 0 0 0 .9.5l7.6-4.8a.6.6 0 0 0 0-1L1.9.7a.6.6 0 0 0-.9.5Z" fill="currentColor" />
+                      </svg>
+                      Run Tests
+                      <kbd className={styles.kbd} aria-hidden="true">Ctrl/⌘ Enter</kbd>
+                    </>
+                  )}
+                </Button>
 
-        {/* Navigation */}
-        <div className="v2-rise flex justify-between items-center" style={{ transitionDelay: "240ms" }}>
-          {prev ? (
-            <Link
-              href={`/lesson/${prev.id}`}
-              className="text-sm px-4 py-2 rounded-lg border transition-opacity hover:opacity-70"
-              style={{ borderColor: "var(--border)", color: "var(--ink-2)" }}
-            >
-              ← {prev.title}
-            </Link>
-          ) : (
-            <div />
+                <Button
+                  variant="secondary"
+                  size="sm"
+                  onClick={() => setShowHint((v) => !v)}
+                  aria-expanded={showHint}
+                  aria-controls="lesson-ai-tutor"
+                >
+                  {showHint ? "Hide tutor" : "Ask the tutor"}
+                </Button>
+              </div>
+
+              {status === "idle" && !showHint && python !== "failed" && (
+                <span className={styles.runHint}>
+                  {python === "loading" ? "Loading Python in the background…" : "Write your solution, then run"}
+                </span>
+              )}
+              {status === "idle" && !showHint && python === "failed" && (
+                <span className={styles.runHint} data-tone="warning" role="status">
+                  Python didn&apos;t load. Press Run to try again.
+                </span>
+              )}
+              {status === "fail" && !showHint && (
+                <span className={styles.runHint} data-tone="danger">
+                  Fix the error and try again
+                </span>
+              )}
+              {status === "pass" && !showHint && (
+                <span className={styles.runHint} data-tone="success">
+                  Every test passes
+                </span>
+              )}
+            </div>
+
+            {/* Output */}
+            {output && (
+              <div ref={outputRef} className={styles.output} data-status={status} role={status === "fail" ? "alert" : "status"} aria-live="polite" aria-atomic="true">
+                <div className={styles.outputHead}>
+                  <span aria-hidden="true">{status === "pass" ? "✓" : status === "running" ? "…" : "✗"}</span>
+                  <span>{resultLabel}</span>
+                </div>
+                <pre className={styles.outputBody}>{output}</pre>
+              </div>
+            )}
+
+            {/* Review is offered only once the tests pass — reviewing broken
+                code is the tutor's job, and doing it here would just be a second
+                hint button. */}
+            {status === "pass" && <AiReview lessonId={lesson.id} code={code} />}
+
+            {/* Extra drilling on the same concept, for a student who passed but
+                doesn't feel like it clicked. Reuses the Pyodide runtime already
+                loaded here, so a generated exercise costs no extra download. */}
+            {status === "pass" && <PracticeProblem lessonId={lesson.id} />}
+
+            {/* AI tutor — conversational, sees the current code and error */}
+            {showHint && (
+              <div id="lesson-ai-tutor" className={styles.tutor}>
+                <AiTutor
+                  lessonId={lesson.id}
+                  code={code}
+                  error={status === "fail" ? output : ""}
+                  onClose={() => setShowHint(false)}
+                />
+              </div>
+            )}
+          </section>
           )}
-          {next ? (
-            <Link
-              href={`/lesson/${next.id}`}
-              className="text-sm px-4 py-2 font-medium transition-colors hover:opacity-80"
-              style={{ background: "var(--grass)", color: "#ffffff", fontFamily: "var(--font-mono)", borderRadius: "10px", boxShadow: "0 3px 0 var(--grass-d)" }}
-            >
-              {next.title} →
-            </Link>
-          ) : (
-            <Link
-              href="/playground"
-              className="text-sm px-4 py-2 font-medium transition-colors hover:opacity-80"
-              style={{ background: "var(--grass)", color: "#ffffff", fontFamily: "var(--font-mono)", borderRadius: "10px", boxShadow: "0 3px 0 var(--grass-d)" }}
-            >
-              Open Playground →
-            </Link>
+
+          {/* Related lessons — same track, nearest-position-first, excluding
+              prev/next (those already have their own links below). */}
+          {related.length > 0 && (
+            <section className={styles.related} aria-labelledby="related-title">
+              <h2 id="related-title" className={styles.relatedTitle}>More in {trackTitle}</h2>
+              <ul className={styles.relatedGrid}>
+                {related.map((r) => (
+                  <li key={r.id}>
+                    <Link href={`/lesson/${r.id}`} className={styles.relatedCard}>
+                      <span className={styles.relatedName}>{r.title}</span>
+                      <span className={styles.relatedSub}>{r.subtitle}</span>
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </section>
           )}
-        </div>
+
+          {/* Previous / next */}
+          <nav className={styles.pager} aria-label="Lesson navigation">
+            {prev ? (
+              <Link href={`/lesson/${prev.id}`} className={styles.pagerLink} rel="prev">
+                <span className={styles.pagerDir}>Previous</span>
+                <span className={styles.pagerName}>{prev.title}</span>
+              </Link>
+            ) : <span />}
+            {next ? (
+              <Link href={`/lesson/${next.id}`} className={`${styles.pagerLink} ${styles.pagerNext}`} rel="next">
+                <span className={styles.pagerDir}>Next</span>
+                <span className={styles.pagerName}>{next.title}</span>
+              </Link>
+            ) : (
+              <Link href="/playground" className={`${styles.pagerLink} ${styles.pagerNext}`}>
+                <span className={styles.pagerDir}>Up next</span>
+                <span className={styles.pagerName}>Open the Playground</span>
+              </Link>
+            )}
+          </nav>
         </div>
       </div>
     </>
   );
+}
+
+function CheckIcon() {
+  return (
+    <svg width="12" height="12" viewBox="0 0 12 12" aria-hidden="true" focusable="false">
+      <path d="m2.5 6.2 2.3 2.3 4.7-5" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
+/** Exercise prompts are plain strings that mark code with `backticks`. */
+function withInlineCode(text: string) {
+  return text.split(/`([^`]+)`/).map((part, i) => (i % 2 === 1 ? <code key={i}>{part}</code> : part));
 }
