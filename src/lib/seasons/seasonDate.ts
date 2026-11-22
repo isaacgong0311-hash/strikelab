@@ -21,6 +21,18 @@ export function seasonDate(now: Date): string {
 }
 
 /**
+ * The season /seasons shows on `today` (a seasonDate): the current or next
+ * one (earliest start among those not yet past their last day), otherwise the
+ * one that ended most recently, so the final board stays up between seasons.
+ */
+export function pickDisplaySeason<T extends { starts_on: string; ends_on: string }>(seasons: readonly T[], today: string): T | null {
+  const current = seasons.filter((s) => s.ends_on >= today).sort((a, b) => a.starts_on.localeCompare(b.starts_on));
+  if (current.length > 0) return current[0];
+  const ended = [...seasons].sort((a, b) => b.ends_on.localeCompare(a.ends_on));
+  return ended[0] ?? null;
+}
+
+/**
  * A season is over once its last challenge has closed. With the challenges'
  * `closes_at` to hand, that is the test; without them, it is over once its
  * last day (`ends_on`) has passed in New York.

@@ -166,6 +166,18 @@ test.describe("timed challenge workspace", () => {
     await expect(page.locator("p[role='alert']")).toContainText("Sign in to start the challenge.");
     await expect(page.getByRole("link", { name: "Sign in" })).toHaveAttribute("href", /\/sign-in\?next=/);
   });
+
+  test("sends a student without a handle to choose one before the clock starts", async ({ page }) => {
+    await page.route("**/api/seasons/challenges/*/start", (route) => route.fulfill({
+      status: 409,
+      json: { code: "needs_handle", error: "Choose your leaderboard handle before you start, so your score shows on the board. The clock hasn't started." },
+    }));
+    await page.goto("/seasons/s1-w1");
+    await page.getByRole("button", { name: "Start the challenge" }).click();
+    await expect(page.locator("p[role='alert']")).toContainText("The clock hasn't started.");
+    await expect(page.getByRole("link", { name: "Choose your handle" })).toHaveAttribute("href", "/seasons#handle");
+    await expect(page.getByRole("button", { name: "Start the challenge" })).toBeVisible();
+  });
 });
 
 test("the seasons page leads with the practice round and the opening", async ({ page }) => {

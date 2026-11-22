@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { seasonDate, seasonIsOver } from "./seasonDate";
+import { pickDisplaySeason, seasonDate, seasonIsOver } from "./seasonDate";
 
 // Season 1 as seeded in supabase/seed/season-1.sql.
 const ENDS_ON = "2026-12-20";
@@ -22,6 +22,29 @@ describe("seasonDate", () => {
   it("follows daylight saving time", () => {
     expect(seasonDate(at("2026-07-01T03:30:00Z"))).toBe("2026-06-30");
     expect(seasonDate(at("2026-07-01T04:30:00Z"))).toBe("2026-07-01");
+  });
+});
+
+describe("pickDisplaySeason", () => {
+  const s0 = { id: "s0", starts_on: "2026-09-01", ends_on: "2026-09-20" };
+  const s1 = { id: "s1-2026", starts_on: "2026-11-30", ends_on: ENDS_ON };
+  const s2 = { id: "s2-2027", starts_on: "2027-02-01", ends_on: "2027-02-21" };
+  const pick = (iso: string, rows = [s2, s0, s1]) => pickDisplaySeason(rows, seasonDate(at(iso)))?.id ?? null;
+
+  it("shows Season 1 from before it opens until 11:59pm Eastern on Dec 20", () => {
+    expect(pick("2026-11-21T12:00:00-05:00")).toBe("s1-2026");
+    expect(pick("2026-11-30T05:00:00Z")).toBe("s1-2026");
+    expect(pick("2026-12-20T19:00:00-05:00")).toBe("s1-2026");
+  });
+
+  it("moves on to the next season once Season 1 has ended", () => {
+    expect(pick("2026-12-21T00:01:00-05:00")).toBe("s2-2027");
+  });
+
+  it("keeps the most recently ended season up when nothing is scheduled", () => {
+    expect(pick("2026-12-21T00:01:00-05:00", [s0, s1])).toBe("s1-2026");
+    expect(pick("2027-06-01T12:00:00-05:00", [s1, s0, s2])).toBe("s2-2027");
+    expect(pick("2026-12-21T00:01:00-05:00", [])).toBeNull();
   });
 });
 

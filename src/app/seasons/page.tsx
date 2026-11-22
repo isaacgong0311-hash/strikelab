@@ -8,7 +8,7 @@ import { getSupabaseServer } from "@/lib/supabase/server";
 import { getTemplate } from "@/lib/seasons/templates";
 import { challengeStatus } from "@/lib/seasons/window";
 import { PLANNED_SEASON, seasonPhase, type SeasonPhase } from "@/lib/seasons/planned";
-import { seasonDate, seasonIsOver } from "@/lib/seasons/seasonDate";
+import { pickDisplaySeason, seasonDate, seasonIsOver } from "@/lib/seasons/seasonDate";
 import { trainLinkFor } from "@/lib/seasons/train";
 import seasonStyles from "./seasons.module.css";
 import { remainingLabel, statusForWeek, type OwnAttempt } from "@/lib/seasons/status";
@@ -52,15 +52,10 @@ function readable(date: string): string {
 async function load(requestedClubId: string | undefined) {
   const supabase = await getSupabaseServer();
   if (!supabase) return { season: null, challenges: [], attempts: [], board: [], clubBoard: null, clubs: [], selectedClub: null, needsHandle: false, signedIn: false, handle: null, invited: null };
-  // Eastern calendar day, so the season stays up until its last week closes at 11:59pm New York time.
-  const today = seasonDate(new Date());
-  const { data: seasons } = await supabase.from("seasons").select("id, title, starts_on, ends_on").gte("ends_on", today).order("starts_on").limit(1);
-  let season = (seasons?.[0] as SeasonRow | undefined) ?? null;
-  if (!season) {
-    // Between seasons, show the one that just ended and its final board, not an empty page.
-    const { data: ended } = await supabase.from("seasons").select("id, title, starts_on, ends_on").lt("ends_on", today).order("ends_on", { ascending: false }).limit(1);
-    season = (ended?.[0] as SeasonRow | undefined) ?? null;
-  }
+  // The current or next season by the New York calendar day; between seasons,
+  // the one that just ended, with its final board, instead of an empty page.
+  const { data: seasons } = await supabase.from("seasons").select("id, title, starts_on, ends_on");
+  const season = pickDisplaySeason((seasons ?? []) as SeasonRow[], seasonDate(new Date()));
   const { data: auth } = await supabase.auth.getUser();
   let needsHandle = false;
   let handle: string | null = null;
