@@ -89,14 +89,12 @@
   padding: 0 1.5rem;
   border-radius: var(--sl-radius-md);
   background: var(--sl-brand);
-  box-shadow: 0 4px 0 var(--sl-brand-strong);
   color: #fff;
   font-weight: 800;
   text-decoration: none;
-  transition: transform var(--sl-motion-fast) var(--sl-ease), box-shadow var(--sl-motion-fast) var(--sl-ease);
+  transition: background var(--sl-motion-fast) var(--sl-ease);
 }
-.primary:hover { transform: translateY(-1px); box-shadow: 0 5px 0 var(--sl-brand-strong); }
-.primary:active { transform: translateY(3px); box-shadow: 0 1px 0 var(--sl-brand-strong); }
+.primary:hover { background: var(--sl-brand-strong); }
 .primary:focus-visible { outline: 3px solid var(--sl-focus); outline-offset: 3px; }
 
 /* ── This week ───────────────────────────────────────────────── */

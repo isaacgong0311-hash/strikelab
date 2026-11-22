@@ -54,8 +54,7 @@
   height: 100%;
   transform-origin: left center;
   border-radius: inherit;
-  background: linear-gradient(90deg, #1f9d55, var(--sl-brand));
-  box-shadow: inset 0 -3px 0 rgb(0 0 0 / 0.08), inset 0 3px 0 rgb(255 255 255 / 0.25);
+  background: var(--sl-brand);
   transition: transform 420ms var(--sl-ease);
 }
 
@@ -156,19 +155,16 @@
   gap: 0.875rem;
   min-height: 3.5rem;
   padding: 0.75rem 1rem;
-  border: 2px solid var(--sl-border);
+  border: 1px solid var(--sl-border);
   border-radius: var(--sl-radius-md);
   background: var(--sl-surface);
-  box-shadow: 0 3px 0 var(--sl-border);
   font-size: 1rem;
   line-height: 1.4;
   cursor: pointer;
-  transition: transform var(--sl-motion-fast) var(--sl-ease), border-color var(--sl-motion-fast), background var(--sl-motion-fast), box-shadow var(--sl-motion-fast);
+  transition: border-color var(--sl-motion-fast), background var(--sl-motion-fast);
 }
-.option:hover { background: var(--sl-surface-raised); }
-.option:active { transform: translateY(2px); box-shadow: 0 1px 0 var(--sl-border); }
+.option:hover { border-color: var(--sl-border-strong); background: var(--sl-surface-raised); }
 .fieldset:disabled .option { cursor: default; }
-.fieldset:disabled .option:active { transform: none; box-shadow: 0 3px 0 var(--sl-border); }
 
 /* The native radio stays in the accessibility tree and keyboard order. */
 .radio {
@@ -191,13 +187,13 @@
   font: 700 0.75rem/1 var(--sl-font-code);
 }
 
-.optionSelected { border-color: var(--sl-info); background: var(--sl-info-soft); box-shadow: 0 3px 0 color-mix(in srgb, var(--sl-info) 45%, transparent); }
+.optionSelected { border-color: var(--sl-info); background: var(--sl-info-soft); box-shadow: inset 0 0 0 1px var(--sl-info); }
 .optionSelected .key { border-color: var(--sl-info); color: var(--sl-info); }
 .optionRight,
-.fieldset:disabled .optionRight { border-color: var(--sl-success); background: var(--sl-brand-soft); box-shadow: 0 3px 0 color-mix(in srgb, var(--sl-success) 45%, transparent); }
+.fieldset:disabled .optionRight { border-color: var(--sl-success); background: var(--sl-brand-soft); box-shadow: inset 0 0 0 1px var(--sl-success); }
 .optionRight .key { border-color: var(--sl-success); background: var(--sl-success); color: white; }
 .optionWrong,
-.fieldset:disabled .optionWrong { border-color: var(--sl-danger); background: var(--sl-danger-soft); box-shadow: 0 3px 0 color-mix(in srgb, var(--sl-danger) 45%, transparent); }
+.fieldset:disabled .optionWrong { border-color: var(--sl-danger); background: var(--sl-danger-soft); box-shadow: inset 0 0 0 1px var(--sl-danger); }
 .optionWrong .key { border-color: var(--sl-danger); background: var(--sl-danger); color: white; }
 
 /* ── Numeric ─────────────────────────────────────────────────── */
@@ -271,19 +267,20 @@
   letter-spacing: 0.02em;
   text-decoration: none;
   cursor: pointer;
-  transition: transform var(--sl-motion-fast) var(--sl-ease), box-shadow var(--sl-motion-fast), filter var(--sl-motion-fast);
+  transition: background var(--sl-motion-fast) var(--sl-ease), border-color var(--sl-motion-fast) var(--sl-ease);
 }
-.primary { background: var(--sl-brand); color: white; box-shadow: 0 4px 0 var(--sl-brand-strong); }
-.danger { background: var(--sl-danger); color: white; box-shadow: 0 4px 0 color-mix(in srgb, var(--sl-danger) 70%, black); }
-.secondary { background: var(--sl-surface); color: var(--sl-text); border: 2px solid var(--sl-border); box-shadow: 0 4px 0 var(--sl-border); }
-.primary:hover, .danger:hover { filter: brightness(1.06); }
-.primary:active, .danger:active, .secondary:active { transform: translateY(3px); box-shadow: 0 1px 0 var(--sl-brand-strong); }
+.primary { background: var(--sl-brand); color: white; }
+.danger { background: var(--sl-danger); color: white; }
+.secondary { background: var(--sl-surface); color: var(--sl-text); border: 1px solid var(--sl-border); }
+.primary:hover:not(:disabled) { background: var(--sl-brand-strong); }
+.danger:hover { background: color-mix(in srgb, var(--sl-danger) 85%, black); }
+.secondary:hover { border-color: var(--sl-border-strong); background: var(--sl-surface-raised); }
+.primary:focus-visible, .danger:focus-visible, .secondary:focus-visible { outline: 3px solid var(--sl-focus); outline-offset: 3px; }
 .primary:disabled {
   background: var(--sl-canvas-subtle);
   color: var(--sl-text-subtle);
-  box-shadow: 0 4px 0 var(--sl-border);
+  border: 1px solid var(--sl-border);
   cursor: not-allowed;
-  transform: none;
 }
 
 @media (max-width: 34rem) {
@@ -308,8 +305,7 @@
   place-items: center;
   margin-bottom: 1.5rem;
   border-radius: 50%;
-  background: radial-gradient(circle at 30% 30%, #34c46f, var(--sl-brand));
-  box-shadow: 0 10px 30px color-mix(in srgb, var(--sl-brand) 35%, transparent), inset 0 -5px 0 rgb(0 0 0 / 0.12);
+  background: var(--sl-brand);
   color: white;
   font-size: 2.5rem;
   font-weight: 800;

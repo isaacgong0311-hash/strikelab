@@ -38,13 +38,12 @@
   font: 800 1rem/1 var(--sl-font-body);
   text-decoration: none;
   cursor: pointer;
-  transition: transform var(--sl-motion-fast) var(--sl-ease), box-shadow var(--sl-motion-fast) var(--sl-ease);
+  transition: background var(--sl-motion-fast) var(--sl-ease), border-color var(--sl-motion-fast) var(--sl-ease);
 }
-.primary { border: 0; background: var(--sl-brand); box-shadow: 0 4px 0 var(--sl-brand-strong); color: #fff; }
-.primary:hover:not(:disabled) { transform: translateY(-1px); box-shadow: 0 5px 0 var(--sl-brand-strong); }
-.primary:active:not(:disabled) { transform: translateY(3px); box-shadow: 0 1px 0 var(--sl-brand-strong); }
+.primary { border: 0; background: var(--sl-brand); color: #fff; }
+.primary:hover:not(:disabled) { background: var(--sl-brand-strong); }
 .primary:disabled { opacity: 0.7; cursor: progress; }
-.secondary { border: 1px solid var(--sl-border-strong); background: var(--sl-surface); color: var(--sl-text); }
-.secondary:hover { border-color: var(--sl-brand); background: var(--sl-brand-soft); }
+.secondary { border: 1px solid var(--sl-border); background: var(--sl-surface); color: var(--sl-text); }
+.secondary:hover { border-color: var(--sl-border-strong); background: var(--sl-surface-raised); }
 .primary:focus-visible,
 .secondary:focus-visible { outline: 3px solid var(--sl-focus); outline-offset: 3px; }

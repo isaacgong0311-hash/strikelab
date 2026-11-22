@@ -43,7 +43,7 @@
   font: inherit;
   font-size: 0.875rem;
   padding: 0.625rem 1.25rem;
-  border-radius: 0.75rem;
+  border-radius: var(--sl-radius-md);
   cursor: pointer;
   text-decoration: none;
 }
@@ -52,16 +52,16 @@
   color: #fff;
   border: 0;
   font-weight: 700;
-  box-shadow: 0 4px 0 var(--grass-d);
 }
+.primary:hover { background: var(--grass-d); }
 .secondary {
   background: transparent;
   color: var(--ink-2);
-  border: 1.5px solid var(--line-2);
+  border: 1px solid var(--line);
   font-weight: 600;
 }
 .primary:focus-visible,
 .secondary:focus-visible {
-  outline: 3px solid var(--sky);
+  outline: 3px solid var(--sl-focus, var(--sky));
   outline-offset: 2px;
 }
