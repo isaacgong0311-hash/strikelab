@@ -360,8 +360,10 @@ export default function LessonClient({ lesson, sections, chunks, prev, next, tra
     runRef.current = runCode;
   }, [runCode]);
 
-  // Ctrl+Enter / Cmd+Enter shortcut
+  // Ctrl+Enter / Cmd+Enter shortcut. Investing lessons have no editor, so the
+  // shortcut must not download Python and run their hidden tests.
   useEffect(() => {
+    if (!hasCodingExercise) return;
     const handler = (e: KeyboardEvent) => {
       if ((e.ctrlKey || e.metaKey) && e.key === "Enter") {
         e.preventDefault();
@@ -370,7 +372,19 @@ export default function LessonClient({ lesson, sections, chunks, prev, next, tra
     };
     window.addEventListener("keydown", handler);
     return () => window.removeEventListener("keydown", handler);
-  }, []);
+  }, [hasCodingExercise]);
+
+  // On a phone the run bar is stuck to the bottom of the screen while the
+  // output renders below it, off screen. Once a run settles, bring the result
+  // into view (only as far as needed, so desktop rarely moves).
+  const outputRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    if (status !== "pass" && status !== "fail") return;
+    const el = outputRef.current;
+    if (!el || el.getBoundingClientRect().top < window.innerHeight - 48) return;
+    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    el.scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "nearest" });
+  }, [status]);
 
   // Progressive enhancement over the plain #exercise anchor: scroll smoothly
   // (unless motion is reduced) and put focus on the exercise so the next Tab
@@ -588,11 +602,16 @@ export default function LessonClient({ lesson, sections, chunks, prev, next, tra
                   Fix the error and try again
                 </span>
               )}
+              {status === "pass" && !showHint && (
+                <span className={styles.runHint} data-tone="success">
+                  Every test passes
+                </span>
+              )}
             </div>
 
             {/* Output */}
             {output && (
-              <div className={styles.output} data-status={status} role={status === "fail" ? "alert" : "status"} aria-live="polite" aria-atomic="true">
+              <div ref={outputRef} className={styles.output} data-status={status} role={status === "fail" ? "alert" : "status"} aria-live="polite" aria-atomic="true">
                 <div className={styles.outputHead}>
                   <span aria-hidden="true">{status === "pass" ? "✓" : status === "running" ? "…" : "✗"}</span>
                   <span>{resultLabel}</span>

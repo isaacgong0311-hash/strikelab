@@ -66,9 +66,9 @@ export default function LessonsClient({ tracks }: { tracks: HubTrack[] }) {
         )}
       </header>
 
-      <section className={styles.startCard} aria-labelledby="start-title">
+      <section className={styles.startCard} aria-labelledby="start-label start-title">
         <div className={styles.startText}>
-          <p className={styles.startLabel}>{!next ? "Curriculum completed" : hasProgress ? "Your next lesson" : "Start here"}</p>
+          <p id="start-label" className={styles.startLabel}>{!next ? "Curriculum completed" : hasProgress ? "Your next lesson" : "Start here"}</p>
           <h2 id="start-title">{next?.title ?? "Put your models to the test."}</h2>
           <p>
             {next

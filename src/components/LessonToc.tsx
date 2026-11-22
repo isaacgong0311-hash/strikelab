@@ -86,7 +86,7 @@ export default function LessonToc({ sections, exercise }: { sections: TocSection
     });
     // A focusable target (the exercise) takes focus, so the next Tab lands
     // in it rather than back in this list.
-    if (el.tabIndex === -1) el.focus({ preventScroll: true });
+    if (el.hasAttribute("tabindex")) el.focus({ preventScroll: true });
     // Keep the URL shareable without triggering the browser's own jump.
     history.replaceState(null, "", `#${id}`);
   };

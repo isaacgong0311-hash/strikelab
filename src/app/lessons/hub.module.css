@@ -69,8 +69,6 @@
 .lessonBody small { color: var(--sl-text-subtle); font-size: 0.75rem; }
 .lessonState { display: inline-flex; align-items: center; gap: var(--sl-space-1); margin-left: auto; padding-left: var(--sl-space-2); font-size: 0.8125rem; font-weight: 600; color: var(--sl-brand-strong); white-space: nowrap; }
 .chevron { flex-shrink: 0; }
-.lesson .chevron { transition: transform var(--sl-motion-fast) var(--sl-ease); }
-.lesson:hover .chevron { transform: translateX(2px); }
 
 .empty { padding: var(--sl-space-7) var(--sl-space-5); margin-bottom: var(--sl-space-6); text-align: center; border: 1px dashed var(--sl-border-strong); border-radius: var(--sl-radius-lg); }
 .empty h2 { margin: 0; font: 700 1.25rem var(--sl-font-display); }
@@ -90,7 +88,6 @@
 .page :is(a, button):focus-visible { outline: 3px solid var(--sl-focus); outline-offset: 2px; }
 .lesson:focus-visible { outline-offset: -3px !important; }
 
-@media (prefers-reduced-motion: reduce) { .lesson:hover .chevron { transform: none; } }
 
 @media (max-width: 900px) {
   .layout { grid-template-columns: minmax(0, 1fr); gap: var(--sl-space-4); }

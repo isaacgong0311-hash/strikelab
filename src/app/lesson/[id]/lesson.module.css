@@ -217,6 +217,7 @@
 .runHint { font-size: 0.8125rem; color: var(--sl-text-muted); }
 .runHint[data-tone="warning"] { color: var(--sl-warning); }
 .runHint[data-tone="danger"] { color: var(--sl-danger); }
+.runHint[data-tone="success"] { color: var(--sl-success); font-weight: 600; }
 
 .output { border-top: 1px solid var(--sl-border); }
 .outputHead {
