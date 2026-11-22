@@ -40,13 +40,18 @@
   --sl-space-6: 2rem;
   --sl-space-7: 3rem;
   --sl-space-8: 4.5rem;
-  --sl-radius-sm: 0.625rem;
-  --sl-radius-md: 0.875rem;
-  --sl-radius-lg: 1.125rem;
-  --sl-radius-xl: 1.5rem;
+  /* One radius scale. Small, consistent corners: controls 6-8px, cards 12px,
+     dialogs 16px. Nothing bubbly. */
+  --sl-radius-sm: 6px;
+  --sl-radius-md: 8px;
+  --sl-radius-lg: 12px;
+  --sl-radius-xl: 16px;
   --sl-radius-pill: 999px;
-  --sl-shadow-1: 0 1px 2px rgb(15 23 18 / 0.08), 0 8px 24px rgb(15 23 18 / 0.05);
-  --sl-shadow-2: 0 18px 48px rgb(15 23 18 / 0.12);
+  /* Two shadows only. shadow-1 is a hairline lift for cards that sit on the
+     canvas; shadow-2 is for things that float (menus, popovers, dialogs).
+     No offset "pressable" shadows, no coloured glows. */
+  --sl-shadow-1: 0 1px 2px rgb(15 23 18 / 0.06);
+  --sl-shadow-2: 0 12px 32px rgb(15 23 18 / 0.10);
   --sl-focus: #075ee8;
   --sl-motion-fast: 140ms;
   --sl-motion-base: 220ms;

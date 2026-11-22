@@ -3,9 +3,8 @@
 }
 
 :root[data-ui="v3"] body {
-  background:
-    radial-gradient(circle at 10% 0%, rgb(20 115 60 / 0.055), transparent 26rem),
-    var(--sl-canvas);
+  /* Plain canvas. No grid, vignette or radial wash behind pages. */
+  background: var(--sl-canvas);
   color: var(--sl-text);
   font-family: var(--sl-font-body);
 }
@@ -27,6 +26,16 @@
 :root[data-ui="v3"] kbd,
 :root[data-ui="v3"] .mono {
   font-family: var(--sl-font-code);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Timers, scores, ranks and leaderboard figures: fixed-width digits so a
+   ticking clock or a column of scores doesn't jitter. Keeps the current font;
+   add .mono as well only when the figure is code-like. */
+.sl-num {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum" 1, "zero" 1;
+  letter-spacing: 0;
 }
 
 /* tabindex="-1" elements (headings and landmarks that receive focus from
@@ -129,53 +138,6 @@
 .a11y-reset { width: fit-content; min-height: 36px; padding: 0.45rem 0.7rem; border: 1px solid var(--sl-border-strong); border-radius: var(--sl-radius-sm); background: var(--sl-surface); color: var(--sl-text); font-weight: 700; cursor: pointer; }
 .a11y-reset:disabled { opacity: 0.5; }
 
-:root[data-ui="v3"] .sk-track-card {
-  border-color: var(--sl-border);
-  border-radius: var(--sl-radius-lg);
-  box-shadow: var(--sl-shadow-1);
-}
-:root[data-ui="v3"] .sk-track-card.open { border-color: var(--sl-border-strong); }
-:root[data-ui="v3"] .sk-track-panel[aria-hidden="true"] { visibility: hidden; }
-:root[data-ui="v3"] .sk-lessons > li { list-style: none; }
-:root[data-ui="v3"] .sk-lessons > li + li { margin-top: 0.625rem; }
-:root[data-ui="v3"] .sk-lesson { min-height: var(--sl-tap); }
-
-.dpath-next {
-  margin-top: 1rem;
-  min-height: 4rem;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1rem;
-  padding: 0.8rem 1rem;
-  border: 1px solid var(--sl-border);
-  border-radius: var(--sl-radius-md);
-  background: var(--sl-surface);
-  color: var(--sl-text);
-  text-decoration: none;
-  box-shadow: var(--sl-shadow-1);
-}
-.dpath-next span:first-child { display: grid; gap: 0.2rem; }
-.dpath-next small { color: var(--sl-brand); font: 700 0.65rem/1 var(--sl-font-code); letter-spacing: 0.08em; text-transform: uppercase; }
-.dpath-next strong { font-size: 0.9rem; }
-.dpath-next > span:last-child { color: var(--sl-brand); font-size: 0.8rem; font-weight: 800; white-space: nowrap; }
-
-@media (max-width: 40rem) {
-  :root[data-ui="v3"] .dpath-nodes { align-items: stretch; gap: 0.75rem; padding-inline: 0; }
-  :root[data-ui="v3"] .dpath-nodes::before,
-  :root[data-ui="v3"] .dpath-scenery,
-  :root[data-ui="v3"] .dnode-start,
-  :root[data-ui="v3"] .dchest,
-  :root[data-ui="v3"] .dfinish { display: none; }
-  :root[data-ui="v3"] .dnode { transform: none !important; align-items: stretch; }
-  :root[data-ui="v3"] .dnode-rise { flex-direction: row !important; align-items: center !important; gap: 0.8rem; min-height: 4rem; padding: 0.65rem 0.8rem; border: 1px solid var(--sl-border); border-radius: var(--sl-radius-md); background: var(--sl-surface); box-shadow: var(--sl-shadow-1); }
-  :root[data-ui="v3"] .dnode-btn { width: 48px; height: 48px; flex: 0 0 48px; font-size: 1rem; box-shadow: none !important; }
-  :root[data-ui="v3"] .dnode-label { margin: 0; padding: 0; max-width: none; background: none; box-shadow: none; text-align: left; font-family: var(--sl-font-body); font-size: 0.9rem; }
-  :root[data-ui="v3"] .dnode.active::after { display: none; }
-  :root[data-ui="v3"] .dnode.active .dnode-rise { border-color: var(--node-color); box-shadow: 0 0 0 3px color-mix(in srgb, var(--node-color) 18%, transparent), var(--sl-shadow-1); }
-  :root[data-ui="v3"] .dnode.locked { margin-top: 0; }
-}
-
 .cp-fieldset,
 .sl-question {
   min-width: 0;
@@ -189,20 +151,6 @@
 .sl-celebration-content .sl-celebration-actions { width: 100%; }
 :root[data-ui="v3"] .lesson-content :where(pre, table, .fsb, .payoff, .binomial-tree) { max-width: 100%; }
 
-.sb-field-label,
-.sb-toggle-group > legend {
-  display: block;
-  margin-bottom: 0.45rem;
-  color: var(--sl-text-muted);
-  font-size: 0.75rem;
-  font-weight: 700;
-}
-.sb-toggle-group { min-width: 0; margin: 0 0 0.9rem; padding: 0; border: 0; }
-.sb-symbol-option[aria-selected="true"] { background: var(--sl-brand-soft); color: var(--sl-text); }
-.sb-banner.success { border-color: var(--sl-success); background: var(--sl-brand-soft); color: var(--sl-success); }
-.sb-field small { color: var(--sl-text-muted); font-size: 0.68rem; line-height: 1.45; }
-.sb-field .sb-field-error { color: var(--sl-danger); font-weight: 700; }
-.sb-field input[aria-invalid="true"] { border-color: var(--sl-danger); }
 /* Range sliders: a transparent 44px touch target around a slim filled track.
    (The legacy rules painted the input's own background, so the 44px
    min-height rendered as a solid grey block.) Components set --fill and
@@ -339,10 +287,9 @@
   gap: 1rem;
   margin: 0 0 1.75rem;
   padding: 1rem 1.25rem;
-  border: 2px solid color-mix(in srgb, var(--sl-brand) 30%, transparent);
+  border: 1px solid color-mix(in srgb, var(--sl-brand) 30%, transparent);
   border-radius: var(--sl-radius-lg);
-  background: linear-gradient(135deg, var(--sl-brand-soft), var(--sl-surface));
-  box-shadow: 0 3px 0 color-mix(in srgb, var(--sl-brand) 22%, transparent);
+  background: var(--sl-brand-soft);
 }
 .sl-sessions-callout-eyebrow { margin: 0 0 0.3rem; color: var(--sl-brand); font: 700 0.65rem/1 var(--sl-font-code); letter-spacing: 0.12em; text-transform: uppercase; }
 .sl-sessions-callout-title { margin: 0; color: var(--sl-text); font: 800 1.1rem/1.25 var(--sl-font-display); }
@@ -354,23 +301,18 @@
   padding: 0.7rem 1.4rem;
   border-radius: var(--sl-radius-md);
   background: var(--sl-brand);
-  box-shadow: 0 4px 0 var(--sl-brand-strong);
   color: white;
   font: 800 0.9rem/1 var(--sl-font-body);
   text-decoration: none;
+  transition: background var(--sl-motion-fast) var(--sl-ease);
 }
-.sl-sessions-callout-action:active { transform: translateY(3px); box-shadow: 0 1px 0 var(--sl-brand-strong); }
+.sl-sessions-callout-action:hover { background: var(--sl-brand-strong); }
 
 /* Page intros: the legacy 80px top padding left a large empty band between
    the breadcrumb and the eyebrow on every content page. */
 :root[data-ui="v3"] .v2-page-head:not(.v2-page-head--tool) { padding-top: clamp(20px, 4vw, 36px); padding-bottom: clamp(24px, 4vw, 40px); }
 
 /* For Schools: classroom workflow steps */
-.school-steps { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; margin: 0; padding: 0; list-style: none; }
-.school-step { position: relative; padding: 20px; border: 1px solid var(--sl-border); border-radius: var(--sl-radius-lg); background: var(--sl-surface); box-shadow: var(--sl-shadow-1); }
-.school-step-num { width: 32px; height: 32px; display: grid; place-items: center; margin-bottom: 12px; border-radius: 50%; background: var(--sl-brand-soft); color: var(--sl-brand); font: 800 14px/1 var(--sl-font-code); }
-.school-step h3 { margin: 0 0 6px; color: var(--sl-text); font: 800 16px/1.3 var(--sl-font-display); }
-.school-step p { margin: 0; color: var(--sl-text-muted); font-size: 14px; line-height: 1.55; }
 
 /* Settings, signed out */
 .settings-gate { width: min(100% - 32px, 36rem); margin: clamp(24px, 6vw, 64px) auto; display: grid; gap: 16px; }
@@ -379,8 +321,10 @@
 .settings-gate-card > p { margin: 0 0 20px; color: var(--sl-text-muted); line-height: 1.6; }
 .settings-gate-actions { display: flex; flex-wrap: wrap; gap: 10px; }
 .settings-gate-primary, .settings-gate-secondary { min-height: var(--sl-tap); display: inline-flex; align-items: center; padding: 0 18px; border-radius: var(--sl-radius-md); font-weight: 800; font-size: 14px; text-decoration: none; }
-.settings-gate-primary { background: var(--sl-brand); color: #fff; box-shadow: 0 3px 0 var(--sl-brand-strong); }
-.settings-gate-secondary { border: 1px solid var(--sl-border-strong); color: var(--sl-text); background: var(--sl-surface); }
+.settings-gate-primary { background: var(--sl-brand); color: #fff; }
+.settings-gate-primary:hover { background: var(--sl-brand-strong); }
+.settings-gate-secondary { border: 1px solid var(--sl-border); color: var(--sl-text); background: var(--sl-surface); }
+.settings-gate-secondary:hover { border-color: var(--sl-border-strong); background: var(--sl-surface-raised); }
 
 /* Inline code chips that wrap keep their padding and border on each line. */
 .lesson-content :not(pre) > code { -webkit-box-decoration-break: clone; box-decoration-break: clone; }
