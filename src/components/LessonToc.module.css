@@ -1,0 +1,80 @@
+/* Lesson "On this page" rail. Moved out of globals.css (.lt-*). */
+.toc { font-family: var(--sl-font-body); }
+
+.head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: var(--sl-space-2);
+}
+.label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--sl-text-muted);
+}
+.pct {
+  font-size: 0.75rem;
+  color: var(--sl-text-subtle);
+}
+
+.track {
+  height: 2px;
+  border-radius: var(--sl-radius-pill);
+  background: var(--sl-border);
+  overflow: hidden;
+  margin-bottom: var(--sl-space-4);
+}
+.fill {
+  height: 100%;
+  background: var(--sl-brand);
+  transition: width 120ms linear;
+}
+
+.list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.item {
+  display: grid;
+  grid-template-columns: 22px 1fr;
+  gap: var(--sl-space-2);
+  align-items: baseline;
+  min-height: 32px;
+  padding: 6px 10px 6px 8px;
+  border-radius: var(--sl-radius-sm);
+  border-left: 2px solid transparent;
+  color: var(--sl-text-muted);
+  font-size: 0.8125rem;
+  line-height: 1.4;
+  text-decoration: none;
+  transition: color var(--sl-motion-fast) var(--sl-ease), background-color var(--sl-motion-fast) var(--sl-ease);
+}
+.item:hover { color: var(--sl-text); background: var(--sl-canvas-subtle); }
+.item[aria-current="true"] {
+  color: var(--sl-text);
+  font-weight: 600;
+  border-left-color: var(--sl-brand);
+  background: var(--sl-brand-soft);
+}
+.item[aria-current="true"] .num { color: var(--sl-brand-strong); }
+
+.num {
+  font-size: 0.6875rem;
+  color: var(--sl-text-subtle);
+}
+.text { min-width: 0; }
+
+/* The exercise sits apart from the numbered prose sections. */
+.exercise {
+  margin-top: var(--sl-space-2);
+  padding-top: 8px;
+  border-top: 1px solid var(--sl-border);
+  border-radius: 0 0 var(--sl-radius-sm) var(--sl-radius-sm);
+  align-items: center;
+}
+.exercise .num { align-self: center; }

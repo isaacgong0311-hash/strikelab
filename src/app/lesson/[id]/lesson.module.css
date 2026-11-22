@@ -1,0 +1,313 @@
+/* /lesson/[id]. Replaces LessonClient's inline styles and the .lesson-shell,
+   .lesson-toc-col and .code-sync-status rules that lived in globals.css.
+   The prose itself is still styled by .lesson-content in globals.css because
+   it arrives as HTML strings. */
+
+/* ── Layout ─────────────────────────────────────────────────────────────── */
+.shell {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  width: min(100%, 72rem);
+  margin-inline: auto;
+  padding: var(--sl-space-6) clamp(1rem, 4vw, 1.5rem) var(--sl-space-7);
+}
+.tocCol { display: none; }
+@media (min-width: 1180px) {
+  .shell {
+    grid-template-columns: 232px minmax(0, 1fr);
+    gap: 48px;
+    align-items: start;
+    padding-top: var(--sl-space-7);
+  }
+  .tocCol {
+    display: block;
+    position: sticky;
+    top: 92px;
+    max-height: calc(100vh - 120px);
+    overflow-y: auto;
+    padding-right: 4px;
+  }
+}
+.main { min-width: 0; max-width: 48rem; }
+
+/* ── Header ─────────────────────────────────────────────────────────────── */
+.head { margin: var(--sl-space-3) 0 var(--sl-space-5); }
+.kicker {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0 0.375rem;
+  margin: 0 0 var(--sl-space-2);
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: var(--sl-text-muted);
+}
+.doneBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-left: var(--sl-space-2);
+  padding: 1px 8px;
+  border-radius: var(--sl-radius-pill);
+  background: var(--sl-brand-soft);
+  color: var(--sl-brand-strong);
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+.title {
+  margin: 0 0 var(--sl-space-2);
+  font: 700 clamp(1.75rem, 1.25rem + 1.8vw, 2.25rem)/1.15 var(--sl-font-display);
+  letter-spacing: -0.025em;
+  color: var(--sl-text);
+}
+.subtitle {
+  margin: 0;
+  font-size: 0.9375rem;
+  line-height: 1.5;
+  color: var(--sl-text-muted);
+}
+.headActions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sl-space-2) var(--sl-space-3);
+  margin-top: var(--sl-space-4);
+}
+.xpNote {
+  margin: var(--sl-space-3) 0 0;
+  font-size: 0.8125rem;
+  color: var(--sl-text-subtle);
+}
+.headActions .xpNote { margin: 0; }
+
+/* ── Prose and end-of-lesson blocks ─────────────────────────────────────── */
+.content {
+  margin-bottom: var(--sl-space-6);
+  padding-bottom: var(--sl-space-6);
+  border-bottom: 1px solid var(--sl-border);
+}
+.block { margin-bottom: var(--sl-space-6); }
+
+/* ── Coding exercise ────────────────────────────────────────────────────── */
+.exercise {
+  margin-bottom: var(--sl-space-6);
+  border: 1px solid var(--sl-border);
+  border-radius: var(--sl-radius-lg);
+  background: var(--sl-surface);
+  /* clip, not hidden: hidden would make this a scroll container and stop the
+     run bar sticking to the viewport. */
+  overflow: clip;
+  scroll-margin-top: 88px;
+  transition: border-color var(--sl-motion-base) var(--sl-ease);
+}
+.exercise[data-status="pass"] { border-color: var(--sl-success); }
+.exercise[data-status="fail"] { border-color: var(--sl-danger); }
+/* Focus arrives here from the jump link; the section is a landmark, not a
+   control, so it takes no ring of its own. */
+.exercise:focus { outline: none; }
+
+.exHead {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sl-space-2) var(--sl-space-3);
+  padding: var(--sl-space-3) var(--sl-space-4);
+  border-bottom: 1px solid var(--sl-border);
+  background: var(--sl-surface-raised);
+}
+.exTitleRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0 var(--sl-space-3);
+  min-width: 0;
+}
+.exTitle {
+  margin: 0;
+  font: 600 0.9375rem/1.4 var(--sl-font-body);
+  letter-spacing: 0;
+  color: var(--sl-text);
+}
+.exMeta { font-size: 0.8125rem; color: var(--sl-text-muted); }
+.exXp {
+  padding: 1px 8px;
+  border-radius: var(--sl-radius-pill);
+  background: var(--sl-warning-soft);
+  color: var(--sl-warning);
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+.exPassed {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--sl-success);
+  font-size: 0.8125rem;
+  font-weight: 600;
+}
+.exPrompt {
+  margin: 0;
+  padding: var(--sl-space-3) var(--sl-space-4);
+  border-bottom: 1px solid var(--sl-border);
+  font-size: 0.9375rem;
+  line-height: 1.6;
+  color: var(--sl-text);
+}
+.editor { min-width: 0; }
+
+.sync {
+  margin: 0;
+  padding: 6px var(--sl-space-4);
+  border-top: 1px solid var(--sl-border);
+  background: var(--sl-surface);
+  color: var(--sl-text-subtle);
+  font-size: 0.75rem;
+}
+.sync[data-state="saved"] { color: var(--sl-success); }
+.sync[data-state="retrying"] { color: var(--sl-warning); font-weight: 600; }
+
+.runBar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sl-space-2) var(--sl-space-3);
+  padding: var(--sl-space-3) var(--sl-space-4);
+  padding-bottom: max(var(--sl-space-3), env(safe-area-inset-bottom));
+  border-top: 1px solid var(--sl-border);
+  background: var(--sl-surface-raised);
+}
+/* On a phone a long starter file is taller than the screen, so the run bar
+   sticks to the bottom of the viewport while the editor scrolls past, then
+   rests under it. Wider screens fit the editor and don't need it. */
+@media (max-width: 720px) {
+  .runBar { position: sticky; bottom: 0; z-index: 2; }
+}
+.runActions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sl-space-2);
+}
+.kbd {
+  margin-left: 2px;
+  padding: 2px 6px;
+  border-radius: var(--sl-radius-sm);
+  background: rgb(255 255 255 / 0.18);
+  color: #fff;
+  font: 500 0.6875rem/1.3 var(--sl-font-code);
+}
+@media (pointer: coarse), (max-width: 480px) {
+  .kbd { display: none; }
+}
+.spinner {
+  width: 12px;
+  height: 12px;
+  border: 2px solid currentColor;
+  border-top-color: transparent;
+  border-radius: var(--sl-radius-pill);
+  animation: spin 0.8s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) {
+  .spinner { animation: none; border-top-color: currentColor; opacity: 0.6; }
+}
+:global(:root[data-motion="reduce"]) .spinner { animation: none; border-top-color: currentColor; opacity: 0.6; }
+.runHint { font-size: 0.8125rem; color: var(--sl-text-muted); }
+.runHint[data-tone="warning"] { color: var(--sl-warning); }
+.runHint[data-tone="danger"] { color: var(--sl-danger); }
+
+.output { border-top: 1px solid var(--sl-border); }
+.outputHead {
+  display: flex;
+  align-items: center;
+  gap: var(--sl-space-2);
+  padding: var(--sl-space-2) var(--sl-space-4);
+  border-bottom: 1px solid var(--sl-border);
+  background: var(--sl-surface-raised);
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--sl-danger);
+}
+.output[data-status="pass"] .outputHead { color: var(--sl-success); }
+.output[data-status="running"] .outputHead { color: var(--sl-text-muted); }
+.outputBody {
+  margin: 0;
+  max-height: 16rem;
+  overflow: auto;
+  padding: var(--sl-space-3) var(--sl-space-4);
+  background: var(--sl-canvas);
+  color: var(--sl-danger);
+  font: 0.8125rem/1.6 var(--sl-font-code);
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.output[data-status="pass"] .outputBody { color: var(--sl-success); }
+.output[data-status="running"] .outputBody { color: var(--sl-text-muted); }
+
+.tutor { padding: 0 var(--sl-space-3) var(--sl-space-3); }
+
+/* ── Related and pager ──────────────────────────────────────────────────── */
+.related { margin-bottom: var(--sl-space-6); }
+.relatedTitle {
+  margin: 0 0 var(--sl-space-3);
+  font: 600 0.875rem/1.4 var(--sl-font-body);
+  letter-spacing: 0;
+  color: var(--sl-text-muted);
+}
+.relatedGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: var(--sl-space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.relatedCard, .pagerLink {
+  display: grid;
+  gap: 2px;
+  height: 100%;
+  min-height: var(--sl-tap);
+  padding: var(--sl-space-3) var(--sl-space-4);
+  border: 1px solid var(--sl-border);
+  border-radius: var(--sl-radius-md);
+  background: var(--sl-surface);
+  color: var(--sl-text);
+  text-decoration: none;
+  transition: border-color var(--sl-motion-fast) var(--sl-ease);
+}
+.relatedCard:hover, .pagerLink:hover { border-color: var(--sl-border-strong); }
+.relatedName { font-size: 0.875rem; font-weight: 600; line-height: 1.4; }
+.relatedSub { font-size: 0.8125rem; line-height: 1.5; color: var(--sl-text-muted); }
+
+.pager {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--sl-space-3);
+}
+.pagerNext { grid-column: 2; text-align: right; }
+.pagerDir { font-size: 0.75rem; color: var(--sl-text-muted); }
+.pagerName { font-size: 0.9375rem; font-weight: 600; line-height: 1.4; }
+@media (max-width: 480px) {
+  .pager { grid-template-columns: minmax(0, 1fr); }
+  .pager > span:empty { display: none; }
+  .pagerNext { grid-column: auto; text-align: left; }
+}
+
+.flame { color: var(--sl-warning); }
+
+/* The first section heading directly under the header needs no divider. */
+.content > [data-lead] :global(h2:first-child) {
+  margin-top: 0;
+  padding-top: 0;
+  border-top: 0;
+}
+.exPrompt code {
+  font: 0.85em var(--sl-font-code);
+  padding: 0.1em 0.35em;
+  border: 1px solid var(--sl-border);
+  border-radius: var(--sl-radius-sm);
+  background: var(--sl-canvas-subtle);
+  overflow-wrap: anywhere;
+}

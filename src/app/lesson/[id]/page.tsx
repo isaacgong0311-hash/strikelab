@@ -6,6 +6,8 @@ import { breadcrumbJsonLd, isoDuration } from "@/lib/seo";
 import JsonLd from "@/components/JsonLd";
 import LessonClient from "./LessonClient";
 import { buildLessonToc } from "@/lib/lessonToc";
+import { TRACKS } from "@/lib/tracks";
+import { recommendedStart } from "@/app/lessons/recommendedStart";
 
 export async function generateStaticParams() {
   return getAllLessons().map((l) => ({ id: l.id }));
@@ -111,6 +113,11 @@ export default async function LessonPage({ params }: { params: Promise<{ id: str
     })
     .slice(0, 4);
 
+  // The first lesson of a later track (/lesson/1 is Options Pricing 1 of 11)
+  // points newcomers at the site-wide first lesson instead of implying it is
+  // where everyone begins.
+  const startHere = ctx.positionInTrack === 1 && ctx.track.id !== TRACKS[0].id ? recommendedStart() : null;
+
   return (
     <>
       <JsonLd data={lessonJsonLd} />
@@ -127,6 +134,7 @@ export default async function LessonPage({ params }: { params: Promise<{ id: str
         positionInTrack={ctx.positionInTrack}
         trackLength={ctx.trackLength}
         related={related}
+        startHere={startHere}
       />
     </>
   );
