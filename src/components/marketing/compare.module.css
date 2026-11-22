@@ -8,12 +8,13 @@
   background:
     linear-gradient(to right, var(--sl-surface) 30%, transparent) left / 2.5rem 100% no-repeat local,
     linear-gradient(to left, var(--sl-surface) 30%, transparent) right / 2.5rem 100% no-repeat local,
-    linear-gradient(to right, rgb(15 23 18 / 0.14), transparent) left / 0.875rem 100% no-repeat scroll,
-    linear-gradient(to left, rgb(15 23 18 / 0.14), transparent) right / 0.875rem 100% no-repeat scroll;
+    linear-gradient(to right, color-mix(in srgb, var(--sl-text) 14%, transparent), transparent) left / 0.875rem 100% no-repeat scroll,
+    linear-gradient(to left, color-mix(in srgb, var(--sl-text) 14%, transparent), transparent) right / 0.875rem 100% no-repeat scroll;
 }
 .scroll:focus-visible { outline: 3px solid var(--sl-focus); outline-offset: 2px; }
 .hint { display: none; margin: 1rem 0 0; color: var(--sl-text-subtle); font-size: 0.8125rem; font-weight: 600; }
-@media (max-width: 40rem) {
+/* The table is 36rem wide plus the 16px gutters: it overflows below ~37.5rem. */
+@media (max-width: 37.5rem) {
   .hint { display: block; }
   .hint + .scroll { margin-top: 0.5rem; }
 }

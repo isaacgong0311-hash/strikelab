@@ -20,11 +20,12 @@ const seasonDates = `${shortSeasonDate(PLANNED_SEASON.startsOn)} to ${shortSeaso
    readable at 343px. */
 const SHOT_ALT =
   "The practice round workspace with sample numbers S = 51, r = 0.04 and T = 1: forward_price written in Python and the result All 4 checks passed.";
+const SHOT_ALT_MOBILE = "The practice round editor: forward_price written in Python, and the result All 4 checks passed.";
 const { props: shotDesktop } = getImageProps({
   src: "/home/practice-round.png", width: 2560, height: 1180, alt: SHOT_ALT, sizes: "(max-width: 860px) 100vw, 720px",
 });
 const { props: shotMobile } = getImageProps({
-  src: "/home/practice-round-mobile.png", width: 684, height: 524, alt: SHOT_ALT, sizes: "100vw",
+  src: "/home/practice-round-mobile.png", width: 684, height: 524, alt: SHOT_ALT_MOBILE, sizes: "100vw",
 });
 
 /**
@@ -89,7 +90,7 @@ export default function HomeView() {
                   <li key={t.id}><span>{t.title}</span><span className={home.trackCount}>{t.lessons.length}</span></li>
                 ))}
               </ul>
-              <Link href="/lessons?src=home-loop" className={home.more}>Browse the lessons</Link>
+              <Link href="/lessons?src=home-loop" className={home.more}>Browse the lessons<span aria-hidden="true"> →</span></Link>
             </li>
             <li className={home.step}>
               <span className={home.stepNum} aria-hidden="true">02</span>
@@ -98,7 +99,7 @@ export default function HomeView() {
                 {PLANNED_SEASON.title} {seasonRuns} {seasonDates}: one timed challenge a week, with numbers nobody else gets and
                 the AI tutor off. StrikeLab scores it after you submit, and you&apos;re ranked under a handle.
               </p>
-              <Link href="/seasons?src=home-loop" className={home.more}>How seasons work</Link>
+              <Link href="/seasons?src=home-loop" className={home.more}>How seasons work<span aria-hidden="true"> →</span></Link>
             </li>
             <li className={home.step}>
               <span className={home.stepNum} aria-hidden="true">03</span>
@@ -107,7 +108,7 @@ export default function HomeView() {
                 Explain why your code works. Top finishes and capstones are checked in a short live conversation before they
                 count, so your record means something.
               </p>
-              <Link href={`/demo/capstone/${capstone.slug}`} className={home.more}>Read an example capstone</Link>
+              <Link href={`/demo/capstone/${capstone.slug}`} className={home.more}>Read an example capstone<span aria-hidden="true"> →</span></Link>
             </li>
           </ol>
 
@@ -147,7 +148,7 @@ export default function HomeView() {
           </div>
           <div className={home.clubActions}>
             <ActionLink href="/pilot?src=home-clubs" className={home.cta}>Set up your club</ActionLink>
-            <Link href="/clubs?src=home-clubs" className={home.more}>Bring your club: how it works</Link>
+            <Link href="/clubs?src=home-clubs" className={home.more}>Bring your club: how it works<span aria-hidden="true"> →</span></Link>
           </div>
         </div>
         <div className={styles.wrap}>

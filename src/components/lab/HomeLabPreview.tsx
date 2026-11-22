@@ -24,7 +24,7 @@ export default function HomeLabPreview() {
       <MarketLabChart baseline={DEFAULT_SCENARIO} scenario={scenario} variable="volatility" compact />
       <label className={styles.sliderLabel} htmlFor="hero-volatility">Turn up the uncertainty <output htmlFor="hero-volatility">{volatility}% volatility</output></label>
       <input className={styles.slider} id="hero-volatility" type="range" min="10" max="80" value={volatility} style={rangeFill(volatility, 10, 80)} onChange={(event) => setVolatility(Number(event.target.value))} />
-      <div className={styles.bottom}><span>$100 stock and strike, 30 days. Model values per share, not market quotes.</span><Link href="/lab">Try the full experiment</Link></div>
+      <div className={styles.bottom}><span>$100 stock and strike, 30 days. Model values per share, not market quotes.</span><Link href="/lab">Try the full experiment<span aria-hidden="true"> →</span></Link></div>
     </div>
   );
 }

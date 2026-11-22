@@ -49,7 +49,7 @@ export const FAQ_GROUPS: FAQGroup[] = [
       },
       {
         q: "Will there be more advanced content?",
-        a: `Yes — all five Greeks (Delta through Rho), Implied Volatility, Option Strategies, and Binomial Trees are all live already. The focus now is seasons rather than new lessons: timed challenges that test what you've learned. ${PLANNED_SEASON.title} runs ${SEASON_DATES}. See /roadmap for what's shipping and when.`,
+        a: `Yes — all five Greeks (Delta through Rho), Implied Volatility, Option Strategies, and Binomial Trees are all live already. The focus now is seasons rather than new lessons: timed challenges that test what you've learned, starting with ${PLANNED_SEASON.title} (${SEASON_DATES}). See /roadmap for what's shipping and when.`,
       },
       {
         q: "Can I use this for AP Stats / AP Calc?",
@@ -74,7 +74,7 @@ export const FAQ_GROUPS: FAQGroup[] = [
       },
       {
         q: "What if Pyodide doesn't load on my browser?",
-        a: "Pyodide runs in current versions of Chrome, Firefox, Safari and Edge, including on Chromebooks. If it doesn't load for you, file a GitHub issue with your browser and version and we'll investigate.",
+        a: "Pyodide runs in current versions of Chrome, Firefox, Safari and Edge. If it doesn't load for you, file a GitHub issue with your browser and version and we'll investigate.",
       },
     ],
   },

@@ -37,7 +37,9 @@ export default function TryItCTA({
           {lessonTitle} — free, in your browser
         </div>
       </div>
-      <ActionLink href={href} style={{ whiteSpace: "nowrap" }}>
+      {/* Inline colour: this renders inside .lesson-content, whose prose link rule
+          (green text, animated underline) would otherwise beat the button class. */}
+      <ActionLink href={href} style={{ whiteSpace: "nowrap", color: "#fff", backgroundImage: "none", textDecoration: "none" }}>
         Open lesson →
       </ActionLink>
     </div>
