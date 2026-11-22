@@ -29,11 +29,26 @@ describe("buildSeasonCalendar", () => {
     expect(lines).toContain("TRIGGER:PT16H");
   });
 
+  it("reminds the day before a week opens and again on the day, but not the day before it closes", () => {
+    const lines = unfold(buildSeasonCalendar(season, [week1], NOW));
+    const events = lines.join("\n").split("BEGIN:VEVENT").slice(1);
+    const [opens, lastDay] = events;
+    expect(opens.match(/BEGIN:VALARM/g)).toHaveLength(2);
+    expect(opens).toContain("TRIGGER:-PT8H"); // 4pm the day before (local midnight minus 8 hours)
+    expect(opens).toContain("DESCRIPTION:StrikeLab week 1 opens tomorrow");
+    expect(opens).toContain("TRIGGER:PT16H");
+    expect(lastDay.match(/BEGIN:VALARM/g)).toHaveLength(1);
+    expect(lastDay).not.toContain("-PT8H");
+    // Every alarm is a well-formed block.
+    expect(lines.filter((l) => l === "BEGIN:VALARM")).toHaveLength(lines.filter((l) => l === "END:VALARM").length);
+  });
+
   it("falls back to a single season-start event before challenges are scheduled", () => {
     const lines = unfold(buildSeasonCalendar(season, [], NOW));
     expect(lines.filter((l) => l === "BEGIN:VEVENT")).toHaveLength(1);
     expect(lines).toContain("DTSTART;VALUE=DATE:20261130");
     expect(lines).toContain("SUMMARY:StrikeLab Season 1 starts");
+    expect(lines).toContain("TRIGGER:-PT8H");
   });
 
   it("is a valid calendar: CRLF endings, escaped text, no line over 75 octets", () => {

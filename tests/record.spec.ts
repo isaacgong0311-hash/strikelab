@@ -36,8 +36,13 @@ test.describe("private record with seeded HTTP data", () => {
     await signIn(page, "student-token", studentId);
     await page.goto("/record");
     await expect(page.getByRole("heading", { level: 1, name: "Your record" })).toBeVisible();
-    await expect(page.getByText("Verified placing")).toBeVisible();
+    const season = page.locator('section[aria-labelledby="record-seasons"]');
+    await expect(season.getByRole("heading", { level: 3, name: "Season 1" })).toBeVisible();
+    await expect(season.getByText(/^Verified [A-Z][a-z]{2} \d{1,2}, \d{4}$/)).toBeVisible();
+    await expect(season.getByText("#1", { exact: true })).toBeVisible();
+    await expect(season.getByText("Tested: Put-call parity")).toBeVisible();
     await expect(page.getByText("72.5 / 80")).toBeVisible();
+    await expect(page.getByText("@student_one")).toBeVisible();
     await expect(page.getByText("Verified in a live conversation on", { exact: false })).toBeVisible();
     await expect(page.getByRole("link", { name: "Investing Fundamentals certificate" })).toHaveAttribute("href", "/certificate/66666666-6666-4666-8666-666666666666");
     await page.setViewportSize({ width: 375, height: 900 });
@@ -46,6 +51,7 @@ test.describe("private record with seeded HTTP data", () => {
     expect(axe.violations.filter((violation) => violation.impact === "critical" || violation.impact === "serious")).toEqual([]);
     await page.getByRole("button", { name: "Create share link" }).click();
     await expect(page.getByLabel("Your share link")).toHaveValue("/r/77777777-7777-4777-8777-777777777777");
+    await expect(page.getByRole("link", { name: /Add to LinkedIn/ })).toHaveAttribute("href", /linkedin\.com\/profile\/add\?startTask=CERTIFICATION_NAME/);
     await capture(page, "populated-example");
     await page.getByRole("button", { name: "Copy link" }).click();
     await expect(page.getByRole("status")).toContainText("Link copied");
@@ -76,7 +82,8 @@ test.describe("private record with seeded HTTP data", () => {
     const page = await context.newPage();
     await signIn(page, "student-token", studentId);
     await page.goto("/record");
-    await expect(page.getByText("Verified placing")).toBeVisible();
+    await expect(page.getByText(/^Verified [A-Z][a-z]{2} \d{1,2}, \d{4}$/).first()).toBeVisible();
+    await expect(page.getByText("72.5 / 80")).toBeVisible();
     await expect(page.getByText("Example capstone")).toBeVisible();
     await context.close();
   });

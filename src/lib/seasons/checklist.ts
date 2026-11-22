@@ -74,7 +74,7 @@ export function buildChecklist(input: { handle: string | null; invited: number |
     {
       id: "calendar",
       title: "Add the challenge dates to your calendar",
-      detail: flags.calendar ? "Downloaded on this device." : "A reminder when each week opens and on its last day.",
+      detail: flags.calendar ? "Downloaded on this device." : "A reminder the day before each week opens, when it opens, and on its last day.",
       done: flags.calendar,
       href: "/seasons/calendar.ics",
       action: "Download",

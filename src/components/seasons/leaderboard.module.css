@@ -33,9 +33,19 @@
   padding-right: 0;
 }
 
+/* Ranks and scores: mono, fixed-width digits, right-aligned so decimals line up. */
+.figure {
+  font-family: var(--sl-font-code);
+  font-size: 0.9375rem;
+}
+
+.table .num {
+  text-align: right;
+}
+
 .you {
   background: var(--sl-brand-soft);
-  font-weight: 800;
+  font-weight: 700;
 }
 
 .empty {

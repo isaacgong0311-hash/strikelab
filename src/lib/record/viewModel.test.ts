@@ -24,7 +24,9 @@ describe("private record view model", () => {
 
   it("requires a matching season and rank, top 10, and a finished season", () => {
     const verification = [{ kind: "placing", subject_id: "s1:4", verified_at: "2026-12-22T00:00:00Z" }];
-    expect(buildRecordView("2026-12-21", [season], challenges, attempts, { s1: 4 }, verification, [], []).seasons[0].placingVerified).toBe(true);
+    expect(buildRecordView("2026-12-21", [season], challenges, attempts, { s1: 4 }, verification, [], []).seasons[0])
+      .toMatchObject({ placingVerified: true, placingVerifiedAt: "2026-12-22T00:00:00Z" });
+    expect(buildRecordView("2026-12-21", [season], challenges, attempts, { s1: 5 }, verification, [], []).seasons[0].placingVerifiedAt).toBeNull();
     expect(buildRecordView("2026-12-21", [season], challenges, attempts, { s1: 5 }, verification, [], []).seasons[0].placingVerified).toBe(false);
     expect(buildRecordView("2026-12-21", [season], challenges, attempts, { s1: 11 }, [{ ...verification[0], subject_id: "s1:11" }], [], []).seasons[0].placingVerified).toBe(false);
     expect(buildRecordView("2026-12-19", [season], challenges, attempts, { s1: 4 }, verification, [], []).seasons[0].placingVerified).toBe(false);

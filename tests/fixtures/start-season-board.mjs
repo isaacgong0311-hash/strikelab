@@ -12,14 +12,22 @@ const verifyFixture = Boolean(process.env.VERIFY_E2E);
 const adminFixture = Boolean(process.env.SEASON_ADMIN_E2E || verifyFixture);
 const recordFixture = Boolean(process.env.RECORD_E2E || verifyFixture);
 const statusFixture = Boolean(process.env.SEASON_STATUS_E2E || adminFixture || recordFixture);
+// A season whose three weeks have all closed: /seasons shows the final board.
+const endedFixture = Boolean(process.env.SEASON_ENDED_E2E);
 const firstClub = { id: "33333333-3333-4333-8333-333333333333", name: "Options Club" };
 const secondClub = { id: "44444444-4444-4444-8444-444444444444", name: "Quant Club" };
 // Season dates are New York calendar days (src/lib/seasons/seasonDate.ts), so read them there, not in UTC.
 const EASTERN_DAY = new Intl.DateTimeFormat("en-CA", { timeZone: "America/New_York", year: "numeric", month: "2-digit", day: "2-digit" });
 const isoDay = (offset) => EASTERN_DAY.format(new Date(Date.now() + offset * 86_400_000));
 const isoTime = (minutes) => new Date(Date.now() + minutes * 60_000).toISOString();
-const season = { id: "s1", title: "Season 1", starts_on: isoDay(recordFixture ? -30 : -7), ends_on: isoDay(recordFixture ? -1 : 30) };
-let recordShareToken = null;
+const season = { id: "s1", title: "Season 1", starts_on: isoDay(recordFixture || endedFixture ? -30 : -7), ends_on: isoDay(recordFixture || endedFixture ? -1 : 30) };
+// Share links are per session token, so record.spec and shared-record.spec can
+// create and revoke their own link in parallel without breaking each other's.
+const SHARE_TOKENS = {
+  "student-token": "77777777-7777-4777-8777-777777777777",
+  "share-student-token": "78787878-7878-4878-8878-787878787878",
+};
+const activeShares = new Map();
 const recordedVerifications = [];
 const challenge = (week, opens, closes) => ({
   id: `s1-w${week}`, season_id: "s1", week, template_slug: "put-call-parity",
@@ -34,6 +42,11 @@ const statusChallenges = [
   challenge(6, -1_440, 2_880), // pending review
   challenge(7, -4_320, -1_440), // closed
   challenge(8, -1_440, 2_880), // expired attempt
+];
+const endedChallenges = [
+  { ...challenge(1, -43_200, -33_120), template_slug: "put-call-parity" },
+  { ...challenge(2, -33_120, -23_040), template_slug: "black-scholes-call" },
+  { ...challenge(3, -23_040, -1_440), template_slug: "call-delta" },
 ];
 const statusAttempts = [
   { challenge_id: "s1-w3", status: "started", deadline: isoTime(20), official_score: null },
@@ -58,7 +71,7 @@ const service = createServer(async (request, response) => {
   if (request.method === "OPTIONS") return json(response, 200, {});
   const url = new URL(request.url, `http://127.0.0.1:${apiPort}`);
   const token = (request.headers.authorization ?? "").replace(/^Bearer /i, "");
-  const userId = token === "student-token" ? studentId : token === "teacher-token" ? teacherId : null;
+  const userId = token in SHARE_TOKENS ? studentId : token === "teacher-token" ? teacherId : null;
   if (url.pathname === "/auth/v1/user") {
     return userId
       ? json(response, 200, { id: userId, aud: "authenticated", role: "authenticated", email: `${token}@example.test`, app_metadata: {}, user_metadata: {}, created_at: "2026-10-01T00:00:00Z" })
@@ -75,7 +88,7 @@ const service = createServer(async (request, response) => {
   let value;
   switch (url.pathname) {
     case "/rest/v1/seasons": value = [season]; break;
-    case "/rest/v1/season_challenges": value = statusFixture ? statusChallenges : []; break;
+    case "/rest/v1/season_challenges": value = endedFixture ? endedChallenges : statusFixture ? statusChallenges : []; break;
     case "/rest/v1/season_attempts": {
       if (adminFixture && token === "fixture-service-role-key") {
         value = statusAttempts.map((row) => ({
@@ -97,8 +110,8 @@ const service = createServer(async (request, response) => {
       { kind: "placing", subject_id: "s1:1", verified_at: isoTime(-60) },
       { kind: "capstone", subject_id: "55555555-5555-4555-8555-555555555555", verified_at: isoTime(-50) },
     ] : []; break;
-    case "/rest/v1/record_shares": value = recordFixture && userId === studentId && recordShareToken
-      ? [{ token: recordShareToken, revoked_at: null }] : []; break;
+    case "/rest/v1/record_shares": value = recordFixture && userId === studentId && activeShares.get(token)
+      ? [{ token: activeShares.get(token), revoked_at: null }] : []; break;
     case "/rest/v1/capstone_submissions": value = recordFixture && (userId === studentId || (verifyFixture && token === "fixture-service-role-key")) ? [{
       id: "55555555-5555-4555-8555-555555555555", user_id: studentId, title: "Example capstone", status: "submitted", submitted_at: isoTime(-1_440),
       thesis: "Example thesis", code: "print('Example capstone')", result_summary: "Example result", reflection: "Example reflection",
@@ -126,15 +139,15 @@ const service = createServer(async (request, response) => {
       if (!recordFixture || !userId) return json(response, 401, { message: "Not authenticated" });
       let body = "";
       for await (const chunk of request) body += chunk;
-      if (JSON.parse(body).p_enabled) recordShareToken ??= "77777777-7777-4777-8777-777777777777";
-      else recordShareToken = null;
-      return json(response, 200, recordShareToken);
+      if (JSON.parse(body).p_enabled) activeShares.set(token, SHARE_TOKENS[token]);
+      else activeShares.delete(token);
+      return json(response, 200, activeShares.get(token) ?? null);
     }
     case "/rest/v1/rpc/get_shared_record": {
       let body = "";
       for await (const chunk of request) body += chunk;
       const suppliedToken = JSON.parse(body).p_token;
-      return json(response, 200, recordFixture && recordShareToken && suppliedToken === recordShareToken ? [{
+      return json(response, 200, recordFixture && [...activeShares.values()].includes(suppliedToken) ? [{
         handle: "student_one",
         items: [
           { kind: "placing", subject_id: "s1:1", verified_at: isoTime(-60) },

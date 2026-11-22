@@ -2,7 +2,9 @@ import AxeBuilder from "@axe-core/playwright";
 import { expect, test } from "@playwright/test";
 import { mkdirSync, writeFileSync } from "node:fs";
 
-const token = "77777777-7777-4777-8777-777777777777";
+// Its own session and share token (tests/fixtures/start-season-board.mjs), so it
+// can run in parallel with record.spec.ts, which creates and revokes 7777….
+const token = "78787878-7878-4878-8878-787878787878";
 const fixture = Boolean(process.env.RECORD_E2E);
 
 test("the OG image renders a generic card without a database", async ({ request }) => {
@@ -19,7 +21,7 @@ test.describe("shared record with seeded HTTP data", () => {
     const owner = await browser.newContext();
     const ownerPage = await owner.newPage();
     const session = {
-      access_token: "student-token", refresh_token: "student-token-refresh", token_type: "bearer",
+      access_token: "share-student-token", refresh_token: "share-student-token-refresh", token_type: "bearer",
       expires_in: 3600, expires_at: Math.floor(Date.now() / 1000) + 3600,
       user: { id: "11111111-1111-4111-8111-111111111111", aud: "authenticated", role: "authenticated", email: "student@example.test", app_metadata: {}, user_metadata: {} },
     };
@@ -34,7 +36,11 @@ test.describe("shared record with seeded HTTP data", () => {
     expect(response?.status()).toBe(200);
     await expect(page.getByRole("heading", { level: 1, name: "@student_one" })).toBeVisible();
     await expect(page.getByText("#1", { exact: true }).first()).toBeVisible();
-    await expect(page.getByText("Verified capstone", { exact: true })).toBeVisible();
+    await expect(page.getByRole("heading", { level: 3, name: "Capstone project" })).toBeVisible();
+    await expect(page.getByRole("heading", { level: 3, name: "Season 1" })).toBeVisible();
+    await expect(page.getByText(/^Verified [A-Z][a-z]{2} \d{1,2}, \d{4}$/).first()).toBeVisible();
+    // A visitor never sees the owner's LinkedIn or sharing controls.
+    await expect(page.getByRole("link", { name: /Add to LinkedIn/ })).toHaveCount(0);
     expect(await page.locator('meta[name="robots"]').getAttribute("content")).toContain("noindex");
     expect(await page.locator('meta[name="robots"]').getAttribute("content")).toContain("nofollow");
     expect(await page.locator("body").innerText()).not.toMatch(/student@example\.test|Example Student|55555555-5555/);
@@ -58,6 +64,15 @@ test.describe("shared record with seeded HTTP data", () => {
     await expect(noScriptPage.getByRole("heading", { level: 1, name: "@student_one" })).toBeVisible();
     await noScript.close();
 
+    // The owner sees an Add to LinkedIn link that points back at this public record.
+    await ownerPage.goto(`/r/${token}`);
+    const linkedIn = new URL(await ownerPage.getByRole("link", { name: /Add to LinkedIn/ }).getAttribute("href") ?? "");
+    expect(linkedIn.origin + linkedIn.pathname).toBe("https://www.linkedin.com/profile/add");
+    expect(linkedIn.searchParams.get("startTask")).toBe("CERTIFICATION_NAME");
+    expect(linkedIn.searchParams.get("organizationName")).toBe("StrikeLab");
+    expect(linkedIn.searchParams.get("name")).toBe("StrikeLab Season 1: verified #1 placing");
+    expect(linkedIn.searchParams.get("certUrl")).toBe(`https://strikelab.dev/r/${token}`);
+    await ownerPage.goto("/record");
     await ownerPage.getByRole("button", { name: "Revoke link" }).click();
     await expect(ownerPage.getByRole("button", { name: "Create share link" })).toBeVisible();
     const revoked = await page.goto(`/r/${token}`);

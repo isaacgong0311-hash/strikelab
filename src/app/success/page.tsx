@@ -1,7 +1,14 @@
 "use client";
 import { Suspense, useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
-import Link from "next/link";
+import { ActionLink } from "@/components/ui/Action";
+import styles from "./success.module.css";
+
+const Check = ({ size = 16 }: { size?: number }) => (
+  <svg viewBox="0 0 16 16" width={size} height={size} aria-hidden="true" focusable="false">
+    <path d="M3.5 8.4 6.5 11.3 12.5 4.8" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+  </svg>
+);
 
 function SuccessContent() {
   const searchParams = useSearchParams();
@@ -49,100 +56,46 @@ function SuccessContent() {
   }, [sessionId]);
 
   return (
-    <div style={{
-      minHeight: "80vh", display: "flex", alignItems: "center", justifyContent: "center",
-      padding: "48px 20px", fontFamily: "var(--font-ui), system-ui, sans-serif",
-    }}>
-      <div style={{
-        width: "100%", maxWidth: 480,
-        background: "var(--paper-2)", border: "1.5px solid var(--line)",
-        borderRadius: 24, padding: "48px 40px", textAlign: "center",
-        boxShadow: "0 24px 48px -20px rgba(40,30,10,0.28)",
-      }}>
+    <div className={styles.page}>
+      <div className={styles.card}>
         {loading ? (
-          <>
-            <div style={{
-              width: 80, height: 80, borderRadius: "50%",
-              background: "var(--bg2)", display: "flex",
-              alignItems: "center", justifyContent: "center",
-              fontSize: 32, color: "var(--ink-2)",
-              margin: "0 auto 24px",
-            }} className="ch-spin">◌</div>
-            <p style={{ color: "var(--ink-2)" }}>Confirming your subscription…</p>
-          </>
+          <div role="status">
+            <div className={styles.mark} data-tone="pending">
+              <svg className={styles.spin} viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" focusable="false">
+                <circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" strokeWidth="2" strokeDasharray="42 100" strokeLinecap="round" />
+              </svg>
+            </div>
+            <p className={styles.text}>Confirming your subscription…</p>
+          </div>
         ) : error ? (
           <>
-            <div style={{
-              width: 80, height: 80, borderRadius: "50%",
-              background: "var(--coral)", display: "flex",
-              alignItems: "center", justifyContent: "center",
-              fontSize: 36, fontWeight: 700, color: "#fff",
-              boxShadow: "0 6px 0 #bf4830",
-              margin: "0 auto 24px",
-            }}>!</div>
-            <h1 style={{ fontFamily: "var(--font-display)", fontSize: 26, color: "var(--ink)", marginBottom: 10 }}>
-              Something went wrong
-            </h1>
-            <p style={{ color: "var(--ink-2)", marginBottom: 24 }}>{error}</p>
-            <Link href="/dashboard" style={{
-              display: "inline-block", padding: "13px 24px",
-              background: "var(--grass)", color: "#fff", borderRadius: 14,
-              fontWeight: 700, boxShadow: "0 4px 0 var(--grass-d)",
-            }}>Go to Dashboard</Link>
+            <div className={styles.mark} data-tone="error" aria-hidden="true">
+              <svg viewBox="0 0 24 24" width="24" height="24" focusable="false">
+                <path d="M12 7v6M12 16.5v.5" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" />
+              </svg>
+            </div>
+            <h1 className={styles.title}>Something went wrong</h1>
+            <p className={styles.text} role="alert">{error}</p>
+            <div className={styles.actions}>
+              <ActionLink href="/dashboard">Go to Dashboard</ActionLink>
+            </div>
           </>
         ) : (
           <>
-            <div style={{
-              width: 80, height: 80, borderRadius: "50%",
-              background: "var(--grass)", display: "flex",
-              alignItems: "center", justifyContent: "center",
-              fontSize: 36, color: "#fff",
-              boxShadow: "0 6px 0 var(--grass-d)",
-              margin: "0 auto 24px",
-            }}>✓</div>
-
-            <h1 style={{
-              fontFamily: "var(--font-display)", fontWeight: 600, fontSize: 30,
-              color: "var(--ink)", letterSpacing: "-0.02em", marginBottom: 10,
-            }}>
-              You&apos;re on Pro!
-            </h1>
-            <p style={{ color: "var(--ink-2)", fontSize: 16, marginBottom: 8 }}>
-              Your 7-day free trial has started. You now have access to:
-            </p>
-
-            <ul style={{
-              listStyle: "none", textAlign: "left", padding: 0, margin: "20px 0 28px",
-              display: "flex", flexDirection: "column", gap: 10,
-            }}>
+            <div className={styles.mark} aria-hidden="true"><Check size={24} /></div>
+            <h1 className={styles.title}>You&apos;re on Pro!</h1>
+            <p className={styles.text}>Your 7-day free trial has started. You now have access to:</p>
+            <ul className={styles.list}>
               {[
                 "Weekly office hours with the founder",
                 "Priority email support",
               ].map((item) => (
-                <li key={item} style={{ display: "flex", gap: 10, fontSize: 14, color: "var(--ink-2)" }}>
-                  <span style={{ color: "var(--grass)", fontWeight: 700, flexShrink: 0 }}>✓</span>
-                  {item}
-                </li>
+                <li key={item}><Check />{item}</li>
               ))}
             </ul>
-
-            <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-              <Link href="/lessons" style={{
-                display: "block", padding: "14px 20px",
-                background: "var(--grass)", color: "#fff",
-                borderRadius: 14, fontWeight: 700, fontSize: 15,
-                boxShadow: "0 4px 0 var(--grass-d)", textDecoration: "none",
-              }}>
-                Start a lesson →
-              </Link>
-              <Link href="/dashboard" style={{
-                display: "block", padding: "12px 20px",
-                background: "var(--paper-2)", color: "var(--ink-2)",
-                border: "1.5px solid var(--line-2)", borderRadius: 12,
-                fontWeight: 600, fontSize: 14, textDecoration: "none",
-              }}>
-                Go to Dashboard
-              </Link>
+            <div className={styles.actions}>
+              <ActionLink href="/lessons">Start a lesson</ActionLink>
+              <ActionLink href="/dashboard" variant="secondary">Go to Dashboard</ActionLink>
             </div>
           </>
         )}
@@ -154,8 +107,8 @@ function SuccessContent() {
 export default function SuccessPage() {
   return (
     <Suspense fallback={
-      <div style={{ minHeight: "80vh", display: "flex", alignItems: "center", justifyContent: "center" }}>
-        <p style={{ color: "var(--ink-2)", fontFamily: "var(--font-ui)" }}>Loading…</p>
+      <div className={styles.page}>
+        <p className={styles.text}>Loading…</p>
       </div>
     }>
       <SuccessContent />

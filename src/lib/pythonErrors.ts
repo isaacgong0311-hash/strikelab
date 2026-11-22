@@ -30,3 +30,39 @@ export function friendlyPythonError(raw: string, phase: PythonPhase): string {
   const trace = kept.length ? ["Traceback (most recent call last):", ...kept, error].join("\n") : error;
   return hint + trace;
 }
+
+const PARSE_ERROR = /^(SyntaxError|IndentationError|TabError): (.*)$/m;
+
+/**
+ * One plain-language line for an error Python raised before running anything
+ * (a syntax, indentation or tab error), to show above the traceback. Null for
+ * anything else: a runtime error's own message is already specific. Reads the
+ * text friendlyPythonError returns or the raw traceback.
+ */
+export function plainParseError(text: string): string | null {
+  const match = PARSE_ERROR.exec(text);
+  if (!match) return null;
+  const [, kind, detail] = match;
+  // The student's frame (`File "<exec>", line N`) names the line to fix: the
+  // unindented body, or where an open string starts. The "on line" / "detected
+  // at line" in the message points elsewhere (the def, the end of the file), so
+  // it is only a fallback.
+  const frames = [...text.slice(0, match.index).matchAll(/File "<exec>", line (\d+)/g)];
+  const lineNo = /\(detected at line (\d+)\)|on line (\d+)/.exec(detail);
+  const n = frames.at(-1)?.[1] ?? lineNo?.[1] ?? lineNo?.[2];
+  const at = n ? `line ${n}` : "one line";
+  const At = n ? `Line ${n}` : "One line";
+
+  if (kind === "TabError") return `${At} mixes tabs and spaces. Indent with spaces only.`;
+  if (kind === "IndentationError") {
+    if (/expected an indented block/.test(detail)) return `${At} needs to be indented: the lines inside a def, if or for go 4 spaces in.`;
+    if (/unexpected indent/.test(detail)) return `${At} is indented when Python didn't expect it. Line it up with the line above.`;
+    if (/unindent does not match/.test(detail)) return `${At} doesn't line up with the lines above it. Use 4 spaces for each level.`;
+    return `Python couldn't follow the indentation on ${at}. Use 4 spaces for each level.`;
+  }
+  if (/was never closed/.test(detail)) return `A bracket opened on ${at} is never closed. Add the matching ) ] or }.`;
+  if (/unterminated (triple-quoted )?string/.test(detail)) return `A quote on ${at} is never closed. Strings need a matching ' or ".`;
+  if (/expected ':'/.test(detail)) return `${At} is missing a colon. Lines starting with def, if, for or else end with :.`;
+  if (/unmatched '[)\]}]'/.test(detail)) return `${At} has a closing bracket with no opening one.`;
+  return `Python couldn't read your code at ${at}. Look for a typo, a missing bracket or a missing colon there.`;
+}

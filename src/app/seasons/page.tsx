@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { ActionLink } from "@/components/ui/Action";
 import Faq from "@/components/marketing/Faq";
 import JsonLd from "@/components/JsonLd";
 import { SEASON_FAQ } from "@/lib/seasons/faq";
@@ -18,6 +19,8 @@ import InviteCard from "./InviteCard";
 import inviteStyles from "./invite.module.css";
 import { inviterFromSrc } from "@/lib/seasons/invite";
 import WeekStatus from "./WeekStatus";
+import NextChallenge from "./NextChallenge";
+import { countdown, easternWhen, nextChallenge } from "@/lib/seasons/countdown";
 import boardStyles from "./board.module.css";
 import statusStyles from "./status.module.css";
 
@@ -121,6 +124,13 @@ export default async function SeasonsPage({ searchParams }: { searchParams: Prom
   const phase: SeasonPhase = season && challenges.length > 0 && datePhase.kind !== "upcoming"
     ? (seasonIsOver(now, ends, challenges.map((c) => c.closes_at)) ? { kind: "ended" } : { kind: "live" })
     : datePhase;
+  // Before the first row is seeded, count down to the planned start instead.
+  const next = phase.kind === "ended" ? null : nextChallenge(now, challenges, season && challenges.length > 0 ? null : starts);
+  const nextTarget = next ? (next.kind === "opens" ? next.opensAt : next.closesAt) : null;
+  const weekWords = ["", "one", "two", "three", "four", "five", "six", "seven", "eight"];
+  const calendarLabel = challenges.length > 1
+    ? `Add all ${weekWords[challenges.length] ?? challenges.length} to your calendar`
+    : !season || challenges.length === 0 ? "Add the start date to your calendar" : "Add it to your calendar";
 
   return (
     <div className={styles.page}>
@@ -131,7 +141,7 @@ export default async function SeasonsPage({ searchParams }: { searchParams: Prom
           <p className={seasonStyles.phase} data-kind={phase.kind}>
             <span className={seasonStyles.dot} aria-hidden="true" />
             {phase.kind === "upcoming"
-              ? `Opens in ${phase.days} ${phase.days === 1 ? "day" : "days"} · ${readable(starts)}`
+              ? `Starts ${readable(starts)}`
               : phase.kind === "live" ? "Live now" : "Season ended"}
           </p>
           <p className={styles.kicker}>Seasons</p>
@@ -141,17 +151,19 @@ export default async function SeasonsPage({ searchParams }: { searchParams: Prom
             own explanation, ranked under a handle, and a record you can show at the end.
           </p>
           {!signedIn && (
-            <div className={styles.ctaRow}>
-              <Link href="/sign-up?next=%2Fseasons" className={styles.primary}>Create a free account to play</Link>
-              <Link href="/seasons/practice" className={styles.secondary}>Try a practice round</Link>
+            <div className={seasonStyles.ctas}>
+              <ActionLink href="/sign-up?next=%2Fseasons">{phase.kind === "ended" ? "Create a free account" : "Create a free account to play"}</ActionLink>
+              <ActionLink href="/seasons/practice" variant="secondary">Try a practice round</ActionLink>
             </div>
           )}
-          {needsHandle && <div style={{ marginTop: "1.5rem" }}><HandleForm /></div>}
+          {next && nextTarget && (
+            <NextChallenge next={next} initial={countdown(now, nextTarget)} when={easternWhen(nextTarget)} calendarLabel={calendarLabel} />
+          )}
+          {needsHandle && <div className={seasonStyles.handle}><HandleForm /></div>}
           {handle && <InviteCard handle={handle} invited={invited} seasonTitle={title} />}
           <p className={seasonStyles.quiet}>
             {signedIn && <Link href="/seasons/practice" className={seasonStyles.link}>Try the 15-minute practice round</Link>}
             {!signedIn && <Link href="/lessons" className={seasonStyles.link}>Train with the lessons first</Link>}
-            {!signedIn && <a href="/seasons/calendar.ics" download className={seasonStyles.link}>Add the challenge dates to your calendar</a>}
           </p>
         </div>
       </section>
