@@ -1,0 +1,106 @@
+/* Site footer. Tokens only; no pills, no mono, no decoration.
+   Layout: the brand and four link columns share one row from 1024px. Between
+   640px and 1023px the brand takes its own row and the four columns sit
+   under it; below 640px the columns pair up. No column is ever left alone on
+   a row of its own. */
+.footer {
+  border-top: 1px solid var(--sl-border);
+  background: var(--sl-canvas);
+  color: var(--sl-text-muted);
+  font-family: var(--sl-font-body);
+}
+
+.inner {
+  width: min(100% - 2rem, 72rem);
+  margin-inline: auto;
+}
+
+.top {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--sl-space-6) var(--sl-space-5);
+  padding-block: var(--sl-space-7);
+}
+
+.brand { grid-column: 1 / -1; display: grid; gap: var(--sl-space-3); align-content: start; }
+
+@media (min-width: 640px) {
+  .top { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+}
+
+@media (min-width: 1024px) {
+  .top { grid-template-columns: minmax(0, 1.6fr) repeat(4, minmax(0, 1fr)); gap: var(--sl-space-6); }
+  .brand { grid-column: auto; padding-right: var(--sl-space-5); }
+}
+
+.logo {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  width: fit-content;
+  min-height: var(--sl-tap);
+  color: var(--sl-text);
+  text-decoration: none;
+}
+
+.wordmark {
+  font-family: var(--sl-font-display);
+  font-weight: 800;
+  font-size: 1rem;
+  letter-spacing: -0.03em;
+}
+.wordmarkLab { color: var(--sl-brand); }
+
+.blurb {
+  max-width: 20rem;
+  margin: 0;
+  font-size: 0.875rem;
+  line-height: 1.6;
+}
+
+.group { min-width: 0; }
+
+.groupTitle {
+  margin: 0 0 var(--sl-space-2);
+  color: var(--sl-text);
+  font-family: var(--sl-font-body);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  letter-spacing: 0;
+}
+
+.list { margin: 0; padding: 0; list-style: none; display: grid; }
+
+/* 44px rows on touch screens; 32px on desktop, still above the 24px floor. */
+.link {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--sl-tap);
+  color: var(--sl-text-muted);
+  font-size: 0.875rem;
+  line-height: 1.3;
+  text-decoration: none;
+  text-underline-offset: 3px;
+  transition: color var(--sl-motion-fast) var(--sl-ease);
+}
+.link:hover { color: var(--sl-text); text-decoration: underline; text-decoration-color: var(--sl-border-strong); }
+
+@media (min-width: 1024px) {
+  .link { min-height: 32px; }
+  .logo { min-height: 28px; }
+}
+
+.bottom {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sl-space-2) var(--sl-space-5);
+  padding-block: var(--sl-space-5);
+  border-top: 1px solid var(--sl-border);
+  font-size: 0.8125rem;
+}
+
+.legal, .quote { margin: 0; }
+.legal { color: var(--sl-text-subtle); }
+.quote { color: var(--sl-text-muted); }

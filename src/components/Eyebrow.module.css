@@ -1,0 +1,11 @@
+/* A small label above a heading. Body font, sentence case as written, muted:
+   mono is kept for code, numbers, timers and scores (docs/ui-system.md).
+   Spacing comes from the caller's className, so this sets no margin. */
+.eyebrow {
+  color: var(--sl-text-muted);
+  font-family: var(--sl-font-body);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  line-height: 1.4;
+  letter-spacing: 0;
+}

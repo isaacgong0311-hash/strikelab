@@ -1,5 +1,5 @@
-import Link from "next/link";
-import Eyebrow from "@/components/Eyebrow";
+import { ActionLink } from "@/components/ui/Action";
+import styles from "@/components/errors/ErrorScreen.module.css";
 
 export const metadata = {
   title: "Page not found",
@@ -9,51 +9,16 @@ export const metadata = {
 
 export default function NotFound() {
   return (
-    <div className="max-w-2xl mx-auto px-6 py-24 text-center">
-      <Eyebrow className="mb-3">404</Eyebrow>
-      <div
-        style={{
-          fontFamily: "var(--font-display), Georgia, serif",
-          fontSize: "72px",
-          fontWeight: 800,
-          letterSpacing: "-0.03em",
-          color: "var(--grass)",
-          lineHeight: 1,
-          marginBottom: "8px",
-        }}
-      >
-        ∄
-      </div>
-      <h1
-        className="text-3xl font-semibold mb-3"
-        style={{ fontFamily: "var(--font-display)", color: "var(--ink)" }}
-      >
-        This page doesn&rsquo;t exist.
-      </h1>
-      <p className="text-sm leading-relaxed mb-8 max-w-md mx-auto" style={{ color: "var(--ink-2)" }}>
-        The link might be stale, or the URL got mistyped. Whatever happened, the
-        curriculum&rsquo;s still exactly where you left it.
+    <div className={styles.wrap}>
+      <p className={styles.code}>Error <span className="sl-num">404</span></p>
+      <h1 className={styles.title}>This page doesn&rsquo;t exist.</h1>
+      <p className={styles.body}>
+        The link might be stale, or the URL got mistyped. Your lessons and
+        progress are still where you left them.
       </p>
-      <div className="flex flex-wrap items-center justify-center gap-3">
-        <Link
-          href="/lessons"
-          className="px-5 py-2.5 rounded-xl text-sm font-bold transition-opacity hover:opacity-90"
-          style={{
-            background: "var(--grass)",
-            color: "#fff",
-            boxShadow: "0 4px 0 var(--grass-d)",
-            fontFamily: "var(--font-ui), system-ui, sans-serif",
-          }}
-        >
-          Go to the learning path →
-        </Link>
-        <Link
-          href="/"
-          className="px-5 py-2.5 rounded-xl text-sm font-semibold transition-opacity hover:opacity-80"
-          style={{ border: "1.5px solid var(--line-2)", color: "var(--ink-2)" }}
-        >
-          Back to home
-        </Link>
+      <div className={styles.actions}>
+        <ActionLink href="/lessons">Go to the lessons</ActionLink>
+        <ActionLink href="/" variant="secondary">Back to home</ActionLink>
       </div>
     </div>
   );

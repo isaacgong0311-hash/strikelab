@@ -3,9 +3,10 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { getSupabaseBrowser } from "@/lib/supabase/client";
-import { TRACKS } from "@/lib/tracks";
-import BrandMark from "@/components/BrandMark";
+import AuthCard, { authStyles } from "@/components/AuthCard";
 import AuthError from "@/components/AuthError";
+import { Button } from "@/components/ui/Action";
+import { TextField } from "@/components/ui/Field";
 import { useNextPath } from "@/lib/auth/useNextPath";
 import { getAttribution } from "@/lib/attribution";
 import { PLANNED_SEASON } from "@/lib/seasons/planned";
@@ -13,8 +14,6 @@ import styles from "./signup.module.css";
 import CheckEmail from "./CheckEmail";
 
 type SignupRole = "student" | "leader";
-
-const TOTAL_LESSONS = TRACKS.reduce((s, t) => s + t.lessons.length, 0);
 
 // Where did this signup come from? (?src=reddit, ?src=aops, ?src=discord, ...)
 // Read once on mount, threaded through the email/password path directly and
@@ -124,137 +123,111 @@ export default function SignUpPage() {
 
   const oauthEnabled = Boolean(getSupabaseBrowser());
 
+  const signInHref = destination === "/dashboard" ? "/sign-in" : `/sign-in?next=${encodeURIComponent(destination)}`;
+
   if (checkEmail) {
     return (
       <CheckEmail
         email={email}
         redirectTo={`${window.location.origin}/auth/callback?next=${encodeURIComponent(destination)}`}
-        signInHref={destination === "/dashboard" ? "/sign-in" : `/sign-in?next=${encodeURIComponent(destination)}`}
+        signInHref={signInHref}
+        onStartAgain={() => { setCheckEmail(false); setPassword(""); }}
       />
     );
   }
 
+  const heading = leaderFlow
+    ? { title: "Create your leader account", subtitle: "Pilots are free. Setting up your class takes about three minutes." }
+    : seasonFlow
+      ? { title: `Join ${PLANNED_SEASON.title}`, subtitle: "Free. Next you\u2019ll pick a leaderboard handle. Boards show handles, never real names." }
+      : { title: "Start learning free", subtitle: "An account saves your progress across devices and gives you a handle for the season leaderboards." };
+
   return (
-    <div className="auth">
-      <div className="auth-card">
-        <div className="auth-brand"><span className="auth-logo"><BrandMark size={34} /></span></div>
-        {leaderFlow ? (
-          <>
-            <h1 className="auth-title">Create your leader account</h1>
-            <p className="auth-sub">Pilots are free. Setting up your class takes about three minutes.</p>
-          </>
-        ) : seasonFlow ? (
-          <>
-            <h1 className="auth-title">Join {PLANNED_SEASON.title}</h1>
-            <p className="auth-sub">Free. Next you&apos;ll pick a leaderboard handle. Boards show handles, never real names.</p>
-          </>
-        ) : (
-          <>
-            <h1 className="auth-title">Start learning free</h1>
-            <p className="auth-sub">All {TOTAL_LESSONS} lessons, the Python playground, and the Greek visualizer — free forever.</p>
-          </>
-        )}
+    <AuthCard
+      title={heading.title}
+      subtitle={heading.subtitle}
+      footer={<>Already have an account? <Link href={signInHref}>Sign in</Link></>}
+    >
+      <AuthError message={error} />
 
-        <AuthError message={error} />
+      <form onSubmit={handleSubmit} className={authStyles.form}>
+        <fieldset className={styles.roles}>
+          <legend className={styles.legend}>I&apos;m signing up as</legend>
+          <div className={styles.roleOptions}>
+            {([
+              ["student", "A student"],
+              ["leader", "A club leader or teacher"],
+            ] as const).map(([value, label]) => (
+              <label key={value} className={styles.role}>
+                <input
+                  type="radio"
+                  name="signup-role"
+                  value={value}
+                  required
+                  checked={role === value}
+                  onChange={() => setRoleChoice(value)}
+                />
+                <span>{label}</span>
+              </label>
+            ))}
+          </div>
+        </fieldset>
+        <TextField
+          label="Your name"
+          type="text"
+          required
+          maxLength={60}
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          autoComplete={role === "leader" ? "name" : "nickname"}
+          help={role === "leader"
+            ? "Shown on your class pages."
+            : "What your club leader will see. A first name and last initial is enough."}
+        />
+        <TextField
+          label="Email"
+          type="email"
+          required
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          placeholder="you@school.edu"
+          autoComplete="email"
+        />
+        <TextField
+          label="Password"
+          type="password"
+          required
+          minLength={8}
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          autoComplete="new-password"
+          help="Use at least 8 characters."
+        />
+        <label className={styles.attest}>
+          <input
+            type="checkbox"
+            required
+            checked={ageConfirmed}
+            onChange={(e) => setAgeConfirmed(e.target.checked)}
+          />
+          <span>I&apos;m 13 or older.</span>
+        </label>
+        <Button type="submit" disabled={loading} className={authStyles.full}>
+          {loading ? "Creating account…" : "Create free account"}
+        </Button>
+      </form>
 
-        <form onSubmit={handleSubmit} className="auth-form">
-          <fieldset className={styles.roles}>
-            <legend className="auth-label">I&apos;m signing up as</legend>
-            <div className={styles.roleOptions}>
-              {([
-                ["student", "A student"],
-                ["leader", "A club leader or teacher"],
-              ] as const).map(([value, label]) => (
-                <label key={value} className={styles.role}>
-                  <input
-                    type="radio"
-                    name="signup-role"
-                    value={value}
-                    required
-                    checked={role === value}
-                    onChange={() => setRoleChoice(value)}
-                  />
-                  <span>{label}</span>
-                </label>
-              ))}
-            </div>
-          </fieldset>
-          <label className="auth-label">
-            Your name
-            <input
-              className="auth-input"
-              type="text"
-              required
-              maxLength={60}
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              placeholder={role === "leader" ? "Jordan Rivera" : "Alex P."}
-              autoComplete={role === "leader" ? "name" : "nickname"}
-              aria-describedby="signup-name-help"
-            />
-            <span id="signup-name-help" className="auth-help">
-              {role === "leader"
-                ? "Shown on your class pages."
-                : "What your club leader will see. A first name and last initial is enough."}
-            </span>
-          </label>
-          <label className="auth-label">
-            Email
-            <input
-              className="auth-input"
-              type="email"
-              required
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="you@school.edu"
-              autoComplete="email"
-            />
-          </label>
-          <label className="auth-label">
-            Password
-            <input
-              className="auth-input"
-              type="password"
-              required
-              minLength={8}
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="Min. 8 characters"
-              autoComplete="new-password"
-              aria-describedby="signup-password-help"
-            />
-            <span id="signup-password-help" className="auth-help">Use at least 8 characters.</span>
-          </label>
-          <label className={styles.attest}>
-            <input
-              type="checkbox"
-              required
-              checked={ageConfirmed}
-              onChange={(e) => setAgeConfirmed(e.target.checked)}
-            />
-            <span>I&apos;m 13 or older.</span>
-          </label>
-          <button type="submit" disabled={loading} className="v2-btn" style={{ width: "100%", marginTop: 4 }}>
-            {loading ? "Creating account…" : <>Create free account <span className="v2-arr">→</span></>}
-          </button>
-        </form>
+      {oauthEnabled && (
+        <Button variant="secondary" onClick={handleGoogle} className={authStyles.full}>
+          Continue with Google
+        </Button>
+      )}
 
-        {oauthEnabled && (
-          <button type="button" onClick={handleGoogle} className="v2-btn ghost" style={{ width: "100%", marginTop: 10 }}>
-            Continue with Google
-          </button>
-        )}
-
-        <p className="auth-legal" style={{ fontSize: 11, color: "var(--ink-3, #78716c)", marginTop: 14, lineHeight: 1.5 }}>
-          By creating an account, you agree to StrikeLab&rsquo;s{" "}
-          <Link href="/terms">Terms of Service</Link> and{" "}
-          <Link href="/privacy">Privacy Policy</Link>.
-        </p>
-
-        <p className="auth-alt">
-          Already have an account? <Link href={destination === "/dashboard" ? "/sign-in" : `/sign-in?next=${encodeURIComponent(destination)}`}>Sign in</Link>
-        </p>
-      </div>
-    </div>
+      <p className={authStyles.legal}>
+        By creating an account, you agree to StrikeLab&rsquo;s{" "}
+        <Link href="/terms">Terms of Service</Link> and{" "}
+        <Link href="/privacy">Privacy Policy</Link>.
+      </p>
+    </AuthCard>
   );
 }

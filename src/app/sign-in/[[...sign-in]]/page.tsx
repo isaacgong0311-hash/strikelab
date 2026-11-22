@@ -3,8 +3,10 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { getSupabaseBrowser } from "@/lib/supabase/client";
-import BrandMark from "@/components/BrandMark";
+import AuthCard, { authStyles as styles } from "@/components/AuthCard";
 import AuthError from "@/components/AuthError";
+import { Button } from "@/components/ui/Action";
+import { TextField } from "@/components/ui/Field";
 import { useNextPath } from "@/lib/auth/useNextPath";
 
 export default function SignInPage() {
@@ -54,59 +56,46 @@ export default function SignInPage() {
   const oauthEnabled = Boolean(getSupabaseBrowser());
 
   return (
-    <div className="auth">
-      <div className="auth-card">
-        <div className="auth-brand"><span className="auth-logo"><BrandMark size={34} /></span></div>
-        <h1 className="auth-title">Welcome back</h1>
-        <p className="auth-sub">Sign in to pick up your streak and keep learning.</p>
+    <AuthCard
+      title="Welcome back"
+      subtitle="Sign in to pick up your progress and your season handle."
+      footer={
+        <>New here? <Link href={nextPath === "/dashboard" ? "/sign-up" : `/sign-up?next=${encodeURIComponent(nextPath)}`}>Create a free account</Link></>
+      }
+    >
+      <AuthError message={error} />
 
-        <AuthError message={error} />
+      <form onSubmit={handleSubmit} className={styles.form}>
+        <TextField
+          label="Email"
+          type="email"
+          required
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          placeholder="you@school.edu"
+          autoComplete="email"
+        />
+        <div className={styles.fieldWithLink}>
+          <Link href="/forgot-password" className={styles.labelLink}>Forgot password?</Link>
+          <TextField
+            label="Password"
+            type="password"
+            required
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            autoComplete="current-password"
+          />
+        </div>
+        <Button type="submit" disabled={loading} className={styles.full}>
+          {loading ? "Signing in…" : "Sign in"}
+        </Button>
+      </form>
 
-        <form onSubmit={handleSubmit} className="auth-form">
-          <label className="auth-label">
-            Email
-            <input
-              className="auth-input"
-              type="email"
-              required
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="you@school.edu"
-              autoComplete="email"
-            />
-          </label>
-          <label className="auth-label">
-            <span style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline" }}>
-              Password
-              <Link href="/forgot-password" style={{ fontSize: 12, fontWeight: 400, color: "var(--ink-3, #78716c)" }}>
-                Forgot password?
-              </Link>
-            </span>
-            <input
-              className="auth-input"
-              type="password"
-              required
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="••••••••"
-              autoComplete="current-password"
-            />
-          </label>
-          <button type="submit" disabled={loading} className="v2-btn" style={{ width: "100%", marginTop: 4 }}>
-            {loading ? "Signing in…" : <>Sign in <span className="v2-arr">→</span></>}
-          </button>
-        </form>
-
-        {oauthEnabled && (
-          <button type="button" onClick={handleGoogle} className="v2-btn ghost" style={{ width: "100%", marginTop: 10 }}>
-            Continue with Google
-          </button>
-        )}
-
-        <p className="auth-alt">
-          New here? <Link href={nextPath === "/dashboard" ? "/sign-up" : `/sign-up?next=${encodeURIComponent(nextPath)}`}>Create a free account</Link>
-        </p>
-      </div>
-    </div>
+      {oauthEnabled && (
+        <Button variant="secondary" onClick={handleGoogle} className={styles.full}>
+          Continue with Google
+        </Button>
+      )}
+    </AuthCard>
   );
 }

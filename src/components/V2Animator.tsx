@@ -1,28 +1,32 @@
 "use client";
-import { useEffect, useRef } from "react";
+import { useEffect } from "react";
 import { usePathname } from "next/navigation";
 
 /**
- * Global animation + parallax driver. Mount once in layout.tsx.
+ * Scroll-reveal driver. Mount once in layout.tsx.
  *
- *   • Parallax-shifts the global #v2-bg-grid element 8px on scroll.
  *   • Observes [data-v2-head] elements and adds .in on scroll-enter (fade-up).
  *   • Observes [data-v2-stagger] groups and adds .in to .v2-rise children sequentially.
  *   • Observes lone .v2-rise elements (no stagger parent) and adds .in on scroll-enter.
  *
+ * Progressive enhancement only: content is visible in the server-rendered
+ * HTML. Only an element this effect marks data-sl-reveal="pending" (below the
+ * fold, motion allowed) is hidden (globals.css, foundation.css), and every
+ * pending element is revealed once the page has loaded, whether or not it is
+ * ever scrolled to, so a full-page capture or a print never shows gaps.
+ * Without JavaScript, or with reduced motion, nothing is ever hidden.
+ *
  * Re-runs on every route change so newly mounted DOM gets wired.
  */
 export default function V2Animator() {
-  const rafRef = useRef(false);
   const path = usePathname();
 
   useEffect(() => {
     const root = document.documentElement;
     const reduceMotion = root.dataset.motion === "reduce" || window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     if (!reduceMotion) root.classList.add("sl-motion-ready");
-    // Reset any "in" classes only on elements that exist for the new route.
-    // We use 'once' semantics by unobserving after firing — so just re-bind.
-    const bg = document.getElementById("v2-bg-grid");
+    // 'Once' semantics: each observer unobserves after firing, so a route
+    // change just re-binds whatever the new page mounted.
 
     // Only elements explicitly marked data-sl-reveal="pending" are hidden (see
     // foundation.css), so anything this effect never reaches — DOM mounted
@@ -75,20 +79,16 @@ export default function V2Animator() {
       loneIO.observe(el);
     });
 
-    const onScroll = () => {
-      const y = window.scrollY;
-      if (!rafRef.current) {
-        rafRef.current = true;
-        requestAnimationFrame(() => {
-          const shift = -Math.min(8, (y / 2000) * 8);
-          if (bg) bg.style.transform = `translate3d(0, ${shift}px, 0)`;
-          rafRef.current = false;
-        });
-      }
-    };
-    window.addEventListener("scroll", onScroll, { passive: true });
+    // Never leave anything hidden waiting for a scroll that may not come.
+    const revealPending = () => document.querySelectorAll("[data-sl-reveal]").forEach(reveal);
+    let loadTimer: number | undefined;
+    const onLoad = () => { loadTimer = window.setTimeout(revealPending, 300); };
+    if (document.readyState === "complete") onLoad();
+    else window.addEventListener("load", onLoad, { once: true });
+
     return () => {
-      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("load", onLoad);
+      window.clearTimeout(loadTimer);
       headIO.disconnect();
       staggerIO.disconnect();
       loneIO.disconnect();

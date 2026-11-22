@@ -8,6 +8,8 @@ import { useAuth } from "@/lib/auth/AuthProvider";
 import FlameIcon from "@/components/FlameIcon";
 import ActivityHeatmap from "@/components/ActivityHeatmap";
 import { ACHIEVEMENTS, isUnlocked } from "@/lib/achievements";
+import { ActionLink } from "@/components/ui/Action";
+import signedOut from "./signedOut.module.css";
 
 const LEVEL_COLORS: Record<string, string> = {
   Beginner:     "var(--sky)",
@@ -101,6 +103,45 @@ export function dashboardHeading(firstName: string | null, hasProgress: boolean)
   return firstName ? `Welcome, ${firstName}` : "Start here";
 }
 
+/**
+ * Signed out, with nothing saved on this device: say what the dashboard is
+ * for and offer the three ways in, instead of a page of zeros and an empty
+ * heatmap. Also what renders without JavaScript (progress lives in
+ * localStorage, so the server can't know it). A visitor with local progress
+ * gets the full dashboard once it hydrates.
+ */
+function SignedOutDashboard() {
+  return (
+    <div className={signedOut.page}>
+      <section className={signedOut.panel} aria-labelledby="dashboard-signed-out-title">
+        <h1 id="dashboard-signed-out-title" className={signedOut.title}>Start here</h1>
+        <p className={signedOut.lead}>
+          This is your dashboard. Once you start, it keeps track of what you&rsquo;ve done and what comes next.
+        </p>
+        <ul className={signedOut.list}>
+          <li>
+            <h2 className={signedOut.itemTitle}>Lessons</h2>
+            <p>What you&rsquo;ve finished in each track, and the next lesson to open.</p>
+          </li>
+          <li>
+            <h2 className={signedOut.itemTitle}>Streak and XP</h2>
+            <p>Each lesson earns XP. Finish one a day to grow your streak.</p>
+          </li>
+          <li>
+            <h2 className={signedOut.itemTitle}>Achievements</h2>
+            <p>Milestones you unlock as you work through the curriculum.</p>
+          </li>
+        </ul>
+        <div className={signedOut.actions}>
+          <ActionLink href="/sign-in?next=%2Fdashboard">Sign in</ActionLink>
+          <ActionLink href="/sign-up" variant="secondary">Create a free account</ActionLink>
+          <ActionLink href="/seasons/practice?src=dashboard" variant="ghost">Try a practice round</ActionLink>
+        </div>
+      </section>
+    </div>
+  );
+}
+
 export default function DashboardClient() {
   const { completed, hydrated, xp, streak, activityByDate } = useProgress();
   const allLessons = getAllLessons();
@@ -155,6 +196,10 @@ export default function DashboardClient() {
   const firstName = displayName ? displayName.split(" ")[0] : localName;
 
   const [activeTrackIdx, setActiveTrackIdx] = useState(0);
+
+  // Real progress saved on this device still gets the full dashboard.
+  const hasLocalProgress = hydrated && (completedCount > 0 || xp > 0 || streak > 0);
+  if (!user && !hasLocalProgress) return <SignedOutDashboard />;
 
   return (
     <div className="db">

@@ -1,0 +1,15 @@
+.trail { margin: 0 0 var(--sl-space-4); font-family: var(--sl-font-body); font-size: 0.8125rem; }
+.list { display: flex; flex-wrap: wrap; align-items: center; gap: 0 0.375rem; margin: 0; padding: 0; list-style: none; }
+.item { display: inline-flex; align-items: center; gap: 0.375rem; }
+/* 24px tall: the WCAG 2.5.8 floor for a link set this small. */
+.link {
+  display: inline-flex;
+  align-items: center;
+  min-height: 24px;
+  color: var(--sl-text-muted);
+  text-decoration: none;
+  text-underline-offset: 3px;
+}
+.link:hover { color: var(--sl-text); text-decoration: underline; }
+.current { color: var(--sl-text); font-weight: 500; }
+.sep { color: var(--sl-text-subtle); }

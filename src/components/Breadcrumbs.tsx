@@ -1,4 +1,5 @@
 import Link from "next/link";
+import styles from "./Breadcrumbs.module.css";
 
 /**
  * Visible counterpart to `breadcrumbJsonLd` (@/lib/seo) — same trail shape,
@@ -17,28 +18,24 @@ export default function Breadcrumbs({
   const items = [{ name: "Home", path: "/" }, ...trail];
 
   return (
-    <nav
-      aria-label="Breadcrumb"
-      className="text-xs mb-4 flex items-center flex-wrap gap-1.5"
-      style={{ fontFamily: "var(--font-mono)", color: "var(--muted)" }}
-    >
-      {items.map((item, i) => {
-        const isLast = i === items.length - 1;
-        return (
-          <span key={item.path} className="flex items-center gap-1.5">
-            {isLast ? (
-              <span aria-current="page" style={{ color: "var(--ink-2, var(--muted2))" }}>
-                {item.name}
-              </span>
-            ) : (
-              <Link href={item.path} className="transition-opacity hover:opacity-70" style={{ color: "var(--muted)" }}>
-                {item.name}
-              </Link>
-            )}
-            {!isLast && <span aria-hidden="true">/</span>}
-          </span>
-        );
-      })}
+    <nav aria-label="Breadcrumb" className={styles.trail}>
+      <ol className={styles.list}>
+        {items.map((item, i) => {
+          const isLast = i === items.length - 1;
+          return (
+            <li key={item.path} className={styles.item}>
+              {isLast ? (
+                <span aria-current="page" className={styles.current}>{item.name}</span>
+              ) : (
+                <>
+                  <Link href={item.path} className={styles.link}>{item.name}</Link>
+                  <span aria-hidden="true" className={styles.sep}>/</span>
+                </>
+              )}
+            </li>
+          );
+        })}
+      </ol>
     </nav>
   );
 }

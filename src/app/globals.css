@@ -451,10 +451,6 @@ input[type="range"]::-moz-range-track {
 .v2-btn.text:hover .v2-arr { transform: translateX(3px); }
 .v2-btn.sm { padding: 9px 16px; font-size: 13px; border-radius: var(--r-sm); }
 
-/* Footer links — monochrome hover */
-.v2-foot-link { color: var(--fg-mute); transition: color 180ms ease; }
-.v2-foot-link:hover { color: var(--fg); }
-
 /* ─── Page-load fade-in (applied to <main>) ──────────────────────────── */
 @keyframes v2pageIn {
   0%   { opacity: 0; transform: translateY(8px); }
@@ -466,10 +462,7 @@ main { animation: v2pageIn 0.5s cubic-bezier(.2,.7,.3,1) both; }
 .v2-page-head {
   padding: 80px 0 48px;
   border-bottom: 1px solid var(--border);
-  opacity: 0; transform: translateY(16px);
-  transition: opacity 600ms ease, transform 600ms cubic-bezier(.2,.7,.3,1);
 }
-.v2-page-head.in { opacity: 1; transform: translateY(0); }
 
 /* Compact variant: Playground/Sandbox server-render this same H1 block for
    SEO (crawlers see no content otherwise — see the comment in each
@@ -496,23 +489,23 @@ main { animation: v2pageIn 0.5s cubic-bezier(.2,.7,.3,1) both; }
   max-width: 640px !important;
 }
 
-/* Generic stagger-in card */
-.v2-rise {
-  opacity: 0; transform: translateY(20px);
+/* Scroll reveal for .v2-page-head and .v2-rise. Visible by default: without
+   JavaScript, before hydration, in a full-page capture and under reduced
+   motion they simply show. Only an element V2Animator has marked
+   data-sl-reveal="pending", on a page it has opted into motion
+   (html.sl-motion-ready, never set when motion is reduced), starts hidden,
+   and V2Animator reveals every pending element on load even if it is never
+   scrolled to. */
+.v2-rise, .v2-page-head {
   transition: opacity 600ms cubic-bezier(.2,.7,.3,1),
               transform 600ms cubic-bezier(.2,.7,.3,1);
 }
-.v2-rise.in { opacity: 1; transform: translateY(0); }
-
-/* Without JS (or with it disabled), .in never gets added — nothing should
-   stay permanently invisible for crawlers or no-JS visitors. Motion-reduced
-   users skip the animation outright rather than waiting it out. */
-@media (scripting: none) {
-  .v2-rise, .v2-page-head { opacity: 1; transform: none; }
+html.sl-motion-ready:not([data-motion="reduce"]) :is(.v2-rise, .v2-page-head)[data-sl-reveal="pending"] {
+  opacity: 0;
+  transform: translateY(16px);
 }
 @media (prefers-reduced-motion: reduce) {
   .v2-rise, .v2-page-head { transition: none; }
-  .v2-rise:not(.in), .v2-page-head:not(.in) { opacity: 1; transform: none; }
 }
 
 @keyframes pg-card-in {
@@ -815,382 +808,11 @@ main { animation: v2pageIn 0.5s cubic-bezier(.2,.7,.3,1) both; }
 
 .sl-btn-ghost:hover { border-color: var(--sl-border-strong); background: var(--sl-surface-raised); }
 
-/* ════════════════════════════════════════════════════════════════════════════
-   AUTH (sign-in / sign-up) — friendly light
-   ════════════════════════════════════════════════════════════════════════════ */
-.auth { min-height: 80vh; display: flex; align-items: center; justify-content: center; padding: 48px 20px; font-family: var(--font-ui), system-ui, sans-serif; }
-.auth-card { width: 100%; max-width: 420px; background: var(--card); border: 1px solid var(--line); border-radius: var(--r-xl); padding: 40px 36px; box-shadow: var(--sl-shadow-1); }
-.auth-brand { display: flex; justify-content: center; margin-bottom: 18px; }
-.auth-logo { width: 56px; height: 56px; border-radius: var(--r-lg); display: grid; place-items: center; background: var(--grass-tint); color: var(--grass); font-family: var(--font-display), Georgia, serif; font-size: 30px; }
-.auth-title { font-family: var(--font-display), Georgia, serif; font-weight: 600; font-size: 28px; text-align: center; color: var(--ink); letter-spacing: -0.02em; }
-.auth-sub { text-align: center; font-size: 14px; line-height: 1.5; color: var(--ink-2); margin: 8px auto 26px; max-width: 320px; }
-.auth-form { display: flex; flex-direction: column; gap: 15px; }
-.auth-label { display: flex; flex-direction: column; gap: 7px; font-size: 13px; font-weight: 600; color: var(--ink-2); }
+/* Settings still uses .auth-input for its text fields. The sign-in, sign-up
+   and password pages, the nav and the footer have their own CSS modules. */
 .auth-input { padding: 13px 15px; border-radius: var(--r-md); border: 1px solid var(--line-2); background: var(--paper-3); color: var(--ink); font-family: var(--font-ui), system-ui, sans-serif; font-size: 14px; outline: none; transition: border-color .15s ease, box-shadow .15s ease; }
 .auth-input::placeholder { color: var(--ink-3); }
 .auth-input:focus { border-color: var(--grass); box-shadow: 0 0 0 3px var(--grass-tint); }
-.auth-alt { text-align: center; font-size: 13px; color: var(--ink-2); margin-top: 22px; }
-.auth-alt a { color: var(--grass); font-weight: 600; }
-.auth-alt a:hover { text-decoration: underline; text-underline-offset: 3px; }
-
-/* ═══════════════════════════════════════════════════════════
-   NAV v3 — new logo · no emojis · Space Grotesk
-   ═══════════════════════════════════════════════════════════ */
-
-/* Announcement bar */
-.nav-announce {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
-  padding: 7px 16px;
-  font-family: var(--font-mono);
-  font-size: 11px;
-  letter-spacing: 0.04em;
-  background: var(--bg2);
-  border-bottom: 1px solid var(--border);
-  color: var(--fg-mute);
-}
-.nav-announce-link {
-  color: var(--grass);
-  font-weight: 600;
-  text-decoration: underline;
-  text-underline-offset: 2px;
-  transition: opacity .12s;
-}
-.nav-announce-link:hover { opacity: 0.75; }
-
-/* Main nav bar */
-.nav-bar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 24px;
-  min-height: 60px;
-  border-bottom: 1px solid var(--border);
-  background: var(--nav-bg);
-  /* No backdrop-filter: it computed to `none` here anyway, and the background
-     is opaque now, so a blur would be dead weight on every scroll frame. */
-  position: sticky;
-  top: 0;
-  z-index: 50;
-  box-shadow: 0 1px 0 transparent;
-  transition: box-shadow .2s ease;
-}
-.nav-bar.is-scrolled { box-shadow: 0 1px 0 var(--border), 0 6px 16px -12px rgba(0,0,0,0.25); }
-
-/* Logo */
-.nav-left { display: flex; align-items: center; gap: 32px; }
-.nav-logo {
-  display: flex;
-  align-items: center;
-  gap: 9px;
-  color: var(--fg);
-  transition: opacity .12s;
-}
-.nav-logo:hover { opacity: 0.8; }
-.nav-wordmark {
-  font-family: var(--font-display);
-  font-weight: 800;
-  font-size: 17px;
-  letter-spacing: -0.04em;
-  color: var(--fg);
-}
-.nav-wordmark-lab { color: var(--grass); }
-
-/* Nav links */
-.nav-links {
-  display: none;
-  align-items: center;
-  gap: 2px;
-  height: 60px;
-}
-/* The "full nav" breakpoint is 1024px. It used to be 1360px because the
-   old link set (logo + 8 links + stat pills + avatar + GitHub + sign-in + CTA)
-   needed ~1274px, and at 768px the bar overflowed the page horizontally. The
-   desktop bar now carries only the primary links, and the lower-priority
-   items step aside in the 1024px to 1279px band (tighter spacing, no GitHub
-   button, no streak/XP pills; the dashboard and the mobile menu still show
-   them). tests/nav.spec.ts checks the bar never overflows between 1024px and
-   1440px. */
-@media (min-width: 1024px) { .nav-links { display: flex; } }
-@media (min-width: 1024px) and (max-width: 1279px) {
-  .nav-left { gap: 18px; }
-  .nav-link { padding: 6px 8px; }
-  .nav-stat-pill { display: none; }
-}
-.nav-link-wrap { display: flex; align-items: center; }
-.nav-link {
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  padding: 6px 10px;
-  font-family: var(--font-ui);
-  font-size: 13px;
-  font-weight: 500;
-  letter-spacing: 0.01em;
-  color: var(--fg-mute);
-  border-bottom: 2px solid transparent;
-  transition: color .12s, border-color .12s;
-}
-.nav-link:hover { color: var(--fg); }
-.nav-link.active {
-  color: var(--fg);
-  font-weight: 600;
-  border-bottom-color: var(--grass);
-}
-.nav-pro-badge {
-  font-size: 8px;
-  font-weight: 800;
-  letter-spacing: 0.08em;
-  padding: 2px 5px;
-  border-radius: var(--r-full);
-  background: var(--amber-tint);
-  color: var(--amber);
-  text-transform: uppercase;
-}
-
-/* Right side */
-.nav-right {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-
-/* Stat pills (streak + XP) */
-.nav-stat-pill {
-  display: none;
-  align-items: center;
-  gap: 5px;
-  font-family: var(--font-mono);
-  font-size: 12px;
-  font-weight: 600;
-  padding: 5px 11px;
-  border-radius: var(--r-full);
-  border: 1px solid var(--border-hi, rgba(22,32,28,0.18));
-  color: var(--fg-mute);
-  background: transparent;
-  transition: border-color .12s, color .12s;
-}
-@media (min-width: 640px) { .nav-stat-pill { display: flex; } }
-.nav-stat-pill:hover { border-color: var(--fg-mute); color: var(--fg); }
-.nav-stat-pill.streak-active { color: var(--coral); border-color: rgba(239,90,60,0.4); }
-.nav-stat-pill.xp { color: var(--amber); border-color: rgba(201,135,12,0.35); }
-
-/* Avatar circle — also the account-menu trigger, so it's a <button> now */
-.nav-avatar {
-  display: grid;
-  place-items: center;
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  border: 1px solid var(--border-hi, rgba(22,32,28,0.22));
-  color: var(--fg-mute);
-  background: var(--paper-2, rgba(22,32,28,0.04));
-  transition: border-color .12s, color .12s;
-  font-family: var(--font-mono);
-  font-size: 12px;
-  font-weight: 600;
-  cursor: pointer;
-}
-.nav-avatar:hover { border-color: var(--fg); color: var(--fg); }
-
-/* Account dropdown — single trigger replaces avatar + name + sign-out,
-   which used to sit as three separate elements at the busiest edge of the
-   bar. Flat surface, hairline border, no blur — matches the rest of the
-   site's card language. */
-.nav-account { position: relative; }
-.nav-account-menu {
-  position: absolute;
-  top: calc(100% + 8px);
-  right: 0;
-  min-width: 160px;
-  padding: 6px;
-  background: var(--paper, #fafaf9);
-  border: 1px solid var(--border);
-  border-radius: var(--r-sm);
-  box-shadow: var(--sl-shadow-2);
-  z-index: 60;
-  animation: nav-panel-in .16s ease both;
-}
-.nav-account-name {
-  padding: 8px 10px 6px;
-  font-family: var(--font-ui);
-  font-size: 12px;
-  font-weight: 600;
-  color: var(--fg);
-  border-bottom: 1px solid var(--border);
-  margin-bottom: 4px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-.nav-account-item {
-  display: block;
-  width: 100%;
-  text-align: left;
-  padding: 8px 10px;
-  font-family: var(--font-ui);
-  font-size: 13px;
-  font-weight: 500;
-  color: var(--fg-mute);
-  background: transparent;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: background .1s, color .1s;
-}
-.nav-account-item:hover { background: var(--paper-2, rgba(22,32,28,0.05)); color: var(--fg); }
-.nav-account-item-signout { color: var(--coral); }
-.nav-account-item-signout:hover { color: var(--coral); background: var(--coral-tint, rgba(239,90,60,0.08)); }
-
-/* Ghost utility button */
-.nav-ghost-btn {
-  display: none;
-  align-items: center;
-  gap: 6px;
-  font-family: var(--font-ui);
-  font-size: 13px;
-  font-weight: 500;
-  padding: 6px 11px;
-  border-radius: var(--r-sm);
-  border: 1px solid var(--border-hi, rgba(22,32,28,0.2));
-  color: var(--fg-mute);
-  background: transparent;
-  transition: border-color .12s, color .12s;
-}
-@media (min-width: 1280px) { .nav-ghost-btn { display: flex; } }
-.nav-ghost-btn:hover { border-color: var(--fg-mute); color: var(--fg); }
-
-/* Sign in link */
-.nav-signin {
-  display: none;
-  font-family: var(--font-ui);
-  font-size: 13px;
-  font-weight: 500;
-  padding: 6px 8px;
-  color: var(--fg-mute);
-  transition: color .12s;
-}
-@media (min-width: 640px) { .nav-signin { display: inline-block; } }
-.nav-signin:hover { color: var(--fg); }
-
-/* CTA button — high visibility */
-.nav-cta {
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  padding: 9px 18px;
-  border-radius: var(--r-sm);
-  font-family: var(--font-ui);
-  font-size: 13px;
-  font-weight: 700;
-  letter-spacing: -0.01em;
-  background: var(--grass);
-  color: #ffffff;
-  transition: background var(--sl-motion-fast) var(--sl-ease);
-  white-space: nowrap;
-}
-.nav-cta:hover { background: var(--grass-d); }
-
-/* Mobile hamburger toggle — only shown below the .nav-links breakpoint */
-.nav-hamburger {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 34px;
-  height: 34px;
-  border-radius: var(--r-sm);
-  border: 1px solid var(--border-hi, rgba(22,32,28,0.2));
-  color: var(--fg);
-  background: transparent;
-  flex-shrink: 0;
-  transition: border-color .12s;
-}
-.nav-hamburger:hover { border-color: var(--fg-mute); }
-@media (min-width: 1024px) { .nav-hamburger { display: none; } }
-
-/* ── Mobile touch targets ───────────────────────────────────────────────────
-   Measured on a 375px viewport, 18 interactive elements were under 44x44 —
-   including the hamburger (34px), which is the *only* way to reach the nav on
-   mobile, and the primary "Start free" CTA (38px tall). Desktop keeps its
-   tighter density; this only relaxes below the nav breakpoint. */
-@media (max-width: 1023px) {
-  .nav-hamburger {
-    width: var(--tap);
-    height: var(--tap);
-  }
-}
-@media (max-width: 767px) {
-  .nav-avatar {
-    width: 40px;
-    height: 40px;
-    font-size: 13px;
-  }
-  .nav-cta {
-    min-height: var(--tap);
-    padding: 11px 20px;
-    font-size: 14px;
-  }
-}
-
-/* Mobile menu overlay + slide-down panel */
-.nav-mobile-overlay {
-  position: fixed;
-  inset: 0;
-  top: 60px;
-  background: rgba(15,20,17,0.35);
-  z-index: 49;
-  animation: nav-overlay-in .18s ease both;
-}
-@media (min-width: 1024px) { .nav-mobile-overlay { display: none; } }
-.nav-mobile-panel {
-  background: var(--paper, #fafaf9);
-  border-bottom: 1px solid var(--border);
-  padding: 16px 20px 24px;
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  max-height: calc(100vh - 60px);
-  overflow-y: auto;
-  animation: nav-panel-in .22s cubic-bezier(.2,.7,.3,1) both;
-}
-@keyframes nav-overlay-in { from { opacity: 0; } to { opacity: 1; } }
-@keyframes nav-panel-in {
-  from { opacity: 0; transform: translateY(-8px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-@media (prefers-reduced-motion: reduce) {
-  .nav-mobile-overlay, .nav-mobile-panel { animation: none; }
-}
-.nav-mobile-links { display: flex; flex-direction: column; }
-.nav-mobile-link {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 12px 6px;
-  font-family: var(--font-ui);
-  font-size: 15px;
-  font-weight: 500;
-  color: var(--fg-mute);
-  border-bottom: 1px solid var(--border);
-}
-.nav-mobile-link.active { color: var(--fg); font-weight: 700; }
-.nav-mobile-link:last-of-type { border-bottom: none; }
-/* Sign out reuses .nav-mobile-link's row styling but is a <button>, not an
-   <a> — reset the button defaults and keep it visually a plain row, not the
-   primary CTA. Signing out is a low-frequency action; it shouldn't wear the
-   brightest button on the page. */
-.nav-mobile-signout {
-  width: 100%;
-  text-align: left;
-  background: transparent;
-  cursor: pointer;
-  color: var(--coral);
-}
-.nav-mobile-divider { height: 1px; background: var(--border); margin: 10px 0; }
-.nav-mobile-stats { display: flex; gap: 8px; padding: 4px 6px 12px; }
-.nav-mobile-stats .nav-stat-pill { display: flex !important; }
 
 /* ── Button overrides ── */
 /* Flat buttons: a 1px edge, no offset shadow. The secondary keeps a visible
