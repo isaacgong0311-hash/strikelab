@@ -1,6 +1,7 @@
 {
   "name": "strikelab",
   "version": "0.1.0",
+  "license": "MIT",
   "private": true,
   "scripts": {
     "predev": "node scripts/copy-pyodide.mjs",
