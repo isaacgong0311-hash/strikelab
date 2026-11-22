@@ -181,11 +181,17 @@ export default function Workspace({
           </div>
           <div ref={resultRef} className={styles.result} role="status" data-checks="">
             {checks && plain && <p className={styles.plain}>{plain}</p>}
-            {checks && (
-              <pre className={styles.output} data-ok={checks.ok}>
-                {checks.text}
-                {checks.code !== code ? "\n(These results are for an earlier version of your code.)" : ""}
-              </pre>
+            {checks && plain && (
+              <details className={styles.trace}>
+                <summary>Show Python&apos;s full error</summary>
+                <pre className={styles.output} data-ok={checks.ok}>{checks.text}</pre>
+              </details>
+            )}
+            {checks && !plain && (
+              <pre className={styles.output} data-ok={checks.ok}>{checks.text}</pre>
+            )}
+            {checks && checks.code !== code && (
+              <p className={styles.stale}>These results are for an earlier version of your code.</p>
             )}
           </div>
 
