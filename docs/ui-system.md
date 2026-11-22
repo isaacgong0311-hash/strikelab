@@ -130,19 +130,6 @@ vendored source we own: keep them as close to upstream as possible so a future
 re-pull is a readable diff, and put StrikeLab-specific behavior in a wrapper
 next to it rather than editing the vendored file.
 
-Currently vendored:
-
-- `src/components/ui/skiper-ui/skiper40.tsx` — six animated link treatments
-  (`npx shadcn add @skiper-ui/skiper40`). Wrapped by
-  `src/components/AnimatedLink.tsx`, which picks the `next/link` variant for
-  internal hrefs and the new-tab-plus-arrow variant for external ones.
-  Skiper UI's free tier requires attribution; the licence header at the bottom
-  of the vendored file is the current form of it.
-
-Two things to know if you re-run the CLI over this file:
-
-- Its transformer rewrites *every* string attribute, not just `className`, and
-  it deduplicated `viewBox="0 0 10 10"` down to an invalid `viewBox="0 10"` on
-  all five SVGs. Check the arrows still render after any re-pull.
-- Upstream's external-link variant ships `target="_blank"` with no `rel`. We add
-  `rel="noopener noreferrer"`; re-pulling drops that fix.
+Currently vendored: nothing. The skiper40 animated links and their `AnimatedLink`
+wrapper were removed on Nov 22, 2026 once no page used them; Button/ActionLink
+cover links and buttons.

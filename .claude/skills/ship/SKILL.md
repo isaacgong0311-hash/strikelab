@@ -37,6 +37,7 @@ Spawn the `pr-reviewer` subagent on the diff. Fix what it confirms. For auth, sc
 
 ## 5. Wait for green
 - Required: GitHub `test` job (lint, unit, e2e, build, Lighthouse budgets) and the Vercel preview build.
+- Wait for the `test` check-run **by name** on the PR's head commit (`gh api repos/<o>/<r>/commits/<sha>/check-runs`). Do not trust `gh pr checks --watch` alone: right after a push it can return green with only the Vercel checks listed, before GitHub Actions registers `test` (this merged #98 untested on Nov 22, 2026). When landing several PRs, merge one at a time and wait for master's own `test` run to pass before the next.
 - Do not poll in a loop. Use the PR pane's auto-fix monitor so CI failures, conflicts and comments wake you.
 - Red CI: read the failing log, fix on the same branch, push. Never merge on red, never skip a check, never `--no-verify`.
 - Open the Vercel preview and smoke-test the changed page before merging.

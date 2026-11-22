@@ -216,17 +216,11 @@
 
 .auth-error { margin-bottom: 0.75rem; font-size: 0.8rem; }
 .auth-help { color: var(--sl-text-muted); font-size: 0.72rem; font-weight: 400; }
-:root[data-ui="v3"] .auth-logo { border-radius: var(--sl-radius-lg); }
 
 /* Legacy screens used opacity to make already-muted microcopy fainter. That
    drops essential labels and data below 4.5:1 on the unified canvas. */
 :root[data-ui="v3"] :where(.db-tab-prog, .pg-param-desc, .pg-chart-axis) {
   opacity: 1;
-}
-
-@media (max-width: 26.25rem) {
-  :root[data-ui="v3"] .nav-bar { padding-inline: 0.75rem; }
-  :root[data-ui="v3"] .nav-right > .nav-cta { display: none; }
 }
 
 .btree-node-select { display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: center; gap: 0.75rem; margin: 0.75rem 0; color: var(--sl-text-muted); font-size: 0.75rem; font-weight: 700; }
@@ -273,40 +267,10 @@
     outline-color: Highlight !important;
   }
 
-  :root[data-ui="v3"] :where(.nav-pro-badge, .sl-status, .db-next-badge) {
+  :root[data-ui="v3"] :where(.sl-status, .db-next-badge) {
     border: 1px solid currentColor;
   }
 }
-
-/* Bite-sized sessions entry point on long-form lesson pages. */
-.sl-sessions-callout {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1rem;
-  margin: 0 0 1.75rem;
-  padding: 1rem 1.25rem;
-  border: 1px solid color-mix(in srgb, var(--sl-brand) 30%, transparent);
-  border-radius: var(--sl-radius-lg);
-  background: var(--sl-brand-soft);
-}
-.sl-sessions-callout-eyebrow { margin: 0 0 0.3rem; color: var(--sl-brand); font: 700 0.65rem/1 var(--sl-font-code); letter-spacing: 0.12em; text-transform: uppercase; }
-.sl-sessions-callout-title { margin: 0; color: var(--sl-text); font: 800 1.1rem/1.25 var(--sl-font-display); }
-.sl-sessions-callout-meta { margin: 0.25rem 0 0; color: var(--sl-text-muted); font-size: 0.875rem; }
-.sl-sessions-callout-action {
-  min-height: var(--sl-tap);
-  display: inline-flex;
-  align-items: center;
-  padding: 0.7rem 1.4rem;
-  border-radius: var(--sl-radius-md);
-  background: var(--sl-brand);
-  color: white;
-  font: 800 0.9rem/1 var(--sl-font-body);
-  text-decoration: none;
-  transition: background var(--sl-motion-fast) var(--sl-ease);
-}
-.sl-sessions-callout-action:hover { background: var(--sl-brand-strong); }
 
 /* Page intros: the legacy 80px top padding left a large empty band between
    the breadcrumb and the eyebrow on every content page. */

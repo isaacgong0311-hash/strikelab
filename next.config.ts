@@ -14,7 +14,6 @@ const LEGACY_HOST = "strikelabco.vercel.app";
  * - cdn.jsdelivr.net: Pyodide's fallback source when /pyodide is blocked.
  * - *.supabase.co: auth and data (https + realtime wss).
  * - *.sentry.io: browser error reports. va.vercel-scripts.com: Analytics.
- * - api.web3forms.com: the newsletter form.
  */
 const CSP_REPORT_ONLY = [
   "default-src 'self'",
@@ -23,7 +22,7 @@ const CSP_REPORT_ONLY = [
   "style-src 'self' 'unsafe-inline'",
   "img-src 'self' data: blob: https:",
   "font-src 'self' data:",
-  "connect-src 'self' https://*.supabase.co wss://*.supabase.co https://cdn.jsdelivr.net https://*.sentry.io https://api.web3forms.com https://va.vercel-scripts.com",
+  "connect-src 'self' https://*.supabase.co wss://*.supabase.co https://cdn.jsdelivr.net https://*.sentry.io https://va.vercel-scripts.com",
   "frame-ancestors 'none'",
   "base-uri 'self'",
   "form-action 'self'",

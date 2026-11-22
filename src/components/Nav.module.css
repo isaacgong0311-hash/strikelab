@@ -229,7 +229,7 @@ a.stat:hover { border-color: var(--sl-border-strong); }
   position: fixed;
   inset: 0;
   z-index: -1;
-  background: rgb(9 15 11 / 0.32);
+  background: var(--sl-scrim-soft);
 }
 .panel {
   position: absolute;
