@@ -3,7 +3,7 @@
  * source named beside it before changing the wording:
  * - one attempt, server clock, deadline capped at the week's close:
  *   start_attempt / submit_attempt in supabase/migrations/0024_seasons.sql
- * - ranking by season total, then challenges solved: season_leaderboard (0024)
+ * - ranking by season total, then weeks scored (any scored attempt, even 0): season_leaderboard (0024)
  * - scoring: scripts/seasons/score-core.mjs (explanation is read by a person,
  *   not added to the automatic score, so no points total is promised here)
  * - what's allowed during an attempt: RULES in seasons/[challengeId]/AttemptClient.tsx

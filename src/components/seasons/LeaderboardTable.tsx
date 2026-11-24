@@ -24,7 +24,7 @@ export default function LeaderboardTable({
       <table className={styles.table}>
         <caption className="sl-visually-hidden">{caption}</caption>
         <thead>
-          <tr><th scope="col">Rank</th><th scope="col">Handle</th><th scope="col" className={styles.num}>Score</th><th scope="col" className={styles.num}>Solved</th></tr>
+          <tr><th scope="col">Rank</th><th scope="col">Handle</th><th scope="col" className={styles.num}>Score</th><th scope="col" className={styles.num}>Weeks scored</th></tr>
         </thead>
         <tbody>
           {rows.map((row) => (
