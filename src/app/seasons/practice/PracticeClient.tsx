@@ -153,11 +153,11 @@ function Round() {
             </p>
             <div className={styles.ctaRow}>
               {user ? (
-                <Link href="/seasons" className={styles.primary}>See the Season 1 challenges</Link>
+                <Link href="/seasons" className={styles.primary}>Back to your season path</Link>
               ) : (
                 <>
                   <Link href="/sign-up?next=%2Fseasons" className={styles.primary}>Create a free account to play Season 1</Link>
-                  <Link href="/seasons" className={styles.secondary}>See the challenges</Link>
+                  <Link href="/seasons" className={styles.secondary}>See the season path</Link>
                 </>
               )}
               <button type="button" className={styles.secondary} onClick={newRound}>Try another round</button>

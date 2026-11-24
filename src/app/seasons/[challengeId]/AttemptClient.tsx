@@ -5,6 +5,7 @@ import { useCallback, useState } from "react";
 import FocusBar from "@/components/seasons/FocusBar";
 import Workspace, { type ChecksOutcome, type SubmitInput } from "@/components/seasons/Workspace";
 import workspace from "@/components/seasons/workspace.module.css";
+import done from "./submitted.module.css";
 import styles from "@/components/marketing/marketing.module.css";
 import { useAuth } from "@/lib/auth/AuthProvider";
 import { friendlyPythonError } from "@/lib/pythonErrors";
@@ -152,10 +153,15 @@ export default function AttemptClient({ challengeId }: { challengeId: string }) 
         <div className={styles.narrow}>
           {phase === "submitted" ? (
             <>
+              <span className={done.medal} aria-hidden="true">
+                <svg viewBox="0 0 32 32" width="44" height="44" focusable="false"><path d="M8 16.5 L13.5 22 L24 10" fill="none" stroke="currentColor" strokeWidth="3.4" strokeLinecap="round" strokeLinejoin="round" /></svg>
+              </span>
+              <p className={styles.kicker}>Challenge submitted</p>
               <h1 className={styles.h1}>{attempt?.title ?? "Challenge"}</h1>
               <p className={styles.lede} role="status">Submitted. Your official score appears on the leaderboard once it&apos;s graded.</p>
+              <p className={styles.body}>That step on your season path is done. The rest of the path is waiting for you.</p>
               <div className={styles.ctaRow}>
-                <Link href="/seasons" className={styles.primary}>Back to the season</Link>
+                <Link href="/seasons" className={styles.primary}>Back to your season path</Link>
                 <Link href="/record" className={styles.secondary}>See your record</Link>
               </div>
             </>

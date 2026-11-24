@@ -4,7 +4,7 @@ import { expect, test } from "@playwright/test";
 // and how it works; /intensive takes a waitlist entry only with consent.
 test("the seasons page explains the season without a database", async ({ page }) => {
   await page.goto("/seasons");
-  await expect(page.getByRole("heading", { level: 1, name: /Prove you can do quant work/ })).toBeVisible();
+  await expect(page.getByRole("heading", { level: 1, name: /Three weeks to prove you can do quant/ })).toBeVisible();
   await expect(page.getByText(/Season 1: November 30 to December 20/)).toBeVisible();
   await expect(page.getByRole("heading", { name: "How a season works" })).toBeVisible();
   await expect(page.getByText(/AI tutor switches off/)).toBeVisible();

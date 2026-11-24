@@ -27,6 +27,7 @@ import styles from "./lesson.module.css";
 import { CODE_SYNC_LABELS, useSyncedCode } from "@/lib/submissions/useSyncedCode";
 import { loadPythonRuntime, type PythonRuntime } from "@/lib/pythonRuntime";
 import { friendlyPythonError, type PythonPhase } from "@/lib/pythonErrors";
+import { isSeasonTraining } from "@/lib/seasons/train";
 
 // The runtime is about 13 MB the first time. On school Wi-Fi that can take a
 // minute, and "Running tests…" with no progress looks like a hang.
@@ -156,11 +157,14 @@ function CelebrationOverlay({
   lessonTitle,
   nextLesson,
   streak,
+  seasonTraining,
   onClose,
 }: {
   lessonTitle: string;
   nextLesson: Lesson | null;
   streak: number;
+  /** This lesson is a step on the season path, so the path is the next stop. */
+  seasonTraining: boolean;
   onClose: () => void;
 }) {
   return (
@@ -190,11 +194,16 @@ function CelebrationOverlay({
 
         {/* Actions */}
         <div className="sl-celebration-actions">
+          {seasonTraining && (
+            <ActionLink href="/seasons" onClick={onClose}>
+              Back to your season path
+            </ActionLink>
+          )}
           {nextLesson ? (
-            <ActionLink href={`/lesson/${nextLesson.id}`} onClick={onClose}>
+            <ActionLink href={`/lesson/${nextLesson.id}`} variant={seasonTraining ? "secondary" : "primary"} onClick={onClose}>
               Next lesson: {nextLesson.title}
             </ActionLink>
-          ) : (
+          ) : seasonTraining ? null : (
             <ActionLink href="/playground" onClick={onClose}>
               Open the Playground
             </ActionLink>
@@ -414,6 +423,7 @@ export default function LessonClient({ lesson, sections, chunks, prev, next, tra
           lessonTitle={lesson.title}
           nextLesson={next}
           streak={streak}
+          seasonTraining={isSeasonTraining(lesson.id, new Date())}
           onClose={() => setShowCelebration(false)}
         />
       )}

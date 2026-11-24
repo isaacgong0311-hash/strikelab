@@ -88,6 +88,16 @@ The older button classes (`.v2-btn`, `.sl-btn-primary`, `.nav-cta`,
 flattened to match, and should be replaced by `Button`/`ActionLink` as each
 route is restyled.
 
+## Seasons: the one louder surface (decided 2026-11-24)
+
+`/seasons` is a game hub, not a brochure, and gets its own visual language on purpose (Isaac: "make it more like Duolingo, not a copy-paste contest site"). Everywhere else keeps the flat rules above.
+
+- **The season path** (`src/app/seasons/SeasonPath.tsx`, logic in `src/lib/seasons/path.ts`): warm-up, then for each week the training lesson and the timed challenge, then the record. One "Next up" step and one big **Continue** button point at it.
+- **One colour per unit**: warm-up blue, weeks green, purple, orange, teal, finish gold. Each has a fill with white text at 4.5:1 or better and a deeper shade for the lip.
+- **Pressable lip**: path nodes, unit banners, the Continue button, the hero buttons and the stat tiles use a solid offset shadow (`0 4-6px 0 <deeper shade>`) that collapses on press. This is the only place offset shadows are allowed.
+- **Challenge icons draw what they measure**: two payoff lines for parity, the call-price curve for Black-Scholes, the S-curve for delta. No stars or trophies.
+- **Motion is optional**: the "Next up" pulse and bob run only under `prefers-reduced-motion: no-preference`. Everything is readable with JavaScript and animation off. Lessons and the warm-up show as open until the browser has read progress.
+
 ## Interaction rules
 
 - Essential content is visible in the server-rendered document. Motion may enhance visible content after hydration but must never be required to reveal it.
