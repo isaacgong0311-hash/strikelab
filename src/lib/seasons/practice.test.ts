@@ -98,7 +98,7 @@ describe("practice problem", () => {
 // throws outside the Next server. This test is their guard instead.
 describe("client code never imports the hidden official tests", () => {
   // Every "use client" file anywhere in src, plus the seasons helpers that ship to the browser.
-  const roots = ["src", "src/lib/seasons/practice.ts", "src/lib/seasons/clock.ts", "src/lib/seasons/draft.ts", "src/lib/seasons/train.ts"];
+  const roots = ["src", "src/lib/seasons/practice.ts", "src/lib/seasons/clock.ts", "src/lib/seasons/draft.ts", "src/lib/seasons/train.ts", "src/lib/seasons/path.ts", "src/app/seasons/PathIcon.tsx"];
   const FORBIDDEN = /seasons\/templates|from "\.\/templates"|seasons\/params|from "\.\/params"|node:crypto/;
 
   it("covers both server-only modules", () => {
@@ -120,7 +120,7 @@ describe("client code never imports the hidden official tests", () => {
   it("for any browser-side file", () => {
     const clientFiles = [...new Set(roots.flatMap(files))]
       .filter((file) => /\.(ts|tsx)$/.test(file) && !/\.test\./.test(file))
-      .filter((file) => /^\s*["']use client["']/.test(readFileSync(file, "utf8")) || /lib\/seasons\/(practice|clock|draft|train)\.ts$/.test(file));
+      .filter((file) => /^\s*["']use client["']/.test(readFileSync(file, "utf8")) || /lib\/seasons\/(practice|clock|draft|train|path)\.ts$|seasons\/PathIcon\.tsx$/.test(file));
     expect(clientFiles.length).toBeGreaterThan(3);
     for (const file of clientFiles) {
       const imports = readFileSync(file, "utf8").split("\n").filter((line) => /^\s*(import|export)\b.*\bfrom\b/.test(line));

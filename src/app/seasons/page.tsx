@@ -7,7 +7,6 @@ import styles from "@/components/marketing/marketing.module.css";
 import { pageMetadata } from "@/lib/seo";
 import { getSupabaseServer } from "@/lib/supabase/server";
 import { getTemplate } from "@/lib/seasons/templates";
-import { challengeStatus } from "@/lib/seasons/window";
 import { PLANNED_SEASON, seasonPhase, type SeasonPhase } from "@/lib/seasons/planned";
 import { pickDisplaySeason, seasonDate, seasonIsOver } from "@/lib/seasons/seasonDate";
 import { trainLinkFor } from "@/lib/seasons/train";
@@ -18,11 +17,14 @@ import HandleForm from "./HandleForm";
 import InviteCard from "./InviteCard";
 import inviteStyles from "./invite.module.css";
 import { inviterFromSrc } from "@/lib/seasons/invite";
-import WeekStatus from "./WeekStatus";
+import SeasonPath, { type PathChallengeProps } from "./SeasonPath";
+import SeasonHud from "./SeasonHud";
+import { seasonPoints } from "@/lib/seasons/path";
+import { OFFICIAL_SCORE_MAX } from "@/lib/seasons/limits";
+import { getLessonById } from "@/lib/lessons";
 import NextChallenge from "./NextChallenge";
 import { countdown, easternWhen, nextChallenge } from "@/lib/seasons/countdown";
 import boardStyles from "./board.module.css";
-import statusStyles from "./status.module.css";
 
 export const metadata = pageMetadata({
   path: "/seasons",
@@ -47,6 +49,11 @@ interface SeasonRow { id: string; title: string; starts_on: string; ends_on: str
 interface ChallengeRow { id: string; week: number; template_slug: string; opens_at: string; closes_at: string; time_limit_minutes: number }
 interface AttemptRow extends OwnAttempt { challenge_id: string }
 interface ClubOption { id: string; name: string }
+
+/** "Mon, Nov 30" in New York time, for a challenge's opening moment. */
+function shortDay(iso: string): string {
+  return new Intl.DateTimeFormat("en-US", { weekday: "short", month: "short", day: "numeric", timeZone: "America/New_York" }).format(new Date(iso));
+}
 
 function readable(date: string): string {
   return new Intl.DateTimeFormat("en-US", { month: "long", day: "numeric", timeZone: "UTC" }).format(new Date(`${date}T00:00:00Z`));
@@ -132,133 +139,104 @@ export default async function SeasonsPage({ searchParams }: { searchParams: Prom
     ? `Add all ${weekWords[challenges.length] ?? challenges.length} to your calendar`
     : !season || challenges.length === 0 ? "Add the start date to your calendar" : "Add it to your calendar";
 
+  const views = challenges.map((challenge) => statusForWeek(now, challenge, attemptsByChallenge.get(challenge.id) ?? null, seasonRank));
+  const pathChallenges: PathChallengeProps[] = challenges.map((challenge, i) => {
+    const template = getTemplate(challenge.template_slug);
+    const train = trainLinkFor(challenge.template_slug);
+    const view = views[i];
+    return {
+      id: challenge.id,
+      week: challenge.week,
+      templateSlug: challenge.template_slug,
+      title: template?.title ?? "Challenge",
+      concept: template?.concept ?? `Week ${challenge.week}`,
+      minutes: challenge.time_limit_minutes,
+      view,
+      train: train ? { lessonId: train.lessonId, title: train.label, duration: getLessonById(train.lessonId)?.duration ?? null } : null,
+      initialText: view.kind === "upcoming" ? remainingLabel(now, view.opensAt) : "",
+      opensLabel: shortDay(challenge.opens_at),
+    };
+  });
+  const { points, max } = seasonPoints(views, OFFICIAL_SCORE_MAX);
+  const minutes = challenges[0]?.time_limit_minutes ?? 60;
+  const count = challenges.length || 3;
+  const pathId = signedIn ? "your-status" : "season-challenges";
+
   return (
-    <div className={styles.page}>
+    <div className={`${styles.page} ${seasonStyles.page}`}>
       <JsonLd data={FAQ_JSON_LD} />
-      <section className={styles.section}>
-        <div className={styles.wrap}>
-          {inviter && <p className={inviteStyles.banner}>@{inviter} invited you to play</p>}
-          <p className={seasonStyles.phase} data-kind={phase.kind}>
-            <span className={seasonStyles.dot} aria-hidden="true" />
-            {phase.kind === "upcoming"
-              ? `Starts ${readable(starts)}`
-              : phase.kind === "live" ? "Live now" : "Season ended"}
-          </p>
-          <p className={styles.kicker}>Seasons</p>
-          <h1 className={styles.h1}>Prove you can do quant work.</h1>
-          <p className={styles.lede}>
-            {title}: {readable(starts)} to {readable(ends)}. One timed challenge a week, free. Your own numbers, your
-            own explanation, ranked under a handle, and a record you can show at the end.
-          </p>
-          {!signedIn && (
-            <div className={seasonStyles.ctas}>
-              <ActionLink href="/sign-up?next=%2Fseasons">{phase.kind === "ended" ? "Create a free account" : "Create a free account to play"}</ActionLink>
-              <ActionLink href="/seasons/practice" variant="secondary">Try a practice round</ActionLink>
-            </div>
-          )}
+      <section className={seasonStyles.hero}>
+        <div className={`${styles.wrap} ${seasonStyles.heroGrid}`}>
+          <div>
+            {inviter && <p className={inviteStyles.banner}>@{inviter} invited you to play</p>}
+            <p className={seasonStyles.phase} data-kind={phase.kind}>
+              <span className={seasonStyles.dot} aria-hidden="true" />
+              {phase.kind === "upcoming"
+                ? `Starts ${readable(starts)}`
+                : phase.kind === "live" ? "Live now" : "Season ended"}
+            </p>
+            <h1 className={seasonStyles.h1}>Three weeks to prove you can do quant.</h1>
+            <p className={seasonStyles.lede}>
+              {title}: {readable(starts)} to {readable(ends)}. One timed Python challenge a week, with numbers nobody
+              else gets. Train between them, climb the board under a handle, and finish with a record you can show.
+            </p>
+            <ul className={seasonStyles.facts} aria-label="Season at a glance">
+              <li>{count} challenges</li>
+              <li>{minutes} minutes each</li>
+              <li>Free</li>
+              <li>Handles, never names</li>
+            </ul>
+            {!signedIn && (
+              <div className={seasonStyles.ctas}>
+                <ActionLink href="/sign-up?next=%2Fseasons" className={seasonStyles.chunky}>{phase.kind === "ended" ? "Create a free account" : "Create a free account to play"}</ActionLink>
+                <ActionLink href="/seasons/practice" variant="secondary" className={seasonStyles.chunkySecondary}>Try a practice round</ActionLink>
+              </div>
+            )}
+          </div>
           {next && nextTarget && (
             <NextChallenge next={next} initial={countdown(now, nextTarget)} when={easternWhen(nextTarget)} calendarLabel={calendarLabel} />
           )}
-          {needsHandle && <div className={seasonStyles.handle}><HandleForm /></div>}
-          {handle && <InviteCard handle={handle} invited={invited} seasonTitle={title} />}
-          <p className={seasonStyles.quiet}>
-            {signedIn && <Link href="/seasons/practice" className={seasonStyles.link}>Try the 15-minute practice round</Link>}
-            {!signedIn && <Link href="/lessons" className={seasonStyles.link}>Train with the lessons first</Link>}
-          </p>
         </div>
       </section>
-
-      <section className={`${styles.section} ${styles.sectionAlt}`} aria-labelledby="season-how">
-        <div className={styles.wrap}>
-          <h2 id="season-how" className={styles.h2}>How a season works</h2>
-          <ul className={styles.checks} style={{ maxWidth: "44rem" }}>
-            <li>Each week a challenge opens. When you start it, a timer starts too, and the AI tutor switches off until you submit.</li>
-            <li>Everyone gets different numbers, so a copied answer won&apos;t match. Sharing code breaks the rules, and top placings are confirmed in a short live conversation.</li>
-            <li>You submit your code and a short explanation of why it works. StrikeLab computes your official score after you submit, not in your browser, and usually posts it within a day.</li>
-            <li>Leaderboards show handles, never real names. Clubs can play together and get their own board.</li>
-            <li>Top finishers and capstones are verified in a short live conversation before they appear on a record.</li>
-          </ul>
-          {signedIn && <p className={styles.body}><Link href="/record" className={styles.textLink}>See your record →</Link></p>}
-        </div>
-      </section>
-
-      {!signedIn && <section className={styles.section} aria-labelledby="season-challenges">
-        <div className={styles.wrap}>
-          <h2 id="season-challenges" className={styles.h2}>This season&apos;s challenges</h2>
-          {challenges.length === 0 ? (
-            <p className={styles.body}>The challenges appear here when the season is scheduled.</p>
-          ) : (
-            <ol className={seasonStyles.cards}>
-              {challenges.map((c) => {
-                const t = getTemplate(c.template_slug);
-                const train = trainLinkFor(c.template_slug);
-                const status = challengeStatus(now, c.opens_at, c.closes_at);
-                return (
-                  <li key={c.id} className={seasonStyles.card}>
-                    <p className={seasonStyles.week}>Week {c.week}</p>
-                    <h3 className={seasonStyles.cardTitle}>{t?.title ?? "Challenge"}</h3>
-                    <p className={seasonStyles.meta}>{t?.concept ?? ""} · {c.time_limit_minutes} minutes</p>
-                    <p className={seasonStyles.state}>
-                      {status === "open" ? (
-                        <Link href={`/seasons/${c.id}`} className={styles.textLink}>Open now</Link>
-                      ) : status === "upcoming" ? (
-                        <span>Opens {readable(c.opens_at.slice(0, 10))}</span>
-                      ) : (
-                        <span>Closed</span>
-                      )}
-                    </p>
-                    {train && (
-                      <p className={seasonStyles.train}>
-                        <Link href={`/lesson/${train.lessonId}`} className={seasonStyles.link}>Train first: {train.label}</Link>
-                      </p>
-                    )}
-                  </li>
-                );
-              })}
-            </ol>
-          )}
-        </div>
-      </section>}
 
       {signedIn && (
-        <section className={styles.section} aria-labelledby="your-status">
-          <div className={styles.wrap}>
-            <h2 id="your-status" className={styles.h2}>Your status</h2>
+        <div className={styles.wrap}>
+          <SeasonHud handle={handle} points={points} max={max} rank={seasonRank} />
+        </div>
+      )}
+
+      <section className={seasonStyles.main} aria-labelledby={pathId}>
+        <div className={`${styles.wrap} ${seasonStyles.mainGrid}`}>
+          <div>
+            {needsHandle && <div className={`${seasonStyles.railCard} ${seasonStyles.handleFirst}`}><HandleForm /></div>}
+            <h2 id={pathId} className={seasonStyles.h2}>{signedIn ? "Your season path" : "The season path"}</h2>
+            <p className={seasonStyles.sub}>
+              {signedIn
+                ? "Work down the path. Lessons are open any time; each challenge unlocks on its day."
+                : "Every step is open to look at. Lessons and the warm-up need no account; challenges need one."}
+            </p>
             {challenges.length === 0 ? (
-              <p className={styles.body}>Your weekly challenges will appear here when the season is scheduled.</p>
+              <p className={styles.body}>The challenges appear here when the season is scheduled.</p>
             ) : (
-              <ol className={statusStyles.list}>
-                {challenges.map((challenge) => {
-                  const template = getTemplate(challenge.template_slug);
-                  const view = statusForWeek(now, challenge, attemptsByChallenge.get(challenge.id) ?? null, seasonRank);
-                  return (
-                    <li key={challenge.id} className={statusStyles.card}>
-                      <div>
-                        <p className={statusStyles.week}>Week {challenge.week}</p>
-                        <h3 className={statusStyles.title}>{template?.title ?? "Challenge"}</h3>
-                        <p className={statusStyles.concept}>{template?.concept ?? ""} · {challenge.time_limit_minutes} minutes</p>
-                        {trainLinkFor(challenge.template_slug) && (
-                          <p className={statusStyles.concept}>
-                            <Link href={`/lesson/${trainLinkFor(challenge.template_slug)!.lessonId}`} className={seasonStyles.link}>
-                              Train first: {trainLinkFor(challenge.template_slug)!.label}
-                            </Link>
-                          </p>
-                        )}
-                      </div>
-                      <WeekStatus
-                        view={view}
-                        challengeId={challenge.id}
-                        initialText={view.kind === "upcoming" ? remainingLabel(now, view.opensAt) : ""}
-                        serverNow={now.toISOString()}
-                      />
-                    </li>
-                  );
-                })}
-              </ol>
+              <SeasonPath challenges={pathChallenges} signedIn={signedIn} serverNow={now.toISOString()} />
             )}
           </div>
-        </section>
-      )}
+          <aside className={seasonStyles.rail} aria-label="Season tools">
+            {handle && <InviteCard handle={handle} invited={invited} seasonTitle={title} />}
+            <section className={seasonStyles.railCard} aria-labelledby="season-how">
+              <h2 id="season-how" className={seasonStyles.railTitle}>How a season works</h2>
+              <ul className={seasonStyles.rules}>
+                <li><strong>Timed, solo.</strong> Starting a challenge starts its clock, and the AI tutor switches off until you submit.</li>
+                <li><strong>Your own numbers.</strong> Everyone gets different inputs, so a copied answer won&apos;t match.</li>
+                <li><strong>Code plus a why.</strong> You submit code and a short explanation. Official scores are computed on our servers, usually within a day.</li>
+                <li><strong>Handles only.</strong> Boards never show real names. Clubs get their own board.</li>
+                <li><strong>Checked at the top.</strong> Top placings are confirmed in a short live conversation before they go on a record.</li>
+              </ul>
+              {signedIn && <p className={seasonStyles.railLink}><Link href="/record" className={seasonStyles.link}>See your record →</Link></p>}
+            </section>
+          </aside>
+        </div>
+      </section>
 
       <section className={`${styles.section} ${styles.sectionAlt}`} aria-labelledby="season-board">
         <div className={styles.wrap}>
