@@ -14,6 +14,11 @@ const recordFixture = Boolean(process.env.RECORD_E2E || verifyFixture);
 const statusFixture = Boolean(process.env.SEASON_STATUS_E2E || adminFixture || recordFixture);
 // A season whose three weeks have all closed: /seasons shows the final board.
 const endedFixture = Boolean(process.env.SEASON_ENDED_E2E);
+// A 40-player season board with the student at #24, for the league folding.
+const longBoardFixture = Boolean(process.env.LONG_BOARD_E2E);
+const longBoard = (you) => Array.from({ length: 40 }, (_, i) => i === 23
+  ? { rank: 24, handle: "student_one", total_score: 41, solved: 1, is_you: you }
+  : { rank: i + 1, handle: `player_${String(i + 1).padStart(2, "0")}`, total_score: 80 - i, solved: 1, is_you: false });
 const firstClub = { id: "33333333-3333-4333-8333-333333333333", name: "Options Club" };
 const secondClub = { id: "44444444-4444-4444-8444-444444444444", name: "Quant Club" };
 // Season dates are New York calendar days (src/lib/seasons/seasonDate.ts), so read them there, not in UTC.
@@ -130,7 +135,9 @@ const service = createServer(async (request, response) => {
         ? [{ rank: 1, handle: "student_one", total_score: 72.5, solved: 1, is_you: userId === studentId }]
         : clubId === secondClub.id
           ? [{ rank: 1, handle: "quant_friend", total_score: 64, solved: 1, is_you: false }]
-          : [{ rank: 1, handle: "student_one", total_score: 72.5, solved: 1, is_you: userId === studentId }, { rank: 2, handle: "quant_friend", total_score: 64, solved: 1, is_you: false }];
+          : longBoardFixture
+            ? longBoard(userId === studentId)
+            : [{ rank: 1, handle: "student_one", total_score: 72.5, solved: 1, is_you: userId === studentId }, { rank: 2, handle: "quant_friend", total_score: 64, solved: 1, is_you: false }];
       break;
     }
     // Scalar function: PostgREST returns the bare number, not a row set.
