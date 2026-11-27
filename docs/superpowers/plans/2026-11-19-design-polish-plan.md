@@ -1,6 +1,11 @@
 # Design polish work plan (Nov 19, 2026)
 
-**Status (Nov 20):** #85 and #86 merged. Rows 1, 2, 3 and 7 done on `feat/remodel-polish` (see "Done" below). Rows 8 and 9 were already shipped by R2 ([#83](https://github.com/isaacgong0311-hash/strikelab/pull/83)). Rows 4, 5 and 6 still open.
+**Status (Nov 27):** #85 and #86 merged. Rows 1, 2, 3 and 7 done on `feat/remodel-polish` (see "Done" below). Rows 8 and 9 were already shipped by R2 ([#83](https://github.com/isaacgong0311-hash/strikelab/pull/83)). Rows 4, 5 and 6 checked and closed — see "Done" below. Nothing left open on this list except the carried-over nav/homepage-length items (8, 9), which are tracked, not re-scoped, here.
+
+**Done (Nov 27)**
+- Row 4 (`/record`): already resolved by an unrelated rewrite — `Credential.tsx`/`credential.module.css` replaced the legacy layout with one header surface and hairline-divided sections, no card-in-card. No change needed.
+- Row 5 (Market Lab experiments): the shared Predict/Experiment/Explain stepper used a filled accent-tint circle for the active step number, the same pattern #85 fixed on marketing pages. Dropped the circle for a plain mono numeral, color-only for the active state (`src/app/lab/lab.module.css`). Confirmed across all three experiments; charts, mission list and controls were already flat and restrained.
+- Row 6 (`/clubs`, `/pilot`): confirmed — both pages inherit the shared `marketing.module.css` fixes from #85 cleanly, no page-specific CSS reintroduces a circle badge or stray accent.
 
 **Done (Nov 20)**
 - **Mono was broken site-wide.** `globals.css` redefined `--font-mono` as `var(--font-mono, ...)` on `:root`. That cycle blanked the variable, so every `var(--sl-font-code)` label (including #85's kickers) fell back to Inter in the browser. The line is gone and `src/lib/ui/fontVariables.test.ts` keeps it out.
