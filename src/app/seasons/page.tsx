@@ -218,7 +218,7 @@ export default async function SeasonsPage({ searchParams }: { searchParams: Prom
             {challenges.length === 0 ? (
               <p className={styles.body}>The challenges appear here when the season is scheduled.</p>
             ) : (
-              <SeasonPath challenges={pathChallenges} signedIn={signedIn} serverNow={now.toISOString()} />
+              <SeasonPath challenges={pathChallenges} signedIn={signedIn} serverNow={now.toISOString()} handle={handle} />
             )}
           </div>
           <aside className={seasonStyles.rail} aria-label="Season tools">

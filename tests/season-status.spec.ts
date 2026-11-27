@@ -54,6 +54,21 @@ test.describe("student season status with seeded attempts", () => {
     await expect(startedTimer).not.toHaveText(before ?? "");
   });
 
+  test("celebrates a newly posted score once, then not again", async ({ page }) => {
+    await signIn(page);
+    await page.goto("/seasons");
+    const reveal = page.locator('section[aria-labelledby="score-reveal-title"]');
+    await expect(reveal).toBeVisible();
+    await expect(reveal).toContainText("Week 5 scored");
+    await expect(reveal).toContainText("72.5");
+    await expect(reveal).toContainText("#1 on the board");
+    await reveal.getByRole("button", { name: "Nice, keep going" }).click();
+    await expect(reveal).toHaveCount(0);
+    await page.reload();
+    await expect(page.getByText("Scored · Score 72.5 of 80", { exact: false })).toBeVisible();
+    await expect(reveal).toHaveCount(0);
+  });
+
   test("countdown text is present without JavaScript", async ({ browser }) => {
     const context = await browser.newContext({ javaScriptEnabled: false });
     const page = await context.newPage();
