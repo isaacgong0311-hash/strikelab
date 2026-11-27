@@ -22,9 +22,12 @@
   - A submitted challenge shows a medal and points back to the path.
 - **Its own visual language**, written into `docs/ui-system.md` ("Seasons").
 
+## Also shipped (Nov 26)
+
+- **Score reveal (#105).** The first time a new score is on the page, the path opens with a gold card: the week, a count-up to the score out of 80, the rank and one honest line. It shows once per handle per device.
+- **League board (#106).** Medals for the top three and your row marked. Boards longer than 15 fold to the top ten plus the rows around you.
+
 ## Next, after the freeze (Dec 2 or later)
 
 - **Daily reasons to come back during the season.** A 5-minute drill per week (no ranking) so the streak means something between challenges. This needs content, not schema.
-- **Leagues view.** Show the board around you (the five above and below you), not just the top, once there are enough players.
-- **Score reveal.** When a score posts, show it once as a moment on the path, with points added to the bar. This needs a "seen" flag; localStorage is enough.
 - **Club unit.** Put the club board in the rail when the student is in a club.
