@@ -7,6 +7,7 @@ import { buildSeasonPath, type PathChallengeInput, type PathStep, type PathUnit 
 import { parseReadiness, READINESS_EVENT, READINESS_KEY } from "@/lib/seasons/checklist";
 import WeekStatus from "./WeekStatus";
 import PathIcon, { LockBadge } from "./PathIcon";
+import ScoreReveal from "./ScoreReveal";
 import styles from "./path.module.css";
 
 function subscribeReadiness(onChange: () => void) {
@@ -41,10 +42,13 @@ export default function SeasonPath({
   challenges,
   signedIn,
   serverNow,
+  handle = null,
 }: {
   challenges: PathChallengeProps[];
   signedIn: boolean;
   serverNow: string;
+  /** Keys the score reveal, so two students on one device each see theirs. */
+  handle?: string | null;
 }) {
   const { completed } = useProgress();
   const readiness = parseReadiness(useSyncExternalStore(subscribeReadiness, readReadiness, () => null));
@@ -54,6 +58,7 @@ export default function SeasonPath({
 
   return (
     <div className={styles.path}>
+      {signedIn && <ScoreReveal challenges={challenges} handle={handle} />}
       {current?.href && (
         <Link href={current.href} className={styles.continue}>
           <span className={styles.continueLabel}>{current.challenge?.view.kind === "started" ? "Resume your challenge" : current.kind === "challenge" ? "Your challenge is open" : "Continue"}</span>
