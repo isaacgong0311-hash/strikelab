@@ -25,8 +25,8 @@
 .steps { display: flex; gap: 1.5rem; flex-wrap: wrap; list-style: none; margin: 1.5rem 0; padding: 0 0 1.25rem; border-bottom: 1px solid var(--sl-border); }
 .steps li { display: flex; gap: 0.5rem; align-items: center; color: var(--sl-text-muted); font-size: 0.75rem; font-weight: 600; }
 .steps li[aria-current] { color: var(--sl-brand-strong); }
-.steps span { display: grid; place-items: center; width: 1.5rem; height: 1.5rem; border: 1px solid var(--sl-border); border-radius: 50%; font: 700 0.6875rem var(--sl-font-code); }
-.steps li[aria-current] span { background: var(--sl-brand); border-color: var(--sl-brand); color: white; }
+.steps span { font: 700 0.6875rem var(--sl-font-code); color: var(--sl-text-muted); }
+.steps li[aria-current] span { color: var(--sl-brand-strong); }
 .experimentGrid { display: grid; grid-template-columns: minmax(0, 1fr) 15rem; gap: 1.5rem; margin-top: 1.5rem; }
 .visual { min-width: 0; }
 .priceSummary { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.5rem; margin-block: 0.5rem; }
