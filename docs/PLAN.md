@@ -46,7 +46,7 @@ No new strategy documents. No new tracks. No new integrations. No features befor
 **Freeze Nov 27 to Dec 1.** Only fixes for something a real student or leader hit. No refactors, no polish, no dependency changes.
 
 **Backlog the agent pulls from, in order.** When told "keep going" with no other direction, take the first unchecked item, ship it, then take the next.
-1. [ ] Season 1 pre-flight on a staging build (`season-preflight` skill): invite, join, handle, timed attempt, official score, record page, defense sign-off. Fix what breaks. *(Nov 22: code blockers fixed in #94; production has the Season 1 rows. Still unverified end to end: a signed-in attempt through scoring and /record on staging.)*
+1. [x] Season 1 pre-flight on a staging build (`season-preflight` skill): invite, join, handle, timed attempt, official score, record page, defense sign-off. Fix what breaks. *(Nov 22: code blockers fixed in #94. Nov 27: full re-check after #104-#107 — all season-integrity rules confirmed, no product regressions in 646 vitest + 33 Playwright specs, production matches master. Still unverified end to end: a real signed-in browser attempt through /record (the Nov 23 rehearsal verified this directly against the production DB instead). `docs/gtm/season-preflight-2026-11-27.md`.)*
 2. [x] R4: reach the first Run sooner on lessons, and check coding on a phone *(#96, Nov 22)* (`docs/superpowers/plans/2026-11-16-remodel-work-plan.md`).
 3. [x] Design polish rows 4, 5, 6 *(remodel v2: #93, #95, #96, #98, #99, #101)* (`polish-ui` skill, `docs/superpowers/plans/2026-11-19-design-polish-plan.md`).
 4. [ ] Draft PR #79: rebase or close with a one-line reason.
